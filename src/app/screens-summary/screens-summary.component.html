@@ -1,0 +1,112 @@
+<!-- FULL VIEW -->
+<div *ngIf="!isMinimalView">
+    <div class="p-grid" *ngIf="screenSummData?.preset_data.length > 0">
+        <div class="p-col-12 p-md-4 p-p-1" *ngFor="let summData of screenSummData.preset_data">
+            <div class="border-shadow p-p-2" style="height: 100%;">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    <div style="font-size: 1.1rem;font-weight: bold;">
+                        {{summData.preset_name}}
+                    </div>
+                    <div>
+                        <p-button (click)="onRunScreenClick(summData)">Run</p-button>
+                    </div>
+                </div>
+                <hr style="margin: 0.5rem 0;width: 100%;">
+                <p-table [value]="summData.preset_top_symbols">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class="p-text-left">Symbol</th>
+                            <th class="p-text-right">Price</th>
+                            <th class="p-text-right">1D Change</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-row>
+                        <tr>
+                            <td class="symbol p-text-left" (click)="onSymbolClick(row.symbol)">{{row.symbol}}</td>
+                            <td class="p-text-right">{{row.price | currency}}</td>
+                            <td class="p-text-right" [ngClass]="row.priceChange | upDownColor">
+                                {{row.priceChange | currency}} ({{row.priceChangePct | number:'0.2-2'}}%)
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- if no preset created by user -->
+    <div
+        *ngIf="screenSummData && screenSummData.msg == 'OK' && screenSummData?.preset_data.length == 0 && !showCreateScreen">
+        <div class="p-grid">
+            <div class="p-col-12 p-md-3">
+                <img src="../../assets/images/screen_monitor.svg" alt="Screens Panel" width="100%">
+            </div>
+
+            <div class="p-col-12 p-md-9">
+                <div class="p-grid p-ai-center" style="height: 100%;">
+                    <div class="p-col-12">
+                        <div class="p-grid">
+                            <div class="p-col-12 p-text-center" style="font-size: 1.1rem; font-weight: bold;">
+                                Build your own Stock Screener
+                            </div>
+
+                            <div class="p-col-12 p-text-justify">
+                                Investors commonly use stock screeners to narrow down their investment options and
+                                identify potential opportunities based on their investment strategies. Using a stock
+                                screener can help investors save time and effort by eliminating stocks that do not meet
+                                their investment objectives.
+                            </div>
+
+                            <div class="p-col-12 p-text-center">
+                                <button pButton label="Create New Screen" icon="pi pi-plus" style="font-weight: bold;"
+                                    (click)="onNewScreenClick()"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MINIMAL VIEW -->
+<div *ngIf="isMinimalView">
+    <!-- shows minmal list of presets -->
+    <div class="p-grid p-p-1" *ngIf="screenSummData?.preset_data.length > 0">
+        <div class="p-col-12" *ngFor="let summData of screenSummData.preset_data">
+            <div 
+                class="p-d-flex p-jc-between p-ai-center"
+                [ngClass]="(summData.preset_name == selectedPreset?.preset_name ) ? 'selected' : 'normal'"
+            >
+                <div class="crop-long-name">
+                    {{summData.preset_name}}
+                </div>
+
+                <div *ngIf="summData.preset_name != selectedPreset?.preset_name">
+                    <p-button class="nowrap-btn" (click)="onRunScreenClick(summData)">Run</p-button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- if no preset created by user -->
+    <div *ngIf="screenSummData && screenSummData.msg == 'OK' && screenSummData?.preset_data.length == 0 && !showCreateScreen">
+        <div class="p-grid">
+            <div class="p-col-12 p-text-center" style="font-size: 1.1rem; font-weight: bold;">
+                Build your own Stock Screener
+            </div>
+
+            <div class="p-col-12 p-text-justify">
+                Investors commonly use stock screeners to narrow down their investment options and identify
+                potential opportunities based on their investment strategies. Using a stock screener can help
+                investors save time and effort by eliminating stocks that do not meet their investment objectives.
+            </div>
+
+            <div class="p-col-12 p-text-center">
+                <button pButton label="Create New Screen" icon="pi pi-plus" style="font-weight: bold;"
+                    (click)="onNewScreenClick()"></button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,72 @@
+.btn-normal {
+  color: #ffffff;
+  background-color: #f6a821;
+  vertical-align: middle;
+  font-size: 14px;
+  border: 1px solid transparent;
+  display: inline-block;
+  position: relative;
+  padding: 0.385em 0.6em;
+  text-decoration: none !important;
+  cursor: pointer;
+  text-align: center;
+  zoom: 1;
+  overflow: visible;
+  line-height: normal;
+  margin-right: 2px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.btn-green {
+  background-color: var(--primary-color-dark);
+}
+
+.btn-blue {
+  background-color: var(--text-color-secondary);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  padding: 8px;
+  text-align: left;
+}
+
+td {
+  padding: 8px;
+  text-align: right;
+}
+
+/* Apply alternating background colors to even and odd rows */
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+// :host ::ng-deep .p-tabview-nav {
+//   display: flex;
+//   flex-wrap: nowrap;
+//   overflow-x: auto;
+// }
+
+// :host ::ng-deep .p-tabview-nav .p-tabview-nav-left,
+// :host ::ng-deep .p-tabview-nav .p-tabview-nav-right {
+//   display: none; /* Hide the left and right navigation arrows */
+// }
+
+.return-tile {
+  height: 7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  border-radius: 0.5rem;
+}

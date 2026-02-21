@@ -1,0 +1,35 @@
+label{
+    font-weight:bold;
+}
+
+.input{
+    display: inline-block;
+    font-size: 14px;
+    width: 400px;
+}
+
+#agreement{
+    margin-top:10px;
+}
+
+:host::ng-deep .p-inputtext {
+    padding:0.6rem;
+}
+
+.select{
+    display: inline-block;
+    font-size: 14px;
+    border:1px solid #cfd0d1;
+    height:36px;
+    border-radius:4px;
+}
+
+.month{
+    display: inline-block;
+    font-size: 14px;
+    width: 60px;
+    border:1px solid #cfd0d1;
+    height:36px;
+    border-radius:4px;
+}
+

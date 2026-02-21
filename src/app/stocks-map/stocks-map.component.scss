@@ -1,0 +1,33 @@
+.square-container {
+  position: relative;
+  width: 70%;
+  /* Set the width as a percentage or any fixed value you desire */
+  left: 15%;
+}
+
+.square-container::before {
+  content: "";
+  display: block;
+  padding-top: 100%;
+  /* Set the aspect ratio (height = width * 100%) */
+}
+
+.square-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: lightblue;
+  /* Adjust the background color as needed */
+}
+
+@media screen and (max-width: 576px) {
+  .square-container {
+    position: relative;
+    width: 98%;
+    /* Set the width as a percentage or any fixed value you desire */
+    left: 1%;
+  }
+  
+}

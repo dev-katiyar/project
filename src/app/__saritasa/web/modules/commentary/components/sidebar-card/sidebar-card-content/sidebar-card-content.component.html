@@ -1,0 +1,15 @@
+<a
+  *ngFor="let post of posts"
+  [href]="post.link" target="_blank"
+
+  class="saritasa-card-item">
+  <div
+    *ngIf="post.media_url"
+    class="saritasa-card-item-img">
+    <img [src]="post.media_url" alt="post image">
+  </div>
+  <div class="saritasa-card-item-info">
+    <div class="saritasa-card-item-title"> {{ post.title }} </div>
+    <div class="saritasa-card-item-date">{{ post.date|date:"MMMM dd, yyyy" }}</div>
+  </div>
+</a>

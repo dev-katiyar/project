@@ -1,0 +1,116 @@
+<div class="p-grid" style="margin: -0.75rem;">
+    <div class="p-col-12 p-p-1">
+        <!-- TOP Controls -->
+        <div style="display: flex; align-items: center;">
+            <!-- CATEGORY SECTOR / ASSET / INDICES Switcher -->
+            <span class="btn-group p-mr-3">
+                <input *ngFor="let iClass of indicesClasses" type="button"  [value]="iClass.name" class="btn-normal" [ngClass]="(selectedClass.id == iClass.id)?'btn-green':'btn-blue'"
+                (click)="onIndicesClassChange(iClass)">
+            </span>
+        
+            <!-- CATEGORY SYMBOLS Swithcer/Dropdown -->
+            <span class="p-mr-2 p-text-bold">{{ selectedClass.itemName }}:</span>
+
+            <p-dropdown 
+                [options]="indicesSymbolsWithProfile" 
+                [(ngModel)]="selectedSymbolWithProfile" 
+                optionLabel="alternate_name"
+                (onChange)="onSelectedSymbolChange()"
+            ></p-dropdown>
+        </div>
+    </div>
+
+    <!-- Historical Line Chart - SELECTED TICKER -->
+    <div class="p-col-12 p-md-6 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;background-color:white">
+            <div class="title">
+                Historical Performance
+            </div>
+
+            <hr style="margin: 0.5rem 0;width: 100%;">
+
+            <div style="overflow: auto;">
+                <line-chart barClass="chart-big" [symbols]="[selectedSymbolWithProfile?.symbol]">
+                </line-chart>
+            </div>
+        </div>
+    </div>
+
+    <!-- Historical Bar Chart - PEERS of TICKER -->
+    <div class="p-col-12 p-md-6 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;background-color:white">
+            <div class="title">
+                Peers
+                <app-help-icon key="marketMajorMarkets"></app-help-icon>
+            </div>
+
+            <hr style="margin: 0.5rem 0;width: 100%;">
+
+            <div style="overflow: auto;" *ngIf="barChartData">
+                <!-- Period Selector -->
+                <div *ngIf="isPeriodBarVisible" style="margin-top:0">
+                    <span class="btn-group">
+                        <input type="button" value="YTD" class="btn-normal" [ngClass]="(selectedPeriod=='ytd')?'btn-green':'btn-blue'"
+                            (click)="changeBarChartData('ytd')">
+                        <input type="button" value="1M" class="btn-normal" [ngClass]="(selectedPeriod=='1month')?'btn-green':'btn-blue'"
+                            (click)="changeBarChartData('1month')">
+                        <input type="button" value="1Y" class="btn-normal" [ngClass]="(selectedPeriod=='1year')?'btn-green':'btn-blue'"
+                            (click)="changeBarChartData('1year')">
+                        <input type="button" value="2Y" class="btn-normal" [ngClass]="(selectedPeriod=='2year')?'btn-green':'btn-blue'"
+                            (click)="changeBarChartData('2year')">
+                        <input type="button" value="3Y" class="btn-normal" [ngClass]="(selectedPeriod=='3year')?'btn-green':'btn-blue'"
+                            (click)="changeBarChartData('3year')">
+                    </span>
+                </div>
+
+                <!-- Bar Chart for Peer Performance -->
+                <app-bar-chart barClass="chart-tall" chartHeight="proportional" [chartData]="barChartData" chartType="column">
+                </app-bar-chart>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-md-3 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;background-color:white">
+            <div class="title">
+                Technical Rating
+            </div>
+
+            <hr style="margin: 0.5rem 0;width: 100%;">
+
+            <div style="overflow: auto;" *ngIf="selectedSymbolTechnicals">
+                <app-technnical-rating [technicals]="selectedSymbolTechnicals"></app-technnical-rating>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-md-3 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;background-color:white">
+            <div *ngIf="selectedSymbolTechnicals">
+                <app-technical-strength [symbolTechnicals]="selectedSymbolTechnicals"></app-technical-strength>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-md-3 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;background-color:white">
+            <div style="overflow: auto;" *ngIf="selectedSymbolWithProfile">
+                <synopsis [showRating]="false" [showTechnicals]="false" gaugeClass="chart-gauge-medium" [symbol]="selectedSymbolWithProfile?.symbol"></synopsis>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-md-3 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;background-color:white">
+            <div class="title">
+                Relative Strength Indicator                
+            </div>
+
+            <hr style="margin: 0.5rem 0;width: 100%;">
+
+            <div style="overflow: auto;" *ngIf="selectedSymbolTechnicals">
+                <app-rsi-rating [technicals]="selectedSymbolTechnicals"></app-rsi-rating>
+            </div>
+        </div>
+    </div>
+</div>

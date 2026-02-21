@@ -1,0 +1,148 @@
+.create-banner-btn {
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+  background-color: var(--surface-100);
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.announcement-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 1000;
+  min-height: 48px;
+
+  .banner-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    
+    &.editable {
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+        
+        .edit-hint {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .banner-icon {
+    font-size: 1.2rem;
+  }
+
+  .banner-message {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .edit-hint {
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+    margin-left: auto;
+  }
+
+  .banner-actions,
+  .edit-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .action-button,
+  .save-button,
+  .cancel-button,
+  .delete-button {
+    ::ng-deep .p-button {
+      color: inherit !important;
+    }
+  }
+
+  // Edit mode styles
+  .edit-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+
+    .type-dropdown {
+      width: 140px;
+      
+      ::ng-deep {
+        .p-dropdown {
+          background-color: rgba(255, 255, 255, 0.95);
+          border: none;
+        }
+      }
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .message-input {
+      flex: 1;
+      background-color: rgba(255, 255, 255, 0.95);
+      border: none;
+      
+      &:focus {
+        box-shadow: none;
+      }
+    }
+  }
+
+  // Type-based colors
+  &.banner-info {
+    background-color: #3b82f6;
+    color: white;
+  }
+
+  &.banner-warning {
+    background-color: #f59e0b;
+    color: white;
+  }
+
+  &.banner-error {
+    background-color: #ef4444;
+    color: white;
+  }
+
+  &.banner-success {
+    background-color: #22c55e;
+    color: white;
+  }
+}
+
+// Override PrimeNG button styles for banner
+.announcement-banner {
+  ::ng-deep {
+    .p-button.p-button-text {
+      color: white;
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+        color: white;
+      }
+    }
+    
+    .p-button-danger.p-button-text {
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.25);
+      }
+    }
+  }
+}

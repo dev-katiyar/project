@@ -1,0 +1,503 @@
+<div class="p-grid">
+    <!-- Introduction -->
+    <div class="p-col-12 p-md-3 sidebar" *ngIf="isRegisterEnabeld">
+        <img class='sidebar-image' src='assets/images/logo/simplevisor-horizontal-light-lg.svg' alt='logo' />
+
+        <div class='sidebar-content'>
+            <div class='sidebar-content-title'>
+                Start with a
+                <div class='bold'> 30-day risk free trial</div>
+                to see all our benefits
+            </div>
+
+            <p class='bold' style="font-size:18px;">Welcome to SimpleVisor.</p>
+
+            <p class='sidebar-content-text'>SimpleVisor is an integrated investment
+                management and research solution for both
+                the seasoned and beginner “do-it-yourself”
+                investor.</p>
+
+            <p class="bold">Inside you will find:</p>
+            <ul class='sidebar-content-text'>
+                <li>Daily commentary from the SimpleVisor team.</li>
+                <li>Living trading commentary on live portfolios.</li>
+                <li>Weekly newsletters</li>
+                <li>Daily blogs</li>
+                <li>Analytics on the markets, sectors, and more.</li>
+                <li>Tools for stocks and ETF’s.</li>
+                <li>Charting (Save your styles)</li>
+                <li>Stock screeners</li>
+                <li>Heat Maps</li>
+                <li>Much more.</li>
+            </ul>
+
+            <p class='sidebar-content-text'>
+                With SimpleVisor you can consolidate all your
+                Account reporting in one place, track your
+                performance, even build and trade your own
+                models.
+            </p>
+
+            <p class='sidebar-content-text'>
+                Try SimpleVisor on us for the next 30-days.
+                There is no risk or obligation. If you are not
+                completely satisfied, cancel before the end
+                of the 30-day period.
+            </p>
+
+            <p class='sidebar-content-text bold'>Start building your wealth today, the SimpleVisor way.</p>
+        </div>
+    </div>
+
+
+    <div class="p-col-12 p-md-9 signup">
+        <!-- Registration Steps and Processs -->
+        <div class="p-grid" *ngIf="!abortReg && !regResReceived">
+            <!-- Steps -->
+            <div class="p-col-12">
+                <p-steps [model]="regSteps" [(activeIndex)]="activeIndex"></p-steps>
+            </div>
+
+            <!-- Customer Details -->
+            <div class="p-col-12">
+                <div [ngSwitch]="activeIndex" *ngIf="isRegisterEnabeld">
+                    <!-- Basic Info -->
+                    <ng-template [ngSwitchCase]="0">
+                        <!-- <div class="heading">
+                            You basic details to create account...
+                        </div> -->
+
+                        <div class='p-grid p-fluid p-formgrid p-p-6 card'>
+                            <div class="p-field p-col-12 p-md-6">
+                                <label for='firstName' class="bold">First Name <span class="red">*</span></label>
+
+                                <input pInputText type='text' class='form-control p-inputtext' id='firstName' required
+                                    [(ngModel)]='user.basicInfo.firstName' #firstName='ngModel' maxlength=100 (click)="$event.target.select()" />
+
+                                <div *ngIf='firstName.invalid && (firstName.dirty || firstName.touched)' class='error-msg text-small'>
+                                    <div *ngIf='firstName.errors.required'>First Name is required</div>
+                                </div>
+
+                                <div *ngIf="firstName.errors?.maxlength && (firstName.dirty || firstName.touched)" class='error-msg text-small'>
+                                    First Name cannot be longer than 100 characters.
+                                </div>
+                            </div>
+
+                            <div class="p-field p-col-12 p-md-6">
+                                <label for='lastName' class="bold">Last Name</label>
+
+                                <input pInputText type='text' class='form-control p-inputtext' id='lastName' required
+                                    [(ngModel)]='user.basicInfo.lastName' #lastName='ngModel' maxlength=100 (click)="$event.target.select()" />
+
+                                <div *ngIf="lastName.errors?.maxlength && (lastName.dirty || lastName.touched)" class='error-msg text-small'>
+                                    Last Name cannot be longer than 100 characters.
+                                </div>
+                            </div>
+
+                            <div class="p-field p-col-12 p-md-6">
+                                <label for='email' class="bold">Email <span class="red">*</span></label>
+
+                                <input autocomplete="off" type="email" pInputText id='email'
+                                    class='form-control p-inputtext' [(ngModel)]='user.basicInfo.email' required
+                                    [pattern]='userConstraints.basicInfo.emailPattern' #email='ngModel' maxlength=100 (click)="$event.target.select()" />
+
+                                <div *ngIf='email.errors && (email.dirty || email.touched)'>
+                                    <div *ngIf='email?.errors.required' class='error-msg text-small'>
+                                        Email is required
+                                    </div>
+                                    <div *ngIf='email?.errors.pattern' class='error-msg text-small'>
+                                        Email not valid
+                                    </div>
+                                    <div *ngIf='email.errors?.maxlength' class='error-msg text-small'>
+                                        Email cannot be longer than 100 characters.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-field p-col-12 p-md-6">
+                                <label for='password' class="bold">Create Password <span class="red">*</span></label>
+
+                                <p-password autocomplete="off" class='form-control' id='password' required minlength='1'
+                                    [(ngModel)]='user.basicInfo.password' name='password' #password='ngModel'
+                                    maxlength='15' [toggleMask]='true'></p-password>
+
+                                <div *ngIf='password.invalid && (password.dirty || password.touched)'
+                                    class='error-msg text-small'>
+                                    <div *ngIf='password?.errors.required'>
+                                        Password is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                    <!-- Risk Profile -->
+                    <ng-template [ngSwitchCase]="1">
+                        <!-- <div class="heading">
+                            Optional details for risk profile assessment...
+                        </div> -->
+
+                        <div class='p-grid p-fluid p-formgrid p-p-6 card'>
+                            <div class="p-field p-col-12 p-md-3">
+                                <label for='age'>
+                                    <span class="bold">Age </span>(Optional)
+                                </label>
+
+                                <p-dropdown id="age" [options]='userConstraints.riskProfile.ageOptions'
+                                    [(ngModel)]='user.riskProfile.age' optionLabel='name' optionValue='id'
+                                    placeholder='-select-'></p-dropdown>
+                            </div>
+
+                            <div class="p-field p-col-12 p-md-3">
+                                <label for='dependents'>
+                                    <span class="bold">Dependents </span>(Optional)
+                                </label>
+
+                                <p-dropdown id="dependents" [options]='userConstraints.riskProfile.dependentOptions'
+                                    [(ngModel)]='user.riskProfile.dependents' optionLabel='name' optionValue='id'
+                                    placeholder='-select-'></p-dropdown>
+                            </div>
+
+                            <div class="p-field p-col-12 p-md-3">
+                                <label for='maritalStatus'>
+                                    <span class="bold">Marital Status </span>(Optional)
+                                </label>
+
+                                <p-dropdown id="maritalStatus"
+                                    [options]='userConstraints.riskProfile.maritalStatusOptions'
+                                    [(ngModel)]='user.riskProfile.maritalStatus' optionLabel='name' optionValue='id'
+                                    placeholder='-select-'></p-dropdown>
+                            </div>
+
+                            <div class="p-field p-col-12 p-md-3">
+
+                            </div>
+
+                            <div class="p-field p-col-12 p-md-6 p-pt-4">
+                                <label>
+                                    <span class="bold">Financial Goals </span>(Optional)
+                                </label>
+
+                                <div>
+                                    <div *ngFor="let fgOption of userConstraints.riskProfile.financialGoalOptions"
+                                        class="p-field-checkbox">
+                                        <p-radioButton [inputId]="fgOption.id" name="financialGoal"
+                                            [value]="fgOption.id"
+                                            [(ngModel)]="user.riskProfile.financialGoal"></p-radioButton>
+
+                                        <label [for]="fgOption.id">
+                                            {{fgOption.description}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-field p-col-12 p-md-6 p-pt-4">
+                                <label>
+                                    <span class="bold">Risk Tolerance </span>(Optional)
+                                </label>
+
+                                <div>
+                                    <div *ngFor="let rtOption of userConstraints.riskProfile.riskToleranceOptions"
+                                        class="p-field-checkbox">
+                                        <p-radioButton [inputId]="rtOption.id" name="riskTolerance"
+                                            [value]="rtOption.id"
+                                            [(ngModel)]="user.riskProfile.riskTolerance"></p-radioButton>
+
+                                        <label [for]="rtOption.id">
+                                            {{rtOption.description}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                    <!-- Subscription Details -->
+                    <ng-template [ngSwitchCase]="2">
+                        <!-- <div class="heading">
+                            The subscription payment can be made monthly or annually...
+                        </div> -->
+
+                        <!-- Subscription Type -->
+                        <div>
+                            <div class='p-grid p-fluid p-formgrid p-p-6 card'>
+                                <div class="p-field p-col-12 p-md-4">
+                                    <label for='subscriptionType' class="bold">
+                                        Subscription Type <span class="red">*</span>
+                                    </label>
+
+                                    <p-dropdown id="subscriptionType"
+                                        [options]='userConstraints.subscription.subTypeOptions'
+                                        [(ngModel)]='user.subscription.subType' optionValue="id" optionLabel='name'>
+                                    </p-dropdown>
+                                </div>
+
+                                <div class="p-field p-col-12 p-md-3">
+                                    <label for='promoCode'>
+                                        <span class="bold">Promo Code</span> (Optional)
+                                    </label>
+
+                                    <input pInputText type='text' class='form-control p-inputtext' id='promoCode'
+                                        minlength='2' [(ngModel)]='user.subscription.promoCode' id='promoCode'
+                                        #promoCode='ngModel' (click)="$event.target.select()" />
+
+                                    <div *ngIf='promoCode.invalid && promoCode.dirty' class='error-msg text-small'>
+                                        <div *ngIf='promoCode?.errors.minlength'>
+                                            Promo code must be atleast 2 characters long.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="p-field p-col-12 p-md-5 p-pt-5 container-div-vertical">
+                                    <button pButton type="button" label="Apply Promo Code" style="width: auto;"
+                                        (click)="onApplyPromoCode()"></button>
+                                </div>
+
+                                <!-- User Message -->
+                                <div class="p-col-12" [ngClass]="{'text-success': promoCodeValid, 'text-error': !promoCodeValid}">
+                                    <h5 *ngIf="userMsg">
+                                        {{userMsg}}
+                                    </h5>
+                                </div>
+
+                                <div *ngIf="promoCodeValid" class="p-col-12" [ngClass]="{'text-success': promoCodeValid, 'text-error': !promoCodeValid}">
+                                    <h6 *ngIf="couponPlanDetails">
+                                        Discounted Price: {{couponPlanDetails?.discounted_price_cents / 100 | currency:'USD':'symbol':'1.2-2'}} 
+                                        <span *ngIf="couponPlanDetails?.coupon_details?.duration_in_months">for {{couponPlanDetails?.coupon_details?.duration_in_months}} months</span>
+                                    </h6>
+                                </div>
+
+                                <div class="p-field p-col-12 p-md-12">
+                                    <p>
+                                        Learn more about SimpleVisor <a routerLink="/default" target="_blank">here</a>.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Details -->
+                        <div class="p-mt-4 card p-p-6">
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-5">
+                                    <app-card [cardInfo]="user.cardInfo"></app-card>
+                                </div>
+
+                                <div class="p-col-12 p-md-7 risk-info">
+                                    <i class='pi pi-exclamation-circle exclamation-circle-icon'></i>
+                                    <div style='font-size: 17px; color: #6c6d6d; line-height: 1.5em'
+                                        icon='pi pi-circle-info'>
+                                        <span style='font-weight: bold'>
+                                            Your first 30 days are risk free. Your card will be charged immediately
+                                            following your trial
+                                            period.
+                                        </span>
+                                        You can cancel your account at any time prior to the end of the free trial
+                                        period at
+                                        no charge. If you
+                                        do not cancel prior, you cannot get a refund.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Agreement -->
+                        <div class="p-m-5">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <input class='accept-form-checkbox' [(ngModel)]="agreementSigned"
+                                            type='checkbox' />
+                                    </td>
+
+                                    <td>
+                                        You must read and agree to our <a routerLink='/agreement'
+                                            target='_blank'>Subscriber
+                                            Agreement </a>to
+                                        become a subscriber to simplevisor.com for all subscriptions. Please note that
+                                        your
+                                        subscription will renew
+                                        automatically unless you cancel prior to renewal.
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Captcha -->
+                        <div style="text-align: center;">
+                            <div style="display: inline-block;">
+                                <re-captcha 
+                                    #captcha 
+                                    [siteKey]="siteKey" 
+                                    (resolved)="showResponse($event)"
+                                    (expired)="resetCaptcha()"
+                                ></re-captcha>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                    <!-- Default -->
+                    <ng-template ngSwitchDefault>
+                        <p>Something went wrong. Please try again or <a routerLink="/contact-us">
+                                <span>
+                                    Contact Us
+                                </span>
+                            </a>.
+                        </p>
+                    </ng-template>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div class="p-col-12">
+                <h4 *ngIf="errMsg !=''" class="error-msg" style="text-align:center">
+                    {{errMsg}}
+                </h4>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="p-col-12">
+                <div class="p-grid">
+                    <div class="p-col-6 p-text-left">
+                        <p-button *ngIf="activeIndex > 0 && activeIndex < regSteps.length - 1" (click)="onBackClick()">
+                            Back
+                        </p-button>
+                    </div>
+
+                    <div class="p-col-6 p-text-right">
+                        <p-button class="p-mr-2" styleClass="p-button-outlined" *ngIf="activeIndex == 1"
+                            (click)="onNextClick()">
+                            Skip
+                        </p-button>
+
+                        <p-button *ngIf="activeIndex < regSteps.length - 1" (click)="onNextClick()"
+                            [disabled]="!meetsUserConstraints()">
+                            Next
+                        </p-button>
+
+                        <p-button *ngIf="activeIndex == regSteps.length - 1 && isRegisterEnabeld" (click)="onRegisterClick()"
+                            [disabled]="!(meetsUserConstraints() && agreementSigned && isCaptchaVerified && isRegisterEnabeld)">
+                            Register
+                        </p-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- If Customer is Existing or Some other error during check  -->
+        <div class="p-grid" *ngIf="abortReg" style="min-height: 200px;">
+            <!-- if Error form Server -->
+            <div class="p-col-12 p-text-center p-ac-center" *ngIf="resStatusUserCheck == 'error'">
+                <p class="p-d-inline-block">Something went wrong. Please try again <a routerLink="/register2024">
+                        <span>Register</span></a> or <a routerLink="/contact-us"> <span>Contact Us</span></a>.
+                </p>
+            </div>
+
+            <!-- if internal user -->
+            <div class="p-col-12 p-text-center p-ac-center" *ngIf="resStatusUserCheck == 'internal'">
+                <p class="p-d-inline-block">
+                    You are internal/special user. No need to register. To retrieve your login info please email Michael
+                    Lebowitz.
+                </p>
+            </div>
+
+
+            <!-- if existing user -->
+            <div class="p-col-12 p-text-center p-ac-center" *ngIf="resStatusUserCheck == 'returning'">
+                <p class="p-d-inline-block">
+                    Your account already exists with us with email
+                    "<span style="background-color: lightgrey;">
+                        {{customerInfo?.email }}
+                    </span>" with subscription status as
+                    "<span style="background-color: lightgrey;">
+                        {{customerInfo?.subs_status}}
+                    </span>" <span *ngIf="customerInfo?.canceled_at"> with cancellation effective 29 days from {{
+                        customerInfo?.canceled_at * 1000 | date }}</span>.
+                </p>
+
+                <p>
+                    You can try to
+                    <a routerLink="/login">
+                        Login
+                    </a>.
+                </p>
+
+                <p class="p-d-inline-block">
+                    If you do not remember the password. Reset your password using the same email at:
+                    <a routerLink="/reset-password-request">
+                        Reset Password
+                    </a>.
+                </p>
+
+                <p class="p-d-inline-block">
+                    Then login into your account to manage the account information and subscriptions by going to "<span
+                        style="background-color: lightgrey;">My Account</span>" page.
+                </p>
+
+                <p class="p-d-inline-block">
+                    Path: Top Right Corner of Page > Click Your Name > Click "<span
+                        style="background-color: lightgrey;">My Account</span>" menu item.
+                </p>
+
+                <div class="p-text-center">
+                    <img src="assets/images/img/help/my_account.png" alt="My Account Page" width="50%">
+                </div>
+
+                <p>
+
+                </p>
+
+                <p class="p-d-inline-block">
+                    If you face any issues, then please
+                    <a routerLink="/contact-us">
+                        <span>Contact Us</span>
+                    </a>.
+                </p>
+            </div>
+        </div>
+
+        <!-- After Registration Response is received -->
+        <div class="p-grid" *ngIf="regResReceived" style="min-height: 200px;">
+            <!-- if Registration is Successfull  -->
+            <div class="p-col-12 p-text-center p-ac-center" *ngIf="resStatusUserReg == 'registered'">
+                <p class="p-d-inline-block">
+                    Your registration was successfull. An email has been sent confirming the same. You can now <a
+                        routerLink="/login"> <span>Login</span></a>.
+                </p>
+            </div>
+
+            <!-- if there is email error  -->
+            <div class="p-col-12 p-text-center p-ac-center" *ngIf="resStatusUserReg == 'error_email'">
+                <div class="p-d-inline-block">
+                    <p>
+                        Your registration was successfull. You can now <a routerLink="/login"> <span>Login</span></a>.
+                    </p>
+
+                    <p>
+                        There was some issue in sending confirmation email, but that does not impact your use of
+                        services.
+                    </p>
+                </div>
+            </div>
+
+            <!-- If Server Error while saving in DB -->
+            <div class="p-col-12 p-text-center p-ac-center" *ngIf="['error_database', 'error_server'].includes(resStatusUserReg)">
+                <p class="p-d-inline-block">
+                    Something went wrong on server side. Please try again <a routerLink="/register2024" (click)="resetComponent()">
+                        <span>Register</span></a> or <a routerLink="/contact-us"> <span>Contact Us</span></a>.
+                </p>
+            </div>
+
+             <!-- If Server Error while saving in DB -->
+             <div class="p-col-12 p-text-center p-ac-center" *ngIf="resStatusUserReg == 'error_stripe'">
+             <div class="p-d-inline-block">
+                <p >
+                    Something went wrong while prrocesssing card details. You can try again to 
+                    <a routerLink="/register2024"><span>Register</span></a> or 
+                    <a routerLink="/contact-us"> <span>Contact Us</span></a>.
+                </p>
+             </div>
+            
+         </div>
+        </div>
+    </div>

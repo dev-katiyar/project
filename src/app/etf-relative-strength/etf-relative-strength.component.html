@@ -1,0 +1,44 @@
+<div class="p-grid p-nogutter">
+    <div class="p-col-12" style="padding: 0.5rem; margin-top: 0.5rem;">
+        <div class="p-grid p-jc-center p-fluid">
+            <div class="p-col-12 p-sm-6 p-md-5 p-xl-4">
+                <button type="button" pButton label="Strongest Global ETFs" class="p-button-raised"
+                    (click)="etfSelected($event,28)"
+                    [ngClass]="selectedTypeName == 'Strongest Global ETFs' ? 'p-button-secondary' : ''">
+                </button>
+            </div>
+            <div class="p-col-12 p-sm-6 p-md-5 p-xl-4">
+                <button type="button" pButton label="Strongest US Domestic ETFs" class="p-button-raised"
+                    (click)="etfSelected($event,27)"
+                    [ngClass]="selectedTypeName == 'Strongest US Domestic ETFs' ? 'p-button-secondary' : ''">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12">
+        <div class="p-grid">
+            <div class="p-col-12 p-lg-9">
+                <div class="p-grid">
+                    <div class="p-col-12">
+                        <p-panel [header]="selectedTypeName">
+                            <data-table-technical [title]="selectedTypeName" (onSymbolClicked)="symbolSelected($event)"
+                                [symbols]="globalMarketSymbols" [highlightSymolSelected]="true">
+                            </data-table-technical>
+                        </p-panel>
+                    </div>
+    
+                    <div class="p-col-12" style="padding-bottom: 0;">
+                        <p-panel header="Performance">
+                            <line-chart barClass="chart-big" [symbols]="[selectedSymbol]"></line-chart>
+                        </p-panel>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="p-col-12 p-lg-3">
+                <synopsis gaugeClass="chart-gauge-small" [symbol]="selectedSymbol"></synopsis>
+            </div>
+        </div>
+    </div>
+</div>

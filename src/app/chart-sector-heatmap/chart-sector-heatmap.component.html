@@ -1,0 +1,7 @@
+<div class="rwd-table p-grid p-nogutter p-jc-center">
+  <div class="p-col-12 p-col-1 heatMap" *ngFor="let row of technicals" [ngClass]="getHeatCls(row)">
+    <a class="heatmapAnchor cursorPointer" (click)="clickSymbol(row.symbol)">
+      <div [innerHtml]="getDisplayData(row)" style="padding: 0.2rem; font-weight: bold; font-size: 0.9rem;"></div>
+    </a>
+  </div>
+</div>

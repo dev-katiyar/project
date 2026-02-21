@@ -1,0 +1,408 @@
+<div>
+    <!-- main area for portfolio data display -->
+    <div *ngIf="portfolioData" [style.display]="(!newPositionEditing) ? 'block': 'none'">
+        <!-- Tabs for the portfolio data. Performance tab loads on tab click, check .ts file before chaning order -->
+        <p-tabView (onChange)="onTabChange($event)" [activeIndex]="activeTabIndex" class="sv-tabview-nopadding">
+            <p-tabPanel header="Summary">
+                <ng-template pTemplate="content">
+                    <div class="p-grid" style="margin: 0.25rem -0.75rem -0.75rem -0.75rem;">
+                        <div class="p-col-12 p-p-2">
+                            <div class="p-grid">
+                                <div class="p-col-6 p-sm-4 p-md-2 p-p-1">
+                                    <div [ngClass]="portfolioData.portfolioDetails.dailyPnl > 0 ? 'positive' : 'negative'" class="border-shadow p-p-2 dashboard-info">
+                                        <div style="font-size: 1.2rem; font-weight: bold;">
+                                            {{ portfolioData.portfolioDetails.dailyPnl | currency:'USD':'symbol':'1.2-2' }} 
+                                        </div>
+
+                                        <div style="font-size: 1.2rem; font-weight: bold;">
+                                            ({{ portfolioData.portfolioDetails.dailyPnlPercentage | number:'0.2-2' }}%)
+                                        </div>
+                        
+                                        <div>Performance today</div>
+                                    </div>
+                                </div>
+                        
+                                <div class="p-col-6 p-sm-4 p-md-2 p-p-1">
+                                    <div [ngClass]="portfolioData.portfolioDetails.pnl > 0 ? 'positive' : 'negative'" class="border-shadow p-p-2 dashboard-info">
+                                        <div style="font-size: 1.2rem; font-weight: bold;">
+                                            {{ portfolioData.portfolioDetails.pnl | currency:'USD':'symbol':'1.0-0' }}
+                                        </div>
+
+                                        <div style="font-size: 1.2rem; font-weight: bold;">
+                                            ({{ portfolioData.portfolioDetails.pnlPercent | number:'0.2-2' }}%)
+                                        </div>
+                        
+                                        <div>Overall return</div>
+                                    </div>
+                                </div>
+                        
+                                <div class="p-col-6 p-sm-4 p-md-2 p-p-1">
+                                    <div class="border-shadow p-p-2 dashboard-info">
+                                        <div style="font-size: 1.1rem;font-weight: bold;">
+                                            {{ portfolioData.portfolioDetails.portfolioValue | currency:'USD':'symbol':'1.0-0' }}
+                                        </div>
+                        
+                                        <div>Portfolio value</div>
+                                    </div>
+                                </div>
+                        
+                                <div class="p-col-6 p-sm-4 p-md-2 p-p-1">
+                                    <div class="border-shadow p-p-2 dashboard-info">
+                                        <div style="font-size: 1.1rem;font-weight: bold;">
+                                            {{ portfolioData.portfolioDetails.dividend | currency:'USD':'symbol':'1.0-0' }}
+                                        </div>
+                        
+                                        <div>Total dividends</div>
+                                    </div>
+                                </div>
+                        
+                                <div class="p-col-6 p-sm-4 p-md-2 p-p-1">
+                                    <div class="border-shadow p-p-2 dashboard-info">
+                                        <div style="font-size: 1.1rem;font-weight: bold;">
+                                            {{ portfolioData.portfolioDetails.startingCash | currency:'USD':'symbol':'1.0-0' }}
+                                        </div>
+                        
+                                        <div>Starting cash</div>
+                                    </div>
+                                </div>
+                        
+                                <div class="p-col-6 p-sm-4 p-md-2 p-p-1">
+                                    <div class="border-shadow p-p-2 dashboard-info">
+                                        <div style="font-size: 1.1rem;font-weight: bold;">
+                                            {{ portfolioData.portfolioDetails.currentCash | currency:'USD':'symbol':'1.0-0' }}
+                                        </div>
+                        
+                                        <div>Current cash</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-col-12 p-lg-6 p-p-1">
+                            <div class="border-shadow p-p-2" style="text-align: center;height: 100%;">
+                                <b>ASSETS</b>
+                                <app-chart-two-d barClass="chart-3" xColumn="name" yColumn="percentage"
+                                    [technicalData]='portfolioData.portfolioDetails.composition_by_asset'
+                                    chartType="pie">
+                                </app-chart-two-d>
+                            </div>
+                        </div>
+
+                        <div class="p-col-12 p-lg-6 p-p-1">
+                            <div class="border-shadow  p-p-2" style="text-align: center;height: 100%;">
+                                <b>SECTORS</b>
+                                <app-chart-two-d barClass="chart-3" xColumn="name" yColumn="percentage"
+                                    [technicalData]="portfolioData.portfolioDetails.composition_by_sector"
+                                    chartType="pie">
+                                </app-chart-two-d>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Holdings">
+                <ng-template pTemplate="content">
+                    <openpositions [selectedPortfolioId]="selectedPortfolio.id" [isAdminUser]="isAdminUser"
+                        [positions]="openPositions" (DataRefresh)="getPortfolioDetails()"
+                        [currentCash]="portfolioDetails.currentCash" [startingCash]="portfolioDetails.startingCash">
+                    </openpositions>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Transactions">
+                <ng-template pTemplate="content">
+                    <app-edit-transactions 
+                        [portfolioData]="portfolioData"
+                        [isAdminUser]="isAdminUser" 
+                        [showEditMode]="isEditTxnModeActive"
+                        (editingDone)="onEditTxnDoneBtnClick()"
+                        [clonedTrxns]="editingClonedTxns"
+                        (DataRefresh)="getPortfolioDetails()"
+                    ></app-edit-transactions>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel>
+                <ng-template pTemplate="header">
+                    Research
+                    <app-help-icon key="portfoliosModelPortfolioResearch"></app-help-icon>
+                </ng-template>
+
+                <ng-template pTemplate="content">
+                    <app-fundamental-datatable [alerts]="fundamentalDetails">
+                    </app-fundamental-datatable>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Performance">
+                <ng-template pTemplate="content">
+                    <div class="p-grid" style="margin: -1rem;margin-top: 0.25rem;">
+                        <div class="p-col-12 p-p-1">
+                            <div class="border-shadow p-p-2" style="height: 100%;">
+                                <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                                    Performance
+                                </span>
+                
+                                <hr style="margin: 0.5rem 0;">
+                
+                                <model-history-chart barClass="chart-big" [changing]="changingValue"
+                                    [modelPortfolio]="selectedPortfolio">
+                                </model-history-chart>
+                            </div>
+                        </div>
+                
+                        <div class="p-col-12 p-p-1">
+                            <div class="border-shadow p-p-2" style="height: 100%;">
+                                <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                                    Returns
+                                </span>
+                
+                                <hr style="margin: 0.5rem 0;">
+                
+                                <div>
+                                    <div style="margin-bottom: 0.5rem; padding-right: 1rem;">
+                                        <span
+                                            style="float:right; margin-bottom: 1rem; background-color: #6c757d; border-radius: 0.5rem;">
+                                            <input type="button" value="Yearly" class="btn-normal"
+                                                [ngClass]="(frequency=='yearly')?'btn-green':'btn-blue'"
+                                                (click)="frequencyChanged('yearly')">
+                                            <input type="button" value="Quarterly" class="btn-normal"
+                                                [ngClass]="(frequency=='quarterly')?'btn-green':'btn-blue'"
+                                                (click)="frequencyChanged('quarterly')">
+                                            <input type="button" value="Monthly" class="btn-normal"
+                                                [ngClass]="(frequency=='monthly')?'btn-green':'btn-blue'"
+                                                (click)="frequencyChanged('monthly')">
+                                        </span>
+                                    </div>
+                                    
+                                    <div>
+                                        <app-bar-chart showLegends=true [chartData]="barChartData" yAxisTitle="Returns"
+                                            chartType="column" chartHeight="300px">
+                                        </app-bar-chart>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Analysis">
+                <ng-template pTemplate="content">
+                    <app-fundamentalAnalysis [fundamentals]="fundamentalDetails">
+                    </app-fundamentalAnalysis>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel>
+                <ng-template pTemplate="header">
+                    Alerts
+                    <app-help-icon key="portfoliosModelPortfolioAlerts"></app-help-icon>
+                </ng-template>
+
+                <ng-template pTemplate="content">
+                    <div class="border-shadow p-p-2" style="height: 100%;margin: -0.75rem; margin-top: 0.25rem;">
+                        <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                            Alerts <p-badge [value]="techAlertsCount" severity="danger" styleClass="p-mr-2"></p-badge>
+                        </span>
+                
+                        <hr style="margin: 0.5rem 0;">
+                
+                        <tech-alerts [title]="title" [symbols]="allSymbols" (alertsLoaded)="onAlertsLoaded($event)">
+                        </tech-alerts>
+                    </div>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel>
+                <ng-template pTemplate="header">
+                    Closed Positions
+                    <app-help-icon key="portfoliosModelPortfolioClosedPositioins"></app-help-icon>
+                </ng-template>
+
+                <ng-template pTemplate="content">
+                    <app-closedpositions [closedpositions]="closedPositions">
+                    </app-closedpositions>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Dividends/Earnings">
+                <ng-template pTemplate="content">
+                    <div class="p-grid" style="margin: -1rem;margin-top: 0.25rem;">
+                        <div class="p-col-12 p-p-1">
+                            <div class="border-shadow p-p-2" style="height: 100%;">
+                                <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                                    Dividend History
+                                </span>
+                        
+                                <hr style="margin: 0.5rem 0;">
+                        
+                                <p-table #dt1 [value]="cash_transactions" dataKey="id" [rows]="10" [showCurrentPageReport]="true"
+                                    [rowsPerPageOptions]="[5,10,20]" styleClass="p-datatable-positions p-datatable-striped" [paginator]="true"
+                                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                                    [globalFilterFields]="['symbol']" [autoLayout]="true" sortField="pay_date" sortOrder="-1"
+                                    [tableStyle]="{'table-layout':'auto'}" [resizableColumns]="false">
+                        
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th pSortableColumn="symbol" class="p-text-left">
+                                                Symbol
+                                                <p-sortIcon field="symbol"></p-sortIcon>
+                                                <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto">
+                                                </p-columnFilter>
+                                            </th>
+                        
+                                            <th pSortableColumn="qty" class="p-text-center">
+                                                # of Shares
+                                                <p-sortIcon field="qty"></p-sortIcon>
+                                            </th>
+                        
+                                            <th pSortableColumn="next_payout" class="p-text-center">
+                                                Payout
+                                                <p-sortIcon field="next_payout"></p-sortIcon>
+                                            </th>
+                        
+                                            <th pSortableColumn="amount" class="p-text-center">
+                                                Total Dividend
+                                                <p-sortIcon field="amount"></p-sortIcon>
+                                            </th>
+                        
+                                            <th pSortableColumn="pay_date" class="p-text-center" style="min-width: 6.5rem;">
+                                                Pay Date
+                                                <p-sortIcon field="pay_date"></p-sortIcon>
+                                            </th>
+                        
+                                            <th pSortableColumn="ex_dividend_date" class="p-text-center" style="min-width: 6.5rem;">
+                                                Ex Dividend Date
+                                                <p-sortIcon field="ex_dividend_date"></p-sortIcon>
+                                            </th>
+                                        </tr>
+                                    </ng-template>
+                        
+                                    <ng-template pTemplate="body" let-transaction>
+                                        <tr class="p-selectable-row">
+                                            <td style="text-align: left;">
+                                                <div class="symbol" (click)="onSymbolClick(transaction.symbol)">{{transaction.symbol}}</div>
+                                            </td>
+                        
+                                            <td class="p-text-center">
+                                                <div>{{transaction.qty}}</div>
+                                            </td>
+                        
+                                            <td class="p-text-center">
+                                                <div>{{transaction.next_payout | currency}}</div>
+                                            </td>
+                        
+                                            <td class="p-text-center">
+                                                <div>{{transaction.amount | currency}}</div>
+                                            </td>
+                        
+                                            <td class="p-text-center">
+                                                <div>{{transaction.pay_date}}</div>
+                                            </td>
+                        
+                                            <td class="p-text-center">
+                                                <div>{{transaction.ex_dividend_date}}</div>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </div>
+
+                        <div class="p-col-12 p-p-1">
+                            <div class="border-shadow p-p-2" style="height: 100%;">
+                                <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                                    Upcoming Dividends
+                                </span>
+                        
+                                <hr style="margin: 0.5rem 0;">
+                        
+                                <app-dividend-history [symbol]="allSymbols" upcoming="true" [fullDividendDetail]="fullDividendDetail">
+                                </app-dividend-history>
+                            </div>
+                        </div>
+
+                        <div class="p-col-12 p-p-1">
+                            <div class="border-shadow p-p-2" style="height: 100%;">
+                                <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                                    Upcoming Earnings
+                                </span>
+                        
+                                <hr style="margin: 0.5rem 0;">
+                        
+                                <app-earning-history [symbol]="allSymbols" upcoming="true" [fullEarningDetail]="fullEarningDetail">
+                                </app-earning-history>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-tabPanel>
+        </p-tabView>
+    </div>
+
+    <!-- Linked Portfolio - WIP -->
+    <div *ngIf="isNoPortfolioDivVisible && portfolio_type === 'linked'" style="text-align: center;">
+        <br><br>
+        <div>There are no linked portfolios. Please link an existing portfolio.</div>
+        <br><br>
+        <button type="button" pButton *ngIf="isAdminUser == 1" (click)="onLinkPortfoliosClick()"
+            label='Link Portfolios'></button>
+        <br><br>
+
+        <div style="text-align: left;">
+            <strong>Note: </strong>SimpleVisor users can now import their portfilios to their SimpleVisor account to
+            keep track of their holdings.
+            Following are few important points
+            <ul>
+                <li>
+                    The holding and trandaction information is collected via a third party trusted by your financial
+                    instituation - Plaid in read only mode.
+                </li>
+                <li>
+                    Clicking on button below will take you to Plaid user flow. </li>
+                <li>
+                    Your login infomation with your institution or any account modification rights are not shared by
+                    Plaid with
+                    SimpleVisor or saved at SimpleVisor.
+                </li>
+                <li>
+                    If not able to link the link portfolios, please let us know via contact for. Your Name (top right) >
+                    Contact
+                    Us.
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div *ngIf="newPositionEditing">
+        <app-import-transactions [portfolio]="editingPortfolio" (OnValidateSuccess)="SaveImportedTransactions($event)"
+            [component-title]="portfolioEditMode"></app-import-transactions>
+    </div>
+
+    <app-plaid-integrations *ngIf="isLinkPortfolioPlaidVisible"></app-plaid-integrations>
+
+    <p-dialog header="Add to Portfolio" [(visible)]="isAddTradeDialogVisible" showEffect="fade" [modal]="true"
+        [style]="{'width': '580px'}">
+        <div *ngIf="isAddTradeDialogVisible" class="p-grid p-nogutter">
+            <div class="p-col-12 p-grid p-nogutter" style="padding-top:1em;">
+                <app-trading-ticket (cancelClick)="onTradingTicketCancelClick()"
+                    (saveClick)="onTradingTicketSaveClick()" [selectedPortfolioId]="selectedPortfolio.id"
+                    isSymbolEditable="true" isSideEditable="true" [isPortfolioNameEditable]="false">
+                </app-trading-ticket>
+            </div>
+        </div>
+    </p-dialog>
+
+    <!-- <p-dialog header="Add to Portfolio" [(visible)]="isAddTradeMultiDialogVisible" showEffect="fade" [modal]="true"
+        [style]="{width: '80vw'}" [breakpoints]="{'960px': '90vw', '640px': '98vw'}">
+        <div *ngIf="isAddTradeMultiDialogVisible" class="p-grid p-nogutter">
+            <div class="p-col-12 p-grid p-nogutter" style="padding-top:1em;">
+                <app-trading-ticket-multi (cancelClick)="onTradingTicketMultiCancelClick()"
+                    (saveClick)="onTradingTicketMultiSaveClick()" [selectedPortfolioId]="selectedPortfolio.id">
+                </app-trading-ticket-multi>
+            </div>
+        </div>
+    </p-dialog> -->
+</div>

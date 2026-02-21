@@ -1,0 +1,10 @@
+.video-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.video-container iframe {
+    aspect-ratio: 16 / 9;
+    width: 95% !important;
+}

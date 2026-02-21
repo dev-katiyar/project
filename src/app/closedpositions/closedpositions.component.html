@@ -1,0 +1,165 @@
+<p-table #dt1 [value]="closedpositions" dataKey="id" [rows]="50" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[20,50,100,500]" styleClass="p-datatable-positions p-datatable-striped" [paginator]="true"
+    [scrollable]="false" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [globalFilterFields]="['symbol']" [autoLayout]="true" [resizableColumns]="false" >
+
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="symbol">
+                <div>
+                    Symbol
+                    <p-sortIcon field="symbol"></p-sortIcon>
+                    <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto">
+                    </p-columnFilter>
+                </div>
+            </th>
+
+            <th pSortableColumn="name">
+                <div>
+                    Name
+                    <p-sortIcon field="name"></p-sortIcon>
+                </div>
+            </th>
+
+            <th pSortableColumn="side">
+                <div>
+                    Close Type
+                    <p-sortIcon field="side"></p-sortIcon>
+                </div>
+            </th>
+
+            <th pSortableColumn="buyDate">
+                <div>
+                    Purchase Date
+                    <p-sortIcon field="buyDate"></p-sortIcon>
+                </div>
+            </th>
+
+            <th pSortableColumn="sellDate">
+                <div>
+                    Date Sold
+                    <p-sortIcon field="sellDate"></p-sortIcon>
+                </div>
+            </th>
+
+            <th pSortableColumn="qty">
+                <div>
+                    Shares Sold
+                    <p-sortIcon field="qty"></p-sortIcon>
+                </div>
+            </th>
+
+            <th pSortableColumn="buyPrice">
+                <div>
+                    Buy Price
+                    <p-sortIcon field="buyPrice"></p-sortIcon>
+                </div>
+            </th>
+
+            <th pSortableColumn="sellPrice">
+                <div>
+                    Sell Price
+                    <p-sortIcon field="sellPrice"></p-sortIcon>
+                </div>
+            </th>
+
+            <th pSortableColumn="buyValue">
+                <div>
+                    Purchase Value
+                    <p-sortIcon field="buyValue"></p-sortIcon>
+                </div>
+            </th>
+
+            <th pSortableColumn="commission">
+                <div>
+                    Commission
+                    <p-sortIcon field="commission"></p-sortIcon>
+                </div>
+            </th>
+
+            <th pSortableColumn="sellValue">
+                <div>
+                    Sell Value
+                    <p-sortIcon field="sellValue"></p-sortIcon>
+                </div>
+            </th>
+
+            <th pSortableColumn="pnl">
+                <div>
+                    P&L
+                    <p-sortIcon field="pnl"></p-sortIcon>
+                </div>
+            </th>
+
+            <th pSortableColumn="pnlPercentage">
+                <div>
+                    P&L(%)
+                    <p-sortIcon field="pnlPercentage"></p-sortIcon>
+                </div>
+            </th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-closed_position>
+        <tr class="p-selectable-row">
+            <td style="text-align: left; min-width: 70px;">
+                <div class="symbol" (click)="onSymbolClick(closed_position.symbol)">{{closed_position.symbol}}</div>
+            </td>
+
+            <td style="text-align: left; min-width: 13rem;">
+                <div>{{closed_position.name}}</div>
+            </td>
+
+            <td style="text-align: center;">
+                <div [ngClass]="closed_position.side | classpipe ">{{closed_position.side}}
+                </div>
+            </td>
+
+            <td style="min-width: 100px;">
+                <div>{{closed_position.buyDate}}</div>
+            </td>
+
+            <td style="min-width: 100px;">
+                <div>{{closed_position.sellDate}}</div>
+            </td>
+
+            <td>
+                <div>{{closed_position.qty}}</div>
+            </td>
+
+            <td>
+                <div>{{closed_position.buyPrice | currency}}</div>
+            </td>
+
+            <td>
+                <div>{{closed_position.sellPrice | currency}}</div>
+            </td>
+
+            <td>
+                <div>{{closed_position.buyValue | currency }}</div>
+            </td>
+
+            <td>
+                <div>{{closed_position.commission | currency}}</div>
+            </td>
+
+            <td>
+                <div>{{closed_position.sellValue | currency}}</div>
+            </td>
+
+            <td>
+                <div [ngClass]="closed_position.pnl | classpipe ">{{closed_position.pnl |
+                    currency}}
+                </div>
+            </td>
+
+            <td>
+                <div [ngClass]="closed_position.pnlPercentage | classpipe ">
+                    {{closed_position.pnlPercentage | number:'0.2-2' | percentPipe }}
+                </div>
+            </td>
+
+        </tr>
+    </ng-template>
+
+</p-table>

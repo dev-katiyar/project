@@ -1,0 +1,282 @@
+<div>
+    <p-table #dt [value]="symbolFundamentals" [paginator]="true" [rows]="rowsPerPage" [pageLinks]="3" [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[rowsPerPage*1,rowsPerPage*2,rowsPerPage*3,100,200,500]" [resizableColumns]="false"  [autoLayout]="true"
+        styleClass="p-datatable-positions p-datatable-striped" [tableStyle]="{'table-layout':'auto'}"
+        [scrollable]="false" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" >
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="symbol" style="text-align: left;">
+                    Symbol
+                    <p-sortIcon field="symbol"></p-sortIcon>
+                    <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto"></p-columnFilter>
+                </th>
+
+                <th pSortableColumn="marketCap">
+                    Market Cap
+                    <p-sortIcon field="marketCap"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="dividendYield">
+                    Yield%
+                    <p-sortIcon field="dividendYield"></p-sortIcon>
+                </th>
+                <th pSortableColumn="ex_dividend_date" style="min-width: 7rem;">
+                    ExDiv-Date
+                    <p-sortIcon field="ex_dividend_date"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="pay_date" style="min-width: 7rem;">
+                    Div-PayDate
+                    <p-sortIcon field="pay_date"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="earning_date" style="min-width: 7rem;">
+                    Earning Date
+                    <p-sortIcon field="earning_date"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="enterpriseValue">
+                    Enterprise Value
+                    <p-sortIcon field="enterpriseValue"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="trailingPE">
+                    Trailing P/E
+                    <p-sortIcon field="trailingPE"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="forwardPE">
+                    Forward P/E
+                    <p-sortIcon field="forwardPE"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="pegRatio">
+                    PEG Ratio
+                    <p-sortIcon field="pegRatio"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="priceToSalesTrailing12Months">
+                    P/S (TTM)
+                    <p-sortIcon field="priceToSalesTrailing12Months"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="priceToBook">
+                    P/B
+                    <p-sortIcon field="priceToBook"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="trailingEps">
+                    Trailng EPS
+                    <p-sortIcon field="trailingEps"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="forwardEps">
+                    Forward EPS
+                    <p-sortIcon field="forwardEps"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="returnOnAssets">
+                    Return on Assets
+                    <p-sortIcon field="returnOnAssets"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="returnOnEquity">
+                    Return on Equity
+                    <p-sortIcon field="returnOnEquity"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="currentRatio">
+                    Current Ratio
+                    <p-sortIcon field="currentRatio"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="quickRatio">
+                    Quick Ratio
+                    <p-sortIcon field="quickRatio"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="debtToEquity">
+                    Debt/Equity
+                    <p-sortIcon field="debtToEquity"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="grossMargins">
+                    Gross Margins
+                    <p-sortIcon field="grossMargins"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="operatingMargins">
+                    Operating Margins
+                    <p-sortIcon field="operatingMargins"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="profitMargins">
+                    Profit Margins
+                    <p-sortIcon field="profitMargins"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="ebitdaMargins">
+                    EBITDA Margins
+                    <p-sortIcon field="ebitdaMargins"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="payoutRatio">
+                    Payout Ratio
+                    <p-sortIcon field="payoutRatio"></p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-fundamental>
+            <tr>
+                <td style="text-align: left;">
+                    <div class="symbol" (click)="clickSymbol(fundamental.symbol)">
+                        {{fundamental.symbol}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        ${{fundamental.marketCap | shortNumber}}
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        {{fundamental.dividendYield | number:'0.2-2'}}%
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        {{fundamental.ex_dividend_date}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.pay_date }}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.earning_date}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.enterpriseValue | currency:'USD':'symbol':'1.0-0'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.trailingPE | number:'1.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.forwardPE | number:'1.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div [ngClass]="fundamental.pegRatio | upDownColor">
+                        {{fundamental.pegRatio | number:'1.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.priceToSalesTrailing12Months | number:'1.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.priceToBook | number:'1.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.trailingEps | currency:'USD':'symbol':'1.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.forwardEps | currency:'USD':'symbol':'1.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.returnOnAssets | percent:'1.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div  [ngClass]="fundamental.returnOnEquity | upDownColor">
+                        {{fundamental.returnOnEquity | percent:'1.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.currentRatio | number:'1.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.quickRatio | number:'1.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.debtToEquity | number:'1.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.grossMargins | percent:'1.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.operatingMargins | percent:'1.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.profitMargins | percent:'1.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.ebitdaMargins | percent:'1.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{fundamental.payoutRatio | percent:'1.2-2'}}
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog header="Symbol Analytics" [(visible)]="displayDialogSymbolDetail" showEffect="fade"
+    [modal]="true" [style]="{width: '85vw'}" [breakpoints]="{'960px': '90vw', '640px': '97vw'}">
+    <app-symbol-detail-modal [symbol]="selectedSymbol"></app-symbol-detail-modal>
+</p-dialog>

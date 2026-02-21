@@ -1,0 +1,126 @@
+<div class="p-grid p-mt-2" style="margin: -0.75rem;">
+    <div class="p-col-12 p-sm-6 p-md-6 p-xl-4 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;">
+            <div class="scale-down">
+                <app-technical-analysis [netBuySellValues]="netBuySells" title="Technical Rating">
+                </app-technical-analysis>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-sm-6 p-md-6 p-xl-4 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;">
+            <synopsis [showRating]="false" [showTechnicals]="false" gaugeClass="chart-gauge-big"
+                [symbol]="symbol"></synopsis>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-sm-6 p-md-6 p-xl-4 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;">
+            <app-technical-strength [symbol]="symbol"></app-technical-strength>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-sm-6 p-md-6 p-xl-4 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;">
+            <div class="title">
+                Technical Indicators: Buys({{technicalBuys}})
+                Sells({{technicalSells}})
+                Holds({{technicalHolds}})
+            </div>
+
+            <hr style="margin: 0.5rem 0;width: 100%;">
+
+            <div style="overflow: auto;">
+                <table>
+                    <tr>
+                        <th style="text-align: left;">Name</th>
+                        <th style="text-align: right;">Value</th>
+                        <th style="text-align: center;">Trend</th>
+                        <th style="text-align: center;">Action</th>
+                    </tr>
+
+                    <tr *ngFor="let technical of technicals">
+                        <td>{{technical.name}}</td>
+
+                        <td style="text-align: right;">{{technical.value }}</td>
+
+                        <td style="text-align: center;">{{technical.trend }}</td>
+
+                        <td *ngIf="technical.action!='Hold'">
+                            <img class="center-img center"
+                                [src]="technicalService.getUpDownImgByText(technical.action)">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-sm-6 p-md-6 p-xl-3 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;">
+            <div class="title">
+                Moving Average: Buys({{maBuys}})
+                Sells({{maSells}})
+            </div>
+
+            <hr style="margin: 0.5rem 0;width: 100%;">
+
+            <div style="overflow: auto;">
+                <table>
+                    <tr>
+                        <th style="text-align: left;">Name</th>
+                        <th style="text-align: right;">Value</th>
+                        <th style="text-align: center;">Trend</th>
+                        <th style="text-align: center;">Action</th>
+                    </tr>
+
+                    <tr *ngFor="let row of movingAverage">
+                        <td>{{row.name}}</td>
+                        <td style="text-align: right;">{{row.value | number:'0.2-2'}}</td>
+                        <td style="text-align: center;">{{row.trend}}</td>
+                        <td><img class="center-img center"
+                                [src]="technicalService.getUpDownImgByText(row.action)">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-sm-6 p-md-6 p-xl-5 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;">
+            <div class="title">
+                Pivot Points
+            </div>
+
+            <hr style="margin: 0.5rem 0;width: 100%;">
+
+            <div style="overflow: auto;">
+                <table>
+                    <tr>
+                        <th style="text-align: left;">Name</th>
+                        <th style="text-align: center;">S3</th>
+                        <th style="text-align: center;">S2</th>
+                        <th style="text-align: center;">S1</th>
+                        <th style="text-align: center;">Pivot Points</th>
+                        <th style="text-align: center;">R1</th>
+                        <th style="text-align: center;">R2</th>
+                        <th style="text-align: center;">R3</th>
+                    </tr>
+
+                    <tr *ngFor="let row of pivotPoints" style="text-align: right;">
+                        <td style="text-align: left;">{{row.name}}</td>
+                        <td style="text-align: right;">{{row.s3 | number:'0.2-2'}}</td>
+                        <td style="text-align: right;">{{row.s2 | number:'0.2-2'}}</td>
+                        <td style="text-align: right;">{{row.s1 | number:'0.2-2'}}</td>
+                        <td style="text-align: center;">{{row.p | number:'0.2-2'}}</td>
+                        <td style="text-align: right;">{{row.r1 | number:'0.2-2'}}</td>
+                        <td style="text-align: right;">{{row.r2 | number:'0.2-2'}}</td>
+                        <td style="text-align: right;">{{row.r3 | number:'0.2-2'}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

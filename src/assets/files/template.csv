@@ -1,0 +1,4 @@
+symbol,side,qty,price,date
+MSFT,Buy,12,11.23,06-01-2021
+AAPL,Buy,13,113.23,02-11-2020
+MSFT,Sell,2,11.20,09-01-2021

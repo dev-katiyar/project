@@ -1,0 +1,200 @@
+<div *ngIf="error != ''" style="margin-top: 5rem; margin-left: 0;text-align: center;">
+    {{error}}
+</div>
+
+<div *ngIf="error == ''">
+    <div class="p-grid p-m-0">
+        <div class="p-col-12 p-pb-0">
+            <div class="p-grid">
+                <!-- Ratings Summary -->
+                <div class="p-col-12 p-md-9 p-p-1">
+                    <div class="border-shadow p-p-2" style="height: 100%;">
+                        <div class="title">
+                            {{ analysis?.total }} Analyst Consensus
+                        </div>
+
+                        <hr style="margin: 0.5rem 0;width: 100%;">
+
+                        <div class="p-grid" style="padding: 1em;">
+                            <div class="p-col-12 p-md-3 container-div-horz-vertical">
+                                <div class="rating-circle container-div-horz-vertical"
+                                    [ngClass]="setRatingCircleClass(analysis?.rating_text)">
+                                    <div class="p-grid">
+                                        <div class="p-col-12 p-text-center p-text-bold" style="font-size: 2.5rem;">
+                                            {{ analysis?.buy * 100 / analysis?.total | number:'1.0-0'}}%
+                                        </div>
+
+                                        <div class="p-col-12 p-text-center" style="padding: 0;margin-top: 1rem;">
+                                            Overall Rating
+                                        </div>
+
+                                        <div class="p-col-12 p-text-center p-text-bold" style="padding: 0;">
+                                            {{ analysis?.rating_text }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-col-12 p-md-9 container-div-horz-vertical">
+                                <div class="p-grid" style="width: 100%;">
+                                    <div class="p-col-12">
+                                        <div class="p-grid">
+                                            <div class="p-col-6 p-text-left p-p-0 p-text-bold">Buy</div>
+
+                                            <div class="p-col-6 p-text-right p-p-0">{{ analysis?.buy }}</div>
+
+                                            <div class="p-col-12 p-p-0">
+                                                <p-progressBar class="green"
+                                                    [value]="analysis?.buy * 100 / analysis?.total | number:'1.0-0'"
+                                                    [style]="{height: '25px', 'background-color': '#eef9ea'}"></p-progressBar>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-col-12">
+                                        <div class="p-grid">
+                                            <div class="p-col-6 p-text-left p-p-0 p-text-bold">Hold</div>
+
+                                            <div class="p-col-6 p-text-right p-p-0">{{ analysis?.hold }}</div>
+
+                                            <div class="p-col-12 p-p-0">
+                                                <p-progressBar class="hold-dark"
+                                                    [value]="analysis?.hold * 100 / analysis?.total | number:'1.0-0'"
+                                                    [style]="{height: '25px', 'background-color': '#ebe9e9'}"></p-progressBar>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-col-12">
+                                        <div class="p-grid">
+                                            <div class="p-col-6 p-text-left p-p-0 p-text-bold">Sell</div>
+
+                                            <div class="p-col-6 p-text-right p-p-0">{{ analysis?.sell }}</div>
+
+                                            <div class="p-col-12 p-p-0">
+                                                <p-progressBar class="sell-red"
+                                                    [value]="analysis?.sell * 100 / analysis?.total | number:'1.0-0'"
+                                                    [style]="{height: '25px', 'background-color': '#fbeae8'}"></p-progressBar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Target Prices -->
+                <div class="p-col-12 p-md-3 p-p-1">
+                    <div class="p-grid" style="height: 100%; margin: 0;">
+                        <div class="p-col-12 border-shadow container-div-horz-vertical">
+                            <div>
+                                <div class="p-text-bold" style="font-size: 1.5rem;">
+                                    ${{analysis?.priceTarget | number:'0.2-2'}}
+                                    <span [ngClass]="analyst_change | classpipe" style="font-size: 1rem;">
+                                        ({{analyst_change | number:'0.2-2'}}%)
+                                    </span>
+                                </div>
+
+                                <div>Offering Target Price</div>
+                            </div>
+                        </div>
+
+                        <div class="p-col-12 border-shadow container-div-horz-vertical p-mt-1">
+                            <div>
+                                <div class="p-text-bold" style="font-size: 1.5rem;">
+                                    ${{analysis?.high | number:'0.2-2'}}
+                                </div>
+
+                                <div>High Estimate</div>
+                            </div>
+                        </div>
+
+                        <div class="p-col-12 border-shadow container-div-horz-vertical p-mt-1">
+                            <div>
+                                <div class="p-text-bold" style="font-size: 1.5rem;">
+                                    ${{analysis?.low | number:'0.2-2'}}
+                                </div>
+
+                                <div>Low Estimate</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analyst Reviews -->
+        <div class="p-col-12 p-p-1">
+            <div class="border-shadow p-p-2">
+                <div class="title">
+                    Analyst Reviews
+                </div>
+                <hr style="margin: 0.5rem 0;width: 100%;">
+                <p-table #dt [value]="analysis?.experts" [paginator]="true" [rows]="10" [pageLinks]="3"
+                    [resizableColumns]="true" [showCurrentPageReport]="true" [rowsPerPageOptions]="[20,40,100]"
+                    styleClass="p-datatable-positions p-datatable-striped" [tableStyle]="{'table-layout':'auto'}"
+                 [reorderableColumns]="false"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th pSortableColumn="name" style="text-align: center;">
+                                Analyst Name
+                                <p-sortIcon field="name"></p-sortIcon>
+                                <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto">
+                                </p-columnFilter>
+                            </th>
+                            <th pSortableColumn="firm" style="text-align: center;">
+                                Firm
+                                <p-sortIcon field="firm"></p-sortIcon>
+                                <p-columnFilter type="text" field="firm" display="menu" class="p-ml-auto">
+                                </p-columnFilter>
+                            </th>
+                            <th pSortableColumn="priceTarget" style="text-align: right;">
+                                Price Target
+                                <p-sortIcon field="priceTarget"></p-sortIcon>
+                                <p-columnFilter type="numeric" field="priceTarget" display="menu" class="p-ml-auto">
+                                </p-columnFilter>
+                            </th>
+                            <th pSortableColumn="rating_text" style="text-align: center;">
+                                Position
+                                <p-sortIcon field="rating_text"></p-sortIcon>
+                            </th>
+                            <th style="text-align: center;">
+                                Title
+                            </th>
+                            <th pSortableColumn="date" style="text-align: right;">
+                                Date
+                                <p-sortIcon field="date"></p-sortIcon>
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-analysis>
+                        <tr>
+                            <td style="text-align: left;">
+                                <div class="newsTime">{{analysis.name}}</div>
+                            </td>
+                            <td style="text-align: left;">
+                                <div class="symbol-withoutpointer">{{analysis.firm}}</div>
+                            </td>
+                            <td style="text-align: center;">
+                                <div>{{analysis.priceTarget}}</div>
+                            </td>
+                            <td>
+                                <div style="text-align:center;" [ngClass]="analysis.rating_text | upDownColor">
+                                    {{analysis.rating_text}}
+                                </div>
+                            </td>
+                            <td style="text-align: left;">
+                                <div>
+                                    <a href="{{analysis.url}}" target="_blank">{{analysis.title}}</a>
+                                </div>
+                            </td>
+                            <td>{{analysis.date}}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>

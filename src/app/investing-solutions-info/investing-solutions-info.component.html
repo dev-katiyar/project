@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SimpleVisor</title>
+    <link rel="stylesheet" href="https://unpkg.com/primeicons/primeicons.css">
+</head>
+
+<body class="page-intelligent">
+    <header id="main-header" style="background:url(assets/img/Hero-Bkgrd.png) no-repeat;">
+        <div class="hero">
+            <h1>Intelligent Investing with SimpleVisor Portfolios</h1>
+            <p>Professional portfolio management, powered by cutting-edge technology</p>
+            <div class="ctas">
+                <a href="http://invest.simplevisor.com/prospect" target="_blank" class="btn btn-white">Open Your Account Now</a>
+                <a href="http://invest.simplevisor.com/login" target="_blank" class="btn btn-outline btn-white">Login to Your Portfolio</a>
+            </div>
+            <div class="ctas justify-content-center" style="cursor: pointer;" (click)="showContactForm()">
+                <span class="btn btn-blue">Have a Question?</span>
+            </div>
+        </div>
+    </header>
+    <main id="main-content">
+        <section id="work" class="section visor-work bg-grey">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col col-6">
+                        <figure>
+                            <img src="assets/img/SV-Portfolios-HowItWorks.png">
+                        </figure>
+                    </div>
+                    <div class="col col-6">
+                        <h2>Put SimpleVisor to Work for You</h2>
+
+                        <div class="box-number">
+                            <div class="number-item">
+                                <div class="number">1</div>
+                                <div class="cont">
+                                    <h3>Choose an investment strategy</h3>
+                                    <p>Find a portfolio that suits your risk level and preferences</p>
+                                </div>
+                            </div>
+                            <div class="number-item">
+                                <div class="number">2</div>
+                                <div class="cont">
+                                    <h3>Fund your investment</h3>
+                                    <p>Fund your portfolio online, and we'll invest your money within one to three business days.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="number-item">
+                                <div class="number">3</div>
+                                <div class="cont">
+                                    <h3>We take it from there</h3>
+                                    <p>We handle all transactions, rebalancing, and risk management on your behalf.</p>
+                                </div>
+                            </div>
+                        </div><!-- box-number -->
+                        <div class="ctas">
+                            <a href="http://invest.simplevisor.com/prospect" target="_blank" class="btn btn-blue">Open Your Account Now</a>
+                            <a href="http://invest.simplevisor.com/login"  target="_blank" class="btn btn-outline btn-blue">Login to Your Portfolio</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="strategy" class="section investment-strategy bg-white">
+            <div class="container">
+                <!-- Actively Managed Solutions -->
+                <div class="row">
+                    <div class="col">
+                        <h2 class="headline text-center">Choose Your Investment Strategy</h2>
+                        <h3>Actively Managed Solutions</h3>
+                        <p>
+                            Professional portfolios that combine human expertise with automated precision. Our system
+                            continuously monitors and adjusts your investments in response to market conditions and your investment goals.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- List of 3 Portfolios -->
+                <div class="row row-three-col mb-3">
+                    <div class="col">
+                        <div class="box-grey">
+                            <div class="inner">
+                                <div class="inner-cont">
+                                    <h4>Sector/ETF Models</h4>
+                                    <p>Smart sector rotation through ETFs to capture market trends and manage risk.</p>
+                                </div>
+
+                                <p-inplace #ipSecETF>
+                                    <ng-template pTemplate="display">
+                                        <span class="inner-link">Click for More</span>
+                                    </ng-template>
+                                    <ng-template pTemplate="content">
+                                        <div style="cursor: pointer;" (click)="ipSecETF.deactivate()"
+                                            title="Click to collapse">
+                                            The Sector/ETF Model is designed for investors who prefer a diversified,
+                                            tactical approach without the need
+                                            to select individual stocks. By actively rotating among sectors, industries,
+                                            and thematic ETFs, this model
+                                            seeks to participate in market upswings while reducing exposure during
+                                            downturns. Ideal for those who want
+                                            dynamic market participation with simplified holdings.
+                                        </div>
+                                    </ng-template>
+                                </p-inplace>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="box-grey">
+                            <div class="inner">
+                                <div class="inner-cont">
+                                    <h4>Equity Models</h4>
+                                    <p>Actively managed individual stocks targeting growth and stability in one
+                                        portfolio.</p>
+                                </div>
+
+                                <p-inplace #ipEquity>
+                                    <ng-template pTemplate="display">
+                                        <span class="inner-link">Click for More</span>
+                                    </ng-template>
+                                    <ng-template pTemplate="content">
+                                        <div style="cursor: pointer;" (click)="ipEquity.deactivate()"
+                                            title="Click to collapse">
+                                            For investors who prefer direct equity ownership, our Equity Model offers a
+                                            carefully curated portfolio of
+                                            individual stocks. Combining both growth and defensive positions, this
+                                            strategy focuses on optimizing
+                                            returns through active management and disciplined risk controls, making it
+                                            suitable for those seeking
+                                            hands-on exposure to market leaders.
+                                        </div>
+                                    </ng-template>
+                                </p-inplace>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="box-grey">
+                            <div class="inner">
+                                <div class="inner-cont">
+                                    <h4>Managed Dividend Equity Model</h4>
+                                    <p>Focused on delivering reliable income with attractive dividend yields from
+                                        quality stocks.</p>
+                                </div>
+
+                                <p-inplace #ipDivEqt>
+                                    <ng-template pTemplate="display">
+                                        <span class="inner-link">Click for More</span>
+                                    </ng-template>
+                                    <ng-template pTemplate="content">
+                                        <div style="cursor: pointer;text-align: justify;"
+                                            (click)="ipDivEqt.deactivate()" title="Click to collapse">
+                                            This equity-only model targets consistent income generation by investing in
+                                            high-quality companies with
+                                            above-average dividend yields. Designed for income-focused investors, it
+                                            aims to track broader market
+                                            performance while enhancing cash flow potential—ideal for those who want
+                                            growth plus income without
+                                            overexposure to riskier assets.
+                                        </div>
+                                    </ng-template>
+                                </p-inplace>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thematic Intro -->
+                <div class="row">
+                    <div class="col">
+                        <h3>Thematic Investment Portfolios</h3>
+
+                        <p>
+                            Professionally managed targeted investment strategies. Each portfolio is continuously monitored
+                            and automatically rebalanced to maintain optimal exposure to specific trends and industries.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Low Risk Intro and List of 3 Portfolios -->
+                <div class="row">
+                    <div class="col">
+                        <div class="box-inner">
+                            <h4>Low Risk Options</h4>
+                            <div class="cont">
+                                <p>These portfolios prioritize capital preservation and steady returns with minimal
+                                    volatility. Designed for conservative investors or those with shorter time horizons,
+                                    these options focus on stable income generation and protection against market
+                                    downturns.</p>
+                            </div>
+                            <div class="row row-three-col">
+                                <div class="col">
+                                    <div class="box-grey">
+                                        <div class="inner">
+                                            <div class="inner-cont">
+                                                <h4>High Dividend Income Model</h4>
+                                                <p>Maximizing dividend income through value-focused equity selection.
+                                                </p>
+                                            </div>
+
+                                            <p-inplace #ipHighDivInc>
+                                                <ng-template pTemplate="display">
+                                                    <span class="inner-link">Click for More</span>
+                                                </ng-template>
+                                                <ng-template pTemplate="content">
+                                                    <div style="cursor: pointer;text-align: justify;"
+                                                        (click)="ipHighDivInc.deactivate()" title="Click to collapse">
+                                                        This strategy prioritizes stable, income-producing companies
+                                                        with yields well above market averages. The High Dividend Income
+                                                        Model is designed for those who want to generate superior income
+                                                        streams while investing in companies with strong fundamentals
+                                                        and attractive valuations.
+                                                    </div>
+                                                </ng-template>
+                                            </p-inplace>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="box-grey">
+                                        <div class="inner">
+                                            <div class="inner-cont">
+                                                <h4>All-Weather Portfolio</h4>
+                                                <p>A balanced, conservative approach designed to navigate all market
+                                                    conditions.
+                                                </p>
+                                            </div>
+
+                                            <p-inplace #ipAllWeather>
+                                                <ng-template pTemplate="display">
+                                                    <span class="inner-link">Click for More</span>
+                                                </ng-template>
+                                                <ng-template pTemplate="content">
+                                                    <div style="cursor: pointer;text-align: justify;"
+                                                        (click)="ipAllWeather.deactivate()" title="Click to collapse">
+                                                        The All-Weather Portfolio blends equities, bonds, commodities,
+                                                        and precious metals to provide stability and growth through
+                                                        changing economic cycles. Designed for investors who value a
+                                                        steady, disciplined approach with reduced downside risk, it’s an
+                                                        ideal core portfolio for long-term wealth preservation.
+                                                    </div>
+                                                </ng-template>
+                                            </p-inplace>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="box-grey">
+                                        <div class="inner">
+                                            <div class="inner-cont">
+                                                <h4>Small and Mid-Cap Stocks Model</h4>
+                                                <p>Unlocking growth opportunities in America’s most dynamic smaller
+                                                    companies.
+                                                </p>
+                                            </div>
+
+                                            <p-inplace #ipSmallMidStocks>
+                                                <ng-template pTemplate="display">
+                                                    <span class="inner-link">Click for More</span>
+                                                </ng-template>
+                                                <ng-template pTemplate="content">
+                                                    <div style="cursor: pointer;text-align: justify;"
+                                                        (click)="ipSmallMidStocks.deactivate()"
+                                                        title="Click to collapse">
+                                                        This model focuses exclusively on small- and mid-cap equities,
+                                                        targeting innovation and market disruption from emerging
+                                                        leaders. It’s ideal for investors who seek greater
+                                                        diversification and are willing to accept higher volatility for
+                                                        the potential of superior long-term gains.
+                                                    </div>
+                                                </ng-template>
+                                            </p-inplace>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- row-three-col -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Growth Focussed and List of 4 Portfolios -->
+                <div class="row">
+                    <div class="col">
+                        <div class="box-inner">
+                            <h4>Growth-Focused Options</h4>
+                            <p>These portfolios aim for long-term capital appreciation by targeting higher-growth
+                                sectors and companies. While experiencing more volatility in the short term, these
+                                strategies are designed for investors with longer time horizons who seek to maximize
+                                returns through strategic market exposure.</p>
+                            <div class="row row-three-col">
+                                <div class="col">
+                                    <div class="box-grey">
+                                        <div class="inner">
+                                            <div class="inner-cont">
+                                                <h4>Crypto Model</h4>
+                                                <p>Curated exposure to blockchain innovators with indirect Bitcoin participation.
+                                                </p>
+                                            </div>
+
+                                            <p-inplace #ipCrypto>
+                                                <ng-template pTemplate="display">
+                                                    <span class="inner-link">Click for More</span>
+                                                </ng-template>
+                                                <ng-template pTemplate="content">
+                                                    <div style="cursor: pointer;text-align: justify;"
+                                                        (click)="ipCrypto.deactivate()"
+                                                        title="Click to collapse">
+                                                        Our Crypto Model bridges traditional investing with digital innovation, offering access to publicly traded companies driving the blockchain revolution. Additionally, indirect exposure to Bitcoin provides a unique opportunity to benefit from the evolving digital asset landscape—perfect for investors seeking growth in the next wave of financial technology.
+                                                    </div>
+                                                </ng-template>
+                                            </p-inplace>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="box-grey">
+                                        <div class="inner">
+                                            <div class="inner-cont">
+                                                <h4>Infrastructure Model</h4>
+                                                <p>Targeting growth from America’s infrastructure renaissance and energy evolution.
+                                                </p>
+                                            </div>
+
+                                            <p-inplace #ipInfra>
+                                                <ng-template pTemplate="display">
+                                                    <span class="inner-link">Click for More</span>
+                                                </ng-template>
+                                                <ng-template pTemplate="content">
+                                                    <div style="cursor: pointer;text-align: justify;"
+                                                        (click)="ipInfra.deactivate()"
+                                                        title="Click to collapse">
+                                                        Our Infrastructure Model invests in companies poised to benefit from the nation’s massive infrastructure investments, including traditional construction, transportation, and the rapidly growing energy demands from AI and data centers. Ideal for investors seeking long-term, policy-driven growth opportunities.
+                                                    </div>
+                                                </ng-template>
+                                            </p-inplace>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="box-grey">
+                                        <div class="inner">
+                                            <div class="inner-cont">
+                                                <h4>AI Portfolio</h4>
+                                                <p>Capturing the explosive growth of artificial intelligence and data infrastructure.
+                                                </p>
+                                            </div>
+
+                                            <p-inplace #ipAI>
+                                                <ng-template pTemplate="display">
+                                                    <span class="inner-link">Click for More</span>
+                                                </ng-template>
+                                                <ng-template pTemplate="content">
+                                                    <div style="cursor: pointer;text-align: justify;"
+                                                        (click)="ipAI.deactivate()"
+                                                        title="Click to collapse">
+                                                        Our AI Portfolio zeroes in on companies at the forefront of artificial intelligence, cloud computing, and data center expansion. Perfect for forward-looking investors, this model aims to ride the multi-decade wave of technology innovation reshaping global industries.
+                                                    </div>
+                                                </ng-template>
+                                            </p-inplace>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- row-three-col -->
+                             <div class="row row-three-col">
+                                <div class="col">
+                                    <div class="box-grey">
+                                        <div class="inner">
+                                            <div class="inner-cont">
+                                                <h4>Growth-Focused Equity Model</h4>
+                                                <p>Pursuing higher returns by investing in fast-growing, high-potential companies.
+                                                </p>
+                                            </div>
+
+                                            <p-inplace #ipGrowthFocus>
+                                                <ng-template pTemplate="display">
+                                                    <span class="inner-link">Click for More</span>
+                                                </ng-template>
+                                                <ng-template pTemplate="content">
+                                                    <div style="cursor: pointer;text-align: justify;"
+                                                        (click)="ipGrowthFocus.deactivate()"
+                                                        title="Click to collapse">
+                                                        With an emphasis on capital appreciation, this all-equity portfolio focuses on innovative businesses with strong earnings growth and market leadership. This model suits investors who are comfortable with higher volatility in exchange for the potential of outsized returns.
+                                                    </div>
+                                                </ng-template>
+                                            </p-inplace>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="box-grey">
+                                        <div class="inner">
+                                            <div class="inner-cont">
+                                                <h4>
+                                                    Energy Model
+                                                </h4>
+                                                <p>
+                                                    Exposure to the energy sector through holdings in traditional energy sub-sectors as well as companies involved in renewable energy sources.
+                                                </p>
+                                            </div>
+
+                                            <p-inplace #ipEnergey>
+                                                <ng-template pTemplate="display">
+                                                    <span class="inner-link">Click for More</span>
+                                                </ng-template>
+                                                <ng-template pTemplate="content">
+                                                    <div style="cursor: pointer;text-align: justify;"
+                                                        (click)="ipEnergey.deactivate()"
+                                                        title="Click to collapse">
+                                                            By focusing primarily on established energy markets, the fund aims to leverage the stability and cash flow associated with conventional energy investments. However, it also recognizes the growing importance of alternative energy sources to meet the ever-increasing energy demands. This dual approach allows the fund to benefit from the resilience of traditional energy sources while positioning itself for future growth opportunities in the evolving energy landscape.
+                                                    </div>
+                                                </ng-template>
+                                            </p-inplace>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col"></div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Just Starting Out and List of 1 Portfolios -->
+                <div class="row">
+                    <div class="col">
+                        <div class="box-inner">
+                            <h4>Just Starting Out</h4>
+                            <div class="cont">
+                                <p>
+                                    Getting started with investing can feel overwhelming, but it doesn’t have to be. These beginner-friendly portfolios are designed to help new investors build confidence, manage risk, and grow wealth steadily. Whether you're starting with a small amount or just learning the ropes, these options offer a solid foundation to begin your stock market journey.
+                                </p>
+                            </div>
+                            <div class="row row-three-col">
+                                <div class="col">
+                                    <div class="box-grey">
+                                        <div class="inner">
+                                            <div class="inner-cont">
+                                                <h4>Accumulator Model</h4>
+                                                <p>
+                                                    A foundational, low-minimum portfolio built for consistent, long-term growth.
+                                                </p>
+                                            </div>
+
+                                            <p-inplace #ipAccumulator>
+                                                <ng-template pTemplate="display">
+                                                    <span class="inner-link">Click for More</span>
+                                                </ng-template>
+                                                <ng-template pTemplate="content">
+                                                    <div style="cursor: pointer;text-align: justify;"
+                                                        (click)="ipAccumulator.deactivate()" title="Click to collapse">
+                                                        Designed for new investors or those building wealth with smaller accounts, the Accumulator Model offers broad market exposure through diversified ETFs. With a low entry point and professional management, it’s the perfect starting point to develop disciplined investment habits and long-term growth.
+                                                    </div>
+                                                </ng-template>
+                                            </p-inplace>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col"></div>
+
+                                <div class="col"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- container -->
+        </section>
+
+        <section id="portfolio" class="section intelligent-portfolio bg-blue">
+            <div class="container">
+                <div class="row row-text-img">
+                    <div class="col">
+                        <h2>Intelligent Portfolio Management</h2>
+                        <div class="cont mb-3">
+                            <p>Our advanced technology works around the clock to optimize your portfolio, combining
+                                professional expertise with automated precision. Every account receives
+                                institutional-grade portfolio management that traditionally was only available to
+                                high-net-worth clients.</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <figure>
+                            <img src="assets/img/SV-Intelligent-Portfolio-Management.png">
+                        </figure>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h3>Automated Rebalancing</h3>
+                        <p>Keeps your portfolio aligned with your strategy.</p>
+                    </div>
+                    <div class="col">
+                        <h3>Smart Tax Optimization</h3>
+                        <p>Minimizes tax impact through intelligent trading.</p>
+                    </div>
+                    <div class="col">
+                        <h3>Risk Management</h3>
+                        <p>Continuously monitors risk exposure and adjusts based on your investment objectives.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="modern" class="section modern-technology">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <h2>Professional Oversight Meets Modern Technology</h2>
+                        <div class="cont">
+                            <p>We combine the expertise of seasoned investment professionals with sophisticated
+                                technology to deliver exceptional portfolio management. Every Investment decision is
+                                backed by both rigorous analysis and powerful automation, giving you the best of both
+                                worlds.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <figure class="icon">
+                            <img src="assets/img/Expert-Backed-Strategies-Blue.png">
+                        </figure>
+                        <h3>Expert-Backed Strategies</h3>
+                        <p>Investment professionals design the frameworks.</p>
+                    </div>
+                    <div class="col">
+                        <figure class="icon">
+                            <img src="assets/img/Real-Time-Monitoring-Blue.png">
+                        </figure>
+                        <h3>Real-Time Monitoring</h3>
+                        <p>24/7 portfolio oversight and automated adjustments.</p>
+                    </div>
+                    <div class="col">
+                        <figure class="icon">
+                            <img src="assets/img/Transparent-Reporting-Blue.png">
+                        </figure>
+                        <h3>Transparent Reporting</h3>
+                        <p>Clear visibility into your portfolio's performance.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="investment" class="section investment-journey bg-grey">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <h2 class="text-center">Start Your Investment Journey</h2>
+                    </div>
+                </div>
+                <div class="row row-custom">
+                    <div class="col text-center">
+                        <h3>Pick Your Strategy</h3>
+                        <p>A variety of portfolios to fit your investment goals</p>
+                    </div>
+                    <div class="col text-center">
+                        <h3>Quick Setup</h3>
+                        <p>Open your account in minutes</p>
+                    </div>
+                    <div class="col text-center">
+                        <h3>Seamless Management</h3>
+                        <p>Let our technology work for you</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="ctas justify-content-center">
+                            <a href="http://invest.simplevisor.com/prospect" target="_blank" class="btn btn-blue">Open Your Account Now</a>
+                            <a href="http://invest.simplevisor.com/login" target="_blank" class="btn btn-outline btn-blue">Login to Your Portfolio</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="commonly" class="section faq">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <h2>Commonly Asked Questions</h2>
+                        <div class="faqs accordion">
+                            <div *ngFor="let item of accordionItems" class="faq-item accordion-item">
+                                <div (click)="toggleAccordion(item)" class="faq-head accordion-header"
+                                    [ngClass]="{'active': item.key == activeKey}">
+                                    <h3>{{ item.title }}</h3>
+                                    <span class="arrow">
+                                        <svg width="17" height="11" viewBox="0 0 17 11" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M7.70312 10.3662L1.32812 3.99121C0.859375 3.52246 0.859375 2.81934 1.32812 2.39746L2.35938 1.31934C2.82812 0.897461 3.53125 0.897461 3.95312 1.31934L8.45312 5.86621L13 1.31934C13.4219 0.897461 14.125 0.897461 14.5938 1.31934L15.625 2.39746C16.0938 2.81934 16.0938 3.52246 15.625 3.99121L9.25 10.3662C8.82812 10.7881 8.125 10.7881 7.70312 10.3662Z"
+                                                fill="#0077BD" />
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="faq-cont accordion-content"
+                                    [ngStyle]="{'maxHeight': item.key == activeKey ? null: 0}"
+                                    [ngClass]="{'open': item.key == activeKey}" [innerHTML]="item.content" (click)="handleContentClick($event)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="ctas justify-content-center" style="cursor: pointer;" (click)="showContactForm()">
+                            <span class="btn btn-blue">Have a Question?</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer id="main-footer" class="bg-grey">
+        <div class="container-full">
+            <p>Disclosure and Privacy Policy | Newsletter Disclaimer | BROKERCHECK.FINRA.ORG | Customer Relationship
+                Summary (Form CRS)</p>
+
+            <p>Real Investment Advice is powered by RIA Advisors, an investment advisory firm located in Houston, Texas
+                with more than $1.5 billion under management. As a team of tested and experienced professionals, we seek
+                to provide our clients and educational services and the necessary information and tools to educate you
+                in the field of finance, investing, and economics. To this end, you can use the Real Investment Advice
+                Platform to avail yourself of various video, audio, and policy corrections of information at your
+                leisure to learn and gather the necessary information that you may need in the field of investment news,
+                investment opinion, financial news, financial opinion, economic news, and economic opinion, finance,
+                investing, and economics. Utilizing the functionality and tools provided by Real Investment Advice, you
+                can access this information in any variety of mediums, including via audio and video programming, and
+                also via interactive and social media, including cross-platform social media, uploaded, posted or tagged
+                third-party videos, receiving or requiring audio and video copies, eBooks, podcasts, and YouTube videos,
+                all of which are accessible on the Real Investment Advice media platform and/or on Real Investment
+                Advice third-party affiliates or social media networks. The Real Investment Advice Platform allows for
+                the free exchange of information and educational materials from and to you by your media devices and
+                other communications platforms for your viewing and listening pleasure. All of the tools and sources of
+                information are made available to you so that you can utilize the same to make an informed decision
+                about your financial future.</p>
+        </div>
+    </footer>
+
+    <p-dialog [(visible)]="showContactUsPopup" showEffect="fade" [modal]="true" [style]="{width: '70vw'}"
+        [breakpoints]="{'960px': '90vw', '640px': '97vw'}">
+        <app-contact-us-combined (msgSent)="messageSentToSupport($event)"></app-contact-us-combined>
+    </p-dialog>
+</body>
+
+</html>

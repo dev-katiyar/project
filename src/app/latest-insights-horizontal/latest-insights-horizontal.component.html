@@ -1,0 +1,8 @@
+<div *ngIf="posts" class="p-grid">
+    <div *ngFor="let post of posts" class="p-col-12 p-sm-6 p-lg-2">
+        <div><a [href]="post.link" target="_blank"><img [src]="post.media_url" [alt]="post.title" width="100%"></a></div>
+        <div style="color: gray;font-size: 0.9rem;">{{ post.date | date:'MMM dd' }} | {{ post.category }}</div>
+        <div style="font-weight: bold;"><a [href]="post.link" target="_blank">{{post.title}}</a></div>
+        <hr style="margin: 0.5rem 0;">
+    </div>
+</div>

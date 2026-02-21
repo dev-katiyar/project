@@ -1,0 +1,52 @@
+<p-table #dt1 [value]="earningHistory" dataKey="id" [rows]="10" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[5,10,20]" styleClass="p-datatable-positions p-datatable-striped" [paginator]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [globalFilterFields]="['symbol']"
+    [resizableColumns]="false" [autoLayout]="true">
+
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="text-align: left;" pSortableColumn="symbol">
+                Symbol
+                <p-sortIcon field="symbol"></p-sortIcon>
+                <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto"></p-columnFilter>
+            </th>
+
+            <th style="text-align: center;" pSortableColumn="date">
+                Earning Date
+                <p-sortIcon field="date"></p-sortIcon>
+            </th>
+
+            <th style="text-align: center;" pSortableColumn="estimate">
+                Estimate
+                <p-sortIcon field="estimate"></p-sortIcon>
+            </th>
+
+            <th style="text-align: center;" pSortableColumn="reported">
+                Reported
+                <p-sortIcon field="reported"></p-sortIcon>
+            </th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-earning>
+        <tr class="p-selectable-row">
+            <td class="p-text-left">
+                <div class="symbol p-d-inline-block" (click)="onSymbolClick(earning.symbol)">
+                    {{earning.symbol}}
+                </div>
+            </td>
+
+            <td class="p-text-center">
+                {{earning.date}}
+            </td>
+
+            <td class="p-text-center">
+                <div [ngClass]="earning.estimate | upDownColor">{{earning.estimate}}</div>
+            </td>
+
+            <td class="p-text-center">
+                <div [ngClass]="earning.reported | upDownColor">{{earning.reported}}</div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

@@ -1,0 +1,86 @@
+<div class="p-grid p-nogutter">
+    <!-- <div class="p-col-12 p-grid p-nogutter">
+        <div class="p-col-2 container-div-vertical" style="padding: 7px;">
+            <span>Portfolio: </span>
+        </div>
+        <div class="p-col-3 p-fluid">
+            <p-dropdown [options]="userPortfolios" [(ngModel)]="selectedPortfolio" optionLabel="name" appendTo="body"
+            (onChange)="portfolioChanged($event)">
+            ></p-dropdown>
+        </div>
+
+        <div class="p-col-7 container-div-vertical">
+            <span style="margin-left: 3em;">Starting Cash: </span>
+            <span style="margin-left: 1em;">{{ selectedPortfolio?.startingCash | currency }}</span>
+        </div>
+    </div> -->
+
+    <div class="p-col-12 p-grid p-nogutter" style="padding-top:1em;">
+        <app-trading-ticket [symbol]="symbol" (cancelClick)="onCancelClick()" (saveClick)="onSaveClick()"
+        ></app-trading-ticket>
+    </div>
+
+    <!-- TODO 27-Jul-2021: moved to app-trading-ticket - delete it and associated code from the ts file later -->
+    <!-- <div class="p-col-12 p-grid p-nogutter">
+        <div class="p-col-12 p-grid p-nogutter">
+            <div class="p-col-6 p-sm-6 p-md-4 p-lg-4 p-grid p-nogutter" style="padding-left: 5%; padding-top: 1em;">
+                <div class="p-col-12" style="padding-bottom: 0;"><small>Symbol</small></div>
+                <div class="p-col-12" style="padding-top: 0;">{{ transaction.symbol }}</div>
+            </div>
+            <div class="p-col-6 p-sm-6 p-md-4 p-lg-4 p-grid p-nogutter" style="padding-left: 5%; padding-top: 1em;">
+                <div class="p-col-12" style="padding-bottom: 0;"><small>Name</small></div>
+                <div class="p-col-12" style="padding-top: 0;">{{ transaction.companyname }}</div>
+            </div>
+            <div class="p-col-6 p-sm-6 p-md-4 p-lg-4 p-grid p-nogutter" style="padding-left: 5%; padding-top: 1em;">
+                <div class="p-col-12" style="padding-bottom: 0;"><small>Holding Qty</small></div>
+                <div class="p-col-12" style="padding-top: 0;">{{ transaction.holdings }}</div>
+            </div>
+            <div class="p-col-6 p-sm-6 p-md-4 p-lg-4 p-grid p-nogutter" style="padding-left: 5%; padding-top: 1em;">
+                <div class="p-col-12" style="padding-bottom: 0;"><small>Side</small></div>
+                <div class="p-col-12" style="padding-top: 0;">Buy</div>
+            </div>
+            <div class="p-col-6 p-sm-6 p-md-4 p-lg-4 p-grid p-nogutter" style="padding-left: 5%; padding-top: 1em;">
+                <div class="p-col-12" style="padding-bottom: 0;"><small>Quantity</small></div>
+                <div class="p-col-12" style="padding-top: 0;">
+                    <input pInputText type="number" digitOnly decimal="true" decimalSeparator="."
+                        style="text-align: right; width: 65px;" placeholder="0,00" pattern="[0-9]+([.][0-9]+)?"
+                        [(ngModel)]="transaction.qty" />
+                </div>
+            </div>
+            <div class="p-col-6 p-sm-6 p-md-4 p-lg-4 p-grid p-nogutter" style="padding-left: 5%; padding-top: 1em;">
+                <div class="p-col-12" style="padding-bottom: 0;"><small>Cost Basis</small></div>
+                <div class="p-col-12" style="padding-top: 0;">
+                    <input pInputText type="text" digitOnly decimal="true" decimalSeparator="."
+                        style="text-align: right; width: 65px;" placeholder="0,00" pattern="[0-9]+([.][0-9]+)?"
+                        [(ngModel)]="transaction.price" />
+                </div>
+            </div>
+            <div class="p-col-6 p-sm-6 p-md-4 p-lg-4 p-grid p-nogutter" style="padding-left: 5%; padding-top: 1em;">
+                <div class="p-col-12" style="padding-bottom: 0;"><small>Date</small></div>
+                <div class="p-col-12" style="padding-top: 0;">
+                    <p-calendar [inputStyle]="{'width': '80%', 'min-width': '80%'}" [monthNavigator]="true"
+                        [yearNavigator]="true" yearRange="2000:2030" [showIcon]="true" appendTo="body"
+                        [(ngModel)]="transaction.dateObj" (onSelect)="onDateChangeHandler($event, transaction)">
+                    </p-calendar>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-12" style="text-align: right;">
+            <span style="margin-right: 2em;">Sub-Total</span>
+            <span style="margin-right: 2em;">{{ transaction.qty * transaction.price | currency}}</span>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-grid p-jc-end p-fluid" style="padding-top: 1em;">
+        <div class="p-col-3">
+            <button type="button" pButton icon="pi pi-close" (click)="onCancelClick()" label="Cancel"
+                class="p-button-outlined">
+            </button>
+        </div>
+        <div class="p-col-3">
+            <button type="button" pButton icon="pi pi-check" (click)="addSymbolToSelectedPortfolio()" label="Add"
+                [disabled]="">
+            </button>
+        </div>
+    </div> -->
+</div>

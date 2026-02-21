@@ -1,0 +1,14 @@
+
+@media screen and (min-width: 992px) {
+    .quick-fix {
+        width: 400px;
+    }
+}
+
+
+@media screen and (min-width: 1200px) {
+    .quick-fix {
+        width: 450px;
+    }
+}
+

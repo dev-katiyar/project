@@ -1,0 +1,50 @@
+<div style="width: 100%;">
+  <div class="p-grid" style="margin: -0.75rem;">
+    <div class="p-col-12">
+
+<p-messages severity="error">
+  <ng-template pTemplate>
+      <h5>
+          Important!
+      </h5>
+
+      <p style="padding: 1rem;">
+          We regret to inform you that due to unforeseen circumstances the TPA service will no longer be available in
+          2025.
+          <strong>TPA Only subscribers: </strong>Your account will be closed, and we will send you a pro-rated refund
+          to your credit card on file. If you would like to become a SimpleVisor subscriber, please pick a
+          subscription plan and open a new account.
+  
+          <strong>TPA & SimpleVisor subscribers: </strong>We will send you a pro-rated refund to your credit card and
+          change your subscription to a SimpleVisor only account at the current billing rate.
+          The current subscription rates for SimpleVisor are $29.99 monthly or $329.98 annually.
+          If you have any questions, please contact us <a href="mailto:contact@simplevisor.com">contact&#64;simplevisor.com</a>
+      </p>
+  </ng-template>
+</p-messages>
+    </div>
+    <div class="p-col-12 p-p-1">
+      <div class="card-list" *ngIf="items$ | async as posts; else notFound">
+        <app-commentary-posts-list [posts]="posts">
+        </app-commentary-posts-list>
+        <p-paginator [rows]="listManager.paginationData.pageSize" [totalRecords]="30"
+          (onPageChange)="paginate($event)">
+        </p-paginator>
+      </div>
+      <ng-template #notFound>
+        <div class="not-found-msg">
+          No posts found
+        </div>
+      </ng-template>
+    </div>
+  
+    <div class="p-col-12" style="visibility: hidden; display: none;">
+      <app-commentary-sidebar [recentPosts]="recentPosts$ | async" [popularPosts]="popularPosts$ | async">
+      </app-commentary-sidebar>
+    </div>
+  
+    <div class="p-col-12">
+      <app-page-loader [loading]="isLoading$|async"></app-page-loader>
+    </div>
+  </div>
+</div>

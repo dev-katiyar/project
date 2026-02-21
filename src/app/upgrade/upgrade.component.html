@@ -1,0 +1,354 @@
+<div class='login-background p-fluid'>
+    <div class='p-grid'>
+
+
+        <div class='p-col-12 p-md-9' style='padding: 5%'>
+            <h2 style='font-weight: bold; font-size: 30px'>Your Subscription/Free Trial has ended Please Re-register</h2>
+            <form>
+                <div style='margin-bottom: 30px'>
+
+                </div>
+
+                <div style='margin-bottom: 30px'>
+
+                </div>
+
+                <div style='margin-bottom: 30px'>
+                    <p-panel>
+                        <ng-template pTemplate='header'>
+                            <div>
+                                <span class='p-panel-title'>Subscription </span>
+                                <span>
+                  <button
+                          pButton
+                          pRipple
+                          type='button'
+                          icon='pi pi-question'
+                          (click)='showPlanDetails()'
+                          style='width: 1.5rem; height: 1.5rem'
+                          class='p-button-rounded p-button-warning'
+                  ></button>
+                </span>
+                            </div>
+                        </ng-template>
+
+                        <div class='p-grid info-div'>
+                            <div class='p-sm-12 p-md-6 p-lg-6'>
+                                <label>Type</label>
+                                <p-dropdown
+                                        name="subscriptionType"
+                                        [options]='subscriptionType'
+                                        [(ngModel)]='user.subscription'
+                                        placeholder='-select'
+                                        optionValue="id"
+                                        optionLabel='name'
+                                >
+                                </p-dropdown>
+
+                            </div>
+                            <div class='p-sm-12 p-md-6 p-lg-6'>
+                                <label>Promo Code</label>
+                                <input
+                                        pInputText
+                                        type='text'
+                                        class='form-control p-inputtext'
+                                        id='promoCode'
+                                        minlength='1'
+                                        [(ngModel)]='user.promoCode'
+                                        name='promoCode'
+                                        #promoCode='ngModel'
+                                        (click)="$event.target.select()"
+                                />
+                                <div style='color: #6c6d6d'>* promo code not required to subscribe</div>
+                                <div *ngIf='promoCode.invalid && promoCode.dirty' class='error-msg'>
+                                    <div *ngIf='promoCode?.errors.minlength'>Promo code must be atleast 2 characters
+                                        long.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </p-panel>
+                </div>
+
+                <div style='margin-bottom: 30px'>
+                    <p-panel header='Payment Information'>
+                        <div class='p-grid info-div'>
+                            <div class='p-sm-12 p-md-6 p-lg-6'>
+                                <div class='p-sm-12 p-md-12 p-lg-12'>
+                                    <label>Name on Card</label>
+                                    <input
+                                            pInputText
+                                            type='text'
+                                            class='form-control p-inputtext'
+                                            id='nameOnCard'
+                                            required
+                                            minlength='2'
+                                            [(ngModel)]='user.nameOnCard'
+                                            name='nameOnCard'
+                                            #nameOnCard='ngModel'
+                                            (click)="$event.target.select()"
+                                    />
+
+                                    <div *ngIf='nameOnCard.invalid && (nameOnCard.dirty || nameOnCard.touched)'
+                                         class='error-msg'>
+                                        <div *ngIf='nameOnCard?.errors.required'>Name is required.</div>
+
+                                        <div *ngIf='nameOnCard?.errors.minlength'>Name must be atleast 2 characters
+                                            long.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class='p-sm-12 p-md-12 p-lg-12'>
+                                    <label>Card Type</label>
+                                    <p-dropdown
+                                            name="cardType"
+                                            placeholder='-select'
+                                            [options]='creditCards'
+                                            [(ngModel)]='user.cardType'
+                                            optionValue="code"
+                                            optionLabel='name'>
+                                    </p-dropdown>
+                                </div>
+
+                                <div class='p-sm-12 p-md-12 p-lg-12'>
+                                    <label>Card Number</label>
+                                    <input
+                                            pInputText
+                                            type='text'
+                                            class='form-control p-inputtext'
+                                            id='cardNumber'
+                                            required
+                                            minlength='4'
+                                            [(ngModel)]='user.cardNumber'
+                                            name='cardNumber'
+                                            #cardNumber='ngModel'
+                                            (click)="$event.target.select()"
+                                    />
+
+                                    <div *ngIf='cardNumber.invalid && (cardNumber.dirty || cardNumber.touched)'
+                                         class='error-msg'>
+                                        <div *ngIf='cardNumber?.errors.required'>Card number is required.</div>
+                                        <div *ngIf='cardNumber?.errors.minlength'>Enter valid card number.</div>
+                                    </div>
+                                </div>
+
+                                <div class='p-sm-12 p-md-12 p-lg-12 p-xl-12'>
+                                    <div class='p-grid'>
+                                        <div class='p-sm-6 p-md-12 p-lg-12 p-xl-6'>
+                                            <label>Expiration MM / YY</label>
+                                            <div class='p-grid'>
+                                                <div class='p-sm-6 p-md-6 p-lg-6 p-xl-6'>
+                                                    <p-dropdown
+                                                            name="expMonths"
+                                                            class="expiration-dropdown"
+                                                            [options]='expMonths'
+                                                            [(ngModel)]='user.expMonth'
+                                                            optionLabel='name'
+                                                            optionValue='id'
+                                                    >
+                                                    </p-dropdown>
+                                                </div>
+                                                <div class='p-sm-6 p-md-6 p-lg-6 p-xl-6'>
+                                                    <p-dropdown
+                                                            name="expYears"
+                                                            optionLabel="name"
+                                                            optionValue="id"
+                                                            [options]='expYears'
+                                                            [(ngModel)]='user.expYear'
+                                                    >
+                                                    </p-dropdown>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class='p-sm-6 p-md-12 p-lg-12 p-xl-6'>
+                                            <label>CVC</label>
+                                            <input
+                                                    pInputText
+                                                    type='text'
+                                                    class='form-control'
+                                                    id='cvc'
+                                                    required
+                                                    minlength='3'
+                                                    [(ngModel)]='user.cvc'
+                                                    name='cvc'
+                                                    #cvc='ngModel'
+                                                    (click)="$event.target.select()"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div *ngIf='cvc?.invalid && (cvc.dirty || cvc.touched)?.dirty' class='error-msg'>
+                                        <div *ngIf='cvc?.errors.required'>CVC is required.</div>
+                                        <div *ngIf='cvc?.errors.minlength'>CVC code must have atleast 3 characters.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </p-panel>
+                </div>
+
+                <p-panel header='Billing Address'>
+                    <div class='p-grid info-div'>
+
+                        <div class='p-sm-12 p-md-6 p-lg-6'>
+                            <label for='streetAddress'>Street Address</label>
+                            <input
+                                    pInputText
+                                    type='text'
+                                    class='form-control'
+                                    id='streetAddress'
+                                    required
+                                    minlength='2'
+                                    [(ngModel)]='user.streetAddress'
+                                    name='streetAddress'
+                                    #streetAddress='ngModel'
+                                    placeholder='House number and street name'
+                                    (click)="$event.target.select()"
+                            />
+
+                            <div *ngIf='streetAddress.invalid && (streetAddress.dirty || streetAddress.touched)'
+                                 class='error-msg'>
+                                <div *ngIf='streetAddress?.errors.required'>Street Address is required.</div>
+                            </div>
+                        </div>
+
+                        <div class='p-sm-12 p-md-6 p-lg-6'>
+                            <label for='streetAddress2'>Street Address 2</label>
+                            <input
+                                    pInputText
+                                    type='text'
+                                    class='form-control'
+                                    id='streetAddress2'
+                                    required
+                                    minlength='2'
+                                    [(ngModel)]='user.streetAddress2'
+                                    name='streetAddress2'
+                                    #streetAddress2='ngModel'
+                                    placeholder='Apartment, suite, unit, etc.'
+                                    (click)="$event.target.select()"
+                            />
+                        </div>
+                        <div class='p-sm-12 p-md-6 p-lg-6'>
+                            <label for='city'>Town/City</label>
+                            <input
+                                    pInputText
+                                    type='text'
+                                    class='form-control p-inputtext'
+                                    id='city'
+                                    required
+                                    minlength='3'
+                                    [(ngModel)]='user.city'
+                                    name='city'
+                                    #city='ngModel'
+                                    (click)="$event.target.select()"
+                            />
+
+                            <div *ngIf='city.invalid && (city.dirty || city.touched)' class='error-msg'>
+                                <div *ngIf='city?.errors.required'>Town/City is required.</div>
+
+                                <div *ngIf='city?.errors.minlength'>Town/City must be atleast 3 characters long.</div>
+                            </div>
+                        </div>
+                        <div class='p-sm-12 p-md-6 p-lg-6'>
+                            <div class='p-grid'>
+                                <div class='p-sm-12 p-md-6 p-lg-6'>
+                                    <label>State</label>
+                                    <p-dropdown placeholder='-select' [options]='states' [(ngModel)]='user.state'
+                                                optionLabel='name'>
+                                    </p-dropdown>
+                                </div>
+
+                                <div class='p-sm-12 p-md-6 p-lg-6'>
+                                    <label for='zip'>Postcode/Zip</label>
+                                    <input
+                                            pInputText
+                                            type='text'
+                                            class='form-control p-inputtext'
+                                            id='zip'
+                                            required
+                                            minlength='2'
+                                            [(ngModel)]='user.zip'
+                                            name='zip'
+                                            #zip='ngModel'
+                                            (click)="$event.target.select()"
+                                    />
+
+                                    <div *ngIf='zip.invalid && (zip.dirty || zip.touched)' class='error-msg'>
+                                        <div *ngIf='zip?.errors.required'>Postcode/Zip is required.</div>
+
+                                        <div *ngIf='zip?.errors.minlength'>Postcode/Zip must be atleast 4 characters
+                                            long.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </p-panel>
+
+                <br/>
+
+                <div class='p-field p-col-12 p-md-12'>
+                    <div id='agreement'>
+                        <table>
+                            <tr>
+                                <td><input class='accept-form-checkbox' type='checkbox' name='agreementSigned'/></td>
+                                <td>
+                                    You must read and agree to our <a routerLink='/agreement' target='_blank'>Subscriber
+                                    Agreement </a>to
+                                    become a subscriber to simplevisor.com for all subscriptions. Please note that your
+                                    subscription will renew
+                                    automatically unless you cancel prior to renewal.
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class='p-field p-col-12 p-md-12 p-d-flex p-jc-center'>
+                    <div>
+                        <h3 *ngIf="stripeMessage !=''" class="error-msg" style="text-align:center">
+                            {{stripeMessage}}
+                        </h3>
+                        <button
+                                pButton
+                                pRipple
+                                type='button'
+                                style='text-align: center; height: 36px; width: 246px; font-size: 18px'
+                                label='Submit'
+                                (click)="register()"
+                        ></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <p-dialog
+            header='Subscription Plan Details'
+            [(visible)]='displayDialog'
+            showEffect='fade'
+            [modal]='true'
+            [style]="{ width: '50vw' }"
+    >
+        <!--        <h3>SimpleVisor Subscription Plans</h3>-->
+        <ul>
+            <li>SimpleVisor Monthly ($29.99)</li>
+            <li>SimpleVisor Annual ($329.98)</li>
+            <p style='color: #0377BD;font-size:17px;margin-top:10px;font-weight:bold;'>
+                You will have 30 Days of Free Trial. You will not be charged until your Free Trial Period ends.
+            </p>
+        </ul>
+        <!--        <h3>The lifetime memberships provide users with:</h3>-->
+        <!--        <p>-->
+        <!--            Full access to SimpleVisor Pro for life regardless of price increases and premium enhancements Direct access-->
+        <!--            to the PRO’s-->
+        <!--            for specific questions and/or thoughts. Same day notifications on all portfolio changes in the models A-->
+        <!--            discount-->
+        <!--            on asset management and financial planning services. Consultations, Webinars and Special Updates-->
+        <!--        </p>-->
+    </p-dialog>
+</div>

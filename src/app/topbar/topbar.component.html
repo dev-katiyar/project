@@ -1,0 +1,22 @@
+<div class="topbar container clearfix">
+    <div class="p-grid p-nogutter">
+        <div class="p-lg-6 p-md-7 p-xl-8 logo-container">
+            <div class="p-grid p-nogutter ">
+                <div class="p-col-4 logo">
+                    <img class="img-responsive" alt="apollo-layout" src="assets/images/pro.png?v=10" />
+                </div>
+                <div class="p-col slogan">
+                    Investment Analysis, Research & Data from the SimpleVisor Investment Team
+                </div>
+            </div>
+
+        </div>
+        <div *ngIf="!isUserLogged" class="p-md-5 p-lg-6 p-xl-4 top-menu-container">
+            <div class="p-grid p-nogutter p-sm-9 top-menu">
+                <span><a href="/home">Home</a></span>
+                <span><a href="/register">Register</a></span>
+                <span><a href="/login">Login</a></span>
+            </div>
+        </div>
+    </div>
+</div>

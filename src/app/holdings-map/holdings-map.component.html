@@ -1,0 +1,27 @@
+<div class="p-grid"  style="margin: -0.75rem;background-color: white;">
+    <div class="p-col-11">
+        <span class="btn-group p-mr-2" *ngIf="selectedMapCategory" style="float: left;">
+            <input *ngFor="let mCat of mapCateogries" type="button" [value]="mCat.name" class="btn-normal"
+                [ngClass]="(selectedMapCategory.name == mCat.name)?'btn-green':'btn-blue'" (click)="onMapCategoryChange(mCat)">
+        </span>
+
+           <!-- SECTOR Swithcer/Dropdown -->
+           <span *ngIf="selectedMapCategory && selectedSubCategory" class="p-mr-2 p-text-bold">{{selectedMapCategory.item}}: </span>
+
+           <p-dropdown 
+               *ngIf="selectedMapCategory && selectedSubCategory"
+               [options]="selectedMapCategory.children" 
+               [(ngModel)]="selectedSubCategory" 
+               optionLabel="name"
+               (onChange)="onSubCategoryChange()"
+           ></p-dropdown>
+    </div>
+    <div class="p-col-1 p-text-right">
+        <app-help-icon [style]="{'font-size': '1.4rem'}" key="marketHoldingsMap"></app-help-icon>
+    </div>
+
+    <div class="p-col-12 p-p-1 border-shadow">
+        <app-stocks-map *ngIf="categoryData" [chartData]="categoryData"></app-stocks-map>
+        <chart-full-view *ngIf="showMarketXRay"></chart-full-view>
+    </div>
+</div>

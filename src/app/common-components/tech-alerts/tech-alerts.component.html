@@ -1,0 +1,96 @@
+<div *ngIf="title !=''">
+    <p-panel [header]="title">
+        <div class="tech-alerts" [style.height]="height">
+            <div class="up quickbutton" (click)="toggleUp()">{{techAlerts.up}} Positive Events</div>
+            <div class="down quickbutton" (click)="toggleDown()">{{techAlerts.down}} Negative Events</div>
+            <table class="alertContent">
+                <ng-container *ngIf="isUpVisible">
+                    <tr *ngFor="let item of techAlerts.upsymbols">
+                        <td style="width: 2rem;">
+                            <img src="./assets/images/up_icon.jpg">
+                        </td>
+
+                        <td class="symbol p-pb-2" (click)="onSymbolClick(item.symbol)">
+                            {{item.symbol}}
+                        </td>
+
+                        <td class="alertsEvent p-pb-2 p-pl-3">
+                            {{item.event}}
+                        </td>
+
+                        <td class="alertsEvent p-pb-2 p-pl-3">
+                            {{item.date | date:'yyyy-MM-dd':'UTC'}}
+                        </td>
+                    </tr>
+                </ng-container>
+
+                <ng-container *ngIf="isDownVisible">
+                    <tr *ngFor="let item of techAlerts.downsymbols">
+                        <td style="width: 2rem;">
+                            <img src="./assets/images/down_icon.jpg">
+                        </td>
+                        <td class="symbol p-pb-2" (click)="onSymbolClick(item.symbol)">
+                            {{item.symbol}}
+                        </td>
+                        <td class="alertsEvent p-pb-2 p-pl-3">
+                            {{item.event}}
+                        </td>
+
+                        <td class="alertsEvent p-pb-2 p-pl-3">
+                            {{item.date | date:'yyyy-MM-dd':'UTC'}}
+                        </td>
+                    </tr>
+                </ng-container>
+            </table>
+        </div>
+    </p-panel>
+</div>
+
+<div *ngIf="title ==''">
+    <div [ngClass]="getTabAlertsHeight()">
+        <div class="up" style="text-align: center; cursor: pointer;" (click)="toggleUp()">
+            {{techAlerts.up}} Positive Events</div>
+        <div class="down" style="text-align: center; cursor: pointer;" (click)="toggleDown()">
+            {{techAlerts.down}} Negative Events</div>
+        <table class="alertContent">
+            <ng-container *ngIf="isUpVisible">
+                <tr *ngFor="let item of techAlerts.upsymbols">
+                    <td style="width: 2rem;">
+                        <img src="./assets/images/up_icon.jpg">
+                    </td>
+
+                    <td class="symbol p-pb-2" (click)="onSymbolClick(item.symbol)">
+                        {{item.symbol}}
+                    </td>
+
+                    <td class="alertsEvent p-pb-2 p-pl-3">
+                        {{item.event}}
+                    </td>
+
+                    <td class="alertsEvent p-pb-2 p-pl-3">
+                        {{item.date | date:'yyyy-MM-dd':'UTC'}}
+                    </td>
+                </tr>
+            </ng-container>
+            <ng-container *ngIf="isDownVisible">
+                <tr *ngFor="let item of techAlerts.downsymbols">
+                    <td style="width: 2rem;">
+                        <img src="./assets/images/down_icon.jpg">
+                    </td>
+
+                    <td class="symbol p-pb-2" (click)="onSymbolClick(item.symbol)">
+                        {{item.symbol}}
+                    </td>
+
+                    <td class="alertsEvent p-pb-2 p-pl-3">
+                        {{item.event}}
+                    </td>
+
+                    <td class="alertsEvent p-pb-2 p-pl-3">
+                        {{item.date | date:'yyyy-MM-dd':'UTC'}}
+                    </td>
+                </tr>
+            </ng-container>
+        </table>
+    </div>
+</div>

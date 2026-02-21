@@ -1,0 +1,127 @@
+<div class="sv-center">
+    <div class="p-grid p-jc-center bg-white" style="max-width: 1000px;">
+        <!-- Heading -->
+        <div *ngIf="type == ''" class="p-col-12 p-md-10 sv-center">
+            <h3>Contact Us</h3>
+        </div>
+
+        <!-- Message -->
+        <div class="p-col-12 p-md-11 p-text-left">
+            <p>
+                Drop a quick note to us by filling and submitting the contact form below Or email us at
+                <a href="mailto:contact@simplevisor.com?subject=[Simplevisor Support]">
+                    contact&#64;simplevisor.com
+                </a>
+                <i class="pi pi-copy" 
+                    (click)="copyToClipboard()"
+                    style="font-size: 1.1rem; cursor:pointer"
+                ></i>
+            </p>
+        </div>
+
+        <!-- Notifications -->
+        <div *ngIf="successText !=''" class="p-col-12 p-md-10 sv-center">
+            <h3 class="success-msg">{{successText}}</h3>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="p-col-12 p-md-10">
+            <form #userForm="ngForm" class="signUp" (ngSubmit)="userForm.form.valid && sendEmail()" novalidate>
+                <div class="p-grid p-fluid p-jc-center">
+                    <!-- Name -->
+                    <div class="p-col-12 p-text-bold p-text-left">
+                        <label for="name" class="p-text-left">Your Name<sup style="color: red;">*</sup></label>
+
+                        <input name="name" class="form-control p-inputtext" [(ngModel)]="user.userName" required
+                            #name="ngModel" id="name">
+
+                        <div *ngIf="name.errors && (name.dirty || name.touched)">
+                            <div *ngIf="name?.errors.required" class="error-msg">
+                                Your Name required.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="p-col-12 p-text-bold p-text-left">
+                        <label for="email" class="p-text-left">Your Email<sup style="color: red;">*</sup></label>
+
+                        <input name="email" class="form-control p-inputtext" [(ngModel)]="user.email" required
+                            [pattern]="emailPattern" #email="ngModel" id="email">
+
+                        <div *ngIf="email.errors && (email.dirty || email.touched)">
+                            <div *ngIf="email?.errors.required" class="error-msg">
+                                Your Email required.
+                            </div>
+
+                            <div *ngIf="email?.errors.pattern" class="error-msg">
+                                Your Email not valid.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subject -->
+                    <div class="p-col-12 p-text-bold p-text-left">
+                        <label for="subject">Subject<sup style="color: red;">*</sup></label>
+
+                        <input type="text" class="form-control p-inputtext" id="subject" required minlength="2"
+                            [(ngModel)]="user.subject" name="subject" #subject="ngModel">
+
+                        <div *ngIf="subject.invalid && (subject.dirty || subject.touched)" class="error-msg">
+                            <div *ngIf="subject?.errors.required">
+                                Subject is required.
+                            </div>
+
+                            <div *ngIf="subject?.errors.minlength">
+                                Subject must be more than 2 characters long.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Query/Message -->
+                    <div class="p-col-12 p-text-bold p-text-left">
+                        <label for="body">Message<sup style="color: red;">*</sup></label>
+
+                        <textarea class="form-control" rows="10" cols="35" type="text" class="form-control p-inputtext"
+                            id="body" required minlength="4" [(ngModel)]="user.body" name="body"
+                            #body="ngModel"></textarea>
+
+                        <div *ngIf="body.errors && (body.dirty || body.touched)">
+                            <div *ngIf="body?.errors.required" class="error-msg">
+                                Message is required.
+                            </div>
+
+                            <div *ngIf="body?.errors.minlength">
+                                Message must be more than 4 characters long.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Captcha -->
+                    <div class="p-col-12 p-text-bold p-text-center">
+                        <div class="p-d-inline-block">
+                            <re-captcha 
+                                #captcha 
+                                [siteKey]="siteKey" 
+                                (resolved)="showResponse($event)"
+                                (expired)="resetCaptcha()"
+                            ></re-captcha>
+                        </div>
+
+                        <div class="p-text-center p-p-2" *ngIf="msg">
+                            <p-message [severity]="msgType" [text]="msg" styleClass="p-mr-2"></p-message>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="p-col-12 p-md-4">
+                        <button type="button" pButton [disabled]="!(userForm.form.valid) || !isCaptchaVerified" pButton (click)="sendEmail()"
+                            label="Submit">
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

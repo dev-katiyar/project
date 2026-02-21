@@ -1,0 +1,450 @@
+<!-- When Edit or Run Strategy is clicked -->
+<div class="p-grid" style="margin: -0.75rem;">
+    <!-- Strategy List and Buttons on Left - Alwasys visible Side Bar -->
+    <div class="p-col-12 p-md-3 p-p-0" [ngClass]="{'hide-sm': showMinimalView && selectedStg}">
+        <div class="p-grid p-m-0">
+            <div class="p-col-12 p-p-1">
+                <div class="border-shadow p-p-2" style="background-color: white;">
+                    <div class="p-grid p-m-0">
+                        <div class="p-col-12 p-p-0 p-text-bold" style="font-size: 1.2rem;">
+                            SimpleVisor Strategies
+                        </div>
+                
+                        <hr style="margin: 0.5rem 0; width: 100%;">
+                
+                        <div class="p-col-12">
+                            <p-table #dt [value]="svStrategies"
+                                styleClass="p-datatable-positions p-datatable-striped" [paginator]="false" [autoLayout]="true">
+                                <ng-template pTemplate="body" let-dataRow>
+                                    <tr [ngClass]="(selectedSVStg && dataRow.id === this.selectedSVStg.id) ? 'selected' : 'normal'">
+                                        <td style="text-align: left; padding: 0.6rem 0.25rem">
+                                            {{ dataRow.name}}
+                                        </td>
+                
+                                        <td>
+                                            <button *ngIf="dataRow.id !== this.selectedSVStg?.id" pButton label="Run"
+                                                (click)="runSVStrategy(dataRow)"></button>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-p-1">
+                <div class="border-shadow p-p-2" style="background-color: white;">
+                    <div class="p-grid p-m-0">
+                        <div class="p-col-6 p-p-0 p-text-bold" style="font-size: 1.2rem;">
+                            My Strategies
+                        </div>
+            
+                        <div class="p-col-6 p-p-0 p-text-right" style="font-size: 1.2rem;">
+                            <button pButton class="p-button-outlined p-mr-2 " label="New" icon="pi pi-plus"
+                                (click)="onNewStrategyClick()"></button>
+                        </div>
+            
+                        <hr style="margin: 0.5rem 0; width: 100%;">
+            
+                        <!-- When there are User Saved Strategies -->
+                        <div class="p-col-12" *ngIf="userStrategies.length > 0">
+                            <p-table #dt [value]="userStrategies"
+                                styleClass="p-datatable-positions p-datatable-striped" [paginator]="false" [autoLayout]="true">
+                                <ng-template pTemplate="body" let-dataRow>
+                                    <tr
+                                        [ngClass]="(selectedUserStg && dataRow.id === this.selectedUserStg.id) ? 'selected' : 'normal'">
+                                        <td style="text-align: left; padding: 0.6rem 0.25rem">
+                                            {{ dataRow.name}}
+                                        </td>
+            
+                                        <td>
+                                            <button *ngIf="dataRow.id !== this.selectedUserStg?.id" pButton label="Run"
+                                                (click)="runUserStrategy(dataRow)"></button>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+            
+                        <!-- When 0 User Saved Strategy -->
+                        <div class="p-col-12" *ngIf="userStrategies.length == 0">
+                            <div class="p-grid">
+                                <div class="p-col-12">
+                                    <img src="../../assets/images/strategy_monitor.svg" alt="Strategy Dashboard Panel" width="100%">
+                                </div>
+            
+                                <div class="p-col-12">
+                                    <div class="p-grid p-ai-center" style="height: 100%;">
+                                        <div class="p-col-12">
+                                            <div class="p-grid">
+                                                <div class="p-col-12" style="font-size: 1.1rem; font-weight: bold;">
+                                                    Build Your Own Strategy
+                                                </div>
+            
+                                                <div class="p-col-12 p-text-justify">
+                                                    Investors commonly use stock strategies to narrow down their investment
+                                                    options and identify potential opportunities based on their investment
+                                                    strategies. Using a stock screener can help investors save time and
+                                                    effort by eliminating stocks that do not meet their investment
+                                                    objectives.
+                                                </div>
+            
+                                                <div class="p-col-12 p-text-center">
+                                                    <button pButton label="Create New Strategy" icon="pi pi-plus"
+                                                        class=" p-text-bold" (click)="onNewStrategyClick()"></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Strategy Dash Board -->
+    <div class="p-col-12 p-md-9 p-p-0 hide-sm" *ngIf="!showMinimalView">
+        <div class="p-grid p-m-0">
+            <!-- SV 1 Symbol Price Strategy: Symbol Inputs Only -->
+            <div class="p-col-12 p-lg-6 p-p-1">
+                <div class="border-shadow p-p-2" style="background-color: white;">
+                    <div class="p-grid p-m-0">
+                        <div class="p-col-12 p-p-0 p-text-bold" style="font-size: 1.2rem;">
+                            SV Money Flow Daily
+                        </div>
+    
+                        <hr style="margin: 0.5rem 0; width: 100%;">
+    
+                        <div class="p-col-12">
+                            Strategy Builder enables you to define and evaluate well-suited strategies for selecting
+                            investment
+                            candidates based factors including fundamental, technical and quantitative criteria.
+                        </div>
+    
+                        <div class="p-col-12 p-pb-0 p-text-bold">
+                            Symbol
+                        </div>
+    
+                        <div class="p-col-12">
+                            <app-stocks-autocomplete [(searchText)]="svPxStgTicker" [isFullWidth]="true">
+                            </app-stocks-autocomplete>
+                        </div>
+    
+                        <div class="p-col-12 p-pt-0" style="margin-top: -0.5rem;">
+                            <small>Recent: </small>
+                            <span *ngIf="svPxStgRecentTickers.length >= 1">
+                                <ng-container *ngFor="let symbol of svPxStgRecentTickers; let i=index">
+                                    <span *ngIf="i != svPxStgRecentTickers.length-1" class="symbol"
+                                        (click)="onRecentSymbolClick(symbol)">{{ symbol }}, </span>
+                                    <span *ngIf="i == svPxStgRecentTickers.length-1" class="symbol"
+                                        (click)="onRecentSymbolClick(symbol)">{{ symbol }} </span>
+                                </ng-container>
+                                <i class="pi pi-times delete-icon" title="Clear Recent Symbols"
+                                    (click)="clearSVPxStgRecentSymbols()"></i>
+                            </span>
+                        </div>
+    
+                        <div class="p-col-12 p-text-right">
+                            <button pButton icon="pi pi-pencil" class="p-button-outlined p-mr-2 "
+                                (click)="svPxStgEditBtnClicked()" label="Edit Model Inputs">
+                            </button>
+    
+                            <button pButton class="p-mr-2 " (click)="svPxStgRunBtnClicked()" label="Run Strategy">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SV 2 Symbol Price Ratio Strategy: Symbol Inputs Only -->
+            <div class="p-col-12 p-lg-6 p-p-1">
+                <div class="border-shadow p-p-2" style="background-color: white;">
+                    <div class="p-grid p-m-0">
+                        <div class="p-col-12 p-p-0 p-text-bold" style="font-size: 1.2rem;">
+                            SV 2 Symbol Money Flow Daily
+                        </div>
+    
+                        <hr style="margin: 0.5rem 0; width: 100%;">
+    
+                        <div class="p-col-12">
+                            Strategy Builder enables you to define and evaluate well-suited strategies for selecting
+                            investment
+                            candidates based factors including fundamental, technical and quantitative criteria.
+                        </div>
+    
+    
+                        <div class="p-col-12 p-md-6">
+                            <div class="p-grid">
+                                <div class="p-col-12 p-text-bold p-pb-0">
+                                    Symbol 1
+                                </div>
+                                <div class="p-col-12 p-pt-0">
+                                    <app-stocks-autocomplete [(searchText)]="svRatioStgTicker1" [isFullWidth]="true">
+                                    </app-stocks-autocomplete>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="p-col-12 p-md-6">
+                            <div class="p-grid">
+                                <div class="p-col-12 p-text-bold p-pb-0">
+                                    Symbol 2
+                                </div>
+                                <div class="p-col-12 p-pt-0">
+                                    <app-stocks-autocomplete [(searchText)]="svRatioStgTicker2" [isFullWidth]="true">
+                                    </app-stocks-autocomplete>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="p-col-12 p-pt-0" style="margin-top: -0.5rem;">
+                            <small>Recent: </small>
+                            <span *ngIf="svRatioStgRecentTickers.length >= 1">
+                                <ng-container *ngFor="let symbolPair of svRatioStgRecentTickers; let i=index">
+                                    <span *ngIf="i != svRatioStgRecentTickers.length-1" class="symbol"
+                                        (click)="onRecentSymbolPairClick()">{{ symbolPair.sym1 }}/{{ symbolPair.sym2 }},
+                                    </span>
+                                    <span *ngIf="i == svRatioStgRecentTickers.length-1" class="symbol"
+                                        (click)="onRecentSymbolPairClick()">{{ symbolPair.sym1 }}/{{ symbolPair.sym2 }}
+                                    </span>
+                                </ng-container>
+                                <i class="pi pi-times delete-icon" title="Clear Recent Symbols"
+                                    (click)="clearRecentSymbolPairs()"></i>
+                            </span>
+                        </div>
+    
+                        <div class="p-col-12 p-text-right">
+                            <button pButton icon="pi pi-pencil" class="p-button-outlined p-mr-2 "
+                                (click)="svRatioStgEditBtnClicked()" label="Edit Model Inputs">
+                            </button>
+    
+                            <button pButton class="p-mr-2 " (click)="svRatioStgRunBtnClicked()" label="Run Strategy">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Strategies -->
+            <div class="p-col-12 p-lg-12 p-p-1">
+                <div class="border-shadow p-p-2" style="background-color: white;">
+                    <div class="p-grid p-m-0">
+                        <div class="p-col-6 p-p-0 p-text-bold" style="font-size: 1.2rem;">
+                            My Strategies
+                        </div>
+    
+                        <div class="p-col-6 p-p-0 p-text-right" style="font-size: 1.2rem;">
+                            <button pButton class="p-button-outlined p-mr-2" label="New Strategy" icon="pi pi-plus"
+                                (click)="onNewStrategyClick()"></button>
+                        </div>
+    
+                        <hr style="margin: 0.5rem 0; width: 100%;">
+    
+                        <!-- When none User Saved Strategy -->
+                        <div class="p-col-12" *ngIf="userStrategies.length == 0">
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-3">
+                                    <img src="../../assets/images/strategy_monitor.svg" alt="Strategy Dashboard Panel"
+                                        width="100%">
+                                </div>
+    
+                                <div class="p-col-12 p-md-9">
+                                    <div class="p-grid p-ai-center" style="height: 100%;">
+                                        <div class="p-col-12">
+                                            <div class="p-grid">
+                                                <div class="p-col-12" style="font-size: 1.1rem; font-weight: bold;">
+                                                    Build Your Own Strategy
+                                                </div>
+    
+                                                <div class="p-col-12">
+                                                    Investors commonly use stock strategies to narrow down their investment
+                                                    options
+                                                    and identify potential opportunities based on their investment
+                                                    strategies.
+                                                    Using
+                                                    a stock screener can help investors save time and effort by eliminating
+                                                    stocks
+                                                    that do not meet their investment objectives.
+                                                </div>
+    
+                                                <div class="p-col-12">
+                                                    <button pButton label="Create New Strategy" icon="pi pi-plus"
+                                                        class=" p-text-bold" (click)="onNewStrategyClick()"></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- When there are User Saved Stratgies -->
+                        <div class="p-col-12" *ngIf="userStrategies.length !== 0">
+                            <p-table #dt [value]="userStrategies"
+                                styleClass="p-datatable-positions p-datatable-striped" [paginator]="false"
+                                [autoLayout]="true">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th class="p-text-left" pSortableColumn="name">
+                                            Name
+                                            <p-sortIcon field="name"></p-sortIcon>
+                                        </th>
+                                        <th class="p-text-left" pSortableColumn="symbol">
+                                            Symbol
+                                            <p-sortIcon field="symbol"></p-sortIcon>
+                                        </th>
+                                        <th class="p-text-left" pSortableColumn="start_date">
+                                            Start Date
+                                            <p-sortIcon field="start_date"></p-sortIcon>
+                                        </th>
+                                        <th class="p-text-left" pSortableColumn="end_date">
+                                            End Date
+                                            <p-sortIcon field="end_date"></p-sortIcon>
+                                        </th>
+                                        <th class="p-text-left" pSortableColumn="description">
+                                            Description
+                                            <p-sortIcon field="description"></p-sortIcon>
+                                        </th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </ng-template>
+    
+                                <ng-template pTemplate="body" let-dataRow>
+                                    <tr>
+                                        <td class="p-text-left">
+                                            {{ dataRow.name}}
+                                        </td>
+    
+                                        <td class="p-text-left symbol" (click)="onSymbolClick(dataRow.symbol)">
+                                            {{ dataRow.symbol}}
+                                        </td>
+    
+                                        <td class="p-text-left">
+                                            {{ dataRow.start_date | date}}
+                                        </td>
+    
+                                        <td class="p-text-left">
+                                            {{ dataRow.end_date | date}}
+                                        </td>
+    
+                                        <td class="p-text-left">
+                                            {{ dataRow.description}}
+                                        </td>
+    
+                                        <td>
+                                            <button pButton label="Run Strategy"
+                                                (click)="runUserStrategy(dataRow)"></button>
+                                        </td>
+    
+                                        <td class="p-text-center">
+                                            <button pButton type="button" icon="pi pi-trash"
+                                                class="p-button-text margin-right sv-button"
+                                                (click)="deleteSelectedStrategyConfirm($event, dataRow)"
+                                                pTooltip="Delete this Strategy." showDelay="700">
+                                            </button>
+                                            <p-confirmPopup></p-confirmPopup>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Strategy Inputs and Output -->
+    <div class="p-col-12 p-md-9 p-p-1" *ngIf="showMinimalView">
+        <div class="border-shadow p-p-2" style="background-color: white;">
+            <div class="p-grid p-m-0">
+                <!-- Header Text and Buttons -->
+                <div class="p-col-12" style="font-weight: bold; font-size: 1.5rem; padding-bottom: 0;">
+                    <div class="p-grid">
+                        <div class="p-col p-d-flex p-ai-center" style="padding-bottom: 0;">
+                            <i class="pi pi-arrow-circle-left p-mr-2" (click)="onCloseStrategyClick()"
+                                pTooltip="Close to return to all strategies Dashboard." showDelay="700"
+                                style="font-size: 1.3rem;color: #004b8e; font-weight: bold;cursor: pointer;"></i>
+                            {{ selectedStg?.name }}
+                        </div>
+    
+                        <div class="p-col-fixed" style="text-align: right; padding-bottom: 0;">
+                            <button *ngIf="!selectedSVStg && !selectedUserStg?.id" pButton type="button" icon="pi pi-save"
+                                class="p-button-text margin-right sv-button" (click)="saveUserStg()"
+                                pTooltip="Save this Strategy." showDelay="700">
+                            </button>
+    
+                            <button *ngIf="!selectedSVStg" pButton type="button" icon="pi pi-trash"
+                                class="p-button-text margin-right sv-button"
+                                (click)="deleteSelectedStrategyConfirm($event, selectedUserStg)"
+                                pTooltip="Delete this Strategy." showDelay="700">
+                            </button>
+    
+                            <p-confirmPopup></p-confirmPopup>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Horizontal Divider -->
+                <div class="p-col-12" style="padding-top: 0;padding-bottom: 0;">
+                    <hr style="margin: 0.5rem 0 0 0;width: 100%;">
+                </div>
+    
+                <!-- Strategy Inputs & Output Chart -->
+                <div class="p-col-12 p-p-0">
+                    <!-- If SV Strategy Selected -->
+                    <div *ngIf="selectedSVStg">
+                        <app-sv-moneyflow1 *ngIf="selectedSVStg.id == 'svPriceMF'" [isEditMode]="shouldOpenInEditMode">
+                        </app-sv-moneyflow1>
+    
+                        <app-sv-moneyflow2 *ngIf="selectedSVStg.id == 'svRatioMF'" [isEditMode]="shouldOpenInEditMode">
+                        </app-sv-moneyflow2>
+    
+                        <app-sv-moneyflow3 *ngIf="selectedSVStg.id == 'svWeeklyPriceMF'">
+                        </app-sv-moneyflow3>
+                    </div>
+    
+                    <!-- If User Strategy Selected -->
+                    <div *ngIf="selectedUserStg">
+                        <!-- Don't change input inside the comp, make a copy -->
+                        <app-strategy-builder #stgBuilderRef [strategy_inputs_org]="selectedUserStg"></app-strategy-builder>
+                    </div>
+    
+                    <!-- If User Create User Strategy Selected -->
+                    <div *ngIf="showCreateUserStg">
+                        <!-- Don't change input inside the comp, make a copy -->
+                        <app-strategy-builder #stgBuilderRef [strategy_inputs_org]="newUserStg"></app-strategy-builder>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dialog Box to save new strategy -->
+<p-dialog header="Save Strategy" showEffect="fade" [(visible)]="displaySaveDialog" [modal]="true">
+    <div *ngIf="stgToSave">
+        <div class="form-group">
+            <label for="name" style="margin-right:1rem;">Strategy Name: </label>
+            <input [(ngModel)]="stgToSave.name" id="name" pInputText placeholder="Enter Name"
+                class="saveInput form-control" #name="ngModel" required name="name" (click)="$event.target.select()" />
+
+            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert">
+                <div *ngIf="name.errors?.required" class="error-msg">
+                    Name is required.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p-footer class="p-text-right">
+        <button [disabled]="!(stgToSave?.name)" pButton type="button" icon="pi pi-save" (click)="saveStartegy()"
+            label="Save" class="p-button-success">
+        </button>
+    </p-footer>
+</p-dialog>

@@ -1,0 +1,17 @@
+<div>
+  <p-tabView (onChange)="onChange($event)" [activeIndex]="selectedIndex">
+
+    <p-tabPanel header="Sectors Momentum">
+      <app-snp-sectors-momentum></app-snp-sectors-momentum>
+    </p-tabPanel>
+    
+    <p-tabPanel header="Sectors HeatMap">
+      <app-snp-sectors-home></app-snp-sectors-home>
+    </p-tabPanel>
+
+    <p-tabPanel header="Sectors Relative Strength">
+      <app-snp-sectors-rs></app-snp-sectors-rs>
+    </p-tabPanel>
+
+  </p-tabView>
+</div>

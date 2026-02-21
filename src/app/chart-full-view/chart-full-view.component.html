@@ -1,0 +1,58 @@
+<div class="p-grid">
+    <div class="p-col-12 border-shadow" style="background-color: white;">
+        <div style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+            <b>Today's Top & Bottom Performer by Sector</b>
+            <span style="font-size: 0.8rem; padding-left: 0.5rem;"> 
+                 (Click on a Symbol to see details below)
+            </span>
+        </div>
+
+        <hr style="margin: 0.5rem 0;width: 100%;">
+    
+        <div class="p-grid">
+            <div class="p-col-12 p-sm-6 p-md-4 p-lg-3 sector" *ngFor="let row of heatMapSymbols" style="padding-top:1%;">
+                <div style="text-align:center;padding-bottom: 0.5rem;" class="sectorName">
+                    {{row.sector}}
+                </div>
+    
+                <chart-sector-heatmap [symbols]="row.data" (onSymbolClicked)="symbolSelected($event)"
+                    (click)="onSectorSelected(row.sector)">
+                </chart-sector-heatmap>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-pt-3">
+        <div class="p-grid">
+            <div class="p-col-12 p-lg-9">
+                <div class="p-grid p-pr-2">
+                    <div class="p-col-12 border-shadow" style="background-color: white;">
+                        <div class="title">
+                            {{ selectedSymbol }} peers in {{ selectedSector }}
+                        </div>
+            
+                        <hr style="margin: 0.5rem 0;width: 100%;">
+            
+                        <technical-datatable [showChartIcon]="true" [model]="symbolsTechData" (onSymbolClicked)="onPeerSymbolSelected($event)">
+                        </technical-datatable>
+                    </div>
+            
+                    <div class="p-col-12 border-shadow p-mt-2" style="background-color: white;">
+                        <div class="title">
+                            {{ performanceChartHeader }}
+                        </div>
+                    
+                        <hr style="margin: 0.5rem 0;width: 100%;">
+                    
+                        <line-chart barClass="chart-big" title="Top Tickers Yearly Performance" [symbols]="selectedSymbolList">
+                        </line-chart>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-lg-3 border-shadow" style="background-color: white;">
+                <synopsis gaugeClass="chart-gauge-small" [symbol]="selectedPeerSymbol"></synopsis>
+            </div>
+        </div>
+    </div>
+</div>

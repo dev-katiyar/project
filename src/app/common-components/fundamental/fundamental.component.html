@@ -1,0 +1,53 @@
+<div [class]="displayClass" style="padding: 0.5rem">
+    <div class="p-col-12 p-lg-12" style="overflow: auto;">
+        <p-table #dt [value]="peersDataList.peer_data" 
+            styleClass="p-datatable-positions p-datatable-striped" [reorderableColumns]="true" [scrollable]="false"
+            sortField="group" sortMode="single" (onSort)="onSort()" [tableStyle]="{'table-layout':'auto'}">
+            <ng-template pTemplate="header">
+                <tr>
+                    <!-- TODO: Row Span for Group-->
+                    <th style="text-align: left;">Group</th>
+                    <th style="text-align: left">Name</th>
+                    <th style="text-align: right">{{symbol}}</th>
+                    <th style="text-align: right" *ngFor="let peer_symbol of peersDataList.peer_symbols">{{peer_symbol}}
+                    </th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-peerData let-rowIndex="rowIndex">
+                <tr>
+                    <td *ngIf="rowGroupMetadata[peerData.group].index === rowIndex"
+                        [attr.rowspan]="rowGroupMetadata[peerData.group].size"
+                        style="background-color:#FFFFFF !important">
+                        <div style="width:100%; text-align:left">{{peerData.group}}</div>
+                    </td>
+                    <td>
+                        <div style="width:100%; text-align:left;">{{peerData.name}}</div>
+                    </td>
+                    <td style="text-align: right;">
+                        <div *ngIf="peerData.type=='text'">
+                            {{peerData.symbol_value}}
+                        </div>
+                        <div *ngIf="peerData.type=='number'">
+                            {{peerData.symbol_value | safeNumber | number:'0.2-2'}}
+                        </div>
+                        <div *ngIf="peerData.type=='percentage'">
+                            {{peerData.symbol_value | safeNumber | number:'0.2-2'}}%
+                        </div>
+                    </td>
+                    <td *ngFor="let peer_symbol of peersDataList.peer_symbols" style="text-align: right;">
+                        <div *ngIf="peerData.type=='text'">
+                            {{peerData.data[peer_symbol]}}
+                        </div>
+                        <div *ngIf="peerData.type=='number'">
+                            {{peerData.data[peer_symbol] | safeNumber | number:'0.2-2' }}
+                        </div>
+                        <div *ngIf="peerData.type=='percentage'">
+                            {{peerData.data[peer_symbol] | safeNumber | number:'0.2-2' }}%
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

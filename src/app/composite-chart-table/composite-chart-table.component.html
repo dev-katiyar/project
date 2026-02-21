@@ -1,0 +1,75 @@
+<p-panel class="sv-nopadding-panel">
+    <ng-template pTemplate="header">
+        <div style="display: flex;  align-items: center; width: 100%;">
+            <div style="padding: 0.75rem;font-weight: bold;">
+                {{ title }}
+            </div>
+
+            <div style="padding: 0.25rem; text-align: left;">
+                <div *ngIf="showChartTableDropdown" style="display: inline;padding-left: 0.25rem;">
+                    <p-dropdown [options]="dataViewTypes" [(ngModel)]="selectedDataViewType"
+                        (onChange)="onViewTypeChange($event)" class="dropdown-nopad">
+                    </p-dropdown>
+                </div>
+
+                <div *ngIf="selectedDataViewType == 'Charts'" style="display: inline;padding-left: 0.25rem;">
+                    <p-dropdown [options]="compositeChartConfig?.colsToPlot" [(ngModel)]="selectedColToPlot"
+                        optionLabel="yColName" (onChange)="onColToPlotChange($event)" class="dropdown-nopad">
+                    </p-dropdown>
+                </div>
+            </div>
+
+            <div style="padding: 0.50rem;">
+                <div *ngIf="selectedDataViewType == 'Charts'" style="display: inline;">
+                    <span *ngFor="let chartType of selectedColToPlot?.chartTypes" style="display:inline-block;"
+                        class="pill-item">
+                        <a [ngClass]="{ 'active-item': chartType ==  selectedChartType, 'inactive-item': chartType !=  selectedChartType}"
+                            (click)="onChartTypeChanged(chartType)">{{chartType}}</a>
+                    </span>
+                </div>
+            </div>
+
+            <div style="padding: 0.50rem;">
+                <div *ngIf="selectedDataViewType == 'Tables'" style="display: inline;">
+                    <span *ngFor="let tableType of tableTypes" style="display:inline-block;" class="pill-item">
+                        <a [ngClass]="{ 'active-item': tableType ==  selectedTableType, 'inactive-item': tableType !=  selectedTableType}"
+                            (click)="onTableTypeChanged(tableType)">{{tableType}}</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <div class="p-grid sv-padding-panel">
+        <div class="p-col-12" *ngIf="selectedDataViewType == 'Charts'">
+            <app-bubble-chart *ngIf="selectedChartType == 'Bubble'" [dataArray]="compositeChartConfig?.dataArray"
+                [seriesConfig]="bubbleChartSeriesConfig" (symbolClicked)="onSymbolClicked($event)"></app-bubble-chart>
+
+            <app-bar-chart2 *ngIf="selectedChartType == 'Bar' || selectedChartType == 'Column'"
+                [dataArray]="compositeChartConfig?.dataArray" [seriesConfig]="barChartSeriesConfig"
+                (symbolClicked)="onSymbolClicked($event)"></app-bar-chart2>
+
+            <app-heat-chart *ngIf="selectedChartType == 'Heat Map'" [dataArray]="compositeChartConfig?.dataArray"
+                [seriesConfig]="heatChartSeriesConfig" (symbolClicked)="onSymbolClicked($event)"></app-heat-chart>
+        </div>
+
+        <div class="p-col-12" *ngIf="selectedDataViewType == 'Tables'">
+            <app-datatable-technical2 *ngIf="selectedTableType == 'Technicals'"
+                [symbolTechnicals]="compositeChartConfig?.dataArray" (symbolClicked)="onSymbolClicked($event)"
+                [rowsPerPage]="rowsPerPage"></app-datatable-technical2>
+        
+            <app-datatable-fundamentals *ngIf="selectedTableType == 'Fundamentals'"
+                [symbolFundamentals]="compositeChartConfig?.dataArray" (symbolClicked)="onSymbolClicked($event)"
+                [rowsPerPage]="rowsPerPage"></app-datatable-fundamentals>
+        
+            <app-datatable-performance *ngIf="selectedTableType == 'Performance'"
+                [symbolPerformance]="compositeChartConfig?.dataArray" (symbolClicked)="onSymbolClicked($event)"
+                [rowsPerPage]="rowsPerPage"></app-datatable-performance>
+        
+            <app-datatable-overview *ngIf="selectedTableType == 'Overview'" [symbolTechnicals]="compositeChartConfig?.dataArray"
+                (symbolClicked)="onSymbolClicked($event)" [rowsPerPage]="rowsPerPage"></app-datatable-overview>
+        
+            <!-- <line-chart *ngIf="showPerformanceChart && selectedTableType == 'Performance Chart'" barClass="chart-big" title="Yearly Performance" [symbols]="[symbols]"></line-chart> -->
+        </div>
+    </div>
+</p-panel>

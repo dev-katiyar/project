@@ -1,0 +1,35 @@
+.rating-circle {
+    height: 180px; 
+    width: 180px; 
+    border-radius: 50%;
+}
+
+.strong-buy {
+    color:green;
+    background-color: #eef9ea;
+}
+
+.sell {
+    color: red;
+    background-color:#fbeae8;
+}
+
+.hold {
+    color: black;
+    background-color:lightyellow;
+}
+
+.underperform {
+    color: darkgray;
+    background-color:grey;
+}
+
+@media screen and (min-width: 768px) {
+    .divider {
+        border-right: 1px solid gray;
+    }
+}
+
+::ng-deep .p-progressbar-determinate .p-progressbar-label {
+    color: teal
+}

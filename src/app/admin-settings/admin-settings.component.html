@@ -1,0 +1,46 @@
+
+<div class="p-grid border-shadow p-p-1 p-mb-3 p-mt-1" style="background-color: white;">
+    <!-- Heading -->
+    <div class="p-col-12" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+        Generate Test User Passwords
+    </div>
+
+    <!-- Horizontal Divider -->
+    <hr style="margin: 0.5rem 0;width: 100%;">
+
+    <!-- Content - Profile -->
+    <div class="p-col-12">
+        <!-- API Key -->
+<div class="p-grid border-shadow p-p-1 p-mb-3" style="background-color: white;">
+    <!-- Heading -->
+    <div class="p-col-12" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+        API Key
+    </div>
+
+    <!-- Horizontal Divider -->
+    <hr style="margin: 0.5rem 0;width: 100%;">
+
+    <!-- Content - API Details -->
+    <div class="p-col-12">
+        <div class="p-grid">
+            <div class="p-col-12">
+                This is temp password generator for test users. This is valid for 1 hours only. Create a new one each time it expires or lost.
+            </div>
+
+            <!-- When we have new API Key -->
+             <!-- AK: we can show the current pass if one is still active. then it can be shared among all the admins for that time period -->
+            <div class="p-col-12 show_items">
+                Temp Pass: <span class="p-text-bold">{{ newTempPass }}</span> 
+                <button pButton (click)="copyTempPasswordToClipboard()" class="p-button-rounded p-button-success" label="Copy Temp Pass"></button>
+
+                <button pButton (click)="generateTempPassword()" class="p-button-rounded" label="Generate Temp Pass"></button>
+            </div>
+
+            <div *ngIf="newTempPassMessage" class="p-col-12 p-text-center" style="color: green;">
+                {{newTempPassMessage}}
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+</div>

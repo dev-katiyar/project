@@ -1,0 +1,179 @@
+<div class="p-grid">
+    <div *ngIf="!isModalView" class="p-col-12" style="padding-bottom: 0;">
+        <div class="p-grid p-ai-center">
+            <div class="p-col-12 p-md-6 p-lg-2">
+                <span class="topbar-search">
+                    <app-stocks-autocomplete style="max-width: 15rem;" [searchText]="symbol" (onSymbolSelected)="onSymbolSelected($event)">
+                    </app-stocks-autocomplete>
+                </span>
+            </div>
+
+            <div class="p-col-12 p-md-6 p-lg-5">
+                <span style="font-weight: bold; font-size: 1.3rem;">{{symbolDetail?.companyname}}</span>
+            </div>
+
+            <div class="p-col-12 p-md-6 p-lg-5">
+                <div class="p-grid">
+                    <div class="p-col-6 p-p-1 p-fluid" style="text-align: right;">
+                        <a pButton style="max-width: 15rem;" class="p-button-outlined" label="Add to WatchList" (click)="onAddToWatchlistClick()"></a>
+                    </div>
+
+                    <div class="p-col-6 p-p-1 p-fluid">
+                        <a pButton style="max-width: 15rem;" class="p-button-outlined" label="Add to Portfolio" (click)="onAddToPortfolioClick()"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12" style="padding-top: 0;">
+        <p-tabView class="sv-tabview-nopadding" [(activeIndex)]="selectedIndex">
+            <p-tabPanel header="Overview" *ngIf="showTab('Overview')">
+                <ng-template pTemplate="content">
+                    <app-stock-overview *ngIf="!loading" [symbol]="symbol"></app-stock-overview>
+                </ng-template>
+            </p-tabPanel>
+
+            <!-- <p-tabPanel header="AI Signals" *ngIf="showTab('AI Signals')">
+                <ng-template pTemplate="content">
+                    <app-ai-agent-decisions *ngIf="!loading" [symbol]="symbol"></app-ai-agent-decisions>
+                </ng-template>
+            </p-tabPanel> -->
+
+            <p-tabPanel header="Fund Overview" *ngIf="showTab('Fund Overview')">
+                <ng-template pTemplate="content">
+                    <app-etf-yheod-overview *ngIf="!loading" [symbol]="symbol"></app-etf-yheod-overview>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Advanced Chart" *ngIf="showTab('Advanced Chart')">
+                <ng-template pTemplate="content">
+                    <app-tv-chart [symbol]="symbol" chartHeightClass="app-tv-chart-container"></app-tv-chart>
+                </ng-template>
+            </p-tabPanel>
+
+             <p-tabPanel header="Technicals" *ngIf="showTab('Technical')">
+                <ng-template pTemplate="content">
+                    <app-investing [symbol]="symbol"></app-investing>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Fundamentals" *ngIf="showTab('Fundamentals')">
+                <ng-template pTemplate="content">
+                    <app-stock-fundamentals [symbol]="symbol"></app-stock-fundamentals>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Short Interest" *ngIf="showTab('Short Interest')">
+                <ng-template pTemplate="content">
+                    <app-short-interest [symbol]="symbol"></app-short-interest>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Insider Stats" *ngIf="showTab('Insider Stats')">
+                <ng-template pTemplate="content">
+                    <app-stock-holders-stats [symbol]="symbol"></app-stock-holders-stats>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Option Chain" *ngIf="showTab('Option Chain')">
+                <ng-template pTemplate="content">
+                    <app-stock-options [symbol]="symbol"></app-stock-options>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="News" *ngIf="showTab('News')">
+                <ng-template pTemplate="content">
+                    <div class="border-shadow p-mt-2 p-p-2" style="margin: -0.5rem;">
+                        <app-news-table newsClass="news-big" title="Top News" [symbols]="newsSymbols">
+                        </app-news-table>
+                    </div>
+                </ng-template>
+            </p-tabPanel>
+
+            <!-- <p-tabPanel header="Key Stats">
+                <ng-template pTemplate="content">
+                    <p-panel header="Key Stats" [style]="{'margin-bottom':'20px'}">
+                        <app-keystats [keyStats]="keyStats"></app-keystats>
+                    </p-panel>
+
+                    <p-panel header="Ratios/Profitability (TTM)" [style]="{'margin-bottom':'20px'}">
+                        <app-keystats [keyStats]="ratio"></app-keystats>
+                    </p-panel>
+                </ng-template>
+            </p-tabPanel> -->
+
+            <!-- <p-tabPanel header="Analyst">
+                <ng-template pTemplate="content">
+                    <app-analyst [symbol]="symbol"></app-analyst>
+                </ng-template>
+            </p-tabPanel> -->
+
+            <!-- <p-tabPanel header="Peer Fundamentals">
+                <ng-template pTemplate="content">
+                    <div class="p-grid p-nogutter">
+                        <p-panel header="Peer Fundamentals Data Comparison" style="width: 100%;">
+                            <app-fundamental displayClass="p-grid" [symbol]="symbol">
+                            </app-fundamental>
+                        </p-panel>
+                    </div>
+                </ng-template>
+            </p-tabPanel> -->
+            <!-- 
+            <p-tabPanel header="Peer Performance">
+                <ng-template pTemplate="content">
+                    <div class="p-col-12 p-lg-12 " style="padding-top:0">
+                        <p-panel header="Peer Technical Data Comparison">
+                            <technical-datatable [model]="symbolsTechData">
+                            </technical-datatable>
+                        </p-panel>
+                    </div>
+
+                    <div class="p-col-12 p-lg-12">
+                        <p-panel header="Peer Chart Comparison">
+                            <line-chart barClass="chart-big" [symbols]="peerSymbols">
+                            </line-chart>
+                        </p-panel>
+                    </div>
+                </ng-template>
+            </p-tabPanel> -->
+
+            <!-- <p-tabPanel header="Analyst">
+                <ng-template pTemplate="content">
+                    <app-analyst [symbol]="symbol"></app-analyst>
+                </ng-template>
+            </p-tabPanel> -->
+
+            <!-- <p-tabPanel header="Dividend">
+                <ng-template pTemplate="content">
+                    <p-panel header="Dividends">
+                        <app-dividend-history [symbol]="symbol" [fullDividendDetail]="fullDividendDetail">
+                        </app-dividend-history>
+                    </p-panel>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Earnings">
+                <ng-template pTemplate="content">
+                    <p-panel header="Earnings">
+                        <app-earning-history [symbol]="symbol" [fullEarningDetail]="fullEarningDetail">
+                        </app-earning-history>
+                    </p-panel>
+                </ng-template>
+            </p-tabPanel> -->
+        </p-tabView>
+    </div>
+</div>
+
+<p-dialog *ngIf="!isModalView" header="Add to Portfolio" [(visible)]="displayAddToPortfolioDialog" showEffect="fade" [modal]="true"
+    [style]="{width: '42vw'}"
+    [breakpoints]="{'1100px': '50vw', '960px': '57vw', '770px': '67vw', '640px': '80vw', '450px': '97vw'}">
+    <app-trading-ticket [symbol]="dialogInputSymbolPortfolio" (cancelClick)="onTradingTicketCancelClick()"
+        (saveClick)="onTradingTicketSaveClick()"></app-trading-ticket>
+</p-dialog>
+
+<p-dialog *ngIf="!isModalView" header="Add to WatchList" [(visible)]="displayAddToWatchlistDialog" showEffect="fade" [modal]="true"
+    [style]="{width: '50vw'}" [breakpoints]="{'960px': '65vw', '640px': '97vw'}">
+    <app-watchlist-add [symbol]="dialogInputSymbolWatchlist" (closeAddToWatchlist)="onAddToWatchlistDialogClose()">
+    </app-watchlist-add>
+</p-dialog>

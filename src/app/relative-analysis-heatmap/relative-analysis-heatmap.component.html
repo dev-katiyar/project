@@ -1,0 +1,12 @@
+<div class="p-grid p-jc-center rwd-table" style="margin-top:0;">
+    <div class="heatMap" *ngFor="let row of dataArray" [ngClass]="getHeatCls(row[seriesConfig.yCol])"
+        style="width:200px; padding: 1rem;" [pTooltip]="getTooltipText(row)" tooltipPosition="bottom" tooltipEvent="hover">
+        <a class="heatmapAnchor cursorPointer" (click)="symbolClick(row)">
+            <div [innerHtml]="getDisplayData(row)"></div>
+            <i *ngIf="selectedSymbol != row[seriesConfig.clickEventCol]" class="pi pi-angle-double-right" style="font-weight:bold;font-size: 1.3rem;color: peachpuff;"></i>
+            <i *ngIf="selectedSymbol == row[seriesConfig.clickEventCol]" class="pi pi-angle-double-down" style="font-weight:bold;font-size: 1.3rem;color: cyan;"></i>
+        </a>
+    </div>
+</div>
+
+<div *ngIf="dataArray.length < 1">No Data</div>

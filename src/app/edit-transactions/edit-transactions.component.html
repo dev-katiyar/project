@@ -1,0 +1,180 @@
+<div class="p-grid" *ngIf="isAdminUser == 1 && showEditMode" style="margin-top: 0;padding: 0.5rem;">
+    <div class="p-col" style="color: red; text-align: center;">
+        <span *ngIf="error" >Error: {{error}}</span>
+    </div>
+    <div class="p-md-2" style="text-align: right;padding: 0;">
+        <div class="p-d-flex">
+            <button 
+                pButton 
+                class="p-button-text margin-right sv-button" style="color: lightcoral;font-weight: bold;margin-right: 1.5rem;background-color: lightyellow;" 
+                label="Exit Edit Mode"
+                (click)="txnEditingDoneClick()"
+            ></button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="portfolioData?.transactions && !showEditMode">
+    <p-table #dt1 [columns]="cols" [value]="portfolioData.transactions" dataKey="id" [rows]="50"
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[20,50,100,500]"
+        styleClass="p-datatable-positions p-datatable-striped" [paginator]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [globalFilterFields]="['symbol']" [autoLayout]="true" [tableStyle]="{'table-layout':'auto'}"
+        [resizableColumns]="false">
+
+        <ng-template pTemplate="caption">
+            <div *ngIf="!showEditMode" class="p-d-flex">
+                <span (click)="dt1.exportCSV()" class="p-ml-auto" style="cursor: pointer;">
+                    <i class="pi pi-file-excel"></i>
+                    <u> Export to CSV</u>
+                </span>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                    <div>
+                        {{ col.header }}
+                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                        <ng-container *ngIf="col.field == 'symbol' || col.field == 'name'">
+                            <p-columnFilter type="text" [field]="col.field" display="menu" class="p-ml-auto">
+                            </p-columnFilter>
+                        </ng-container>
+                    </div>
+                </th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-transaction>
+            <tr class="p-selectable-row">
+                <td style="text-align: left;">
+                    <div class="symbol" (click)="onSymbolClick(transaction.symbol)">{{transaction.symbol}}</div>
+                </td>
+
+                <td style="text-align: left; min-width: 13rem;">
+                    <div>{{transaction.name}}</div>
+                </td>
+
+                <td style="text-align: center;">
+                    <div [ngClass]="transaction.side | classpipe">{{transaction.side}}</div>
+                </td>
+
+                <td style="text-align: right;">
+                    <div>{{transaction.qty}}</div>
+                </td>
+
+                <td style="text-align: right;">
+                    <div>{{transaction.date | date:'yyyy-MM-dd'}}</div>
+                </td>
+
+                <td style="text-align: right;">
+                    <div>{{transaction.price | currency}}</div>
+                </td>
+
+                <td style="text-align: right;">
+                    <div>{{ getCommission(transaction) | currency }}</div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<div *ngIf="portfolioData?.transactions && showEditMode">
+    <p-table #dt2 [columns]="cols" [value]="portfolioData.transactions" dataKey="id" [rows]="50"
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[20,50,100,500]"
+        styleClass="p-datatable-positions p-datatable-striped" [paginator]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [globalFilterFields]="['symbol']" [autoLayout]="true" [tableStyle]="{'table-layout':'auto'}"
+        [resizableColumns]="false" editMode="row">
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="text-align: left;">
+                    Symbol
+                    <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto">
+                    </p-columnFilter>
+                </th>
+
+                <th>Buy/Sell</th>
+
+                <th style="text-align: right;">Quantity</th>
+
+                <th style="text-align: right;">Cost Basis</th>
+
+                <th style="text-align: right;">Transaction Date</th>
+
+                <th style="width:8rem">Edit Action</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-transaction let-editing="editing" let-ri="rowIndex">
+            <tr class="p-selectable-row" [pEditableRow]="transaction" #htmlTableRowElement>
+                <td style="text-align: left;">
+                    <div class="symbol-withoutpointer">{{transaction.symbol}}</div>
+                </td>
+
+                <td style="text-align: center;">
+                    <div [ngClass]="transaction.side | classpipe">{{transaction.side}}</div>
+                </td>
+
+                <td>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input pInputText type="text" digitOnly decimal="true" decimalSeparator="."
+                                style="text-align: right;" placeholder="0,00" pattern="[0-9]+([.][0-9]+)?"
+                                [(ngModel)]="transaction.qty" (click)="$event.target.select()" />
+                        </ng-template>
+
+                        <ng-template pTemplate="output">
+                            {{transaction.qty}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+
+                <td>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input pInputText type="text" digitOnly decimal="true" decimalSeparator="."
+                                style="text-align: right;" placeholder="0,00" pattern="[0-9]+([.][0-9]+)?"
+                                [(ngModel)]="transaction.price" (click)="$event.target.select()"/>
+                        </ng-template>
+
+                        <ng-template pTemplate="output">
+                            {{transaction.price | currency}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+
+                <td>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <p-calendar [inputStyle]="{'width': '70%', 'min-width': '70%'}" [monthNavigator]="true"
+                                [yearNavigator]="true" yearRange="2000:2030" [showIcon]="true" appendTo="body"
+                                [(ngModel)]="transaction.date">
+                            </p-calendar>
+                        </ng-template>
+
+                        <ng-template pTemplate="output">
+                            {{transaction.date | date:'yyyy-MM-dd'}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+
+                <td style="text-align:center">
+                    <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+                        (click)="onRowEditInit(transaction)" class="p-button-rounded p-button-text"></button>
+                    <button *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash"
+                        (click)="onRowEditDelete(transaction)" class="p-button-rounded p-button-text" showDelay="700"></button>
+                    <p-confirmPopup></p-confirmPopup>
+                    <button *ngIf="editing" pButton pRipple type="button" icon="pi pi-check"
+                        (click)="onRowEditSave(transaction, htmlTableRowElement)"
+                        class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+                    <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                        (click)="onRowEditCancel(transaction, ri)"
+                        class="p-button-rounded p-button-text p-button-danger"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

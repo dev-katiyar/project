@@ -1,0 +1,17 @@
+<ng-container *ngIf="videos">
+  <a
+    *ngFor="let video of videos"
+    [href]="'https://www.youtube.com/watch?v=' + video?.snippet?.resourceId.videoId"
+    class="saritasa-card-item">
+    <div
+      *ngIf="video.snippet?.thumbnail"
+      class="saritasa-card-item-img">
+      <img [src]="video.snippet?.thumbnail.url" alt="Video preview">
+    </div>
+    <div class="saritasa-card-item-info">
+      <div class="saritasa-card-item-title"> {{ video.snippet?.title }} </div>
+      <div class="saritasa-card-item-date">{{ video.snippet?.channelTitle }}</div>
+    </div>
+  </a>
+</ng-container>
+

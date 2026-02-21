@@ -1,0 +1,35 @@
+.topbar {
+  background-color: #ffffff !important;
+}
+
+a {
+  color: #1886A7;
+  font-weight: bold;
+  margin-right: 3%;
+  margin-top: 2%;
+  float: right;
+}
+
+.custom-header-menu {
+  float: right;
+}
+
+.custom-header-menu a {
+  color: #000;
+}
+
+.custom-header-menu a:hover {
+  color: #00bee0;
+}
+
+.logged-in-menu {
+  display: none;
+}
+
+.logged-in .logged-in-menu {
+  display: block;
+}
+
+.logged-in .logged-out-menu {
+  display: none;
+}

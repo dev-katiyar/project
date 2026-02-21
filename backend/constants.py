@@ -1,0 +1,33 @@
+MKT_SYMBOL = 'SPY'
+CLOSE = 'close'
+HIGH = 'high'
+LOW = 'low'
+OPEN = 'open'
+VOLUME = 'volume'
+
+VERY_BEARISH = 1
+BEARISH = 2
+NEUTRAL = 0
+BULLISH = 3
+VERY_BULLISH = 4
+START_YEAR = 5
+DAYS_FOR_TECHNICALS = 20
+default_start_date = '2012-01-03'
+WLSectExpVeryPoor = 1;
+WLSectExpPoor = 2;
+WLSectExpMedium = 0;
+WLSectExpGood = 3;
+WLSectExpVeryGood = 4;
+WLSectExpVeryPoor_Text = "VeryPoor";
+WLSectExpPoor_Text = "Poor";
+WLSectExpMedium_Text = "Neutral";
+WLSectExpGood_Text = "Good";
+WLSectExpVeryGood_Text = "VeryGood";
+
+risk_free_rate = 2
+exp_mkt_return = 6
+PORTFOLIO_CALC_DATA_LENGTH = 400
+PORTFOLIO_CALC_FORCALC_LENGTH = 400
+MODEL_USER_ID = 10462
+StrongSell, Sell, Hold, Buy, StrongBuy = range(5)
+Neutral, Bearish, VeryBearish, Bullish, VeryBullish = range(5)

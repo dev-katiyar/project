@@ -1,0 +1,61 @@
+<div class="speedometerWrapper">
+    <div class="speedometerTitle">{{title}}</div>
+
+    <hr style="margin: 0.5rem 0;width: 100%;">
+
+    <div class="container">
+        <div class="speedometerWrapper">
+            <div class="speedometerTextWrapper">
+                <span class="speedometerText textTop">Hold</span>
+
+                <span class="middleSignals">
+                    <span class="speedometerText">Sell</span>
+
+                    <span class="speedometerText">Buy</span>
+                </span>
+
+                <span class="bottomSignals">
+                    <span class="speedometerText">Strong Sell</span>
+
+                    <span class="speedometerText">Strong Buy</span>
+                </span>
+            </div>
+
+            <div class="sizeWrapper">
+                <div class="circleWrapper">
+                    <div [ngClass]="calculateSemiCircleClasses()"></div>
+                </div>
+
+                <div class="dot"></div>
+
+                <div [ngClass]="calculateArrowClasses()">
+                    <div class="arrowMain"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <span class="speedometerSignal" [ngClass]="calculateBuySellClasses()">
+        {{getTextFromSignal()}}
+    </span>
+
+    <div class="countersWrapper">
+        <div class="counterWrapper-Inner">
+            <span class="counterNumber sellColor">{{netBuySellValues.sell}}</span>
+
+            <span class="counterTitle">Sell</span>
+        </div>
+
+        <div class="counterWrapper-Inner">
+            <span class="counterNumber neutralColor">{{netBuySellValues.hold}}</span>
+
+            <span class="counterTitle">Hold</span>
+        </div>
+
+        <div class="counterWrapper-Inner">
+            <span class="counterNumber buyColor">{{netBuySellValues.buy}}</span>
+
+            <span class="counterTitle">Buy</span>
+        </div>
+    </div>
+</div>

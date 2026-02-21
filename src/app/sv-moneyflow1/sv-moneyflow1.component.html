@@ -1,0 +1,239 @@
+<!-- Strategy Inputs -->
+<div class="p-grid p-fluid" style="background-color: white;">
+    <div class="p-col-12 p-sm-4 p-md-2">
+        <div class="p-grid">
+            <div class="p-col-12" style="padding-bottom: 0;">
+                <small>Symbol</small>
+            </div>
+    
+            <div class="p-col-12" style="padding-top: 0;">
+                <app-stocks-autocomplete [(searchText)]="strategy_inputs.model_inputs.symbol"
+                    (onSymbolSelected)="onSymbolSelected($event)">
+                </app-stocks-autocomplete>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-sm-4 p-md-2">
+        <div class="p-grid">
+            <div class="p-col-12" style="padding-bottom: 0;">
+                <small>From Date</small>
+            </div>
+
+            <div class="p-col-12" style="padding-top: 0;">
+                <p-calendar [inputStyle]="{ width: '100%'}" [monthNavigator]="true" [yearNavigator]="true"
+                    yearRange="2015:2030" [minDate]="minStartDate" [maxDate]="maxStartDate"
+                    [(ngModel)]="strategy_inputs.model_inputs.start_date" [showIcon]="true"
+                    [readonlyInput]="true">
+                </p-calendar>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-sm-4 p-md-2">
+        <div class="p-grid">
+            <div class="p-col-12" style="padding-bottom: 0;">
+                <small>To Date</small>
+            </div>
+
+            <div class="p-col-12" style="padding-top: 0;">
+                <p-calendar [inputStyle]="{ width: '100%' }" [monthNavigator]="true" [yearNavigator]="true"
+                    yearRange="2015:2030" [minDate]="minEndDate" [maxDate]="maxEndDate"
+                    [(ngModel)]="strategy_inputs.model_inputs.end_date" [showIcon]="true"
+                    [readonlyInput]="true">
+                </p-calendar>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-sm-4 p-md-2">
+        <div class="p-grid">
+            <div class="p-col-12" style="padding-bottom: 0;">
+                <small>On</small>
+            </div>
+
+            <div class="p-col-12" style="padding-top: 0;">
+                <p-dropdown [options]="sampleFrequencies" optionLabel="name" optionValue="id"
+                    [(ngModel)]="strategy_inputs.model_inputs.sample_frequency"
+                    (onChange)="sampleFrequencyDropdownChange($event)">
+                </p-dropdown>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12" style="padding-top: 0; margin-top: -0.5rem;">
+        <small>Recent: </small>
+        <span *ngIf="recentSymbols.length >= 1">
+            <ng-container *ngFor="let symbol of recentSymbols; let i=index">
+                <span *ngIf="i != recentSymbols.length-1" class="symbol"
+                    (click)="onRecentSymbolClick(symbol)">{{ symbol }}, </span>
+                <span *ngIf="i == recentSymbols.length-1" class="symbol"
+                    (click)="onRecentSymbolClick(symbol)">{{ symbol }} </span>
+            </ng-container>
+            <i class="pi pi-times delete-icon" title="Clear Recent Symbols"
+                (click)="clearRecentSymbols()"></i>
+        </span>
+    </div>
+</div>
+
+<!-- Strategy Inputs - Error -->
+<div *ngIf="error" style="text-align: center; color: red;background-color: white;">
+    <p>{{ errorMessage }}</p>
+</div>
+
+<!-- Model Inputs -->
+<p-fieldset legend="Model Inputs" [toggleable]="true" [collapsed]="fieldSetCollapsed">
+    <div class="p-grid" style="margin: -1.5rem;">
+        <div class="p-col-12 p-md-6 p-xl-3">
+            <p-fieldset legend="SV MF Ind">
+                <div class="p-grid p-ai-center">
+                    <div class="p-col-8">
+                        <label>Number of Periods </label>
+                    </div>
+
+                    <div class="p-col-4">
+                        <p-inputNumber size="2"
+                            [(ngModel)]="strategy_inputs.ria_pro_inputs.ria_inputs.ria_num_of_periods" [min]="2"
+                            [max]="50" [showButtons]="true">
+                        </p-inputNumber>
+                    </div>
+                </div>
+
+                <div class="p-grid p-ai-center">
+                    <div class="p-col-8">
+                        <label>Smoothing Period </label>
+                    </div>
+
+                    <div class="p-col-4">
+                        <p-inputNumber size="2"
+                            [(ngModel)]="strategy_inputs.ria_pro_inputs.ria_inputs.ria_smoothening_ema_period" [min]="2"
+                            [max]="50" [showButtons]="true">
+                        </p-inputNumber>
+                    </div>
+                </div>
+
+                <div class="p-grid p-ai-center">
+                    <div class="p-col-8">
+                        <label>Trigger Signal Period </label>
+                    </div>
+                    <div class="p-col-4">
+                        <p-inputNumber size="2"
+                            [(ngModel)]="strategy_inputs.ria_pro_inputs.ria_inputs.ria_trigger_ema_period" [min]="2"
+                            [max]="50" [showButtons]="true">
+                        </p-inputNumber>
+                    </div>
+                </div>
+            </p-fieldset>
+        </div>
+
+        <div class="p-col-12 p-md-6 p-xl-3">
+            <p-fieldset legend="Stochastic">
+                <div class="p-grid p-ai-center">
+                    <div class="p-col-8">
+                        <label>Number of Periods </label>
+                    </div>
+
+                    <div class="p-col-4">
+                        <p-inputNumber size="2"
+                            [(ngModel)]="strategy_inputs.ria_pro_inputs.stoch_inputs.stoch_num_of_periods" [min]="2"
+                            [max]="50" [showButtons]="true">
+                        </p-inputNumber>
+                    </div>
+                </div>
+
+                <div class="p-grid p-ai-center">
+                    <div class="p-col-8">
+                        <label>Smoothing Period </label>
+                    </div>
+                    <div class="p-col-4">
+                        <p-inputNumber size="2"
+                            [(ngModel)]="strategy_inputs.ria_pro_inputs.stoch_inputs.stoch_smoothening_ema_period"
+                            [min]="2" [max]="50" [showButtons]="true">
+                        </p-inputNumber>
+                    </div>
+                </div>
+
+                <div class="p-grid p-ai-center">
+                    <div class="p-col-8">
+                        <label>Trigger Signal Period </label>
+                    </div>
+                    <div class="p-col-4">
+                        <p-inputNumber size="2"
+                            [(ngModel)]="strategy_inputs.ria_pro_inputs.stoch_inputs.stoch_trigger_ema_period" [min]="2"
+                            [max]="50" [showButtons]="true">
+                        </p-inputNumber>
+                    </div>
+                </div>
+            </p-fieldset>
+        </div>
+
+        <div class="p-col-12 p-md-6 p-xl-3">
+            <p-fieldset legend="Money Flow">
+                <div class="p-grid p-ai-center">
+                    <div class="p-col-8">
+                        <label>Number of Periods </label>
+                    </div>
+                    <div class="p-col-4">
+                        <p-inputNumber size="2"
+                            [(ngModel)]="strategy_inputs.ria_pro_inputs.mfi_inputs.mfi_num_of_periods" [min]="2"
+                            [max]="50" [showButtons]="true">
+                        </p-inputNumber>
+                    </div>
+                </div>
+            </p-fieldset>
+        </div>
+
+        <div class="p-col-12 p-md-6 p-xl-3">
+            <p-fieldset legend="MACD">
+                <div class="p-grid p-ai-center">
+                    <div class="p-col-8">
+                        <label>Slow EMA Period </label>
+                    </div>
+                    <div class="p-col-4">
+                        <p-inputNumber size="2"
+                            [(ngModel)]="strategy_inputs.ria_pro_inputs.macd_inputs.macd_slow_period" [min]="2"
+                            [max]="50" [showButtons]="true">
+                        </p-inputNumber>
+                    </div>
+                </div>
+
+                <div class="p-grid p-ai-center">
+                    <div class="p-col-8">
+                        <label>Fast EMA Period </label>
+                    </div>
+                    <div class="p-col-4">
+                        <p-inputNumber size="2"
+                            [(ngModel)]="strategy_inputs.ria_pro_inputs.macd_inputs.macd_fast_period" [min]="2"
+                            [max]="50" [showButtons]="true">
+                        </p-inputNumber>
+                    </div>
+                </div>
+
+                <div class="p-grid p-ai-center">
+                    <div class="p-col-8">
+                        <label>Trigger Signal Period </label>
+                    </div>
+                    <div class="p-col-4">
+                        <p-inputNumber size="2"
+                            [(ngModel)]="strategy_inputs.ria_pro_inputs.macd_inputs.macd_trigger_period" [min]="2"
+                            [max]="50" [showButtons]="true">
+                        </p-inputNumber>
+                    </div>
+                </div>
+            </p-fieldset>
+        </div>
+    </div>
+</p-fieldset>
+
+<!-- Button to Run or Reset Inpus -->
+<div class="p-text-right p-mt-2">
+    <button label="Reset" pButton (click)="resetModelInputs()" class="p-button-outlined p-mr-2"></button>
+    <button label="Run Strategy" pButton (click)="getStrategyResult()"></button>
+</div>
+
+<!-- Chart Output -->
+<div *ngIf="responseChartData" style="width: 100%;">
+    <hr style="margin: 1rem 0;width: 100%;">
+    <app-strategy-riapro-chart [chartData]="responseChartData"> </app-strategy-riapro-chart>
+</div>
+

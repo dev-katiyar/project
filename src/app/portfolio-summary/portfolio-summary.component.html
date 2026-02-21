@@ -1,0 +1,52 @@
+<div style="font-size: 0.8rem;">
+    (as on: <span style="color: red;">
+        {{ updatedAt | date:'medium'}} EST.
+    </span> Click open the portfolio to see the latest details.)
+</div>
+<p-table *ngIf="portfolioData && portfolioData.length > 0" #dt [value]="portfolioData" styleClass="p-datatable-positions p-datatable-striped"
+    [paginator]="false" [autoLayout]="true">
+
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="text-align: left;">Portfolio Name</th>
+            <th style="text-align: right;">Starting Value</th>
+            <th style="text-align: right;">Current Value</th>
+            <th style="text-align: right;">P&L Since Inception</th>
+            <th style="text-align: right;">Today's P&L</th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-dataRow>
+        <tr>
+            <td class="p-text-left">
+                <div (click)="onPortfolioNameClick(dataRow)" class="symbol">
+                    {{ dataRow.name}}
+                </div>
+            </td>
+
+            <td>
+                    {{ dataRow.startingCash | currency }}
+            </td>
+
+            <td>
+                    {{ dataRow.portfolioValue | currency }}
+            </td>
+
+            <td>
+                <div [ngClass]="dataRow.pnl | upDownColor">
+                    {{ dataRow['pnl'] | currency }} ({{ dataRow['pnlPercent'] | number: '0.2-2' }}%)
+                </div>
+            </td>
+
+            <td>
+                <div [ngClass]="dataRow.dailyPnl | upDownColor">
+                    {{ dataRow['dailyPnl'] | currency }} ({{ dataRow['dailyPnlPercentage'] | number: '0.2-2' }}%)
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<div *ngIf="portfolioData && portfolioData.length == 0" style="text-align: center; padding: 3rem;">
+    You have no personal portfolios. You can create one by going to 'Portfolios' tab above.
+</div>

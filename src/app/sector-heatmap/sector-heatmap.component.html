@@ -1,0 +1,17 @@
+<div class="rwd-table">
+
+  <div class="column heatMap" *ngFor="let row of data">
+    <div class="heat-heading">{{ getDisplayString(row.name)}}</div>
+    <div [ngClass]="getHeatCls(row)" class="sectorDiv"><a class="heatmapAnchor cursorPointer"
+        (click)="clickSymbol(row.symbol,'Sector',row.name)">{{row.symbol}} <br> {{row.rating}} </a></div>
+
+    <div *ngFor="let industry of row.industryData">
+      <div class="heat-heading">{{ getDisplayString(industry.industryname) }}</div>
+      <div [ngClass]="getHeatCls(industry)" class="industryDiv"><a class="heatmapAnchor cursorPointer"
+          (click)="clickSymbol(industry.symbol,'Industry',industry.industryname)">{{industry.symbol}} <br>
+          {{industry.rating}}</a>
+      </div>
+    </div>
+  </div>
+
+</div>

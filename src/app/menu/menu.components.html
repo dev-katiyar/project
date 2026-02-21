@@ -1,0 +1,9 @@
+<ul class='layout-menu'>
+  <li
+    *ngFor='let item of model; let i = index;'
+    app-menuitem
+    [item]='item'
+    [index]='i'
+    [root]='true'>
+  </li>
+</ul>

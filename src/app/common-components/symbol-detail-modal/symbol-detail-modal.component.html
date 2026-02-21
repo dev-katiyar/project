@@ -1,0 +1,47 @@
+<div class="p-grid">
+    <div class="p-col-12 p-lg-12">
+        <p-tabView class="sv-tabview-nopadding">
+            <p-tabPanel header="Chart">
+                <app-tradingview-chart [symbol]="symbol"></app-tradingview-chart>
+            </p-tabPanel>
+
+            <p-tabPanel header="Technical">
+                <ng-template pTemplate="content">
+                    <app-investing displayClass="p-grid p-fluid" [symbol]="symbol"></app-investing>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Analyst">
+                <ng-template pTemplate="content">
+                    <app-analyst displayClass="p-col-12 scrollable" [symbol]="symbol"></app-analyst>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Fundamental">
+                <ng-template pTemplate="content">
+                    <app-fundamental [symbol]="symbol"></app-fundamental>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="News">
+                <ng-template pTemplate="content">
+                    <app-news-table newsClass="news-big" title="Top News" [symbols]="newsSymbols"></app-news-table>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Dividend">
+                <ng-template pTemplate="content">
+                    <app-dividend-history [symbol]="symbol"
+                        [fullDividendDetail]="fullDividendDetail"></app-dividend-history>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Earnings">
+                <ng-template pTemplate="content">
+                    <app-earning-history [symbol]="symbol"
+                        [fullEarningDetail]="fullEarningDetail"></app-earning-history>
+                </ng-template>
+            </p-tabPanel>
+        </p-tabView>
+    </div>
+</div>

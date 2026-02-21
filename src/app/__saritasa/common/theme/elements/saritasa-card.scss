@@ -1,0 +1,30 @@
+.saritasa-card {
+  background-color: var(--surface-base-color);
+  box-shadow: var(--card-shadow);
+
+  &-header {
+    background-color: var(--card-header-color);
+    color: var(--surface-base-color);
+    padding: 10px 15px;
+    font-weight: 500;
+  }
+
+  &-item {
+    padding: 15px;
+  }
+
+  &-section-link {
+    padding: 10px;
+
+    a {
+      width: 100%;
+      height: 100%;
+      background-color: var(--primary-color);
+      color: var(--surface-base-color);
+      font-weight: bold;
+      display: block;
+      text-align: center;
+      padding: 10px 0;
+    }
+  }
+}

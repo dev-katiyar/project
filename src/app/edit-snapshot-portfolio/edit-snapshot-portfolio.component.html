@@ -1,0 +1,56 @@
+<div class="p-grid p-fluid">
+    <h2>Edit a Portfolio</h2>
+    <div class="p-col-12 summary">
+        <div class="p-col-12 p-md-4">
+            <label for="portfolio-name">Portfolio Name</label>
+            <input [(ngModel)]="selectedPortfolio.name" pInputText id="portfolio-name" (click)="$event.target.select()"/>
+        </div>
+    </div>
+
+    <div class="p-col-12">
+        <button pButton label="Save" style="width:150px; margin-right:10px; float: right;"
+            type="button" (click)="onEditPortfolioSaveClick()">
+        </button>
+
+        <button pButton label="Cancel" style="width:150px; margin-right:10px; float: right;"
+            type="button" class="p-button-outlined" (click)="onEditPortfolioCancelClick()">
+        </button>
+    </div>
+
+    <div class="p-col-12 summary">
+        <p-table [value]="selectedPortfolioTransactions" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="text-align: left;">Symbol</th>
+                    <th>Qty</th>
+                    <th>Cost Basis</th>
+                    <th></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-transaction>
+                <tr>
+                    <td style="text-align: left;">
+                        {{ transaction.symbol }}
+                    </td>
+
+                    <td>
+                        <input pInputText [(ngModel)]="transaction.qty" placeholder="# Shares"
+                            style="text-align: right;" (click)="$event.target.select()"/>
+                    </td>
+
+                    <td>
+                        <input pInputText [(ngModel)]="transaction.cost_basis" placeholder="Cost Basis"
+                            style="text-align: right;" (click)="$event.target.select()" />
+                    </td>
+
+                    <td style="text-align: center;">
+                        <i (click)="onDeleteTransactionClick(transaction)" class="pi pi-times-circle" title="Delete Row"
+                            style="font-size: 1em; cursor: pointer; color: red"> Delete</i>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <p-toast position="center" class="custom-toast"></p-toast>
+</div>

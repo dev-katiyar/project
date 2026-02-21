@@ -1,0 +1,21 @@
+<div class="p-grid">
+    <div class="p-col-12 p-text-right">
+        <p-radioButton labelStyleClass="p-m-1" name="groupname" value="and" label="All of following" [(ngModel)]="strategyInput.selected_condition"></p-radioButton>
+        <p-radioButton labelStyleClass="p-m-1" name="groupname" value="or" label="Any of following" [(ngModel)]="strategyInput.selected_condition"></p-radioButton>
+    </div>
+
+    <div class="p-col-12">
+        <div *ngFor="let rowInd of strategyInput.strategy_list">
+            <app-sv-strategy-item [selectedInd]="rowInd" (onIndicatorRowDelete)="indicatorRowDelete($event)"></app-sv-strategy-item>
+        </div>
+    </div>
+
+    <div class="p-col-12">
+        <p-dropdown [options]="indicators" optionValue="key" optionLabel="name" [(ngModel)]="selectedIndId" name="name"
+            class="dropdown-nopad">
+        </p-dropdown>
+        <button type="button" class="p-button-success p-m-1" pButton style="margin-left:20px;padding:8px;" label="+ Condition"
+            (click)="addIndicatorRow()" pTooltip="Click to proceed">
+        </button>
+    </div>
+</div>

@@ -1,0 +1,320 @@
+<div class="p-grid" style="margin: -0.75rem;">
+  <div class="p-col-12 p-lg-4 p-p-1">
+    <div class="border-shadow p-p-2" style="height: 100%;">
+      <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+        Asset Classes
+      </span>
+
+      <hr style="margin: 0.5rem 0;">
+
+      <p-tabView (onChange)="onAssetClassTabChange($event)">
+        <p-tabPanel header="Indices">
+          <app-live-prices [symbolsDataArr]="indicesSymbols" [showChartIcon]="true" (symbolClicked)="onSymbolClicked($event)">
+          </app-live-prices>
+        </p-tabPanel>
+
+        <p-tabPanel header="Bonds">
+          <ng-template pTemplate="content">
+            <app-live-prices-bonds [symbolsDataArr]="bondSymbols" [showChartIcon]="true" (symbolClicked)="onSymbolClicked($event)">
+            </app-live-prices-bonds>
+          </ng-template>
+        </p-tabPanel>
+
+        <p-tabPanel header="Commodities">
+          <ng-template pTemplate="content">
+            <app-live-prices [symbolsDataArr]="commoditySymbols" [showChartIcon]="true" (symbolClicked)="onSymbolClicked($event)">
+            </app-live-prices>
+          </ng-template>
+        </p-tabPanel>
+
+        <p-tabPanel header="Cryptos">
+          <ng-template pTemplate="content">
+            <app-live-prices [symbolsDataArr]="cryptoSymbols" [showChartIcon]="true" (symbolClicked)="onSymbolClicked($event)">
+            </app-live-prices>
+          </ng-template>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+
+  <div class="p-col-12 p-lg-5 p-p-1">
+    <div class="border-shadow p-p-2" style="height: 100%;">
+      <line-chart barClass="chart-big-2" title="Top Tickers Yearly Performance" [symbols]="selectedSymbol" [isOneSymbolPriceData]="true" [yAxisText]="yAxisTextAssetClassChart">
+      </line-chart>
+    </div>
+  </div>
+
+  <div class="p-col-12 p-lg-3 p-p-1">
+    <div class="border-shadow p-p-2" style="height: 100%;">
+      <div style="padding: 0 0.25rem;">
+        <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+          Market Summary
+        </span>
+      </div>
+
+      <hr style="margin: 0.5rem 0;">
+
+      <div>
+        <app-market-summary-widget></app-market-summary-widget>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-col-12 p-lg-3 p-p-1">
+    <div class="border-shadow p-p-2" style="height: 100%;">
+      <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+        Stock Highlights
+      </span>
+
+      <p-dropdown [options]="indices" optionLabel="name" [(ngModel)]="selectedIndex" class="dropdown-nopad">
+      </p-dropdown>
+
+      <hr style="margin: 0.5rem 0;">
+
+      <p-tabView>
+        <p-tabPanel>
+          <ng-template pTemplate="header">
+            <span>Top 10</span>
+            <app-help-icon key="homeStockHighlightsTop10"></app-help-icon>
+          </ng-template>
+      
+          <ng-template pTemplate="content">
+            <app-live-prices2 [listURL]="selectedIndex.urls.top10"></app-live-prices2>
+          </ng-template>
+        </p-tabPanel>
+      
+        <p-tabPanel>
+          <ng-template pTemplate="header">
+            <span>Bottom 10</span>
+            <app-help-icon key="homeStockHighlightsBottom10"></app-help-icon>
+          </ng-template>
+      
+          <ng-template pTemplate="content">
+            <app-live-prices2 [listURL]="selectedIndex.urls.bottom10"></app-live-prices2>
+          </ng-template>
+        </p-tabPanel>
+      
+        <p-tabPanel>
+          <ng-template pTemplate="header">
+            <span>Most Active</span>
+            <app-help-icon key="homeStockHighlightsMostActive"></app-help-icon>
+          </ng-template>
+      
+          <ng-template pTemplate="content">
+            <app-live-prices-mostactive [listURL]="selectedIndex.urls.topActive"></app-live-prices-mostactive>
+          </ng-template>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+
+  <div class="p-col-12 p-lg-5 p-p-1">
+    <div class="border-shadow p-p-2" style="height: 100%;">
+      <div style="padding: 0 0.25rem;margin-bottom: 1rem;">
+        <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+          Sector Performance
+          <app-help-icon key="homeSectorPerformance"></app-help-icon>
+        </span>
+
+        <span style="float: right;font-weight: bold;">
+          <a [routerLink]="['/relative-absolute-analysis-sectors']">View Details</a>
+        </span>
+      </div>
+
+      <hr style="margin: 0.5rem 0;">
+
+      <app-live-prices-sectors></app-live-prices-sectors>
+    </div>
+  </div>
+
+  <div class="p-col-12 p-lg-4 p-p-1">
+    <div class="border-shadow p-p-2" style="height: 100%;">
+      <div style="padding: 0 0.25rem;">
+        <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+          Market Map
+          <app-help-icon key="homeMarketMap"></app-help-icon>
+        </span>
+
+        <p-dropdown [options]="indices" optionLabel="name" [(ngModel)]="selectedMarketMapIndex" (onChange)="onMarketMapDropdownChange()" class="dropdown-nopad">
+        </p-dropdown>
+
+        <span style="float: right;font-weight: bold;">
+          <a [routerLink]="['/holdingsmap']">View Details</a>
+        </span>
+      </div>
+
+      <hr style="margin: 0.5rem 0;">
+
+      <div>
+        <app-stocks-map *ngIf="marketMapData" [chartData]="marketMapData" [isFullWidth]="true"></app-stocks-map>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-col-12 p-lg-4 p-p-1">
+    <div class="border-shadow p-p-2" style="height: 100%;">
+      <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+        RSI
+        <app-help-icon key="homeRSI"></app-help-icon>
+      </span>
+
+      <p-dropdown [options]="indices" optionLabel="name" [(ngModel)]="selectedIndex" class="dropdown-nopad">
+      </p-dropdown>
+
+      <hr style="margin: 0.5rem 0;">
+
+      <p-tabView>
+        <p-tabPanel header="Top 10 Oversold">
+          <app-live-prices-rsi [listURL]="selectedIndex.urls.rsiOverSold10"></app-live-prices-rsi>
+        </p-tabPanel>
+
+        <p-tabPanel header="Top 10 Overbought">
+          <ng-template pTemplate="content">
+            <app-live-prices-rsi [listURL]="selectedIndex.urls.rsiOverBought10"></app-live-prices-rsi>
+          </ng-template>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+
+  <div class="p-col-12 p-lg-4 p-p-1">
+    <div class="border-shadow p-p-2" style="height: 100%;">
+      <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+        Momentum
+        <app-help-icon key="homeMomentum"></app-help-icon>
+      </span>
+
+      <p-dropdown [options]="indices" optionLabel="name" [(ngModel)]="selectedIndex" class="dropdown-nopad">
+      </p-dropdown>
+
+      <hr style="margin: 0.5rem 0;">
+
+      <p-tabView>
+        <p-tabPanel header="Top 10 Increase">
+          <app-live-prices-macdmom [listURL]="selectedIndex.urls.momIncrease10"></app-live-prices-macdmom>
+        </p-tabPanel>
+
+        <p-tabPanel header="Top 10 Decrease">
+          <ng-template pTemplate="content">
+            <app-live-prices-macdmom [listURL]="selectedIndex.urls.momDecrease10"></app-live-prices-macdmom>
+          </ng-template>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+
+  <div class="p-col-12 p-lg-4 p-p-1">
+    <div class="border-shadow p-p-2" style="height: 100%;">
+      <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+        Relative Strength
+      </span>
+
+      <p-dropdown [options]="indices" optionLabel="name" [(ngModel)]="selectedIndex" class="dropdown-nopad">
+      </p-dropdown>
+
+      <hr style="margin: 0.5rem 0;">
+
+      <p-tabView>
+        <p-tabPanel header="Top 10 Outperformer">
+          <app-live-prices-rs [listURL]="selectedIndex.urls.rsOutperformers"></app-live-prices-rs>
+        </p-tabPanel>
+
+        <p-tabPanel header="Top 10 Underperformer">
+          <ng-template pTemplate="content">
+            <app-live-prices-rs [listURL]="selectedIndex.urls.rsUnderperformers"></app-live-prices-rs>
+          </ng-template>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+
+  <div class="p-col-12 p-lg-12 p-p-1">
+    <div class="border-shadow p-p-2" style="height: 100%;">
+      <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+        SimpleVisor Insights
+        <app-help-icon key="homeSvInsights"></app-help-icon>
+      </span>
+
+      <span style="float: right;font-weight: bold;">
+        <a [routerLink]="['/insights/latest-insights']">View More</a>
+      </span>
+
+      <hr style="margin: 0.5rem 0;">
+
+      <div>
+        <app-latest-insights-horizontal></app-latest-insights-horizontal>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-col-12 p-lg-6 p-p-1">
+    <div class="border-shadow p-p-2" style="height: 100%;overflow: scroll;height: 308px;">
+      <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+        Latest News
+        <app-help-icon key="homeLatestNews"></app-help-icon>
+      </span>
+
+      <hr style="margin: 0.5rem 0;">
+
+      <div><app-new-table-rss></app-new-table-rss></div>
+    </div>
+  </div>
+
+  <div class="p-col-12 p-lg-3 p-p-1 p-sm-6">
+    <div class="border-shadow p-p-2" style="height: 100%;">
+      <div style="text-align: right;">
+        <app-help-icon key="homeFearGreed"></app-help-icon>
+      </div>
+
+      <app-gauge-speed [valueGauge]="fearGreedTechnical?.fear_greed" [titleText]="'Fear/Greed'"></app-gauge-speed>
+    </div>
+  </div>
+
+  <div class="p-col-12 p-lg-3 p-p-1 p-sm-6">
+    <div class="border-shadow p-p-2" style="height: 100%;">
+      <div style="text-align: right;">
+        <app-help-icon key="homeTechnical"></app-help-icon>
+      </div>
+
+      <app-gauge-speed [valueGauge]="fearGreedTechnical?.technical" [titleText]="'Technical'"></app-gauge-speed>
+    </div>
+  </div>
+
+  <div class="p-col-12 p-lg-6 p-p-1">
+    <div class="border-shadow p-p-2" style="height: 100%;">
+      <div style="padding: 0 0.25rem;">
+        <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+          SV Core Portfolios
+          <app-help-icon key="homeSvPortfolios"></app-help-icon>
+        </span>
+
+        <span style="float: right;font-weight: bold;">
+          <a [routerLink]="['/portfolioscombined']">View All</a>
+        </span>
+      </div>
+
+      <hr style="margin: 0.5rem 0;width: 100%;">
+
+      <app-portfolio-summary portfolioType="riapro" listURL="/modelportfolio/read/summary/riapro/3"></app-portfolio-summary>
+    </div>
+  </div>
+
+  <div class="p-col-12 p-lg-6 p-p-1">
+    <div class="border-shadow p-p-2" style="height: 100%;">
+      <div style="padding: 0 0.25rem;">
+        <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+          My Portfolios
+          <app-help-icon key="homeMyPortfolios"></app-help-icon>
+        </span>
+
+        <span style="float: right;font-weight: bold;">
+          <a [routerLink]="['/portfolioscombined']">View All</a>
+        </span>
+      </div>
+
+      <hr style="margin: 0.5rem 0; width: 100%;">
+
+      <app-portfolio-summary portfolioType="user" listURL="/modelportfolio/read/summary/user/3"></app-portfolio-summary>
+    </div>
+  </div>
+</div>

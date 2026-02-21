@@ -1,0 +1,153 @@
+<div class="p-grid">
+    <div class="p-col-12 p-text-right p-p-0" *ngIf="!isEtfView">
+        <span style="font-size: 0.8rem;">
+            Price data of <span style="color: red;"> {{ updateDate }} EST</span>
+            <i class="pi pi-refresh p-text-bold" style="color: red;cursor: pointer;font-size: 1.2rem;" (click)="handleLiveDataRefresh()"></i>
+        </span>
+    </div>
+
+    <div class="p-col-12">
+        <div *ngIf="tblData" class="border-shadow" style="margin: -0.5rem;">
+            <p-table [value]="tblData" [scrollable]="false">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th [attr.colspan]="isEtfView ? 2 : 3" class="border-right" style="vertical-align: middle;">
+                            Sector
+                        </th>
+
+                        <th colspan="6" class="border-right" style="vertical-align: middle;">
+                            Relative Performance to S&P 500 Index
+                        </th>
+
+                        <th colspan="5" class="border-right" style="vertical-align: middle;">
+                            Moving Averages
+                        </th>
+
+                        <th colspan="2" class="border-right" style="vertical-align: middle;">
+                            Month End & Beta
+                        </th>
+
+                        <th colspan="4" class="border-right" style="vertical-align: middle;">
+                            Risk Range
+                        </th>
+                    </tr>
+                    <tr style="border-bottom: 2px solid gray;">
+                        <th class="p-text-left" style="vertical-align: middle;">Symbol</th>
+                        <th class="p-text-left" style="vertical-align: middle">Name</th>
+                        <th class="p-text-center border-right" style="text-align: center; vertical-align: middle;" *ngIf="!isEtfView">Top 10 Holdings</th>
+                        
+
+                        <th style="vertical-align: middle;">Last Price</th>
+                        <th style="vertical-align: middle;">1 Week</th>
+                        <th style="vertical-align: middle;">4 Week</th>
+                        <th style="vertical-align: middle;">12 Week</th>
+                        <th style="vertical-align: middle;">24 Week</th>
+                        <th class="border-right" style="vertical-align: middle;">52 Week</th>
+
+                        <th style="vertical-align: middle;">Short MA<sup><i class="pi pi-info-circle"
+                                    style="color: green;" pTooltip="14 Week Simple Moving Average on Weekly price data"
+                                    tooltipPosition="top"></i></sup></th>
+                        <th style="vertical-align: middle;">Short MA<sup><i class="pi pi-info-circle"
+                                    style="color: green;" pTooltip="14 Week Simple Moving Average on Weekly price data"
+                                    tooltipPosition="top"></i></sup> Px Dev</th>
+                        <th style="vertical-align: middle;">Long MA<sup><i class="pi pi-info-circle"
+                                    style="color: green;" pTooltip="35 Week Simple Moving Average on Weekly price data"
+                                    tooltipPosition="top"></i></sup></th>
+                        <th style="vertical-align: middle;">Long MA<sup><i class="pi pi-info-circle"
+                                    style="color: green;" pTooltip="35 Week Simple Moving Average on Weekly price data"
+                                    tooltipPosition="top"></i></sup> Px Dev</th>
+                        <th class="border-right" style=" vertical-align: middle;">MA Signal</th>
+
+                        <th style="vertical-align: middle;">Month End Price</th>
+                        <th class="border-right" style="vertical-align: middle;">Beta 5Yr Monthly</th>
+
+                        <th style="vertical-align: middle;">Low</th>
+                        <th style="vertical-align: middle;">High</th>
+                        <th style="vertical-align: middle;">Range Width</th>
+                        <th class="border-right" style="vertical-align: middle;">Risk Level</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+                    <tr *ngIf="rowGroupMetadata[row.subCategory].index === rowIndex && rowIndex != 0"
+                        class="gray-header">
+                        <td colspan="2" class="p-text-left border-right">
+                            <span class="p-text-bold p-ml-2">{{row.subCategory}}</span>
+                        </td>
+                        <td *ngIf="!isEtfView"></td>
+
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="border-right"></td>
+
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="border-right"></td>
+
+                        <td></td>
+                        <td class="border-right"></td>
+
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="border-right"></td>
+                    </tr>
+
+                    <tr [ngClass]="{'index-row': rowIndex == 0 }">
+                        <td class="symbol p-text-left" style="width: 16rem;" (click)="onSymbolClick(row.symbol)">
+                            {{row.symbol }}
+                        </td>
+                        <td class="p-text-left">{{ row?.name }}</td>
+                        <td class="p-text-center border-right"  *ngIf="!isEtfView">
+                            <i *ngIf="showHoldingsIcon(row.symbol)" class="pi pi-sitemap"
+                                style="font-size: 1.5rem;cursor: pointer;color: #004b8d;font-weight: bold;"
+                                (click)="onSymbolRowClick(row)">
+                            </i>
+                        </td>
+
+                        <td>{{ row.last | number:'0.2-2' }}</td>
+                        <td [ngClass]="getStockClass(row.rel_1w_chg, rowIndex)" class="p-text-bold">{{
+                            row.rel_1w_chg | percent:'0.2-2' }}</td>
+                        <td [ngClass]="getStockClass(row.rel_4w_chg, rowIndex)" class="p-text-bold">{{
+                            row.rel_4w_chg | percent:'0.2-2'}}</td>
+                        <td [ngClass]="getStockClass(row.rel_12w_chg, rowIndex)" class="p-text-bold">{{
+                            row.rel_12w_chg | percent:'0.2-2'}}</td>
+                        <td [ngClass]="getStockClass(row.rel_24w_chg, rowIndex)" class="p-text-bold">{{
+                            row.rel_24w_chg | percent:'0.2-2'}}</td>
+                        <td [ngClass]="getStockClass(row.rel_52w_chg, rowIndex)"
+                            class="border-right p-text-bold">
+                            {{ row.rel_52w_chg | percent:'0.2-2'}}
+                        </td>
+
+                        <td>{{ row.short_avg | number:'0.2-2'}}</td>
+                        <td [ngClass]="row.dev_short_avg | upDownColor">{{ row.dev_short_avg | percent:'0.2-2' }}</td>
+                        <td>{{ row.long_avg | number:'0.2-2' }}</td>
+                        <td [ngClass]="row.dev_long_avg | upDownColor">{{ row.dev_long_avg | percent:'0.2-2' }}</td>
+                        <td [ngStyle]="{'background-color': row.avg_cross_signal == 'Bullish' ? 'green': 'red'}"
+                            class="p-text-bold p-text-center border-right" style="color: white;">
+                            {{ row.avg_cross_signal }}
+                        </td>
+
+                        <td>{{ row.month_end_price | number:'0.2-2'}}</td>
+                        <td class="border-right">{{ row.beta | number:'0.2-2' }}</td>
+
+
+                        <td>{{ row.rr_low | number:'0.2-2' }}</td>
+                        <td>{{ row.rr_high | number:'0.2-2' }}</td>
+                        <td>{{ row.range| number:'0.2-2' }}</td>
+                        <td [ngStyle]="{
+                            'background-color': row.risk == 'low' ? 'green': (row.risk == 'high' ? 'red': ''),
+                            'color': (row.risk != 'normal') ? 'white' : 'black'}"
+                            class="p-text-bold p-text-center border-right">
+                            {{ row.risk | uppercase}}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

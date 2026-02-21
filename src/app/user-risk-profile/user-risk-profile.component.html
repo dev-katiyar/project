@@ -1,0 +1,85 @@
+<div *ngIf="userData" class="p-grid border-shadow p-p-1 p-mb-3 p-mt-1" style="background-color: white;">
+    <!-- Heading -->
+    <div class="p-col-12" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+        About me
+    </div>
+
+    <!-- Horizontal Divider -->
+    <hr style="margin: 0.5rem 0;width: 100%;">
+
+    <!-- Risk - Profile -->
+    <div class='p-grid p-fluid p-formgrid p-p-6'>
+        <div class="p-field p-col-12 p-md-3">
+            <label for='age'>
+                <span class="bold">Age </span>(Optional)
+            </label>
+
+            <p-dropdown id="age" [options]='ageOptions'
+                [(ngModel)]='userData.age' optionLabel='name' optionValue='id'
+                placeholder='-select-'></p-dropdown>
+        </div>
+
+        <div class="p-field p-col-12 p-md-3">
+            <label for='dependents'>
+                <span class="bold">Dependents </span>(Optional)
+            </label>
+
+            <p-dropdown id="dependents" [options]='dependentsOptions'
+                [(ngModel)]='userData.dependents' optionLabel='name' optionValue='id'
+                placeholder='-select-'></p-dropdown>
+        </div>
+
+        <div class="p-field p-col-12 p-md-3">
+            <label for='maritalStatus'>
+                <span class="bold">Marital Status </span>(Optional)
+            </label>
+
+            <p-dropdown id="maritalStatus"
+                [options]='maritalStatusOptions'
+                [(ngModel)]='userData.martial_status' optionLabel='name' optionValue='id'
+                placeholder='-select-'></p-dropdown>
+        </div>
+
+        <div class="p-field p-col-12 p-md-3">
+
+        </div>
+
+        <div class="p-field p-col-12 p-md-6 p-pt-4">
+            <label>
+                <span class="bold">Financial Goals </span>(Optional)
+            </label>
+
+            <div>
+                <div *ngFor="let fgOption of financialGoalOptions"
+                    class="p-field-checkbox">
+                    <p-radioButton [inputId]="fgOption.id" name="financialGoal"
+                        [value]="fgOption.id"
+                        [(ngModel)]="userData.financial_goals"></p-radioButton>
+
+                    <label [for]="fgOption.id">
+                        {{fgOption.description}}
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-field p-col-12 p-md-6 p-pt-4">
+            <label>
+                <span class="bold">Risk Tolerance </span>(Optional)
+            </label>
+
+            <div>
+                <div *ngFor="let rtOption of riskToleranceOptions"
+                    class="p-field-checkbox">
+                    <p-radioButton [inputId]="rtOption.id" name="riskTolerance"
+                        [value]="rtOption.id"
+                        [(ngModel)]="userData.risk_tolerance"></p-radioButton>
+
+                    <label [for]="rtOption.id">
+                        {{rtOption.description}}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

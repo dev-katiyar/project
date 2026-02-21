@@ -1,0 +1,13 @@
+<div
+  *ngFor="let date of dates"
+  class="saritasa-card-item">
+  <a
+    class="link"
+    [routerLink]="['/commentary', 'newsletter']"
+    [queryParams]="{
+          year: date.getFullYear(), 
+          month: date.getMonth()
+        }">
+    {{ date|date:'MMMM YYY' }}
+  </a>
+</div>

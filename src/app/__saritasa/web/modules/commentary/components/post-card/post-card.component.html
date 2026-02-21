@@ -1,0 +1,23 @@
+<div *ngIf="post" class="post-card saritasa-card border-shadow">
+    <div class="post-card-image">
+        <a [href]="post.link" target="_blank">
+            <img *ngIf="post.media_url" [src]="post.media_url" alt="post image" />
+        </a>
+    </div>
+
+    <div class="post-card-content">
+        <a class="post-card-heading" [href]="post.link" target="_blank">
+            {{ post.title }}
+        </a>
+
+        <div class="post-card-wrapper">
+            <div class="post-card-date">
+                <span>Written by {{ post.writer }}</span> | <span>{{ post.date | date: 'MMMM dd,yyyy' }}</span></div>
+            <div class="post-card-info" [innerHtml]="post.excerpt"></div>
+        </div>
+
+        <a class="link" [href]="post.link" target="_blank">
+            Continue reading
+        </a>
+    </div>
+</div>

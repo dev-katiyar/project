@@ -1,0 +1,51 @@
+.saritasa-card {
+
+  &-item {
+    display: flex;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 13px;
+    line-height: 1em;
+    cursor: pointer;
+    transition: .2s;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &-img {
+      margin-right: 15px;
+      display: flex;
+      flex-shrink: 0;
+      justify-content: center;
+      align-items: center;
+      height: 65px;
+      width: 65px;
+
+      img {
+        height: 100%;
+        width: 100%;
+      }
+    }
+
+    &-title {
+      font-weight: bold;
+      flex-grow: 1;
+      margin-bottom: 5px;
+      color: var(--surface-font-color)
+    }
+
+    &-date {
+      color: var(--additional-text-color)
+    }
+
+    &:hover {
+      background-color: var(--primary-hover-color);
+      transition: .2s;
+    }
+  }
+}

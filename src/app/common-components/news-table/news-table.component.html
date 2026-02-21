@@ -1,0 +1,90 @@
+<div *ngIf="title !=''">
+    <div class="title">
+        {{title}}
+    </div>
+
+    <hr style="margin: 0.5rem 0;width: 100%;">
+
+    <div [class]="newsClass">
+        <p-table #dt [value]="news" [paginator]="false" [rows]="100" [reorderableColumns]="true"
+            [scrollable]="false" styleClass="p-datatable-positions p-datatable-striped" sortField="date_raw"
+            sortOrder="-1">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="date_raw" style="width:150px; text-align: left;">
+                        Date
+                        <p-sortIcon field="time"></p-sortIcon>
+                    </th>
+
+                    <th pSortableColumn="symbol" style="width:130px; text-align: left;">
+                        Symbol
+                        <p-sortIcon field="symbol"></p-sortIcon>
+                        <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto">
+                        </p-columnFilter>
+                    </th>
+
+                    <th pSortableColumn="title" style="text-align:left;">
+                        Link
+                        <p-sortIcon field="title"></p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td style="text-align: left;">{{item.time}}</td>
+
+                    <td class="symbol" (click)="onSymbolClick(item.symbol)" style="text-align: left;">{{item.symbol}}
+                    </td>
+
+                    <td>
+                        <div style="text-align: left;">
+                            <a href="{{item.link}}" target="_blank">{{item.title}}</a>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<div *ngIf="title ==''">
+    <div [class]="newsClass">
+        <p-table #dt [value]="news" [paginator]="false" [rows]="100" [reorderableColumns]="true"
+            [scrollable]="false" styleClass="p-datatable-positions p-datatable-striped">
+            <ng-template pTemplate="header">
+                <tr>
+                    <!-- <th pSortableColumn="symbol" style="width:130px; text-align: left;">
+                        Symbol
+                        <p-sortIcon field="symbol"></p-sortIcon>
+                        <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto"></p-columnFilter>
+                    </th> -->
+
+                    <th pSortableColumn="date_raw" style="width:150px; text-align: left;">
+                        Date
+                        <p-sortIcon field="time"></p-sortIcon>
+                    </th>
+
+                    <th pSortableColumn="title" style="text-align: left;">
+                        News
+                        <p-sortIcon field="title"></p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <!-- <td style="text-align: left;" class="symbol-withoutpointer">{{item.symbol}}</td> -->
+                    <td style="text-align: left;">{{item.time}}</td>
+
+                    <td style="text-align: left;">
+                        <div>
+                            <a href="{{item.link}}" target="_blank">{{item.title}}</a>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+</div>

@@ -1,0 +1,60 @@
+<ng-container>
+  <!-- <div *ngIf='root' class='layout-menuitem-root-text'>{{item.label}}</div> -->
+  <a
+    *ngIf='!item.routerLink || (item.items && item.items.length > 0)'
+    [attr.href]='item.url'
+    (click)='itemClick($event)'
+    (mouseenter)='onMouseEnter()'
+    (keydown.enter)='itemClick($event)'
+    [attr.target]='item.target'
+    [attr.tabindex]='0'
+    [ngClass]='item.class'
+    pRipple>
+    <i
+      [ngClass]='item.icon'
+      class='layout-menuitem-icon'>
+    </i>
+    <span>{{item.label}}</span>
+    <i class='pi pi-fw pi-angle-down layout-menuitem-toggler' *ngIf='item.items && item.items.length > 0'></i>
+    <span class='menuitem-badge' *ngIf='item.badge'>{{item.badge}}</span>
+  </a>
+  <a
+    *ngIf='item.routerLink && (!item.items || item.items.length ===0)'
+    (click)='itemClick($event)'
+    (mouseenter)='onMouseEnter()'
+    [routerLink]='item.routerLink'
+    routerLinkActive='active-menuitem-routerlink'
+    [routerLinkActiveOptions]='{exact: true}'
+    [attr.target]='item.target'
+    [attr.tabindex]='0'
+    [ngClass]='item.class'
+    pRipple>
+    <i [ngClass]='item.icon' class='layout-menuitem-icon'></i>
+    <span>{{item.label}}</span>
+    <i
+      class='pi pi-fw pi-angle-down'
+      *ngIf='item.items && item.items.length > 0'>
+    </i>
+    <span
+      class='menuitem-badge'
+      *ngIf='item.badge'>
+      {{item.badge}}
+    </span>
+  </a>
+  <ul
+    *ngIf='(item.items && root) || (item.items && active)'
+    [@children]="(root ? 'visible' : active ? 'visibleAnimated' : 'hiddenAnimated')">
+    <ng-template
+      ngFor
+      let-child
+      let-i='index'
+      [ngForOf]='item.items'>
+      <li
+        app-menuitem
+        [item]='child'
+        [index]='i'
+        [parentKey]='key'
+        [class]='child.badgeClass'></li>
+    </ng-template>
+  </ul>
+</ng-container>

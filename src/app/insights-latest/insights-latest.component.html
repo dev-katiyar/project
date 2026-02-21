@@ -1,0 +1,242 @@
+<div class="p-grid" style="margin: -0.75rem;">
+    <div class="p-col-12 p-lg-4 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;" *ngIf="postsNewsletter">
+            <div class="p-grid">
+                <div class="p-col-6" style="font-weight: bold; padding-bottom: 0;font-size: 1.2rem;">Newsletter</div>
+                <div class="p-col-6" style="text-align:right; padding-bottom: 0;font-weight: bold;">
+                    <a routerLink="/commentary/newsletter">More</a>
+                </div>
+                <div class="p-col-12" style="padding-top: 0;">
+                    <hr style="margin: 0.5rem 0;">
+                </div>
+                <div class="p-col-12" style="padding-top: 0;padding-bottom: 0;">
+                    <a [href]="postsNewsletter[0].link" target="_blank">
+                        <img [src]="postsNewsletter[0].media_url" [alt]="postsNewsletter[0].title" width="100%">
+                    </a>
+                </div>
+                <div class="p-col-12" style="color: gray;font-size: 0.9rem;padding-top: 0;padding-bottom: 0;">
+                    {{ postsNewsletter[0].date | date:'MMM dd' }} | {{ postsNewsletter[0].category }}
+                </div>
+                <div class="p-col-12" style="font-weight: bold;font-size: 1.2rem;padding-top: 0;padding-bottom: 0;">
+                    {{postsNewsletter[0].title}}
+                </div>
+                <div class="p-col-12" style="padding-top: 0;padding-bottom: 0;" [innerHtml]="postsNewsletter[0].excerpt">
+                </div>
+                <div class="p-col-12" style="padding-top: 0;padding-bottom: 0;font-weight: bold;">
+                    <a [href]="postsNewsletter[0].link" target="_blank">
+                        Continue reading >>
+                    </a>
+                </div>
+                 <!-- Some space was needed -->
+                 <div>&nbsp;</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-lg-4 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;" *ngIf="postsDailyCommentary">
+            <div class="p-grid">
+                <div class="p-col-6" style="font-weight: bold; padding-bottom: 0;font-size: 1.2rem;">Daily Commentary</div>
+
+                <div class="p-col-6" style="text-align:right; padding-bottom: 0;font-weight: bold;">
+                    <a routerLink="/commentary/real-time">More</a>
+                </div>
+    
+                <div class="p-col-12" style="padding-top: 0;">
+                    <hr style="margin: 0.5rem 0;">
+                </div>
+    
+                <div class="p-col-12" style="padding-top: 0;padding-bottom: 0;">
+                    <a [href]="postsDailyCommentary[0].link" target="_blank">
+                        <img [src]="postsDailyCommentary[0].media_url" [alt]="postsDailyCommentary[0].title" width="100%">
+                    </a>
+                </div>
+    
+    
+                <div class="p-col-12" style="color: gray;font-size: 0.9rem;padding-top: 0;padding-bottom: 0;">
+                    {{ postsDailyCommentary[0].date | date:'MMM dd' }} | {{ postsDailyCommentary[0].category }}
+                </div>
+    
+                <div class="p-col-12" style="font-weight: bold;font-size: 1.2rem;padding-top: 0;padding-bottom: 0;">
+                    {{postsDailyCommentary[0].title}}
+                </div>
+    
+                <div class="p-col-12" style="padding-top: 0;padding-bottom: 0;"
+                    [innerHtml]="postsDailyCommentary[0].excerpt"></div>
+    
+                <div class="p-col-12" style="padding-top: 0;padding-bottom: 0;font-weight: bold;">
+                    <a [href]="postsDailyCommentary[0].link" target="_blank">
+                        Continue reading >>
+                    </a>
+                </div>
+    
+                <!-- Some space was needed -->
+                <div>&nbsp;</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-lg-4 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;" *ngIf="postsRecentRIA">
+            <div class="p-grid">
+                <div class="p-col-6" style="font-weight: bold; padding-bottom: 0;font-size: 1.2rem;">Latest from RIA Team</div>
+
+                <div class="p-col-6" style="text-align:right; padding-bottom: 0;font-weight: bold;">
+                    <a routerLink="/commentary/recent-ria">More</a>
+                </div>
+    
+                <div class="p-col-12" style="padding-top: 0;">
+                    <hr style="margin: 0.5rem 0;">
+                </div>
+    
+                <div class="p-col-12" style="padding-top: 0;padding-bottom: 0;">
+                    <a [href]="postsRecentRIA[0].link" target="_blank">
+                        <img [src]="postsRecentRIA[0].media_url" [alt]="postsRecentRIA[0].title" width="100%">
+                    </a>
+                </div>
+    
+    
+                <div class="p-col-12" style="color: gray;font-size: 0.9rem;padding-top: 0;padding-bottom: 0;">
+                    {{ postsRecentRIA[0].date | date:'MMM dd' }} | {{ postsRecentRIA[0].category }}
+                </div>
+    
+                <div class="p-col-12" style="font-weight: bold;font-size: 1.2rem;padding-top: 0;padding-bottom: 0;">
+                    {{postsRecentRIA[0].title}}
+                </div>
+    
+                <div class="p-col-12" style="padding-top: 0;padding-bottom: 0;"
+                    [innerHtml]="postsRecentRIA[0].excerpt"></div>
+    
+                <div class="p-col-12" style="padding-top: 0;padding-bottom: 0;font-weight: bold;">
+                    <a [href]="postsRecentRIA[0].link" target="_blank">
+                        Continue reading >>
+                    </a>
+                </div>
+    
+                <!-- Some space was needed -->
+                <div>&nbsp;</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="p-col-12 p-lg-3 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;" *ngIf="postsSVOriginal">
+            <div class="p-grid" style="align-content: start;">
+                <div class="p-col-6" style="font-weight: bold; padding-bottom: 0;font-size: 1.2rem;">SV Originals</div>
+
+                <div class="p-col-6" style="text-align:right; padding-bottom: 0;font-weight: bold;">
+                    <a routerLink="/commentary/blog">More</a>
+                </div>
+    
+                <div class="p-col-12" style="padding-bottom: 0;padding-top: 0;">
+                    <hr style="margin: 0.5rem 0;">
+                </div>
+    
+                <div class="p-col-12">
+                    <div class="p-grid" *ngFor="let post of postsSVOriginal">
+                        <div class="p-col-12" style="padding-bottom: 0;">
+                            <hr style="margin: 0.5rem 0;">
+                        </div>
+    
+                        <div class="p-col-4">
+                            <a [href]="post.link" target="_blank" style="font-weight: bold;">
+                                <img [src]="post.media_url" [alt]="post.title" width="100%">
+                            </a>
+                        </div>
+    
+                        <div class="p-col-8">
+                            <div>
+                                {{ post.date | date:'MMM dd' }} | {{ post.category }}
+                            </div>
+    
+                            <div style="font-weight: bold;">
+                                {{post.title}}
+                            </div>
+    
+                            <div>
+                                <a [href]="post.link" target="_blank" style="font-weight: bold;">
+                                    Read now >>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="p-col-12 p-lg-8 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;" *ngIf="postsVideos">
+            <div class="p-grid">
+                <div class="p-col-6" style="font-weight: bold; padding-bottom: 0;font-size: 1.2rem;">Videos</div>
+
+                <div class="p-col-6" style="text-align:right; padding-bottom: 0;font-weight: bold;">
+                    <a routerLink="/commentary/videos">More</a>
+                </div>
+    
+                <div class="p-col-12" style="padding-bottom: 0;padding-top: 0;">
+                    <hr style="margin: 0.5rem 0;">
+                </div>
+    
+                <div class="p-col-12">
+                    <div *ngIf="postsVideos" class="p-grid">
+                        <div *ngFor="let vid of postsVideos" class="p-col-12 p-lg-3">
+                            <div>
+                                <a [href]="vid.link" target="_blank">
+                                    <img [src]="vid.media_url" [alt]="vid.title" width="100%">
+                                </a>
+                            </div>
+    
+                            <div style="color: gray;font-size: 0.9rem;">
+                                {{ vid.date | date:'MMM dd' }} | {{ vid.category }}
+                            </div>
+    
+                            <div style="font-weight: bold;">
+                                {{vid.title}}
+                            </div>
+    
+                            <div>
+                                <a [href]="vid.link" target="_blank">
+                                    Watch now >>
+                                </a>
+                            </div>
+
+                            <hr style="margin: 0.5rem 0;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-lg-4 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;" *ngIf="postsTradeAlerts">
+            <div class="p-grid" style="align-content: flex-start;">
+                <div class="p-col-6" style="font-weight: bold; padding-bottom: 0;font-size: 1.2rem;">Trade Alerts</div>
+
+                <div class="p-col-6" style="text-align:right; padding-bottom: 0;font-weight: bold;">
+                    <a routerLink="/commentary/diary">More</a>
+                </div>
+    
+                <div class="p-col-12" style="padding-bottom: 0;padding-top: 0;">
+                    <hr style="margin: 0.5rem 0;">
+                </div>
+    
+                <div class="p-col-12" *ngIf="postsTradeAlerts">
+                    <p-table [value]="postsTradeAlerts" styleClass="p-datatable-striped">
+                        <ng-template pTemplate="body" let-post>
+                            <tr>
+                                <td style="text-align: left;">
+                                    <a [href]="post.link" target="_blank" style="font-weight: bold;">
+                                        {{post.title.replace("Portfolio Trade Alert – ", "")}}
+                                        <!-- this is not the best way, but seems most correct way. Post date can be different than trade date.   -->
+                                    </a>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+<div class="p-grid p-nogutter">
+    <div class="p-col-12 p-grid">
+        <div class="p-col-11 " style="text-align: center; padding: 1.2rem;">
+            <span *ngFor="let symbolWP of sectorSymbolsWithProfile" style="display:inline-block ;" class="pill-item">
+                <a class="symbol" (click)="onSymbolClicked(symbolWP)" [ngClass]="{ 'active-item': symbolWP ==  selectedSymbolWithProfile}">
+                    {{symbolWP.alternate_name}}</a>
+            </span>
+        </div>
+    </div>
+
+    <div class="p-col-12">
+        <div class="p-grid">
+            <div class="p-col-12 p-lg-12">
+                <p-panel [header]="titlePerformance">
+                    <data-table-technical [title]="titlePerformance" [symbols]="bestPerfSymbols"
+                        (onSymbolClicked)="onSymbolClick($event)" [highlightSymolSelected]="true"></data-table-technical>
+                </p-panel>
+            </div>
+    
+            <div class="p-col-12 p-lg-12">
+                <p-panel [header]="titlePerformance">
+                    <line-chart barClass="chart-big" [symbols]="[selectedSymbol, this.selectedSymbolWithProfile.symbol]"></line-chart>
+                </p-panel>
+            </div>
+        </div>
+    </div>
+</div>

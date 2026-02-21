@@ -1,0 +1,59 @@
+# Dependencies
+node_modules
+
+# custom
+venv
+backend
+setup
+others
+email_templates
+docs
+connections
+
+# Git
+.gitattributes
+.gitignore
+.git/
+
+# Don't exclude ssl directory
+# ssl/
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Build output
+/dist
+/tmp
+
+# Environment
+.env
+.env.*
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+*.dockerfile
+
+# Documentation
+README.md
+*.md
+
+# Development configs
+*.conf.js
+karma.conf.js
+protractor.conf.js
+
+# e2e
+/e2e
+
+# Angular cache
+.angular/cache

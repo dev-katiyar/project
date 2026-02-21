@@ -1,0 +1,43 @@
+<p-tabView>
+    <p-tabPanel header="Super Investors Portfolio">
+        <ng-template pTemplate="content">
+            <div class="p-grid border-shadow" style="margin: -1.5rem; margin-top: -0.5rem;" *ngIf="investors">
+                <div class="p-col-11" *ngIf="investors">
+                    <p-dropdown [options]="investors" [(ngModel)]="selectedInvestor" optionLabel="name" [showClear]="true"
+                        placeholder="Select a Super Investor" [filter]="true" filterBy="name">
+                    </p-dropdown>
+                </div>
+
+                <div class="p-col-1 p-d-flex p-ai-center p-jc-end">
+                    <app-help-icon [style]="{'font-size': '1.4rem'}" key="portfoliosSuperInvestors"></app-help-icon>
+                </div>
+
+                <div class="p-col-12 p-p-1">
+                    <app-super-investor-portfolio [superInvestor]="this.selectedInvestor"></app-super-investor-portfolio>
+                </div>
+            </div>
+            
+            <div class="p-grid" *ngIf="!investors">
+                <div class="p-col-12" style="text-align: center;">
+                    <br><br>
+                    <div>No data</div>
+                    <br><br>
+                </div>
+            </div>
+        </ng-template>
+    </p-tabPanel>
+
+    <p-tabPanel header="Super Investors Combined">
+        <ng-template pTemplate="content">
+            <div class="p-grid border-shadow" style="margin: -1.5rem; margin-top: -0.5rem;">
+                <div class="p-col-12 p-p-1 p-text-right">
+                    <app-help-icon [style]="{'font-size': '1.4rem'}" key="portfoliosWatchlist"></app-help-icon>
+                </div>
+
+                <div class="p-col-12 p-p-1">
+                    <app-super-investor-portfolio [superInvestor]="{'code': 'all', 'name': 'Super Investors Combined'}"></app-super-investor-portfolio>
+                </div>
+            </div>
+        </ng-template>
+    </p-tabPanel>
+</p-tabView>

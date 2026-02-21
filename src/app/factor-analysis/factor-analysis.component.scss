@@ -1,0 +1,10 @@
+.chip {
+    background: lightgray;
+    padding: 0.3rem;
+    border-radius: 8px;
+    margin-right: 0.5rem;
+}
+
+::ng-deep .p-selectbutton > .p-button {
+    padding: 0.5rem 1rem;
+}

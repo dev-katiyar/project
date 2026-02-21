@@ -1,0 +1,7 @@
+setup node
+brew install node@14
+
+sudo npm install -g @angular/cli@8.3.3
+ng --version
+from the project root dir
+npm install

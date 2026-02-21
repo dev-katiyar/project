@@ -1,0 +1,69 @@
+<p-tabView class="sv-tabview-nopadding">
+    <p-tabPanel header="Subscription">
+        <ng-template pTemplate="content">
+            <div>
+                <app-subscription></app-subscription>
+            </div>
+        </ng-template>
+    </p-tabPanel>
+
+    <p-tabPanel header="Account Info">
+        <ng-template pTemplate="content">
+            <div *ngIf="userData">
+                <app-user-profile [userData]="userData"></app-user-profile>
+            </div>
+
+            <div class="p-text-right" *ngIf="userData">
+                <button pButton icon="pi pi-times" class="p-button-outlined p-m-2" (click)="setFromServer()"
+                    label="Discard Changes">
+                </button>
+
+                <button pButton icon="pi pi-save" class="p-m-2" (click)="saveAccountInfo()" label="Save Changes">
+                </button>
+            </div>
+        </ng-template>
+    </p-tabPanel>
+
+    <p-tabPanel header="Risk Profile">
+        <ng-template pTemplate="content">
+            <div *ngIf="userData">
+                <app-user-risk-profile [userData]="userData"></app-user-risk-profile>
+            </div>
+
+            <div class="p-text-right" *ngIf="userData">
+                <button pButton icon="pi pi-times" class="p-button-outlined p-m-2" (click)="setFromServer()"
+                    label="Discard Changes">
+                </button>
+
+                <button pButton icon="pi pi-save" class="p-m-2" (click)="saveAccountInfo()" label="Save Changes">
+                </button>
+            </div>
+        </ng-template>
+    </p-tabPanel>
+
+    <p-tabPanel header="Notification Prefs">
+        <ng-template pTemplate="content">
+            <div class="p-grid" style="margin: -0.75rem;margin-top: 0.25rem;">
+                <div class="p-col-12 p-md-6 p-p-1">
+                    <div class="border-shadow p-p-2 full-height">
+                        <app-email-notification-preference [userData]="userData"></app-email-notification-preference>
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-md-6 p-p-1">
+                    <div class="border-shadow p-p-2 full-height">
+                        <app-sms-notification-prreference [userData]="userData"></app-sms-notification-prreference>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-tabPanel>
+
+    <p-tabPanel header="Admin Settings" *ngIf="isAdminUser == 1">
+        <ng-template pTemplate="content">
+            <div *ngIf="userData">
+                <app-admin-settings [userData]="userData"></app-admin-settings>
+            </div>
+        </ng-template>
+    </p-tabPanel>
+</p-tabView>

@@ -1,0 +1,31 @@
+<div class="border-shadow p-p-1" style="margin: -0.50rem;">
+  <p-tabView class="sv-tabview-nopadding ">
+    <p-tabPanel header="Asset Class">
+      <data-table-technical title="Asset Class" [symbols]="assetSymbols"></data-table-technical>
+    </p-tabPanel>
+  
+    <p-tabPanel header="Global Equities">
+      <ng-template pTemplate="content">
+        <data-table-technical title="Global Markets" [symbols]="globalMarketSymbols"></data-table-technical>
+      </ng-template>
+    </p-tabPanel>
+  
+    <p-tabPanel header="Bonds">
+      <ng-template pTemplate="content">
+        <data-table-technical title="Bonds" [symbols]="bondSymbols"></data-table-technical>
+      </ng-template>
+    </p-tabPanel>
+  
+    <p-tabPanel header="Commodities">
+      <ng-template pTemplate="content">
+        <data-table-technical title="Commodities" [symbols]="commoditySymbols"></data-table-technical>
+      </ng-template>
+    </p-tabPanel>
+  
+    <p-tabPanel header="Asia Pacific">
+      <ng-template pTemplate="content">
+        <data-table-technical title="Asia Pacific" [symbols]="asiaPacificSymbols"></data-table-technical>
+      </ng-template>
+    </p-tabPanel>
+  </p-tabView>
+</div>

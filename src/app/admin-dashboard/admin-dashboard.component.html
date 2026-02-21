@@ -1,0 +1,14 @@
+<ng-container *ngIf="!isAdminUser">
+    <h2>Access Denied</h2>
+    <p>You do not have the necessary permissions to access this page.</p>
+</ng-container>
+
+<ng-container *ngIf="isAdminUser">
+    <p-tabView (onChange)="onTabChange($event)">
+        <p-tabPanel header="User Exit Feebacks">
+            <ng-template pTemplate="content">
+                <app-admin-user-exit-feedback></app-admin-user-exit-feedback>
+            </ng-template>
+        </p-tabPanel>
+    </p-tabView>
+</ng-container>

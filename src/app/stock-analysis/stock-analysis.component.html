@@ -1,0 +1,168 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <div class="p-grid">
+            <div class="p-col-12 p-md-4">
+                <span style="width: 250px; float: left;">
+                    <app-stocks-autocomplete [searchText]="symbol" (onSymbolSelected)="onSymbolSelected($event)">
+                    </app-stocks-autocomplete>
+                </span>
+            </div>
+        </div>
+
+        <div class="p-col-12" style="margin-top: -2rem;">
+            <p-tabView class="p-col-12 sv-tabview-nopadding">
+                <p-tabPanel header="Overview">
+                    <ng-template pTemplate="content">
+                        <div class="p-grid">
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/summ1.jpeg" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/summ2.jpeg" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/desc_price.png" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/snowflke.png" alt="Fair Value">
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-tabPanel>
+
+                <p-tabPanel header="Financials">
+                    <ng-template pTemplate="content">
+                        <div class="p-grid">
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/fin.jpeg" alt="PE Trend">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/fin_peer.jpeg" alt="PE Trend">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/fin1.png" alt="PE Trend">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/fin2.png" alt="PE Trend">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/fin3.png" alt="PE Trend">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/fin4.png" alt="PE Trend">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/fin5.png" alt="PE Trend">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/fin6.png" alt="PE Trend">
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-tabPanel>
+
+                <p-tabPanel header="Valuations">
+                    <ng-template pTemplate="content">
+                        <div class="p-grid">
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/fair-value.jpeg" alt="Fair Value">
+                            </div>
+                            
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/peer-PE.jpeg" alt="PE Peers"> 
+                            </div>
+
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/pe-trend.jpeg" alt="PE Trend">
+                            </div>
+
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/val1.png" alt="PE Trend">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/val2.png" alt="PE Trend">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/val3.png" alt="PE Trend">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/val4.png" alt="PE Trend">
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-tabPanel>
+
+                <p-tabPanel header="Analysts">
+                    <ng-template pTemplate="content">
+                        <div class="p-grid">
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/sv_analyst.png" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/analyst_target.png" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/ana1.png" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/ana2.png" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/ana3.png" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/ana4.png" alt="Fair Value">
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-tabPanel>
+
+                <p-tabPanel header="Technicals">
+                    <ng-template pTemplate="content">
+                        <div class="p-grid">
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/sv_technical.png" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/tech1.png" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/tech2.png" alt="Fair Value">
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-tabPanel>
+
+                <p-tabPanel header="Owners & Insiders">
+                    <ng-template pTemplate="content">
+                        <div class="p-grid">
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/sv_insiders.png" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/inside1.png" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/inside2.png" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/inside3.png" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/inside4.png" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/inside5.png" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/inside6.png" alt="Fair Value">
+                            </div>
+                            <div class="p-col-12" style="text-align:center;">
+                                <img width="70%" src="../../assets/images/stock-analysis/inside7.png" alt="Fair Value">
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-tabPanel>
+            </p-tabView>
+        </div>
+    </div>

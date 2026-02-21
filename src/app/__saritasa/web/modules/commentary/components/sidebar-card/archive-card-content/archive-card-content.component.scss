@@ -1,0 +1,12 @@
+.saritasa-card {
+  width: 260px;
+  &-item {
+    padding: 8px 15px;
+    display: flex;
+    justify-content: space-between;
+
+    .link {
+      font-weight: 600;
+    }
+  }
+}

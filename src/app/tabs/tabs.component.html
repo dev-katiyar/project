@@ -1,0 +1,8 @@
+<div class="m-box">
+    <ul class="m-tab">
+        <li *ngFor="let tab of tabs" [ngClass]="setTabCls(tab)">
+            <a (click)="selectTab(tab)">{{tab.tabTitle}}</a>
+        </li>
+    </ul>
+    <ng-content></ng-content>
+</div>

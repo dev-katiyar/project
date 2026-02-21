@@ -1,0 +1,67 @@
+<p-table #dt1 [value]="dividendHistory" dataKey="id" [rows]="10" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[5,10,20,50]" styleClass="p-datatable-positions p-datatable-striped" [paginator]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [globalFilterFields]="['symbol']"
+    [autoLayout]="true" [tableStyle]="{'table-layout':'auto'}" [resizableColumns]="false">
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="symbol" style="text-align: left;">
+                Symbol
+                <p-sortIcon field="symbol"></p-sortIcon>
+                <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto"></p-columnFilter>
+            </th>
+
+            <th *ngIf="fullDividendDetail == 1" pSortableColumn="pay_date" style="text-align: center;">
+                Pay Date
+                <p-sortIcon field="pay_date"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="ex_dividend_date" style="text-align: center;">
+                Ex Dividend Date
+                <p-sortIcon field="ex_dividend_date"></p-sortIcon>
+            </th>
+
+            <th *ngIf="fullDividendDetail == 1" pSortableColumn="payout_freq" style="text-align: center;">
+                Payout Frequency
+                <p-sortIcon field="payout_freq"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="next_payout" style="text-align: center;">
+                Payout
+                <p-sortIcon field="next_payout"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="yield" style="text-align: right;">
+                Yield
+                <p-sortIcon field="yield"></p-sortIcon>
+            </th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-dividend>
+        <tr class="p-selectable-row">
+            <td style="text-align: left;">
+                <div class="symbol" (click)="onSymbolClick(dividend.symbol)">{{dividend.symbol}}</div>
+            </td>
+
+            <td *ngIf="fullDividendDetail == 1" class="p-text-center">
+                {{dividend.pay_date}}
+            </td>
+
+            <td style="min-width: 6.5rem;" class="p-text-center">
+                {{dividend.ex_dividend_date}}
+            </td>
+
+            <td *ngIf="fullDividendDetail == 1" style="min-width: 6.5rem;" class="p-text-center">
+                {{dividend.payout_freq}}
+            </td>
+
+            <td class="p-text-center">
+                {{dividend.next_payout | currency}}
+            </td>
+
+            <td class="p-text-right">
+                {{dividend.yield | number:'0.2-2'}}%
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

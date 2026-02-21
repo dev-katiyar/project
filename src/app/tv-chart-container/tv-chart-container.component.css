@@ -1,0 +1,7 @@
+.app-tv-chart-container {
+	height: calc(100vh - 280px);
+}
+
+.app-tv-chart-container-tall {
+	height: calc(100vh - 80px);
+}

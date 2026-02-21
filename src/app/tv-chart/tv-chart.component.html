@@ -1,0 +1,10 @@
+<app-tv-chart-container 
+    [datafeedUrl]="tvUrl" 
+    [chartsStorageUrl]="tvUrl"
+    [clientId]="clientId"
+    [userId]="userId"
+    [symbol]="symbol"
+    (tvSymbolChanged)="onTvSymbolChanged($event)"
+    [chartHeightClass]="chartHeightClass"
+    >
+</app-tv-chart-container>

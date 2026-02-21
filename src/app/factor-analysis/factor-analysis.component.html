@@ -1,0 +1,60 @@
+<div class="p-grid">
+    <div class="p-col-12 p-py-0">
+        <div class="p-grid">
+            <!-- Factor, Sector or Custom Buttons -->
+            <div class="p-col-12 p-md-4">
+                <p-selectButton [style]="{padding: 0}" [options]="symbolDictTypes" [(ngModel)]="selectedSymbolDictType"
+                    optionLabel="name" (onChange)="onSymbolsDictChange($event)" [disabled]="selectedETF">
+                </p-selectButton>
+            </div>
+
+            <!-- When on Custom Symbol List, add Custom Symbols -->
+            <div class="p-col-12 p-md-8" *ngIf="this.selectedSymbolDictType && this.selectedSymbolDictType['code'] === 'factor_analysis_custom'">
+                <div class="p-grid">
+                    <div class="p-col-12 p-md-8" style="display: flex; align-items: center; padding: 0;">
+                        <app-stocks-autocomplete [placeholderText]="newCustomSybmol || 'ADD SYMBOL'"
+                            [searchText]="newCustomSybmol" (onSymbolSelected)="onSymbolSelected($event)" inputSize="20">
+                        </app-stocks-autocomplete>
+                    </div>
+
+                    <div class="p-col-12 p-md-4">
+                        <p-button label="Calculate" (onClick)="handleLiveDataRefresh()"></p-button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- When on Custom List, list and remove Custom Symbols-->
+            <div class="p-col-12" *ngIf="this.selectedSymbolDictType && this.selectedSymbolDictType['code'] === 'factor_analysis_custom'">
+                <div class="p-grid">
+                    <div class="p-col-12 p-md-8">
+                        <div class="p-d-flex p-ai-center p-inputwrapper-filled" *ngIf="this.selectedSymbolsArr">
+                            <span *ngFor="let symbol of this.selectedSymbolsArr" class="symbol-withoutpointer chip">
+                                {{ symbol }}
+                                <i style="color: red;" class="pi pi-times"
+                                    (click)="handleCustomSymbolRemove(symbol)"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="p-col-12 p-md-4" *ngIf="customSymbolError != ''" style="font-size: 0.9rem; color: red;">
+                        {{customSymbolError}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- When Sectors and Factors are being shown -->
+    <div class="p-col-12" *ngIf="!selectedETF">
+        <app-factor-analysis-view #faSec [selectedSymbolDictType]="selectedSymbolDictType"  (etfHoldingIconClicked)="onSymbolRowClick($event)" [isEtfView]="false"></app-factor-analysis-view>
+    </div>
+
+    <!-- When EFT Holdings are being shown -->
+    <div class="p-col-12 p-pt-0">
+        <p-tabView *ngIf="selectedETF" (onClose)="handleCloseETFTab($event)">
+            <p-tabPanel [header]="selectedETF.symbol + ': ' + selectedETF.name" [closable]="true">
+                <app-factor-analysis-view #faEtf [selectedSymbolDictType]="selectedSymbolDictTypeEtf" [selectedETF]="selectedETF" [isEtfView]="true"></app-factor-analysis-view>
+            </p-tabPanel>
+        </p-tabView>
+    </div>
+</div>

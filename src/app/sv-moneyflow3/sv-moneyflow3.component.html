@@ -1,0 +1,77 @@
+<!-- COMMON INPUTS - ALWAYS VISIBLE -->
+<div class="p-grid p-fluid p-m-0" style="background-color: white;">
+    <div class="p-col-12 p-sm-4 p-md-2">
+        <div class="p-grid">
+            <div class="p-col-12" style="padding-bottom:0">
+                <small>Symbol</small>
+            </div>
+            <div class="p-col-12" style="padding-top:0">
+                <app-stocks-autocomplete [(searchText)]="strategy_inputs.model_inputs.symbol"
+                    (onSymbolSelected)="onSymbolSelected($event)">
+                </app-stocks-autocomplete>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-sm-4 p-md-2">
+        <div class="p-grid">
+            <div class="p-col-12" style="padding-bottom:0">
+                <small>From Date</small>
+            </div>
+            <div class="p-col-12" style="padding-top:0">
+                <p-calendar [inputStyle]="{ width: '100%'}" [monthNavigator]="true" [yearNavigator]="true"
+                    yearRange="2015:2030" [minDate]="minStartDate" [maxDate]="maxStartDate"
+                    [(ngModel)]="strategy_inputs.model_inputs.start_date" [showIcon]="true" [readonlyInput]="true">
+                </p-calendar>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-sm-4 p-md-2">
+        <div class="p-grid">
+            <div class="p-col-12" style="padding-bottom:0">
+                <small>To Date</small>
+            </div>
+            <div class="p-col-12" style="padding-top:0">
+                <p-calendar [inputStyle]="{ width: '100%' }" [monthNavigator]="true" [yearNavigator]="true"
+                    yearRange="2015:2030" [minDate]="minEndDate" [maxDate]="maxEndDate"
+                    [(ngModel)]="strategy_inputs.model_inputs.end_date" [showIcon]="true" [readonlyInput]="true">
+                </p-calendar>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-sm-4 p-md-2">
+        <div class="p-grid">
+            <div class="p-col-12" style="padding-bottom:0">
+                <small>On</small>
+            </div>
+            <div class="p-col-12" style="padding-top: 1rem;">
+                Weekly Data
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-sm-4 p-md-4">
+        <div class="p-grid">
+            <div class="p-col-12">&nbsp;
+            </div>
+            <div class="p-col-12" style="padding-top:0">
+                <button label="Run Strategy" pButton (click)="getStrategyResult()"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="error" style="text-align: center; color: red;background-color: white;">
+    <p>{{ errorMessage }}</p>
+</div>
+<br />
+
+<!-- ria pro CHART COMPONENT loads each time 'chartData' is null-ed and set with new data -->
+<div style="text-align: center; background-color: white; padding: -0.5rem">
+    <div *ngIf="responseChartData" style="width: 100%;">
+        <app-strategy-chart2024 [chartData]="responseChartData"
+            [chartSettings]="chartSettingsPairMF"></app-strategy-chart2024>
+    </div>
+</div>

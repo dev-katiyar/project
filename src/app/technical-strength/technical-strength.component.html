@@ -1,0 +1,27 @@
+<div *ngIf="symbolTechnicals">
+    <div class="title">Technical Strength Score Component Breakdown</div>
+
+    <hr style="margin: 0.5rem 0;width: 100%;">
+
+    <div class="p-grid p-p-1">
+        <div class="p-col-12">
+            <app-rating-bar name="Short Term" [ratingValue]="symbolTechnicals.short_trend"
+                [ratingText]="getAlertText(symbolTechnicals.short_trend)" ratingBarHeight="1.5rem"></app-rating-bar>
+        </div>
+
+        <div class="p-col-12">
+            <app-rating-bar name="Medium Term" [ratingValue]="symbolTechnicals.inter_trend"
+                [ratingText]="getAlertText(symbolTechnicals.inter_trend)" ratingBarHeight="1.5rem"></app-rating-bar>
+        </div>
+
+        <div class="p-col-12">
+            <app-rating-bar name="Long Term" [ratingValue]="symbolTechnicals.long_trend"
+                [ratingText]="getAlertText(symbolTechnicals.long_trend)" ratingBarHeight="1.5rem"></app-rating-bar>
+        </div>
+
+        <div class="p-col-12">
+            <app-rating-bar name="MACD" [ratingValue]="symbolTechnicals.macd_trend"
+                [ratingText]="getAlertText(symbolTechnicals.macd_trend)" ratingBarHeight="1.5rem"></app-rating-bar>
+        </div>
+    </div>
+</div>

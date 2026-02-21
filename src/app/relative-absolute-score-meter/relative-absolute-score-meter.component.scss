@@ -1,0 +1,10 @@
+.ob-align {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.text-tilt {
+    transform: rotate(45deg);
+    text-align: center;
+}

@@ -1,0 +1,44 @@
+<div class="layout-wrapper" (click)="onLayoutClick()"
+     [ngClass]="{'layout-horizontal': isHorizontal(),
+                 'layout-overlay': isOverlay(),
+                 'layout-static': isStatic(),
+                 'layout-slim':isSlim(),
+                 'layout-static-inactive': staticMenuDesktopInactive,
+                 'layout-mobile-active': staticMenuMobileActive,
+                 'layout-overlay-active':overlayMenuActive, 
+                 'p-input-filled': app.inputStyle === 'filled', 
+                 'p-ripple-disabled': !app.ripple}">
+
+    <app-topbar></app-topbar>
+    
+    <div class="layout-menu-container" (click)="onMenuClick()">
+        <div class="layout-menu-content">
+            <app-menu></app-menu>
+        </div>
+    </div>
+
+    <div class="layout-content">
+
+        <!-- <app-breadcrumb></app-breadcrumb> -->
+
+        <div class="layout-content-container">
+            <p-toast position="center" class="custom-toast" modal="true" preventOpenDuplicates="true"></p-toast>
+            <app-spinner></app-spinner>
+            <div *ngIf="hasHelpMsg" class="help-icon-container">
+                <app-help-icon [style]="{'font-size': '1.4rem'}"  [key]="helpKey"></app-help-icon>
+            </div> 
+            <router-outlet></router-outlet>
+        </div>
+
+<!--        <app-config></app-config>-->
+        <app-footer></app-footer>
+
+        <div class="layout-mask" *ngIf="staticMenuMobileActive"></div>
+    </div>
+</div>
+
+
+<p-dialog header="Symbol Analytics" [(visible)]="isSymbolPopupVisible" showEffect="fade"
+[modal]="true" [style]="{width: '85vw'}" [breakpoints]="{'960px': '90vw', '640px': '97vw'}">
+    <app-charts *ngIf="isSymbolPopupVisible" [isModalView]="true"></app-charts>
+</p-dialog>

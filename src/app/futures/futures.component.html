@@ -1,0 +1,18 @@
+<div class="p-grid p-jc-center" style="background-color: white; padding: 1em;" >
+    <div class="p-col-5 p-sm-3 p-md-2" *ngFor="let fd of futures_data_selected"
+        style="text-align: center; border:1px solid black; margin: 5px; color: white;" 
+        [ngStyle]="{'background-color': (fd.change > 0) ? 'green': '#ad3535'}" >
+        <span style="font-size: 1.1em; font-weight: bold;">
+            {{ fd.label }}
+        </span>
+        <br>
+        <span style="font-size: 1.5em; font-weight: bold;">
+            {{ fd.last | number: '1.2-2' }}
+        </span>
+        <br>
+        <span>
+            {{ (fd.last/(1+fd.change/100))*fd.change/100 | number: '1.2-2'}} ({{ fd.change | number: '1.2-2' }}%)
+        </span>
+        <br>
+    </div>
+</div>

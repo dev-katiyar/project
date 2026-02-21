@@ -1,0 +1,31 @@
+<div class="p-grid" style="margin: -0.75rem;">
+  <div class="p-col-12 p-md-8 p-p-1">
+    <div class="card-list" *ngIf="items$ | async as videos; else notFound">
+      <div *ngFor="let video of videos">
+        <app-video-card *ngIf="video?.snippet?.videoOwnerChannelId" [video]="video"></app-video-card>
+      </div>
+      <div class="pagination">
+        <button class="p-button-text p-button-secondary" pButton icon="pi pi-angle-left" (click)="prevPage()"
+          [disabled]="!listManager.paginationData.prevPageToken || (listManager.loading$|async)">
+        </button>
+        <button class="p-button-text p-button-secondary" pButton icon="pi pi-angle-right" (click)="nextPage()"
+          [disabled]="!listManager.paginationData.nextPageToken || (listManager.loading$|async)">
+        </button>
+      </div>
+    </div>
+    <ng-template #notFound>
+      <div class="not-found-msg">
+        No videos found
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="p-col-12 p-md-4 p-p-2">
+    <app-commentary-sidebar [recentPosts]="recentPosts$ | async" [popularPosts]="popularPosts$ | async">
+    </app-commentary-sidebar>
+  </div>
+
+  <div class="p-col-12">
+    <app-page-loader [loading]="isLoading$|async"></app-page-loader>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+.sectorName {
+  text-align: center;
+  font-weight: bold;
+}
+
+.width8 {
+  width: 25%;
+  float: left;
+}

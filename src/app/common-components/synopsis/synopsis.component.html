@@ -1,0 +1,35 @@
+<div *ngIf="synopsisData">
+    <div class="title">
+        Synopsis
+        <app-help-icon key="commonSynopsys"></app-help-icon>
+    </div>
+
+    <hr style="margin: 0.5rem 0;width: 100%;">
+
+    <div *ngIf="showRating">
+        <div style="display: flex; justify-content: center;">
+            <app-stocks-gauge [gaugeClass]="gaugeClass" [valueText]="symbolTechnicals.ratingText"
+                [gaugeWidth]="gaugeWidth" [valueGauge]="symbolTechnicals.rating" minValue=0 maxValue=10>
+            </app-stocks-gauge>
+        </div>
+    </div>
+
+    <div style="text-align: justify;padding: 0.25rem;" [innerHTML]="current_situation"></div>
+
+    <div style="text-align: justify;padding: 0.25rem" [innerHTML]="synopsis"></div>
+
+    <br>
+
+    <div *ngIf="showRating" style="text-align:center;font-weight:bold;">Relative Strength Indicator</div>
+    
+    <div *ngIf="showRating">
+        <div style="display: flex; justify-content: center;">
+            <app-stocks-gauge gaugeType="rsi" [gaugeClass]="gaugeClass" [valueText]="rsiText" [valueGauge]="rsiValue"
+                [minValue]="rsiMinValue" [maxValue]="rsiMaxValue"></app-stocks-gauge>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!synopsisData">
+    No Data
+</div>

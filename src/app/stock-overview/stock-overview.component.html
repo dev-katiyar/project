@@ -1,0 +1,813 @@
+<!-- NO DATA MESSAGE -->
+<div style="margin-top: 5rem; margin-left: 0;text-align: center;" *ngIf="!stockOverview">
+    Loading Overview Data for {{currentSymbol}}
+</div>
+
+<div style="margin-top: 5rem; margin-left: 0;text-align: center;" *ngIf="isServerResonseNull">
+    There is no or limited data for {{currentSymbol}} as of now.
+</div>
+
+<div class="p-grid p-pt-3 " style="margin: -0.75rem;background-color:#f8f9fa" *ngIf="stockOverview">
+    <!-- PRICING DATA -->
+    <div class="p-col-12 p-p-1">
+        <div class="p-grid p-m-0" style="background-color: white;">
+            <div class="p-col-12 p-md-6 p-lg-4 p-xl-2 p-pb-0" style="padding: 0.75rem;">
+                <div class="p-grid border-shadow p-p-2" style="height: 100%;">
+                    <div class="p-col-6">
+                        <strong style="font-size: 1.2rem;">
+                            {{ isNA(stockOverview.regularMarketPrice) ? "N/A" : stockOverview.regularMarketPrice |
+                            currency }}
+                        </strong>
+                        <i class="pi pi-chevron-circle-down" *ngIf="stockOverview.regularMarketChange < 0"
+                            style="color: red;font-weight: bold;"></i>
+                        <i class="pi pi-chevron-circle-up" *ngIf="stockOverview.regularMarketChange >= 0"
+                            style="color: green; font-weight: bold;"></i>
+                    </div>
+
+                    <div class="p-col-6">
+                        <span [ngStyle]="{'color': (stockOverview.regularMarketChange < 0) ? 'red' : 'green'}">{{
+                            isNA(stockOverview.regularMarketChange) ? "N/A" : stockOverview.regularMarketChange |
+                            currency
+                            }}</span>
+                        (<span
+                            [ngStyle]="{'color': (stockOverview.regularMarketChangePercent < 0) ? 'red' : 'green'}">{{isNA(stockOverview.regularMarketChangePercent)
+                            ? "N/A" : stockOverview.regularMarketChangePercent | percent:'1.2-2'}}</span>)
+                    </div>
+
+                    <div class="p-col-12" style="font-size: 0.8rem;color: gray;">
+                        at: {{ isNA(stockOverview.regularMarketTime) ? "N/A" : stockOverview.regularMarketTime |
+                        date:'medium' }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6 p-lg-4 p-xl-2 p-pb-0" style="padding: 0.75rem;">
+                <div class="p-grid border-shadow p-p-2" style="height: 100%;">
+                    <div class="p-col-5 p-text-bold">
+                        52 Week Range
+                    </div>
+
+                    <div class="p-col-7">
+                        <div class="p-grid">
+                            <div class="p-col-6" style="text-align: left; padding: 0 0.5rem; font-size: 0.9rem;">
+                                {{ isNA(stockOverview.fiftyTwoWeekLow) ? "N/A" : stockOverview.fiftyTwoWeekLow |
+                                currency }}
+                            </div>
+
+                            <div class="p-col-6" style="text-align: right; padding: 0 0.5rem; font-size: 0.9rem;">
+                                {{ isNA(stockOverview.fiftyTwoWeekHigh) ? "N/A" : stockOverview.fiftyTwoWeekHigh |
+                                currency}}
+                            </div>
+
+                            <div class="p-col-12" style="padding: 0 0.5rem; ">
+                                <p-progressBar
+                                    [value]="(stockOverview.regularMarketPrice-stockOverview.fiftyTwoWeekLow) * 100 / (stockOverview.fiftyTwoWeekHigh - stockOverview.fiftyTwoWeekLow)"
+                                    class="green" [style]="{height: '0.5rem', 'background-color': 'red'}"
+                                    [showValue]="false">
+                                </p-progressBar>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-col-5 p-text-bold">
+                        Day Range
+                    </div>
+
+                    <div class="p-col-7" style="font-size: 0.9rem;">
+                        <div class="p-grid">
+                            <div class="p-col-6" style="text-align: left; padding: 0 0.5rem; font-size: 0.9rem;">
+                                {{ isNA(stockOverview.regularMarketDayLow) ? "N/A" : stockOverview.regularMarketDayLow |
+                                currency }}
+                            </div>
+
+                            <div class="p-col-6" style="text-align: right; padding: 0 0.5rem; font-size: 0.9rem;">
+                                {{ isNA(stockOverview.regularMarketDayHigh) ? "N/A" : stockOverview.regularMarketDayHigh
+                                |
+                                currency}}
+                            </div>
+
+                            <div class="p-col-12" style="padding: 0 0.5rem; ">
+                                <p-progressBar
+                                    [value]="(stockOverview.regularMarketPrice-stockOverview.regularMarketDayLow) * 100 / (stockOverview.regularMarketDayHigh - stockOverview.regularMarketDayLow)"
+                                    class="green" [style]="{height: '0.5rem', 'background-color': 'red'}"
+                                    [showValue]="false">
+                                </p-progressBar>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6 p-lg-4 p-xl-2 p-pb-0" style="padding: 0.75rem;">
+                <div class="p-grid border-shadow p-p-2" style="height: 100%;">
+                    <div class="p-col-7 p-text-bold">
+                        Last Close
+                    </div>
+
+                    <div class="p-col-5 p-text-right">
+                        {{ isNA(stockOverview.regularMarketPreviousClose) ? "N/A" :
+                        stockOverview.regularMarketPreviousClose | currency }}
+                    </div>
+
+                    <div class="p-col-7 p-text-bold">
+                        Open
+                    </div>
+
+                    <div class="p-col-5 p-text-right">
+                        {{ isNA(stockOverview.regularMarketOpen) ? "N/A" : stockOverview.regularMarketOpen |
+                        currency }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6 p-lg-4 p-xl-2 p-pb-0" style="padding: 0.75rem;">
+                <div class="p-grid border-shadow p-p-2" style="height: 100%;">
+                    <div class="p-col-7 p-text-bold">
+                        Volume
+                    </div>
+
+                    <div class="p-col-5 p-text-right">
+                        {{ isNA(stockOverview.regularMarketVolume) ? "N/A" : stockOverview.regularMarketVolume |
+                        number:'1.0-0' }}
+                    </div>
+
+                    <div class="p-col-7 p-text-bold">
+                        Avg.Vol.(3m)
+                    </div>
+
+                    <div class="p-col-5 p-text-right">
+                        {{ isNA(stockOverview.averageDailyVolume3Month) ? "N/A" :
+                        stockOverview.averageDailyVolume3Month
+                        | number:'1.0-0' }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6 p-lg-4 p-xl-2 p-pb-0" style="padding: 0.75rem;">
+                <div class="p-grid border-shadow p-p-2" style="height: 100%;">
+                    <div class="p-col-7 p-text-bold">
+                        Annual Div.
+                    </div>
+
+                    <div class="p-col-5 p-text-right">
+                        {{ isNA(stockOverview.trailingAnnualDividendRate) ? "N/A" :
+                        stockOverview.trailingAnnualDividendRate | currency }}
+                    </div>
+
+                    <div class="p-col-7 p-text-bold">
+                        Dividend Yield
+                    </div>
+
+                    <div class="p-col-5 p-text-right">
+                        {{ isNA(stockOverview.trailingAnnualDividendYield) ? "N/A" :
+                        stockOverview.trailingAnnualDividendYield | percent:'1.2-2' }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6 p-lg-4 p-xl-2 p-pb-0" style="padding: 0.75rem;">
+                <div class="p-grid border-shadow p-p-2" style="height: 100%;">
+                    <div class="p-col-6 p-text-bold">
+                        M.Cap.(mn)
+                    </div>
+
+                    <div class="p-col-6 p-text-right">
+                        {{ isNA(stockOverview.marketCap) ? "N/A" : stockOverview.marketCap/1000000 |
+                        currency:'USD':'symbol':'1.1-1' }}
+                    </div>
+
+                    <div class="p-col-6 p-text-bold">
+                        Beta
+                    </div>
+
+                    <div class="p-col-6 p-text-right">
+                        {{ isNA(stockOverview.beta) ? "N/A" : stockOverview.beta | number:'1.2-2' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOTAL RETURNS & PRICE CHART -->
+    <div class="p-col-12 p-p-1">
+        <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-p-p">
+                <div class="p-card p-p-2" style="height: 100%;">
+                    <div style="font-size: 1.2rem;font-weight: bold;padding-left: 0.5rem; padding-bottom: 0.5rem;">
+                        Total Returns
+                    </div>
+
+                    <div class="p-p-2 p-mt-6">
+                        <div class="p-grid">
+                            <div class="p-col-3" style="padding: 0.25rem;">
+                                <div class="return-tile" [style]="getTileStyle(stockOverview.wtd)">
+                                    {{ isNA(stockOverview.wtd) ? "N/A" : stockOverview.wtd | number:'1.2-2' }}%
+                                    <br>
+                                    WTD
+                                </div>
+                            </div>
+
+                            <div class="p-col-3" style="padding: 0.25rem;">
+                                <div class="return-tile" [style]="getTileStyle(stockOverview.mtd)">
+                                    {{ isNA(stockOverview.mtd) ? "N/A" : stockOverview.mtd | number:'1.2-2' }}%
+                                    <br>
+                                     MTD
+                                </div>
+                            </div>
+
+                            <div class="p-col-3" style="padding: 0.25rem;">
+                                <div class="return-tile" [style]="getTileStyle(stockOverview.qtd)">
+                                    {{ isNA(stockOverview.qtd) ? "N/A" : stockOverview.qtd | number:'1.2-2' }}%
+                                    <br>
+                                     QTD
+                                </div>
+                            </div>
+
+                            <div class="p-col-3" style="padding: 0.25rem;">
+                                <div class="return-tile" [style]="getTileStyle(stockOverview.ytd)">
+                                    {{ isNA(stockOverview.ytd) ? "N/A" : stockOverview.ytd | number:'1.2-2' }}%
+                                    <br>
+                                     YTD
+                                </div>
+                            </div>
+
+                            <div class="p-col-3" style="padding: 0.25rem;">
+                                <div class="return-tile" [style]="getTileStyle(stockOverview.change_oneyearbeforedate_pct)">
+                                    {{ isNA(stockOverview.change_oneyearbeforedate_pct) ? "N/A" : stockOverview.change_oneyearbeforedate_pct | number:'1.2-2' }}%
+                                    <br>
+                                     1 Year
+                                </div>
+                            </div>
+
+                            <div class="p-col-3" style="padding: 0.25rem;">
+                                <div class="return-tile" [style]="getTileStyle(stockOverview.priceChange2Year)">
+                                    {{ isNA(stockOverview.priceChange2Year) ? "N/A" : stockOverview.priceChange2Year | number:'1.2-2' }}%
+                                    <br>
+                                     2 Year
+                                </div>
+                            </div>
+
+                            <div class="p-col-3" style="padding: 0.25rem;">
+                                <div class="return-tile" [style]="getTileStyle(stockOverview.priceChange3Year)">
+                                    {{ isNA(stockOverview.priceChange3Year) ? "N/A" : stockOverview.priceChange3Year | number:'1.2-2' }}%
+                                    <br>
+                                     3 Year
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-8 p-p-2">
+                <div class="p-card p-p-2" style="height: 100%;">
+                    <div style="font-weight: bold; font-size: 1.2rem;">Performance</div>
+                    
+                    <div class="p-p-2">
+                        <line-chart barClass="chart-big-2" title="Top Tickers Yearly Performance" [symbols]="[currentSymbol]">
+                        </line-chart>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATS & BAR CHARTS -->
+    <div class="p-col-12 p-p-1">
+        <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-p-2">
+                <div class="p-card p-p-2" style="height: 100%;">
+                    <p-tabView>
+                        <p-tabPanel header="Business Health">
+                            <table>
+                                <tr>
+                                    <th>
+                                        Gross Margin
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.grossMargins) ? "N/A" : stockOverview.grossMargins |
+                                        percent:'1.2-2'
+                                        }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Profit Margin
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.profitMargins) ? "N/A" : stockOverview.profitMargins |
+                                        percent:'1.2-2'
+                                        }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Total Debt
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.totalDebt) ? "N/A" : stockOverview.totalDebt/1000000 |
+                                        number:'1.0-0'
+                                        }} m
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Debt/Equity
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.debtToEquity) ? "N/A" : stockOverview.debtToEquity |
+                                        number:'1.2-2'
+                                        }}%
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Return on Equity
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.returnOnEquity) ? "N/A" : stockOverview.returnOnEquity |
+                                        percent:'1.2-2'
+                                        }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Return on Assets
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.returnOnAssets) ? "N/A" : stockOverview.returnOnAssets |
+                                        percent:'1.2-2'
+                                        }}
+                                    </td>
+                                </tr>
+                            </table>
+                        </p-tabPanel>
+                        <p-tabPanel header="Stock Transaction Stats">
+                            <table>
+                                <tr>
+                                    <th>
+                                        Share Outstanding
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.sharesOutstanding) ? "N/A" : stockOverview.sharesOutstanding |
+                                        number }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Share Floating
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.floatShares) ? "N/A" : stockOverview.floatShares | number }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Held by Insiders
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.heldPercentInsiders) ? "N/A" :
+                                        stockOverview.heldPercentInsiders |
+                                        percent:'1.2-2' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Held by Institutions
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.heldPercentInstitutions) ? "N/A" :
+                                        stockOverview.heldPercentInstitutions |
+                                        percent:'1.2-2' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Share Short <span style="font-size: 0.8rem;color: gray;"
+                                            *ngIf="!isNA(stockOverview.sharesShortDate)">
+                                            (last month {{ stockOverview.sharesShortDate | date:'mediumDate' }})</span>
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.sharesShort) ? "N/A" : stockOverview.sharesShort | number }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Share Short <span style="font-size: 0.8rem;color: gray;"
+                                            *ngIf="!isNA(stockOverview.sharesShortPriorMonthDate)">
+                                            (prior month {{ stockOverview.sharesShortPriorMonthDate | date:'mediumDate' }})
+                                        </span>
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.sharesShortPriorMonth) ? "N/A" :
+                                        stockOverview.sharesShortPriorMonth |
+                                        number }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Insider Share Bought <span style="font-size: 0.8rem;color: gray;"
+                                            *ngIf="!isNA(stockOverview.insiderSharesLast6MonthBoughtCount)">
+                                            ({{ stockOverview.insiderSharesLast6MonthBoughtCount }} txn in 6m)
+                                        </span>
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.insiderSharesLast6MonthBought) ? "N/A" :
+                                        stockOverview.insiderSharesLast6MonthBought | number }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Insider Share Sold <span style="font-size: 0.8rem;color: gray;"
+                                            *ngIf="!isNA(stockOverview.insiderSharesLast6MonthSoldCount)">
+                                            ({{ stockOverview.insiderSharesLast6MonthSoldCount }} txn in 6m)
+                                        </span>
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.insiderSharesLast6MonthSold) ? "N/A":
+                                        stockOverview.insiderSharesLast6MonthSold | number }}
+                                    </td>
+                                </tr>
+                            </table>
+                        </p-tabPanel>
+                        <p-tabPanel header="Returns">
+                            <table>
+                                <tr>
+                                    <th>
+                                        % Total Return WTD
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.wtd) ? "N/A" : stockOverview.wtd | number:'1.2-2' }}%
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        % Total Return MTD
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.mtd) ? "N/A" : stockOverview.mtd | number:'1.2-2' }}%
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        % Total Return QTD
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.qtd) ? "N/A" : stockOverview.qtd | number:'1.2-2' }}%
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        % Total Return YTD
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.ytd) ? "N/A" :stockOverview.ytd | number:'1.2-2' }}%
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        % Total Return 1 Year
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.change_oneyearbeforedate_pct) ? "N/A" :
+                                        stockOverview.change_oneyearbeforedate_pct | number:'1.2-2' }}%
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        % Total Return 2 Year
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.priceChange2Year) ? "N/A" : stockOverview.priceChange2Year |
+                                        number:'1.2-2' }}%
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        % Total Return 3 Year
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.priceChange3Year) ? "N/A" : stockOverview.priceChange3Year |
+                                        number:'1.2-2' }}%
+                                    </td>
+                                </tr>
+                            </table>
+                        </p-tabPanel>
+                        <p-tabPanel header="Dividend & Splits">
+                            <table>
+                                <tr>
+                                    <th>
+                                        Last Dividend
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.lastDividendValue) ? "N/A" : stockOverview.lastDividendValue |
+                                        currency }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Last Divdend Date
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.lastDividendDate) ? "N/A" : stockOverview.lastDividendDate |
+                                        date:'mediumDate' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Last 5 Year Avg Div Yield
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.fiveYearAvgDividendYield) ? "N/A" :
+                                        stockOverview.fiveYearAvgDividendYield
+                                        | number:'1.2-2' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Forward Dividend Rate
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.dividendRateForward) ? "N/A" :
+                                        stockOverview.dividendRateForward |
+                                        number:'1.2-2' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Forward Dividend Yield
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.dividendYieldForward) ? "N/A" :
+                                        stockOverview.dividendYieldForward |
+                                        percent:'1.2-2' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Last Split Factor
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.lastSplitFactor) ? "N/A" : stockOverview.lastSplitFactor }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Last Split Date
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.lastSplitDate) ? "N/A" : stockOverview.lastSplitDate |
+                                        date:'mediumDate'
+                                        }}
+                                    </td>
+                                </tr>
+                            </table>
+                        </p-tabPanel>
+                        <p-tabPanel header="Earnings - Actual">
+                            <table>
+                                <tr>
+                                    <th>
+                                        EPS - Last Quarter
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.epsLastQuarter) ? "N/A" : stockOverview.epsLastQuarter |
+                                        number:'1.2-2' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        EPS - Prior Quarter
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.epsLastToLastQuarter) ? "N/A" :
+                                        stockOverview.epsLastToLastQuarter |
+                                        number:'1.2-2' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        EPS - Last Year
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.epsLastYearActual) ? "N/A" :stockOverview.epsLastYearActual |
+                                        number:'1.2-2' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Revenue - Last Quarter
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.revenueLastQuarter) ? "N/A" :
+                                        stockOverview.revenueLastQuarter/1000000 | number:'1.0-0' }} m
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Revenue - Prior Quarter
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.revenueLastToLastQuarter) ? "N/A" :
+                                        stockOverview.revenueLastToLastQuarter/1000000 | number:'1.0-0' }} m
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Revenue - Last Year
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.revenueLastYear) ? "N/A" :
+                                        stockOverview.revenueLastYear/1000000 |
+                                        number:'1.0-0' }} m
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Revenue - Prior Year
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.revenueLastToLastYear) ? "N/A" :
+                                        stockOverview.revenueLastToLastYear/1000000 | number:'1.0-0' }} m
+                                    </td>
+                                </tr>
+                            </table>
+                        </p-tabPanel>
+                        <p-tabPanel header="Earnings - Estimates">
+                            <table>
+                                <tr>
+                                    <th>
+                                        EPS - Current Quarter
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.epsCurrentQuarterEstimate) ? "N/A" :
+                                        stockOverview.epsCurrentQuarterEstimate | number:'1.2-2' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        EPS - Next Quarter
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.epsNextQuarterEstimate) ? "N/A" :
+                                        stockOverview.epsNextQuarterEstimate
+                                        |
+                                        number:'1.2-2' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        EPS - Current Year
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.epsCurrentYearEstimate) ? "N/A" :
+                                        stockOverview.epsCurrentYearEstimate
+                                        |
+                                        number:'1.2-2' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Revenue - Current Quarter
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.revenueCurrentQuarterEstimate) ? "N/A" :
+                                        stockOverview.revenueCurrentQuarterEstimate/1000000 | number:'1.0-0' }} m
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Revenue - Next Quarter
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.revenueNextQuarterEstimate) ? "N/A" :
+                                        stockOverview.revenueNextQuarterEstimate/1000000 | number:'1.0-0' }} m
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Revenue - Current Year
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.revenueCurrentYearEstimate) ? "N/A" :
+                                        stockOverview.revenueCurrentYearEstimate/1000000 | number:'1.0-0' }} m
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Revenue - Next Year
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.revenueNextYearEstimate) ? "N/A" :
+                                        stockOverview.revenueNextYearEstimate/1000000 | number:'1.0-0' }} m
+                                    </td>
+                                </tr>
+                            </table>
+                        </p-tabPanel>
+                        <p-tabPanel header="Valuation">
+                            <table>
+                                <tr>
+                                    <th>
+                                        Forward P/E
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.forwardPE) ? "N/A" : stockOverview.forwardPE | number:'1.2-2'
+                                        }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Trailing P/E
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.trailingPE) ? "N/A" : stockOverview.trailingPE |
+                                        number:'1.2-2' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        PEG Ratio
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.pegRatio) ? "N/A" : stockOverview.pegRatio | number:'1.2-2' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Price/Book
+                                    </th>
+                                    <td>
+                                        {{ isNA(stockOverview.priceToBook) ? "N/A" : stockOverview.priceToBook |
+                                        number:'1.2-2' }}
+                                    </td>
+                                </tr>
+                            </table>
+                        </p-tabPanel>
+                    </p-tabView>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-4 p-p-2">
+                <div class="p-card p-p-2" style="height: 100%;">
+                    <div style="float: left;font-size: 1.2rem;font-weight: bold;padding-left: 0.5rem; padding-bottom: 0.5rem;">
+                        Revenue (USD mn)
+                    </div>
+
+                    <span style="float:right; margin-right: 1rem; background-color: #6c757d; border-radius: 0.5rem;">
+                        <input type="button" value="Yearly" class="btn-normal" [ngClass]="(frequency=='yearly')?'btn-green':'btn-blue'"
+                            (click)="frequencyChangedRev('yearly')">
+                        <input type="button" value="Quarterly" class="btn-normal"
+                            [ngClass]="(frequency=='quarterly')?'btn-green':'btn-blue'" (click)="frequencyChangedRev('quarterly')">
+                    </span>
+                    
+                    <div class="p-p-2 p-mt-6">
+                        <app-bar-chart showLegends="true" [chartData]="barChartDataRev" yAxisTitle="" chartType="column">
+                        </app-bar-chart>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-4 p-p-2">
+                <div class="p-card p-p-2" style="height: 100%;">
+                    <div style="font-weight: bold; font-size: 1.2rem; padding-left: 0.5rem; padding-bottom: 0.5rem;">
+                        Earning Per Share (USD)
+                    </div>
+
+                    <div class="p-p-2 p-mt-6">
+                        <app-bar-chart showLegends="false" [chartData]="barChartDataEPS" yAxisTitle="" chartType="column">
+                        </app-bar-chart>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DESCRIPTION & NEWS -->
+    <div class="p-col-12 p-p-1">
+        <div class="p-grid">
+            <div class="p-col-12 p-md-6 p-p-2">
+                <div class="p-card p-p-2" style="height: 100%;">
+                    <div style="font-weight: bold; font-size: 1.2rem;">About</div>
+
+                    <hr style="margin: 0.5rem 0;width: 100%;">
+
+                    <div style="text-align: justify;">
+                        {{ isNA(stockOverview.longBusinessSummary) ? "N/A" : stockOverview.longBusinessSummary }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-6 p-p-2">
+                <div class="p-card p-p-2" style="height: 100%;">
+                    <div style="font-weight: bold; font-size: 1.2rem;">Latest News</div>
+
+                    <hr style="margin: 0.5rem 0;width: 100%;">
+
+                    <app-news-table newsClass="news-big" [title]="''" [symbols]="newsSymbols">
+                    </app-news-table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

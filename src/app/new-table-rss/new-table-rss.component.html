@@ -1,0 +1,16 @@
+<div [class]="newsClass">
+    <p-table #dt [value]="newsData" [paginator]="false" [rows]="100" [reorderableColumns]="true"
+        [scrollable]="false" styleClass="p-datatable-positions p-datatable-striped">
+        <ng-template pTemplate="body" let-item>
+            <tr>
+                <td style="width: 10rem;text-align: left;">
+                    {{ item.published | date: 'MMM d HH:mm' }}
+                </td>
+                <td style="text-align: left;">
+                    <a href="{{item.link}}" target="_blank">{{item.title}}</a>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <div *ngIf="newsData.length == 0">No news available right now</div>
+</div>

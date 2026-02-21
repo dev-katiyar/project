@@ -1,0 +1,34 @@
+<div>
+    <div *ngIf="!expanded">
+        The "Agents - Dashboard" and "Agents - Symbols" pages employes AI agents mimicking ace investor's approach to
+        investment.
+        <span class="symbol" (click)="expanded = true" style="margin-left: 8px;">Read More</span>
+    </div>
+    <div *ngIf="expanded">
+        The "Agents - Dashboard" and "Agents - Symbols" pages employ AI agents mimicking the famed investors' approach to investment. The system provides the financial metrics, financial data, financial news, and other information the investor would need to carry out analysis to suggest what decision they would take given the current data. Agent decisions based on generic approaches using Valuation, Fundamental, Sentiment, and Technical styles of investing are also added. Please note the AI-generated content note at the bottom of the page.
+        <ul>
+            <li>Ben Graham Agent - The godfather of value investing, only buys hidden gems with a margin of safety</li>
+            <li>Bill Ackman Agent - An activist investor, takes bold positions and pushes for change</li>
+            <li>Cathie Wood Agent - The queen of growth investing, believes in the power of innovation and disruption
+            </li>
+            <li>Charlie Munger Agent - Warren Buffett's partner, only buys wonderful businesses at fair prices</li>
+            <!-- <li>Michael Burry Agent - The Big Short contrarian who hunts for deep value</li> -->
+            <li>Peter Lynch Agent - Practical investor who seeks "ten-baggers" in everyday businesses</li>
+            <li>Phil Fisher Agent - Meticulous growth investor who uses deep "scuttlebutt" research</li>
+            <li>Stanley Druckenmiller Agent - Macro legend who hunts for asymmetric opportunities with growth potential
+            </li>
+            <li>Warren Buffett Agent - The oracle of Omaha, seeks wonderful companies at a fair price</li>
+            <li>Cliff Asness Agent - Disciplined, evidence-driven approach, blending value and momentum strategies with a deep belief in factor Diversification and long-term patience.</li>
+            <li>Howard Marks Agent - Risk-conscious, value-oriented investing, emphasizing market cycles, patience, and capital preservation over chasing short-term gains.</li>
+            <li>Joel Greenblatt Agent - Disciplined, formula-based value investing approach, buying good companies at bargain prices through his “Magic Formula” strategy.</li>
+            <li>John Bogle Agent - Low-cost, long-term investing through broad-market index funds, believing that minimizing costs and avoiding market timing leads to superior returns over time.</li>
+            <li>Ray Dalio Agent - Blends global macroeconomic analysis with risk-parity diversification, driven by the belief that understanding economic cycles and balancing uncorrelated assets is key to long-term stability and returns.</li>
+            <li>Seth Klarman Agent - Patience, risk management, and capital preservation outweigh the pursuit of short-term gains.</li>
+            <li>Valuation Agent - Calculates the intrinsic value of a stock and generates trading signals</li>
+            <li>Sentiment Agent - Analyzes market sentiment and generates trading signals</li>
+            <li>Fundamentals Agent - Analyzes fundamental data and generates trading signals</li>
+            <li>Technicals Agent - Analyzes technical indicators and generates trading signals</li>
+        </ul>
+        <span class="symbol" (click)="expanded = false">Show Less</span>
+    </div>
+</div>

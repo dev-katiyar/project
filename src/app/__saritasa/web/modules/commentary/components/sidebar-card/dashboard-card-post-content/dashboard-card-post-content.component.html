@@ -1,0 +1,10 @@
+<div class="dashboard-post-card" *ngIf="post">
+  <div class="saritasa-card-date">{{ post.date|date:"MMMM dd, yyyy" }}</div>
+  <div class="saritasa-card-img" *ngIf="post.media_url">
+    <img [src]="post.media_url" alt="Post preview">
+  </div>
+  <div class="saritasa-card-info" [innerHtml]="post.excerpt"></div>
+  <a class="link" [href]="post.link" target="_blank">Continue reading</a>
+</div>
+
+

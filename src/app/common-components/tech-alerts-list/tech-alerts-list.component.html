@@ -1,0 +1,15 @@
+<div class="border-shadow menu-wrapper">
+  <div
+    *ngFor="let techAlert of techAlerts">
+    <div class="menu-item">
+        <div class="menu-icon">
+            <img *ngIf="techAlert.sign == 1" src="./assets/images/up_icon.jpg" />
+            <img *ngIf="techAlert.sign == -1" src="./assets/images/down_icon.jpg" />
+        </div>
+        <div>
+            <div class="menu-title">{{ techAlert.symbol }}</div>
+            <div class="menu-text">{{ techAlert.event }}</div>
+        </div>
+    </div>
+  </div>
+</div>

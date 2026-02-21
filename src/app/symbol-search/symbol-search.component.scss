@@ -1,0 +1,11 @@
+:host::ng-deep .blue-background .p-dropdown .p-inputtext {
+    background-color: lightcyan;
+}
+
+:host::ng-deep .p-dropdown .p-inputtext {
+    padding: 0.2rem;
+}
+
+:host::ng-deep .p-dialog .p-dialog-content {
+    overflow: visible;
+}

@@ -1,0 +1,22 @@
+<div class="p-grid">
+    <app-tabs>
+        <app-tab [tabTitle]="row.source" *ngFor="let row of newsData">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" >
+                <tbody class="newsBody">
+                <tr *ngFor="let news of row.value" >
+                    <td class="newsBorder">
+                        <h1>{{news.title}}</h1>
+                        <h4>{{news.pubDate}}</h4>
+                        <div [innerHtml]="news.description"></div>
+                        <div class="read-more">
+                            <a [href]="news.link" target="_blank">Read more</a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </app-tab>
+    </app-tabs>
+    <!--tabTitle="row" *ngFor="let row of newsSources"-->
+
+</div>

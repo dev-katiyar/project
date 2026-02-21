@@ -1,0 +1,196 @@
+<div class="p-grid" style="margin: -0.75rem;">
+    <!-- Help Text -->
+    <div class="p-col-12 p-lg-12 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;background-color: white;">
+            <app-ai-agent-decisions-helptext></app-ai-agent-decisions-helptext>
+        </div>
+    </div>
+
+    <!-- Symbol Inputs - Synch Local to Global Symbol, but NOT otherwise-->
+    <div class="p-col-12 p-lg-12 p-p-1">
+        <app-stocks-autocomplete placeholderText="SEARCH TICKER or COMPANIES" [searchText]="symbol"
+            (onSymbolSelected)="onSymbolSelected($event)" [urlModifier]="'-spy'">
+        </app-stocks-autocomplete>
+    </div>
+
+    <!-- All Agents combined descision -->
+    <div class="p-col-12 p-lg-4 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;background-color: white;">
+            <span style="font-size: 1.2rem;" class="p-text-bold p-mr-2">
+                All Agents Combined Decision (Confidence)
+            </span>
+
+            <hr style="margin: 0.5rem 0;">
+
+            <app-chart-descision-dial [dataPoint]="combinedDecision['dataPoint']"
+                barClass="chart-dial-1"></app-chart-descision-dial>
+
+            <div class="p-text-justify">
+                {{ combinedDecision?.reasoning }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Price Chart -->
+    <div class="p-col-12 p-lg-8 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;background-color: white;">
+            <span style="font-size: 1.2rem;" class="p-text-bold p-mr-2">
+                Price Chart | {{symbol}}
+            </span>
+
+            <hr style="margin: 0.5rem 0; width: 100%;">
+
+            <div>
+                <line-chart barClass="chart-big-2" [symbols]="[symbol]" [isOneSymbolPriceData]="true"
+                    yAxisText="Price ($)">
+                </line-chart>
+            </div>
+        </div>
+    </div>
+
+    <!-- Individual Agent Descisions -->
+    <div class="p-col-12 p-lg-12 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;background-color: white;">
+            <span style="font-size: 1.2rem;" class="p-text-bold p-mr-2">
+                Individual Agent Descisions
+            </span>
+
+            <hr style="margin: 0.5rem 0; width: 100%;">
+
+            <div class="p-grid">
+                <!-- Table -->
+                <div class="p-col-12 p-lg-4 p-p-1">
+                    <div class="border-shadow p-p-2" style="height: 100%;background-color: white;">
+                        <p-table #dt [value]="agentDecisionsListHumans" [paginator]="false"
+                            [reorderableColumns]="true" [scrollable]="false"
+                            styleClass="p-datatable-positions p-datatable-striped">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th class="p-text-left">
+                                        Agent
+                                    </th>
+
+                                    <th class="p-text-center" pSortableColumn="signal">
+                                        Signal
+                                        <p-sortIcon field="signal"></p-sortIcon>
+                                    </th>
+
+                                    <th class="p-text-center" pSortableColumn="confidence">
+                                        Confidence
+                                        <p-sortIcon field="confidence"></p-sortIcon>
+                                    </th>
+                                </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="body" let-dcsn>
+                                <tr [ngClass]="(dcsn.name == selectedAgentDecision?.name) ? 'selected' : ''">
+                                    <td class="p-text-left p-text-bold">
+                                        <span (click)="onAgentNameClick(dcsn)" style="cursor: pointer; font-weight: bold;" [ngStyle]="{'color': (dcsn.name != selectedAgentDecision?.name) ? '#004b8d' : ''}">
+                                            {{dcsn?.name}}
+                                        </span>
+                                        <a *ngIf="dcsn?.superInvestorCode"
+                                            [href]="'/super-investor/' + dcsn?.superInvestorCode" target="_blank">
+                                            <i class="pi pi-briefcase"></i>
+                                        </a>
+                                    </td>
+
+                                    <td class="p-text-center p-text-bold p-text-capitalize" [ngClass]="dcsn?.signal">
+                                        {{dcsn?.signal}}
+                                    </td>
+
+                                    <td class="p-text-center" [ngClass]="dscn?.confidenceClass">
+                                        {{dcsn?.confidence | number:'0.0-0'}}%
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                        <hr style="margin: 0.3rem;">
+                        <p-table #dt [value]="agentDecisionsListNotHumans" [paginator]="false"
+                            [reorderableColumns]="true" [scrollable]="false"
+                            styleClass="p-datatable-positions p-datatable-striped">
+
+                            <ng-template pTemplate="body" let-dcsn>
+                                <tr style="background-color: #f0f1c5;" [ngClass]="(dcsn.name == selectedAgentDecision?.name) ? 'selected' : ''">
+                                    <td class="p-text-left p-text-bold">
+                                        <span (click)="onAgentNameClick(dcsn)" style="cursor: pointer; font-weight: bold;" [ngStyle]="{'color': (dcsn.name != selectedAgentDecision?.name) ? '#004b8d' : ''}">
+                                            {{dcsn?.name}}
+                                        </span>
+                                    </td>
+
+                                    <td class="p-text-center p-text-bold p-text-capitalize" [ngClass]="dcsn?.signal">
+                                        {{dcsn?.signal}}
+                                    </td>
+
+                                    <td class="p-text-center" [ngClass]="dscn?.confidenceClass">
+                                        {{dcsn?.confidence | number:'0.0-0'}}%
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+
+                <!-- Decision and Explanation -->
+                <div class="p-col-12 p-lg-8 p-p-1">
+                    <div class="border-shadow p-p-2" style="height: 100%;">
+                        <span style="font-size: 1.2rem;" class="p-text-bold p-mr-2">
+                            {{ selectedAgentDecision?.name }} Agent Decision (Confidence)
+                        </span>
+
+                        <hr style="margin: 0.5rem 0; width: 100%;" class="p-mb-0">
+
+                        <div class="p-grid p-mt-0" style="height: 93%;">
+                            <!-- Agent Desciions and AI Explanation -->
+                            <div class="p-col-12 p-lg-6 p-p-1">
+                                <div class="border-shadow p-p-2" style="height: 100%; background-color: white;">
+                                    <div>
+                                        <app-chart-descision-dial [dataPoint]="selectedAgentDecision['dataPoint']"
+                                            barClass="chart-dial-1"></app-chart-descision-dial>
+                                    </div>
+
+                                    <div>
+                                        <div class="p-text-justify"
+                                            [innerHTML]="sanitiser.bypassSecurityTrustHtml(selectedAgentDecision?.reasoning)">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Agent Investing Principles -->
+                            <div class="p-col-12 p-lg-6 p-p-1">
+                                <div class="border-shadow p-p-2" style="height: 100%;background-color: white;">
+                                    <span class="p-text-bold p-mr-2">
+                                        {{ selectedAgentDecision?.name }}'s Analysis Principles
+                                    </span>
+
+                                    <hr style="margin: 0.5rem 0; width: 100%;">
+
+                                    <div class="p-text-justify" [innerHTML]="selectedAgentDecision?.description">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Disclaimer -->
+    <div class="p-col-12 p-p-1">
+        <div class="border-shadow p-p-2" style="font-size: 0.85rem;">
+            <b>📢 Disclaimer: AI-Generated Content</b>
+
+            <div class="p-text-justify">
+                The trade signals and market insights displayed on this page are automatically generated using
+                artificial
+                intelligence (AI) and are provided strictly for informational and educational purposes only. These
+                signals do not constitute financial advice, investment recommendations, or an offer to buy or sell
+                any
+                financial instrument. Stock market investments carry inherent risks, and past performance is not a
+                guarantee of future outcomes. By using this AI tool, you agree that we are not liable for any
+                financial losses or damages arising from the use or reliance on AI-generated data presented here.
+            </div>
+        </div>
+    </div>
+</div>

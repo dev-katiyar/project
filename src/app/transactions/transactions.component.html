@@ -1,0 +1,108 @@
+
+ <div class="p-grid" *ngIf="isAdminUser == 1" style="margin-top: 0;">
+    <div class="p-col-12">
+        <div style="float: right; margin-right: 10px; padding:0 3px" class="symbol">
+            <span (click)="dt1.exportCSV()">
+                <i class="pi pi-file-excel"></i>
+                <u> Export to CSV</u>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div>
+    <p-table #dt1 [columns]="cols"  [value]="transactionsData" dataKey="id" [rows]="50" [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[20,50,100,500]" styleClass="p-datatable-positions p-datatable-striped" [paginator]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [globalFilterFields]="['symbol']"
+        [autoLayout]="true" [tableStyle]="{'table-layout':'auto'}" [resizableColumns]="false">
+    
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="symbol">
+                    <div>
+                        Symbol
+                        <p-sortIcon field="symbol"></p-sortIcon>
+                        <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto">
+                        </p-columnFilter>
+                    </div>
+                </th>
+    
+                <th pSortableColumn="name">
+                    <div>
+                        Name
+                        <p-sortIcon field="name"></p-sortIcon>
+                        <p-columnFilter type="text" field="name" display="menu" class="p-ml-auto">
+                        </p-columnFilter>
+                    </div>
+                </th>
+    
+                <th pSortableColumn="side">
+                    <div>
+                        Buy/Sell
+                        <p-sortIcon field="side"></p-sortIcon>
+                    </div>
+                </th>
+    
+                <th pSortableColumn="qty">
+                    <div>
+                        Total # of Shares
+                        <p-sortIcon field="qty"></p-sortIcon>
+                    </div>
+                </th>
+    
+                <th pSortableColumn="date">
+                    <div>
+                        Transaction Date
+                        <p-sortIcon field="date"></p-sortIcon>
+                    </div>
+                </th>
+    
+                <th pSortableColumn="price">
+                    <div>
+                        Cost Basis
+                        <p-sortIcon field="price"></p-sortIcon>
+                    </div>
+                </th>
+    
+                <th pSortableColumn="commission">
+                    <div>
+                        Commission
+                        <p-sortIcon field="commission"></p-sortIcon>
+                    </div>
+                </th>
+            </tr>
+        </ng-template>
+    
+        <ng-template pTemplate="body" let-transaction>
+            <tr class="p-selectable-row">
+                <td style="text-align: left;">
+                    <div class="symbol-withoutpointer">{{transaction.symbol}}</div>
+                </td>
+    
+                <td style="text-align: left; min-width: 13rem;">
+                    <div>{{transaction.name}}</div>
+                </td>
+    
+                <td style="text-align: center;">
+                    <div [ngClass]="transaction.side | classpipe">{{transaction.side}}</div>
+                </td>
+    
+                <td style="text-align: right;">
+                    <div>{{transaction.qty}}</div>
+                </td>
+    
+                <td style="text-align: right;">
+                    <div>{{transaction.date | date:'yyyy-MM-dd'}}</div>
+                </td>
+    
+                <td style="text-align: right;">
+                    <div>{{transaction.price | currency}}</div>
+                </td>
+    
+                <td style="text-align: right;">
+                    <div>{{ getCommission(transaction) | currency }}</div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

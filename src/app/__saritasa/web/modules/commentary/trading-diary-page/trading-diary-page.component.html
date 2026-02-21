@@ -1,0 +1,26 @@
+<div class="p-grid" style="margin: -0.75rem;">
+  <div class="p-col-12 p-md-8 p-p-1">
+    <div *ngIf="items$ | async as posts; else notFound">
+      <app-commentary-posts-list [posts]="posts">
+      </app-commentary-posts-list>
+      <p-paginator [rows]="listManager.paginationData.pageSize" [totalRecords]="listManager.paginationData.totalCount"
+        (onPageChange)="paginate($event)">
+      </p-paginator>
+    </div>
+
+    <ng-template #notFound>
+      <div class="not-found-msg">
+        No posts found
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="p-col-12 p-md-4 p-p-2">
+    <app-commentary-sidebar [recentPosts]="recentPosts$ | async" [popularPosts]="popularPosts$ | async">
+    </app-commentary-sidebar>
+  </div>
+
+  <div class="p-col-12">
+    <app-page-loader [loading]="isLoading$|async"></app-page-loader>
+  </div>
+</div>

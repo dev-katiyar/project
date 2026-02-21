@@ -1,0 +1,16 @@
+<div class="saritasa-card border-shadow p-p-2">
+  <!-- <div class="saritasa-card-header">{{ headerText }}</div> -->
+  <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+    {{ headerText }}
+  </span>
+
+  <hr style="margin: 0.5rem 0;">
+
+  <div class="saritasa-card-body">
+    <ng-content></ng-content>
+  </div>
+
+  <div class="saritasa-card-section-link" *ngIf="showSectionLink">
+    <a [routerLink]="sectionLink">{{ sectionLinkText }}</a>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+
+<div style="margin-bottom: 0.5rem; padding-right: 1rem;">
+       <span *ngIf="indexKey" style="float: left; margin-left: 1rem;">Benchmark: <strong>{{indexKey}}</strong></span>
+       <span style="float:right; margin-bottom: 1rem; background-color: #6c757d; border-radius: 0.5rem;">
+              <input type="button" value="YTD" class="btn-normal"
+                     [ngClass]="(period=='ytd')?'btn-green':'btn-blue'" 
+                     (click)="periodChanged('ytd')">
+              <input type="button" value="1M" class="btn-normal"
+                     [ngClass]="(period=='1month')?'btn-green':'btn-blue'"
+                     (click)="periodChanged('1month')">
+              <input type="button" value="3M" class="btn-normal"
+                     [ngClass]="(period=='3month')?'btn-green':'btn-blue'"
+                     (click)="periodChanged('3month')">
+              <input type="button" value="6M" class="btn-normal"
+                     [ngClass]="(period=='6month')?'btn-green':'btn-blue'"
+                     (click)="periodChanged('6month')">
+              <input type="button" value="1Y" class="btn-normal"
+                     [ngClass]="(period=='1year')?'btn-green':'btn-blue'"
+                     (click)="periodChanged('1year')">
+              <input type="button" value="3Y" class="btn-normal"
+                     [ngClass]="(period=='3year')?'btn-green':'btn-blue'"
+                     (click)="periodChanged('3year')">
+              <input type="button" value="Max" class="btn-normal"
+                     [ngClass]="(period=='All')?'btn-green':'btn-blue'" (click)="periodChanged('All')">
+       </span>
+</div>
+
+<div [class]="barClass" [chart]="lineChart"></div>

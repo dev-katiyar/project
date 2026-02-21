@@ -1,0 +1,11 @@
+.arrow-up{
+  content:url("/assets/images/green-triangle-up.png");
+  width:11px;
+  height:11px;
+}
+
+.arrow-down{
+  content:url("/assets/images/upside-down-triangle-red.png");
+  width:11px;
+  height:11px;
+}

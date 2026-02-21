@@ -1,0 +1,38 @@
+<span style="margin-right: 10px; z-index: 1" [ngClass]="{'display-block': isFullWidth}" class="p-input-icon-right">
+  <input
+    autocomplete="off"
+    [placeholder]="placeholderText"
+    pInputText
+    class="ng-tns-c3-0 p-inputtext p-widget p-state-default p-corner-all p-autocomplete-input ng-star-inserted"
+    type="text"
+    [size]="inputSize"
+    [(ngModel)]="searchText"
+    (keyup)="handleKeyUp($event)"
+    (focusout)="handleBlur()"
+    (click)="$event.target.select()"
+    style="width: 100%; padding-top: 0.5rem; padding-bottom: 0.5rem;color: black;"
+  />
+</span>
+
+<div *ngIf="!isSelected" class="auto">
+  <ul class="p-autocomplete-items p-autocomplete-list p-widget-content p-widget p-corner-all p-helper-reset">
+    <li class="auto-item" (click)="selectionChanged(item)" *ngFor="let item of items">
+      <div class="p-grid">
+        <div class="p-col-3 p-text-bold">
+          {{ item.symbol }}
+        </div>
+
+        <div class="p-col-9" style="font-size: 12px">
+            {{ item.name }}
+        </div>
+      </div>
+    </li>
+
+    <!-- Find Add More - only if generic serach. Not for special like SPY only -->
+    <li class="p-text-center" *ngIf="!urlModifier">
+      <div class="button-like">
+        <a [routerLink]="'/symbol-search/'+searchText" target="_blank" >Find/Add More</a>
+      </div>
+    </li>
+  </ul>
+</div>

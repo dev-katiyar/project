@@ -1,0 +1,172 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <div class="summary p-p-2">
+            <div class="p-grid">
+                <div class="p-col-12 p-md-6 p-text-bold">
+                    {{symbolCount}}
+                </div>
+            
+                <div class="p-col-8 p-md-4 p-fluid">
+                    <p-dropdown [options]="remainingFilters" optionLabel="name" [filter]="true" filterBy="name"
+                        placeholder="Add more Filters" (onChange)="onAddMoreFilterValueChange($event)">
+                    </p-dropdown>
+                </div>
+
+                <div class="p-col-4 p-md-2 p-fluid">
+                    <button pButton class="p-button-outlined" [style]="{'padding': '0.4rem'}" icon="pi pi-refresh" label="Reset"
+                        (click)="resetPresetFilters()"></button>
+                </div>
+            </div>
+
+            <hr style="margin: 0.5rem 0;width: 100%;">
+
+            <div style="display: flex; flex-wrap: wrap; row-gap: 0.5rem;">
+                <p-chip *ngFor="let sFilter of selectedFilters" [removable]="true" removeIcon="pi pi-minus-circle"
+                    (onRemove)="onRemoveSelectedFilter(sFilter)" [style]="{
+                        'margin-right': '0.25rem', 
+                        'background-color': '#4695cc',
+                        'font-weight': 'bold',
+                        'color': 'white',
+                        'padding':'0.5rem'
+                        
+                    }">
+                    <p-inplace #myInPlace>
+                        <ng-template pTemplate="display">
+                            <b>{{sFilter.text}}</b>&nbsp;
+                            <i class="pi pi-pencil" style="color: midnightblue;"></i>
+                        </ng-template>
+
+                        <ng-template pTemplate="content">
+                            <div class="inplace-content-container">
+                                <!-- Slider Filters -->
+                                <div class="p-grid" *ngIf="sFilter.type == 'slider'" style="padding: 0.5rem;">
+                                    <div class="p-col-12" style="color: black;">
+                                        <b>{{sFilter.text}}</b>
+
+                                        <span style="color:orange;" *ngIf="sFilter.name == 'Piotroski Score'"
+                                            class="pi pi-question-circle" [escape]="false"
+                                            [pTooltip]="technicalService.getPiotroskiToolTip()" tooltipEvent="hover"
+                                            showDelay="50" hideDelay="200">
+                                        </span>
+
+                                        <span style="color:orange;" *ngIf="sFilter.name == 'Mohanram Score'"
+                                            class="pi pi-question-circle" [escape]="false"
+                                            [pTooltip]="technicalService.getMohanramToolTip()" tooltipEvent="hover"
+                                            showDelay="50" hideDelay="200">
+                                        </span>
+                                    </div>
+
+                                    <div class="p-col-12">
+                                        <p-slider [(ngModel)]="sFilter.selected_slider_values"
+                                            [min]="sFilter.slider_values[0]" [max]="sFilter.slider_values[1]"
+                                            (onChange)="setSliderText(sFilter)" [range]="true">
+                                        </p-slider>
+                                    </div>
+
+                                    <div class="p-col-12" style="text-align: right;">
+                                        <p-button (click)="myInPlace.deactivate()" icon="pi pi-check"></p-button>
+                                    </div>
+                                </div>
+
+                                <!-- Dropdown Filters -->
+                                <div class="p-grid" *ngIf="sFilter.type == 'dropdown'" style="padding: 0.5rem;">
+                                    <div class="p-col-12" style="color: black;">
+                                        <b>{{sFilter.text}}</b>
+                                    </div>
+
+                                    <div class="p-col-12 p-fluid">
+                                        <p-multiSelect *ngIf="sFilter.multiple"
+                                            (onChange)="setMultiDropdownText(sFilter)"
+                                            [options]="sFilter.display_values" [(ngModel)]="sFilter.selected_value"
+                                            optionLabel="name" optionValue="id" [style]="{'color': 'black'}"
+                                            placeholder="--Select--"></p-multiSelect>
+
+                                        <p-dropdown
+                                            *ngIf="sFilter.selected_value != CUSTOM_OPTION_ID && !sFilter.multiple"
+                                            [options]="sFilter.display_values" [(ngModel)]="sFilter.selected_value"
+                                            (onChange)="setDropdownText(sFilter)" optionLabel="name" optionValue="id"
+                                            [ngClass]="{'blue-background': sFilter.selected_value!=DEFAULT_OPTION_ID}">
+                                        </p-dropdown>
+
+                                        <div style="float: left;display: inline-flex;margin-top:5px;"
+                                            *ngIf="sFilter.allow_custom && sFilter.selected_value == CUSTOM_OPTION_ID">
+                                            <input style="float: left;width:40%;height:28px;" pInputText
+                                                [(ngModel)]="sFilter.minValue"
+                                                (change)="setDropdownCustomText(sFilter)" (click)="$event.target.select()" />
+
+                                            <span style="font-size:12px;margin-top:3px;">{{sFilter.range_text}}</span>
+
+                                            <span style="margin-left:5px;display:inline-flex;margin-top:3px;"> -
+                                            </span>
+
+                                            <input style="float:left;width:40%;height:28px;" pInputText
+                                                [(ngModel)]="sFilter.maxValue"
+                                                (change)="setDropdownCustomText(sFilter)" (click)="$event.target.select()" />
+
+                                            <span style="font-size:12px;margin-top:3px;">{{sFilter.range_text}}</span>
+
+                                            <button pButton pRipple
+                                                style="font-weight:bold;font-size:10px;width:13px;height:13px;margin-left:4px;margin-top:4px;"
+                                                type="button" icon="pi pi-times" (click)="removeCustomInput(sFilter)"
+                                                class="p-button-text p-button-text p-button-danger">
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-col-12" style="text-align: right;">
+                                        <p-button (click)="this.myInPlace.deactivate();" icon="pi pi-check"></p-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-inplace>
+                </p-chip>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; text-align: right; margin-top: 1rem;">
+                <div style="display: inline-block; color: red;">{{msgFilters}}</div>
+                <p-button (click)="updatePresetValuesAndDataForSelectedPreset()">Run Screen</p-button>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12">
+        <app-composite-chart-table [symbols]="scannedSymbols" [title]="" defaultView="Tables" defaultCol='mom'
+            defaultChart='Heat Map' [rowsPerPage]="50"></app-composite-chart-table>
+    </div>
+</div>
+
+<p-dialog header="Save Preset" showEffect="fade" [(visible)]="displaySaveDialog" [modal]="true">
+    <div>
+        <div class="form-group">
+            <label for="name" style="margin-right:58px;">Preset Name: </label>
+            <input [(ngModel)]="presetName" id="name" pInputText placeholder="Enter Name" class="saveInput form-control"
+                #name="ngModel" required name="name" (click)="$event.target.select()" />
+            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert" style="margin-top:7px;">
+                <div style="margin-left:70px;" *ngIf="name.errors?.required" class="error-msg">
+                    Name is required.
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="isAdminUser">
+            <label style="margin-right:10px;">Preset Image Name: </label>
+            <p-dropdown
+                [style]="{ width: '50%',height: '33px','margin-top':'10px','margin-bottom':'10px','z-index':'1' }"
+                name="screenImage" placeholder='-- Select --' [options]='screenImages' [(ngModel)]='presetImage'
+                optionValue="image_name" optionLabel='image_name'>
+            </p-dropdown>
+        </div>
+
+        <div *ngIf="isAdminUser">
+            <label style="margin-right:20px;">Preset Description: </label>
+            <textarea pstyle="width:100%;" rows="3" cols="30" placeholder="Enter Description"
+                [(ngModel)]="presetDescription" pTextarea></textarea>
+        </div>
+    </div>
+    <p-footer>
+        <button [disabled]="! (name.valid)" pButton type="button" icon="pi pi-save" (click)="saveFilter()" label="Save"
+            style="margin-right:120px;cursor:pointer;" class="p-button-success">
+        </button>
+    </p-footer>
+</p-dialog>

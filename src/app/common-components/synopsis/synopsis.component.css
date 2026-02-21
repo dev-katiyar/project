@@ -1,0 +1,82 @@
+.neutral {
+  height: 18px;
+
+  background: #7e7e7e;
+  /* margin-bottom: 20px; Old browsers */
+  background: -moz-linear-gradient(left, #7e7e7e 0%, #989898 100%, #bebebe 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%, #7e7e7e), color-stop(100%, #989898), color-stop(100%, #bebebe));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(left, #7e7e7e 0%, #989898 100%, #bebebe 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(left, #7e7e7e 0%, #989898 100%, #bebebe 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(left, #7e7e7e 0%, #989898 100%, #bebebe 100%);
+  /* IE10+ */
+  background: linear-gradient(to right, #7e7e7e 0%, #989898 100%, #bebebe 100%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7e7e7e', endColorstr='#bebebe', GradientType=1);
+  /* IE6-9 */
+  width: 10%;
+  height: 25px;
+  color: gray;
+}
+
+
+.neutralTrend {
+  width: 10%;
+  height: 25px;
+  color: gray;
+
+}
+
+
+.veryBullish {
+  width: 90%;
+  height: 25px;
+  position: relative;
+  background-image: url("/assets/images/VeryBullish.png");
+  background-repeat: no-repeat;
+}
+
+
+.bullish {
+  width: 40%;
+  height: 25px;
+  position: relative;
+  background-image: url("/assets/images/bullish.png");
+  background-repeat: no-repeat;
+}
+
+.bearish {
+  width: 40%;
+  height: 25px;
+  position: relative;
+  background-image: url("/assets/images/Bearish.jpg");
+  background-repeat: no-repeat;
+}
+
+.veryBearish {
+  width: 90%;
+  height: 25px;
+  position: relative;
+  background-image: url("/assets/images/veryBearish.png");
+  background-repeat: no-repeat;
+}
+
+td,
+th {
+  border: none;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  width: 100%;
+  padding: 0.25rem;
+}
+
+/* 
+.p-panel {
+    min-height:100%;
+} */

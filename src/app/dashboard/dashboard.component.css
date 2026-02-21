@@ -1,0 +1,26 @@
+#heatmap-home {
+  overflow-y: scroll;
+  height: 280px;
+}
+
+.guage-size {
+  width: 70%;
+  margin: auto;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-panels {
+  padding: 0.1rem;
+}
+
+.dashboard-box {
+  border: 1px solid #e9dfdf;
+  border-radius: 6px;
+  background: white;
+}
+
+.dashboard-box2 {
+  border: 1px solid #e9dfdf;
+  border-radius: 6px;
+  background: white;
+  margin-top: 0.5rem;
+}

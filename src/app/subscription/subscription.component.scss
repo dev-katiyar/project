@@ -1,0 +1,15 @@
+.show_items {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+
+.info-card {
+    padding: 0.5rem;
+    background: rgba(239, 246, 255, 0.95);
+    border: solid #bfdbfe;
+    border-width: 1px;
+    color: #2563eb;
+    border-radius: 5px;
+}

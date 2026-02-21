@@ -1,0 +1,251 @@
+<!-- this is shown in full screen view -->
+<div *ngIf="!isMinimalView">
+    <div *ngIf="showCreatePortfolio" class="border-shadow" style="margin-bottom: 1rem;padding: 0.5rem;">
+        <div class="p-grid">
+            <div class="p-col-12">
+                <div class="p-grid" style="margin-top: 0.5rem; margin-bottom: 1rem;">
+                    <div class="p-col-12">
+                        <p style="font-size: 1.1rem; font-weight: bold;">
+                            Create a new Portfolio
+                        </p>
+
+                        <p style="margin: 0; text-align: justify;">
+                            Enter name and starting cash for the new portfolio. Once portfolio is created transactions can be added to build holding positions.
+                        </p>
+                    </div>
+
+                    <div class="p-col-12 p-md-4">
+                        <span>Portfolio Name&nbsp;</span>
+                        <input [(ngModel)]="createPortfolioName" pInputText placeholder="Enter Portfolio Name"
+                            id="portfolio-name" maxlength="49" (click)="$event.target.select()" />
+                    </div>
+
+                    <div class="p-col-12 p-md-4">
+                        <span>Starting Cash&nbsp;</span>
+                        <input digitOnly decimal="true" decimalSeparator="." placeholder="0,00"
+                            pattern="[0-9]+([.][0-9]+)?" [(ngModel)]="createPortfolioStartingCash"
+                            placeholder="Enter Starting Cash" pInputText id="starting-cash" (click)="$event.target.select()" />
+                    </div>
+
+                    <div class="p-col-12 p-md-4" style="text-align: left; margin-top: 0.5rem;">
+                        <button pButton label="Cancel" type="button" class="p-button-outlined"
+                            (click)="onCancelCreatePortfolioClick()">
+                        </button>
+
+                        <button pButton label="Create" type="button" (click)="onCreatePortfolioClick()"
+                            style="margin-left: 1rem;">
+                        </button>
+                    </div>
+
+                    <div class="p-col-12" *ngIf="createPortfolioError" style="color: red;">
+                        {{createPortfolioError}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="portfolioSummData && portfolioSummData.length > 0">
+        <p-table #dt [value]="portfolioSummData"
+            styleClass="p-datatable-positions p-datatable-striped" [paginator]="false" [autoLayout]="true">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="text-align: left;">Portfolio Name</th>
+                    <th style="text-align: right;">Starting Cash</th>
+                    <th style="text-align: right;">P&L Since Inception</th>
+                    <th style="text-align: right;">Today's P&L</th>
+                    <th style="text-align: right;">Market Value</th>
+                    <th style="text-align: right;">Total Dividends</th>
+                    <th style="text-align: right;">Remaining Cash</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-dataRow>
+                <tr (click)="onPortfolioRowClick(dataRow)" style="cursor: pointer;">
+                    <td>
+                        <div class="symbol" style="text-align: left; padding: 0.33rem 0.4rem; width: fit-content">
+                            {{ dataRow.name}}
+                        </div>
+                    </td>
+
+                    <td>
+                        {{ dataRow.startingCash | currency }}
+                    </td>
+
+                    <td>
+                        <div [ngClass]="dataRow.pnl | upDownColor">
+                            {{ dataRow['pnl'] | currency }} ({{ dataRow['pnlPercent'] | number: '0.2-2' }}%)
+                        </div>
+                    </td>
+
+                    <td>
+                        <div [ngClass]="dataRow.dailyPnl | upDownColor">
+                            {{ dataRow['dailyPnl'] | currency }} ({{ dataRow['dailyPnlPercentage'] | number: '0.2-2'
+                            }}%)
+                        </div>
+                    </td>
+
+                    <td>
+                        {{ dataRow.portfolioValue | currency }}
+                    </td>
+
+                    <td>
+                        {{ dataRow.dividend | currency }}
+                    </td>
+
+                    <td>
+                        {{ dataRow.currentCash | currency }}
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div *ngIf="portfolioSummData && portfolioSummData.length <= 0 && !showCreatePortfolio">
+        <div class="p-grid">
+            <div class="p-col-12 p-md-3">
+                <img src="../../assets/images/portfolio_monitor.svg" alt="Portfolio Panel">
+            </div>
+
+            <div class="p-col-12 p-md-9">
+                <div class="p-grid p-ai-center" style="height: 100%;">
+                    <div class="p-col-12">
+                        <div class="p-grid">
+                            <div class="p-col-12" style="font-size: 1.1rem; font-weight: bold;">
+                                Add Your First Portfolio
+                            </div>
+
+                            <div class="p-col-12">
+                                It's the easiest way to stay informed on your stocks. We'll run a full portfolio health
+                                check for you so you can track your risk level, and identify your best and worst stocks.
+                            </div>
+
+                            <div class="p-col-3">
+                                <!-- <button pButton label="Link Brokerage Account" icon="pi pi-link" disabled="true"
+                                    style="font-weight: bold;"></button> -->
+                            </div>
+
+                            <div class="p-col-3">
+                                <button pButton label="New Portfolio" icon="pi pi-plus" style="font-weight: bold;"
+                                    (click)="onNewPortfolioClick()"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- code repetion, but kept separate for separatino of concerns and clarity -->
+<!-- this is shown in the minimal view -->
+<div *ngIf="isMinimalView">
+    <div *ngIf="showCreatePortfolio" style="margin-bottom: 1rem; padding: 0.5rem;">
+        <div class="p-grid">
+            <div class="p-col-12">
+                <div class="p-grid" style="margin-top: 0.5rem; margin-bottom: 1rem;">
+                    <div class="p-col-12">
+                        <p style="font-size: 1.1rem; font-weight: bold;">
+                            Create a new Portfolio
+                        </p>
+
+                        <p style="margin: 0; text-align: justify;">
+                            Enter name and starting cash for the new portfolio. Once portfolio is created transactions can be added to build holding positions.
+                        </p>
+                    </div>
+
+                    <div class="p-col-12">
+                        <div class="p-grid">
+                            <div class="p-col-6" style="padding: 1.4rem;">
+                                Portfolio Name
+                            </div>
+
+                            <div class="p-col-6" style="padding-right: 1rem;">
+                                <input [(ngModel)]="createPortfolioName" pInputText placeholder="Enter Portfolio Name"
+                                    id="portfolio-name" maxlength="49" (click)="$event.target.select()" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-col-12">
+                        <div class="p-grid">
+                            <div class="p-col-6" style="padding: 1.4rem;">
+                                Starting Cash
+                            </div>
+
+                            <div class="p-col-6" style="padding-right: 1rem;">
+                                <input digitOnly decimal="true" decimalSeparator="." placeholder="0,00"
+                                    pattern="[0-9]+([.][0-9]+)?" [(ngModel)]="createPortfolioStartingCash"
+                                    placeholder="Enter Starting Cash" pInputText id="starting-cash" (click)="$event.target.select()" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-col-12" style="text-align: right; margin-top: 0.5rem;">
+                        <button pButton label="Cancel" type="button" class="p-button-outlined"
+                            (click)="onCancelCreatePortfolioClick()">
+                        </button>
+
+                        <button pButton label="Create" type="button" (click)="onCreatePortfolioClick()"
+                            style="margin-left: 1rem;">
+                        </button>
+                    </div>
+
+                    <div class="p-col-12" *ngIf="createPortfolioError" style="color: red;">
+                        {{createPortfolioError}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div *ngIf="portfolioSummData && portfolioSummData.length > 0">
+        <p-table #dt [value]="portfolioSummData"
+            styleClass="p-datatable-positions p-datatable-striped" [paginator]="false" [autoLayout]="true">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="text-align: left;">Portfolio Name</th>
+                    <th style="text-align: right;">Market Value</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-dataRow>
+                <tr *ngIf="this.selectedPortfolio" [ngClass]="(dataRow.portfolioid === this.selectedPortfolio.portfolioid) ? 'selected' : 'normal'"
+                    (click)="onPortfolioRowClick(dataRow)">
+                    <td style="text-align: left; padding: 0.6rem 0.25rem">
+                        {{ dataRow.name}}
+                    </td>
+
+                    <td>
+                        {{ dataRow.portfolioValue | currency }}
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div *ngIf="portfolioSummData && portfolioSummData.length <= 0 && !showCreatePortfolio">
+        <div class="p-grid">
+            <div class="p-col-12" style="font-size: 1.1rem; font-weight: bold;">
+                Add Your First Portfolio
+            </div>
+
+            <div class="p-col-12">
+                It's the easiest way to stay informed on your stocks. We'll run a full portfolio health
+                check for you so you can track your risk level, and identify your best and worst stocks.
+            </div>
+
+            <!-- <div class="p-col-12 p-fluid">
+                <button pButton label="Link Brokerage Account" icon="pi pi-link" disabled="true"
+                    style="font-weight: bold;"></button>
+            </div> -->
+
+            <div class="p-col-12 p-fluid">
+                <button pButton label="New Portfolio" icon="pi pi-plus" style="font-weight: bold;"
+                    (click)="onNewPortfolioClick()"></button>
+            </div>
+        </div>
+    </div>
+</div>

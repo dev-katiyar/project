@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>584B24CE-3D74-4ED0-A507-BFB82A05AEB2</title>
+    <defs>
+        <path d="M28.0647265,13.0647265 C27.6734457,12.6734457 27.042567,12.6693718 26.6522706,13.0589701 L16.875,22.81875 L16.875,1.00993634 C16.875,0.452163903 16.4300998,0 15.8700688,0 L14.1299312,0 C13.574923,0 13.125,0.455813182 13.125,1.00993634 L13.125,22.81875 L3.36522007,13.0414794 C2.97711849,12.6526823 2.34662083,12.6533792 1.94899886,13.0510011 L0.713501139,14.2864989 C0.319445341,14.6805547 0.313296318,15.3132963 0.703362152,15.7033622 L14.6440063,29.6440063 C14.8406162,29.8406162 15.1583078,29.8416922 15.3559937,29.6440063 L29.2966378,15.7033622 C29.685094,15.314906 29.6863453,14.6863453 29.2915235,14.2915235 L28.0647265,13.0647265 Z" id="path-1"></path>
+    </defs>
+    <g id="ELEMENT-SHEET" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Element-Sheet---Landing" transform="translate(-690.000000, -406.000000)">
+            <g id="icons/arrow-down-light" transform="translate(690.000000, 406.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <use id="Fill" fill="#FFFFFF" xlink:href="#path-1"></use>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,297 @@
+<div class="p-grid">
+
+    <div class="p-md-6 p-md-offset-3 p-lg-4 p-lg-offset-3"
+         style="margin-top:1%;background:#F5F5F5;margin-bottom:2%;box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);">
+
+        <span style="margin-left:5%;margin-right:1%;font-weight:bold;color:grey;">Symbol: </span>
+        <app-stocks-autocomplete [searchText]="symbol"
+                                 (onSymbolSelected)="symbolSelected($event)"></app-stocks-autocomplete>
+    </div>
+
+    <p-tabView (onChange)="handleChange($event)" [activeIndex]="selectedIndex">
+        <p-tabPanel header={{option.name}} *ngFor="let option of optionData; let i = index" [selected]="i == 0"
+                    (onChange)="getSymbolOptions(option)">
+            <p-tabView class="p-col-12">
+
+                <p-tabPanel header="Calls">
+                    <p-panel >
+                        <p-table #dt1 [value]="option.calls" dataKey="id" [rows]="10" [showCurrentPageReport]="true"
+                                 [rowsPerPageOptions]="[5,10,20]" styleClass="p-datatable-positions p-datatable-striped"
+                                 [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                                 [globalFilterFields]="['contractSymbol']" [autoLayout]="true">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="contractSymbol">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Contract Name
+                                            <p-sortIcon field="contractSymbol"></p-sortIcon>
+                                            <p-columnFilter type="text" field="contractSymbol" display="menu" class="p-ml-auto"></p-columnFilter>
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="lastTradeDate">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Last Trade Date
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="lastPrice">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Last Price
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="ask">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Ask
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="bid">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Bid
+                                        </div>
+                                    </th>
+                                    <th pSortableColumn="strike">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Strike
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="change">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Change
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="percentChange">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            % Change
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="volume">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Volume
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="openInterest">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Open Interest
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="impliedVolatility">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Implied Volatility
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="expiration">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Expiration Date
+                                        </div>
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-put>
+                                <tr class="p-selectable-row">
+                                    <td>
+                                        <div style="color:#38A3F3">{{put.contractSymbol}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.lastTradeDate}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.lastPrice}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.ask | number:'0.2-2'}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.bid | number:'0.2-2'}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.strike | number:'0.2-2'}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.change | number:'0.2-2'}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.percentChange | number:'0.2-2'}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.volume}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.openInterest}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.impliedVolatility | number:'0.2-2'}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.expiration}}</div>
+                                    </td>
+
+                                </tr>
+                            </ng-template>
+
+                        </p-table>
+                    </p-panel>
+                </p-tabPanel>
+
+                <p-tabPanel header="Puts">
+                    <p-panel >
+                        <p-table #dt1 [value]="option.puts" dataKey="id" [rows]="10" [showCurrentPageReport]="true"
+                                 [rowsPerPageOptions]="[5,10,20]" styleClass="p-datatable-positions p-datatable-striped"
+                                 [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                                 [globalFilterFields]="['contractSymbol']" [autoLayout]="true">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="contractSymbol">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Contract Name
+                                            <p-sortIcon field="contractSymbol"></p-sortIcon>
+                                            <p-columnFilter type="text" field="contractSymbol" display="menu" class="p-ml-auto"></p-columnFilter>
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="lastTradeDate">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Last Trade Date
+                                            <!--                                        <p-sortIcon field="lastTradeDate"></p-sortIcon>-->
+                                            <!--                                        <p-columnFilter type="text" field="lastTradeDate" display="menu" class="p-ml-auto"></p-columnFilter>-->
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="lastPrice">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Last Price
+                                            <!--                                        <p-sortIcon field="lastPrice"></p-sortIcon>-->
+                                            <!--                                        <p-columnFilter type="text" field="lastPrice" display="menu" class="p-ml-auto"></p-columnFilter>-->
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="ask">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Ask
+                                            <!--                                        <p-sortIcon field="ask"></p-sortIcon>-->
+                                            <!--                                        <p-columnFilter type="text" field="ask" display="menu" class="p-ml-auto"></p-columnFilter>-->
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="bid">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Bid
+                                            <!--                                        <p-sortIcon field="bid"></p-sortIcon>-->
+                                            <!--                                        <p-columnFilter type="text" field="bid" display="menu" class="p-ml-auto"></p-columnFilter>-->
+                                        </div>
+                                    </th>
+                                    <th pSortableColumn="strike">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Strike
+                                            <!--                                        <p-sortIcon field="strike"></p-sortIcon>-->
+                                            <!--                                        <p-columnFilter type="text" field="strike" display="menu" class="p-ml-auto"></p-columnFilter>-->
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="change">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Change
+                                            <!--                                        <p-sortIcon field="change"></p-sortIcon>-->
+                                            <!--                                        <p-columnFilter type="text" field="change" display="menu" class="p-ml-auto"></p-columnFilter>-->
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="percentChange">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            % Change
+                                            <!--                                        <p-sortIcon field="percentChange"></p-sortIcon>-->
+                                            <!--                                        <p-columnFilter type="text" field="percentChange" display="menu" class="p-ml-auto"></p-columnFilter>-->
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="volume">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Volume
+                                            <!--                                        <p-sortIcon field="volume"></p-sortIcon>-->
+                                            <!--                                        <p-columnFilter type="text" field="volume" display="menu" class="p-ml-auto"></p-columnFilter>-->
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="openInterest">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Open Interest
+                                            <!--                                        <p-sortIcon field="openInterest"></p-sortIcon>-->
+                                            <!--                                        <p-columnFilter type="text" field="openInterest" display="menu" class="p-ml-auto"></p-columnFilter>-->
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="impliedVolatility">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Implied Volatility
+                                            <!--                                        <p-sortIcon field="impliedVolatility"></p-sortIcon>-->
+                                            <!--                                        <p-columnFilter type="text" field="impliedVolatility" display="menu" class="p-ml-auto"></p-columnFilter>-->
+                                        </div>
+                                    </th>
+
+                                    <th pSortableColumn="expiration">
+                                        <div class="p-d-flex p-jc-between p-ai-center">
+                                            Expiration Date
+                                            <!--                                        <p-sortIcon field="expiration"></p-sortIcon>-->
+                                            <!--                                        <p-columnFilter type="text" field="expiration" display="menu" class="p-ml-auto"></p-columnFilter>-->
+                                        </div>
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-put>
+                                <tr class="p-selectable-row">
+                                    <td>
+                                        <div style="color:#38A3F3">{{put.contractSymbol}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.lastTradeDate}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.lastPrice}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.ask | number:'0.2-2'}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.bid | number:'0.2-2'}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.strike | number:'0.2-2'}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.change | number:'0.2-2'}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.percentChange | number:'0.2-2'}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.volume}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.openInterest}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.impliedVolatility}}</div>
+                                    </td>
+                                    <td>
+                                        <div>{{put.expiration}}</div>
+                                    </td>
+
+                                </tr>
+                            </ng-template>
+
+                        </p-table>
+                    </p-panel>
+                </p-tabPanel>
+            </p-tabView>
+        </p-tabPanel>
+
+    </p-tabView>
+</div>

@@ -1,0 +1,75 @@
+<div class="p-grid p-jc-center">
+    <div class="p-col-12 border-shadow stick-to-top" style="text-align: center; margin-top: 1rem;">
+        <span *ngFor="let row of notableMoveData" style="display:inline-block;" class="pill-item"
+            [ngClass]="{ 'active-item': activeRowName == row.name }">
+            <a class="cursorPointer" style="color: inherit;" (click)="showNotableMoves(row)">
+                <i class="pi pi-circle-on" [ngStyle]="{'color': row.sign == 1 ? 'green': 'red'}"></i>&nbsp;{{row.name}}
+            </a>
+        </span>
+    </div>
+
+    <div class="p-col-12" *ngIf="symbols?.length > 0">
+        <div class="p-grid">    
+            <div class="p-col-12 p-lg-6">
+                <p-panel header="Market Condition">
+                    <app-bar-chart barClass="chart-big" [symbols]="symbols" columnToPlot="priceChangePct"
+                        yAxisTitle="% Change" chartType="bar"></app-bar-chart>
+                </p-panel>
+            </div>
+    
+            <div class="p-col-12 p-lg-6">
+                <p-panel header="Greatest Increase and Decrease in Momentum">
+                    <app-bar-chart barClass="chart-big" [symbols]="symbols" columnToPlot="macdhist" yAxisTitle="Momentum"
+                        chartType="bar"></app-bar-chart>
+                </p-panel>
+            </div>
+    
+            <div class="p-col-12">
+                <div class="p-grid">
+                    <div class="p-col-12 p-lg-8" style="overflow-x: scroll;">
+                        <div class="p-grid">
+                            <div class="p-col-12">
+                                <p-panel header='Symbol Technicals'>
+                                    <span *ngIf="!symbolsTechnicalData">No Data</span>
+                                    <technical-datatable *ngIf="symbolsTechnicalData" [model]="symbolsTechnicalData"
+                                        (onSymbolClicked)="symbolSelected($event)"></technical-datatable>
+                                </p-panel>
+                            </div>
+    
+                            <div class="p-col-12 p-lg-12">
+                                <p-panel header="Historical Performance">
+                                    <line-chart barClass="chart-big" title="Yearly Performance"
+                                        [symbols]="[selectedSymbol]"></line-chart>
+                                </p-panel>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="p-col-12 p-lg-4">
+                        <div class="p-grid">
+                            <div class="p-col-12">
+                                <p-panel header="Synopsis" *ngIf="!selectedSymbol">
+                                    <span>No Data</span>
+                                </p-panel>
+                                <synopsis *ngIf="selectedSymbol" gaugeClass="chart-gauge-small" [symbol]="selectedSymbol">
+                                </synopsis>
+                            </div>
+                            <!-- <div class="p-col-12">
+                                <p-panel header="Symbol News">
+                                    <app-news-table2 title="" newsClass="news-500" [symbols]="[selectedSymbol]">
+                                    </app-news-table2>
+                                </p-panel>
+                            </div> -->
+                        </div>
+    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="symbols?.length == 0 && selectedNotable">
+        No Data for {{selectedNotable.name}}
+    </div>
+
+</div>

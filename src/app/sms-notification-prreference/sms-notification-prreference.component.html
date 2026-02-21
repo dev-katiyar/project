@@ -1,0 +1,49 @@
+<!-- Heading -->
+<div class="p-col-12" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+    SMS Notifications
+</div>
+
+<!-- Horizontal Divider -->
+<hr style="margin: 0.5rem 0;width: 100%;">
+
+<!-- Content - Email Notification Preferences -->
+<div class="p-p-1 p-p-md-2">
+    <div class="p-grid p-p-2">
+        <div class="p-col-12 p-text-justify">
+            Add/Update phone number (along with country code) here to get SMS alert notifications.
+        </div>
+
+        <div class="p-col-12 p-text-justify">
+            if you have any questions or don't receive your first SMS notification the same time as you receive your next trade alert via email notification, please contact <a href="/contact-us" target="_blank" >SimpleVisor Support</a>
+        </div>
+
+        <div class="p-col-12 p-text-bold">
+            Mobile Phone Number
+        </div>
+
+        <div class="p-col-12 p-pb-4">
+            <p-inputNumber [useGrouping]="false" [(ngModel)]="phoneNumber" placeholder="+19999999999" prefix="+"></p-inputNumber >
+        </div>
+
+         <div class="p-col-12 p-p-0">
+            <app-notification-pref-switch label="SV Core Portfolios Trade Alerts"
+                [(value)]="smsNotificationPrefernces.sv_trade_alerts">
+            </app-notification-pref-switch>
+        </div>
+
+        <div class="p-col-12 p-p-0">
+            <app-notification-pref-switch label="SV Thematic Portfolios Trade Alerts"
+                [(value)]="smsNotificationPrefernces.sv_robo_trade_alerts">
+            </app-notification-pref-switch>
+        </div>
+
+        <div>
+            <small class="red"><strong>Note: </strong>SMS notification enabled for <strong>USA</strong> and <strong>Canada</strong> subscribers only. <strong>SMS may not get delivered</strong> for every notification sent by us. SMS delivery is subjected to your telecom provider's spam filtering systems.</small>
+        </div>
+    </div>
+
+    <div class="p-text-right">
+        <button class="p-mr-3" type="button" pButton label="Save" (click)="saveSMSNotificationPreference()">
+        </button>
+    </div>
+</div>

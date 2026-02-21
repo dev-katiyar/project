@@ -1,0 +1,92 @@
+<!-- Admin: Create announcement button when no announcement exists -->
+<div *ngIf="!announcement && isAdmin" class="create-banner-btn">
+  <p-button label="Create Announcement" 
+            icon="pi pi-plus" 
+            styleClass="p-button-outlined"
+            (onClick)="createAnnouncement()">
+  </p-button>
+</div>
+
+<!-- Announcement Banner -->
+<div *ngIf="announcement" 
+     class="announcement-banner" 
+     [ngClass]="'banner-' + (isEditing ? editType : announcement.type)">
+  
+  <!-- View Mode -->
+  <ng-container *ngIf="!isEditing">
+    <div class="banner-content" 
+         [class.editable]="isAdmin" 
+         (click)="isAdmin && startEditing()">
+      <i [class]="getIcon(announcement.type)" class="banner-icon"></i>
+      <span class="banner-message">{{ announcement.message }}</span>
+      <i *ngIf="isAdmin" class="pi pi-pencil edit-hint"></i>
+    </div>
+    <div class="banner-actions">
+      <p-button *ngIf="isAdmin"
+                icon="pi pi-pencil" 
+                styleClass="p-button-rounded p-button-text p-button-sm action-button"
+                pTooltip="Edit announcement"
+                (onClick)="startEditing()">
+      </p-button>
+      <p-button *ngIf="announcement.dismissible"
+                icon="pi pi-times" 
+                styleClass="p-button-rounded p-button-text p-button-sm action-button"
+                pTooltip="Dismiss"
+                (onClick)="dismiss()">
+      </p-button>
+    </div>
+  </ng-container>
+
+  <!-- Edit Mode -->
+  <ng-container *ngIf="isEditing">
+    <div class="edit-container">
+      <p-dropdown [options]="announcementTypes" 
+                  [(ngModel)]="editType"
+                  optionLabel="label"
+                  optionValue="value"
+                  styleClass="type-dropdown">
+        <ng-template pTemplate="selectedItem">
+          <div class="dropdown-item" *ngIf="editType">
+            <i [class]="getIcon(editType)"></i>
+            <span>{{ editType | titlecase }}</span>
+          </div>
+        </ng-template>
+        <ng-template let-type pTemplate="item">
+          <div class="dropdown-item">
+            <i [class]="type.icon"></i>
+            <span>{{ type.label }}</span>
+          </div>
+        </ng-template>
+      </p-dropdown>
+      
+      <input #messageInput
+             type="text"
+             pInputText 
+             [(ngModel)]="editMessage" 
+             placeholder="Enter announcement message..."
+             (keydown)="onKeydown($event)"
+             class="message-input">
+    </div>
+    
+    <div class="edit-actions">
+      <p-button icon="pi pi-check" 
+                styleClass="p-button-rounded p-button-text p-button-sm save-button"
+                pTooltip="Save"
+                (onClick)="saveChanges()">
+      </p-button>
+      <p-button icon="pi pi-times" 
+                styleClass="p-button-rounded p-button-text p-button-sm cancel-button"
+                pTooltip="Cancel"
+                (onClick)="cancelEditing()">
+      </p-button>
+      <p-button icon="pi pi-trash" 
+                styleClass="p-button-rounded p-button-text p-button-sm p-button-danger delete-button"
+                pTooltip="Delete announcement"
+                (onClick)="deleteAnnouncement()">
+      </p-button>
+    </div>
+  </ng-container>
+</div>
+
+<!-- Confirm Delete Dialog -->
+<p-confirmDialog></p-confirmDialog>

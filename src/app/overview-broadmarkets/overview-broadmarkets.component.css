@@ -1,0 +1,38 @@
+#broadMarkets {
+  overflow: scroll;
+  max-height: 300px;
+  overflow-y: auto;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  border: 1px solid lightgray;
+  padding: 5px;
+
+}
+ .table  {
+  font-size: 12px;
+}
+
+#company {
+  color:#586FAB;
+  width:30%
+}
+
+#symbol {
+  background:#F8F8F8 ;
+  text-align:center;
+  width:15%
+}
+
+#change {
+  text-align:center;
+  width:15%
+}
+
+#broadMarkets #barImage {
+  width:38%;
+  height: 20px;
+  background: #34e200;
+}
+
+#head {
+  background: #F8F8F8;
+}

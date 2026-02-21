@@ -1,0 +1,50 @@
+<div class="p-grid p-fluid p-ai-center">
+    <div style="padding: 0.5rem;">
+        Categories:
+    </div>
+
+    <div class="p-col-12 p-sm-6 p-md-2">
+        <p-dropdown placeholder="--Select--" [options]="views" [(ngModel)]="selectedView"
+                    (onChange)="viewChanged($event)"
+                    optionLabel="group" optionValue="id"
+        ></p-dropdown>
+    </div>
+</div>
+
+<app-dynamic-table [tableCols]="selectedViewColumns" [tableData]="tableData"></app-dynamic-table>
+
+
+<p-dialog header="Select Columns" [(visible)]="displayColumnsDialog" showEffect="fade"
+          [modal]="true" [style]="{width: '70vw'}" [breakpoints]="{'960px': '90vw', '640px': '97vw'}">
+    <div style="margin-bottom:10px;">
+        <label style="margin-right:10px;">Enter View Name:</label>
+        <input pInputText type="text"  [(ngModel)]="viewName" (click)="$event.target.select()">
+    </div>
+
+    <p-accordion>
+        <p-accordionTab *ngFor="let groupedColumn of groupedColumns" header="{{groupedColumn.group}}">
+            <div class="p-grid p-fluid">
+                <ul classs="p-col-12" *ngFor="let column of groupedColumn.value">
+                    <li classs="p-col-5" *ngIf="column.category == name">
+                        <input type="checkbox" [(ngModel)]="column.selected">
+                        {{column.header}}
+                    </li>
+                </ul>
+            </div>
+        </p-accordionTab>
+    </p-accordion>
+
+    <button pButton label="Save" style="width:150px; margin-top:10px;margin-right:10px; float: right;"
+            class="p-button-success" type="button" (click)="saveView()">
+    </button>
+</p-dialog>
+
+<button pButton label="My Views" style="width:150px; margin-right:10px; float: right;"
+        type="button" (click)="createView()">
+</button>
+
+<button pButton label="Test" style="width:150px; margin-right:10px; float: right;"
+        type="button" (click)="test()">
+</button>
+
+

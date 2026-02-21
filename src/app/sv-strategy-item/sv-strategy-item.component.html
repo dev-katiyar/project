@@ -1,0 +1,65 @@
+<div class="p-grid p-fluid p-m-0">
+    <div class="p-col-5">
+        <label *ngIf="selectedInd" (click)="indicatorSettingsPanel.toggle($event)" pTooltip="Click for Settings">
+            {{selectedInd?.name}}
+            <span>{{getIndSettings()}}</span>
+        </label>
+        <p-overlayPanel #indicatorSettingsPanel>
+            <ng-template pTemplate>
+                <app-strategy-settings [settings]="selectedInd?.settings"
+                                       (settingsValue)="handleIndicatorSettingsChange($event)">
+                </app-strategy-settings>
+            </ng-template>
+        </p-overlayPanel>
+    </div>
+
+    <div class="p-col-3">
+        <p-dropdown *ngIf="selectedInd.selected_strategy.key=='-1'" [options]="selectedInd?.strategies"
+                    optionValue="key" optionLabel="name" (onChange)="handleStrategyChange()"
+                    [(ngModel)]="selectedInd?.selected_strategy.key" name="name" class="dropdown-nopad">
+        </p-dropdown>
+        <label *ngIf="selectedInd">
+            {{selectedStrategy?.name}}
+        </label>
+        <p-overlayPanel #optionSettingsPanel>
+            <ng-template pTemplate>
+                <app-strategy-settings [settings]="selectedOption?.settings"
+                                       (settingsValue)="handleOptionSettingsChange($event)">
+                </app-strategy-settings>
+            </ng-template>
+        </p-overlayPanel>
+    </div>
+
+    <div class="p-col-3">
+        <!-- If option is selected don't show it-->
+        <p-dropdown
+                *ngIf="selectedStrategy && !selectedOption && selectedStrategy.options  && selectedOption?.key!='fixed' "
+                [options]="selectedStrategy?.options" optionValue="key" optionLabel="name"
+                [(ngModel)]="selectedInd?.selected_strategy.selected_option.key" (onChange)="handleOptionChange($event)"
+                name="name" class="dropdown-nopad">
+        </p-dropdown>
+
+        <p-inputNumber *ngIf="selectedOption && selectedOption.key =='fixed'" mode="decimal" [minFractionDigits]="2"
+                       [(ngModel)]="selectedInd?.selected_strategy.selected_option.settings[0].value" placeholder="0">
+        </p-inputNumber>
+
+        <!-- Option settings-->
+        <label *ngIf="selectedOption?.settings?.length >0 && selectedOption.key!='fixed'"
+               (click)="optionSettingsPanel.toggle($event)" pTooltip="Click for Settings">
+            {{selectedOption.name}}
+            <span>{{getOptionSettings()}}</span>
+        </label>
+
+        <label
+                *ngIf="selectedOption && !(selectedOption.settings && selectedOption.settings.length >0 ) &&
+            selectedOption.key!='fixed'">
+            {{selectedOption.name}}
+        </label>
+    </div>
+
+    <div class="p-col-1">
+        <button pButton pRipple type="button" icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-text"
+                (click)="deleteIndicatorRow()">
+        </button>
+    </div>
+</div>

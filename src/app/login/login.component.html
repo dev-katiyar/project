@@ -1,0 +1,85 @@
+<div style="width: 100%; margin: 0 auto;">
+    <div style=" display: flex;
+    width: 100%;
+    min-height: 100vh;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    padding: 15px;">
+        <div class="login-form">
+            <div class="login-panel p-fluid">
+                <div style="text-align: center">
+                    <img alt="logo" class="login-logo" src="assets/images/logo/simplevisor-horizontal-color@3x.png" />
+                </div>
+
+                <div class="login-title" style="font-size:20px;">User Account Login</div>
+
+                <div class="login-panel-content">
+                    <form [formGroup]="form" name="form" (ngSubmit)="login()" #loginForm="ngForm" novalidate>
+                        <div class="p-grid">
+                            <div class="p-col-12 form-group"
+                                [ngClass]="{ 'has-error': loginForm.submitted && !form.controls.email.valid }">
+                                <span class="p-float-label">
+                                    <input type="text"
+                                        class="form-control ui-inputtext ui-widget ng-dirty ng-valid ng-touched"
+                                        name="username" pInputText formControlName="email"
+                                        (click)="$event.target.select()" />
+                                    <label for="username">Email</label>
+                                    <div *ngIf="form.controls.email.valid && (form.controls.email.valid || form.controls.email.valid)"
+                                        class="error-msg">
+                                        <div *ngIf="this.form.controls.email.invalid">Email is required.</div>
+                                    </div>
+                                </span>
+                            </div>
+
+                            <div class="p-col-12"></div>
+
+                            <div class="p-col-12 form-group"
+                                [ngClass]="{ 'has-error': loginForm.submitted && form.controls.password.invalid }">
+                                <span class="p-float-label p-input-icon-right">
+                                    <i class="pi pi-eye"></i>
+                                    <p-password id="password" type="password"
+                                        class="form-control ui-inputtext ui-widget ng-dirty ng-valid ng-touched"
+                                        formControlName="password" autocomplete="on" [toggleMask]="true">
+
+                                    </p-password>
+
+                                    <label for="password">Password</label>
+                                    <div *ngIf="
+                          form.controls.password.invalid && (form.controls.password.dirty || form.controls.password.touched)
+                        " class="error-msg">
+                                        <!-- <div *ngIf="password?.errors.required">Password is required.</div> -->
+                                        <!-- <div class="error-msg" *ngIf="serverError != ''">
+                                            {{ serverError }}
+                                        </div> -->
+                                    </div>
+                                </span>
+                            </div>
+
+                            <div class="error-msg" *ngIf="serverError != ''">
+                                {{ serverError }}
+                            </div>
+
+                            <div class="p-col-12 login-button">
+                                <button pButton type="submit" label="Submit"></button>
+                            </div>
+
+                            <div class="p-col-12">
+                                <div class="p-grid">
+                                    <div style="font-size:12px;" class="p-col-12 p-md-8">
+                                        Don't have an account? <a routerLink="/signup">&nbsp;Sign Up</a>&nbsp;now.
+                                    </div>
+
+                                    <div class="p-col-12 p-md-4" style="text-align: right;font-size:12px;">
+                                        <a routerLink="/reset-password-request">Forgot Password?</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

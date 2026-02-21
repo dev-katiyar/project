@@ -1,0 +1,157 @@
+<p-table #dt [value]="symbolTechnicals" [paginator]="false" [rows]="10" [pageLinks]="3" [rowsPerPageOptions]="[5,10,20]"
+  [resizableColumns]="false" [autoLayout]="true"
+  styleClass="p-datatable-positions p-datatable-striped" [tableStyle]="{'table-layout':'auto'}" [scrollable]="false">
+
+  <ng-template pTemplate="header">
+    <tr>
+      <th class="p-text-left" pSortableColumn="symbol">
+        Symbol
+        <p-sortIcon field="symbol"></p-sortIcon>
+      </th>
+
+      <th class="p-text-left" pSortableColumn="alternate_name">
+        Name
+        <p-sortIcon field="alternate_name"></p-sortIcon>
+      </th>
+
+      <th pSortableColumn="rating">
+        Trend Analysis
+        <p-sortIcon field="rating"></p-sortIcon>
+      </th>
+
+      <th pSortableColumn="price">
+        Last
+        <p-sortIcon field="price"></p-sortIcon>
+      </th>
+
+      <th pSortableColumn="priceChangePct" style="min-width: 9rem;">
+        1D Change
+        <p-sortIcon field="priceChangePct"></p-sortIcon>
+      </th>
+
+      <th pSortableColumn="mtd">
+        MTD
+        <p-sortIcon field="mtd"></p-sortIcon>
+      </th>
+
+      <th pSortableColumn="ytd">
+        YTD
+        <p-sortIcon field="ytd"></p-sortIcon>
+      </th>
+
+      <th></th>
+
+      <th style="min-width: 12rem;">
+        52 Wk Range
+      </th>
+
+      <th></th>
+
+      <th class="p-text-right" pSortableColumn="rsi">
+        RSI
+        <p-sortIcon field="rsi"></p-sortIcon>
+      </th>
+
+      <th pSortableColumn="sma20">
+        20 SMA
+        <p-sortIcon field="sma20"></p-sortIcon>
+      </th>
+
+      <th pSortableColumn="sma50">
+        50 SMA
+        <p-sortIcon field="sma50"></p-sortIcon>
+      </th>
+
+      <th pSortableColumn="sma100">
+        100 SMA
+        <p-sortIcon field="sma100"></p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-technical>
+    <tr>
+      <td style="text-align: left;">
+        <div *ngIf="highlightSymolSelected" class="symbol" style="text-align: left; border-radius: 0.5rem; padding: 0.33rem 0.4rem; width: fit-content"
+          (click)="clickSymbol(technical.symbol)" [ngStyle]="{
+                  'background-color': technical.symbol === this.selectedSymbol ? '#004B8D' : '',
+                  color: technical.symbol === this.selectedSymbol ? 'white' : ''
+                }">
+          {{technical.symbol}}
+        </div>
+        <div class="symbol" *ngIf="!highlightSymolSelected">
+          <span (click)="onSymbolClick(technical.symbol)">{{technical.symbol}}</span>
+        </div>
+      </td>
+
+      <td style="text-align: left; min-width: 13rem;">
+        {{technical.alternate_name}}
+      </td>
+
+      <td>
+        <div class="p-text-center" style="min-width: 60px;">
+          <span>{{technical['rating']}}/10 <img class="center-img" style="width: 1rem; display: inline;"
+              [src]="technicalService.getUpDownImgByValue(technical.rating)"></span>
+        </div>
+      </td>
+
+      <td>
+        <div>
+          {{technical.price | currency}}
+        </div>
+      </td>
+
+      <td>
+        <div [ngClass]="technical.priceChange | upDownColor">
+          {{technical['priceChange'] | currency}} ({{technical['priceChangePct'] | number:'0.2-2'}}%)
+        </div>
+      </td>
+
+      <td>
+        <div [ngClass]="technical.mtd | upDownColor">
+
+          {{technical.mtd | number:'0.2-2'}}%
+        </div>
+      </td>
+
+      <td>
+        <div [ngClass]="technical.ytd | upDownColor">
+          {{technical.ytd | number:'0.2-2'}}%
+        </div>
+      </td>
+
+      <td style="font-size: 0.9rem;">{{technical.low52 | currency}}</td>
+
+      <td style="min-width: 6.5rem;">
+        <p-slider [(ngModel)]="technical.price" [min]="technical.low52" [max]="technical.high52"
+          [disabled]="true">
+        </p-slider>
+      </td>
+
+      <td style="font-size: 0.9rem;">{{technical.high52 | currency}}</td>
+
+      <td>
+        <div>
+          {{technical.rsi | number:'0.2-2'}}
+        </div>
+      </td>
+      <td>
+        <div>
+          {{technical.sma20 | currency}}
+        </div>
+      </td>
+      <td>
+        <div>
+          {{technical.sma50 | currency}}
+        </div>
+      </td>
+      <td>
+        <div>
+
+          {{technical.sma100 | currency}}
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+</p-table>

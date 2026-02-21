@@ -1,0 +1,441 @@
+<div class="flex-container" style="background-color: white;">
+    <!-- LOGO -->
+    <div class="flex-item-full center" style="padding: 0 10%;">
+        <img alt="logo" class="login-logo" width="40%" src="assets/images/logo/simplevisor-horizontal-color@3x.png" />
+    </div>
+
+    <!-- TITLE & DATE -->
+    <div class="flex-item-full center" style="padding: 0 10%;">
+        <h2>
+            Weekly Markets Report ({{ weeklyReportData?.start_date | date }} to {{ weeklyReportData?.report_date | date }})
+        </h2>
+        <span *ngIf="weeklyReportData?.date" style="color: gery;font-style:italic">Date Published: {{
+            weeklyReportData?.date }}</span>
+    </div>
+
+    <!-- SHARING MESSAGE & BUTTONS -->
+    <div class="flex-item-full p-text-center" style="font-size: 1.2rem; padding: 0 10%;">
+        Feel free to share this weekly markets report with friends, colleagues, or anyone who might find it useful. 
+
+        <a (click)="copyLink()" style="cursor: pointer;" class="p-pr-2">
+            <i class="pi pi-copy"></i>
+        </a>
+
+        <a href="mailto:?subject=Weekly Markets Report&body={{ reportLink }}" target="_blank" class="p-pr-2">
+            <i class="pi pi-envelope"></i>
+        </a>
+
+        <a href="https://twitter.com/intent/tweet?url={{ reportLink }}&text=Check out this Weekly Markets Report" target="_blank" class="p-pr-2">
+            <i class="pi pi-twitter"></i>
+        </a>
+
+         <a href="https://www.facebook.com/sharer/sharer.php?u={{ reportLink }}"  target="_blank" class="p-pr-1">
+            <i class="pi pi-facebook"></i>
+        </a>
+    </div>
+
+    <!-- MARKETING MESSASGE & SIGN UP INVITE -->
+    <div class="flex-item-full center" style="font-size: 1.2rem; padding: 0 10%;">
+        <div class="p-grid">
+            <div class="p-col-12">
+                Whether you prefer hands-off investing or managing your own portfolio, SimpleVisor offers both professional investment management and DIY analytical tools.
+            </div>
+
+            <div class="p-col-12 p-lg-3"></div>
+            <div class="p-col-12 p-lg-3 p-jc-center p-text-bold">
+                <a pButton href="/default" class="p-button-fill p-jc-center" style="font-size: 1.2rem; width: 100%;">
+                    SimpleVisor DIY
+                </a>
+            </div>
+
+            <div class="p-col-12 p-lg-3 p-text-bold">
+                <a pButton href="/investing-solutions-info" class="p-button-fill p-jc-center" style="font-size: 1.2rem; width: 100%;">
+                    SimpleVisor Investing
+                </a>
+            </div>
+            <div class="p-col-12 p-lg-3"></div>
+        </div>
+    </div>
+
+    <!-- WORLD INDICES -->
+    <div class="flex-item-full center" *ngIf="weeklyReportData?.world_indices">
+        <h3 class="heading">World Indices</h3>
+
+        <p class="heading">
+            Global market indices over last week.
+            <span *ngIf="weeklyReportData?.world_indices?.trend">
+                {{ weeklyReportData?.world_indices?.mostOrAll }}
+                of the markets closed
+                <strong>
+                    {{weeklyReportData?.world_indices?.trend }}
+                </strong>
+                last week lead by
+                <strong>
+                    {{weeklyReportData?.world_indices?.leader.name }}
+                </strong>
+                with a 
+                <strong [style]="{color: weeklyReportData?.world_indices?.leader?.week_chg > 0? 'green': 'red'}">
+                    {{weeklyReportData?.world_indices?.leader?.week_chg }}%
+                </strong> change.
+            </span>
+        </p>
+
+        <div class="report-chart">
+            <app-bar-chart2 [dataArray]="weeklyReportData?.world_indices" [seriesConfig]="barChartSeriesConfig1"
+                (symbolClicked)="handleBarClicked($event)" [yAxisTitle]="yAxisTitle">
+            </app-bar-chart2>
+        </div>
+    </div>
+
+    <div class="flex-item-full center" *ngIf="weeklyReportData?.us_indices_symbols">
+        <h3 class="heading">USA Indices</h3>
+
+        <p class="heading">
+            Major Indices of the US Market.
+            <span *ngIf="weeklyReportData?.us_indices_symbols?.trend">
+                {{ weeklyReportData?.us_indices_symbols?.mostOrAll }}
+                of the indices ended
+                <strong>
+                    {{weeklyReportData?.us_indices_symbols?.trend }}
+                </strong>
+                last week lead by
+                <strong>
+                    {{weeklyReportData?.us_indices_symbols?.leader.name }}
+                </strong>
+                index with a 
+                <strong [style]="{color: weeklyReportData?.us_indices_symbols?.leader?.week_chg > 0? 'green': 'red'}">
+                    {{weeklyReportData?.us_indices_symbols?.leader?.week_chg }}%
+                </strong> change.
+            </span>
+        </p>
+
+        <div class="report-chart">
+            <app-bar-chart2 [dataArray]="weeklyReportData?.us_indices_symbols" [seriesConfig]="barChartSeriesConfig1"
+                (symbolClicked)="handleBarClicked($event)" [yAxisTitle]="yAxisTitle">
+            </app-bar-chart2>
+        </div>
+    </div>
+
+    <div class="flex-item-full center" *ngIf="weeklyReportData?.sectors">
+        <h3 class="heading">US Market Sectors</h3>
+
+        <p class="heading">
+            The changes in the major sectors of the USA market.
+            Change in overall U.S. market is also included in the chart below for comparison purpose.
+            <span *ngIf="weeklyReportData?.sectors?.trend">
+                {{ weeklyReportData?.sectors?.mostOrAll }}
+                of the sectors ended
+                <strong>
+                    {{weeklyReportData?.sectors?.trend }}
+                </strong>
+                last week lead by
+                <strong>
+                    {{weeklyReportData?.sectors?.leader.name }}
+                </strong>
+                sector with a 
+                <strong [style]="{color: weeklyReportData?.sectors?.leader?.week_chg > 0? 'green': 'red'}">
+                    {{weeklyReportData?.sectors?.leader?.week_chg }}%
+                </strong>
+                change.
+            </span>
+        </p>
+
+        <div class="report-chart">
+            <app-bar-chart2 [dataArray]="weeklyReportData?.sectors" [seriesConfig]="barChartSeriesConfig1"
+                (symbolClicked)="handleBarClicked($event)" [yAxisTitle]="yAxisTitle">
+            </app-bar-chart2>
+        </div>
+    </div>
+
+    <div *ngIf="weeklyReportData?.ra_sectors" class="flex-item-full center">
+        <h3 class="heading">US Market Sectors - Relative Analysis</h3>
+
+        <p class="heading">
+            This analysis uses the price ratio of sector ticker versus SPY to establish a relative technical score. 13
+            technical measures are applied to the ratio to determine the score. The score tells us how sector compares
+            to another overall market. We used sector ETFs ticker against S&P 500 (SPY) to help assess relative strength or
+            weakness of the sector.
+        </p>
+
+        <p class="heading">
+            Quite often scores of + 0.75 or greater are good times to reduce holdings and -0.75 or lower are good times to buy.
+            However, scores can stay extremely overbought or extremely sold for a few weeks, so at times patience is required.
+        </p>
+
+        <p class="heading">
+            To dig deeper into each sector and for relative analysis of its contituent tickers, please follow the link:
+            <a href="https://simplevisor.com/relative-analysis-sectors" target="_blank">Relative Analysis</a>.
+        </p>
+
+        <div class="report-chart">
+            <app-relative-analysis-heatmap [dataArray]="raHeatMapData" [seriesConfig]="raHeatMapConfig">
+            </app-relative-analysis-heatmap>
+            <div style="text-align:center">
+                <strong style="color: red;">Overbought</strong> - could be a good time to reduce holdings. <strong
+                    style="color: green;">Oversold</strong> -
+                could be a good time to increase holdings
+            </div>
+        </div>
+    </div>
+
+    <div class="flex-item-full center" *ngIf="weeklyReportData?.snp_top_mcap">
+        <h3 class="heading">S&P 500 Largest Stocks</h3>
+
+        <p class="heading">
+            20 largest stocks of S&P 500 based on market capitalisation.
+            <span *ngIf="weeklyReportData?.snp_top_mcap?.trend">
+                {{ weeklyReportData?.snp_top_mcap?.mostOrAll }}
+                of the major stocks ended
+                <strong>
+                    {{weeklyReportData?.snp_top_mcap?.trend }}
+                </strong>
+                last week lead by
+                <strong>
+                    {{weeklyReportData?.snp_top_mcap?.leader.name }}
+                </strong>
+                with a 
+                <strong [style]="{color: weeklyReportData?.snp_top_mcap?.leader?.week_chg > 0? 'green': 'red'}">
+                    {{weeklyReportData?.snp_top_mcap?.leader?.week_chg }}%
+                </strong>
+                change.
+            </span>
+        </p>
+
+        <div class="report-chart">
+            <app-bar-chart2 [dataArray]="weeklyReportData?.snp_top_mcap" [seriesConfig]="barChartSeriesConfig2"
+                (symbolClicked)="handleBarClicked($event)" [yAxisTitle]="yAxisTitle">
+            </app-bar-chart2>
+        </div>
+    </div>
+
+    <div class="flex-item-full center" *ngIf="weeklyReportData?.spy_strong_rsi_symbols">
+        <h3 class="heading">SimpleVisor Screener</h3>
+        <p class="heading">
+            The SimpleVisor screener is an amazing tool to dig out specific stocks suiting your investment style.
+            The SimpleVisor screener can be access using the follwing link:
+            <a href="https://simplevisor.com/screen-filter" target="_blank">
+                SimpleVisor Screener
+            </a>.
+        <p>
+
+        <div *ngIf="weeklyReportData?.spy_strong_rsi_symbols">
+            <h5 class="heading" style="font-weight: bold;">Screen - Strongest S&P 20 Relative Strength</h5>
+
+            <p class="heading">
+                These tickers are the top 20 stocks with highest RSI out of all the tickers of S&P 500 with a technical
+                rating of at least 8.
+                This screen can accessed and further modified by following the link:
+                <a href="https://simplevisor.com/screen-filter;id=10462-Strongest%20S&P%2020%20Relative%20Strength"
+                    target="_blank">
+                    S&P Top RSI
+                </a>.
+            </p>
+
+            <!-- <p class="heading">
+                <span *ngIf="weeklyReportData?.spy_strong_rsi_symbols?.trend">
+                    {{ weeklyReportData?.spy_strong_rsi_symbols?.mostOrAll }} 
+                    of the these stocks ended
+                    <strong>
+                        {{weeklyReportData?.spy_strong_rsi_symbols?.trend }}
+                    </strong>
+                    last week lead by
+                    <strong>
+                        {{weeklyReportData?.spy_strong_rsi_symbols?.leader.name }}
+                    </strong>
+                    with
+                    <strong [style]="{color: weeklyReportData?.spy_strong_rsi_symbols?.leader?.week_chg > 0? 'green': 'red'}">
+                        {{weeklyReportData?.spy_strong_rsi_symbols?.leader?.week_chg }}%
+                    </strong> 
+                    change.
+                </span>
+            </p> -->
+
+            <div class="report-chart">
+                <app-bar-chart2 [dataArray]="weeklyReportData?.spy_strong_rsi_symbols"
+                    [seriesConfig]="barChartSeriesConfig2" (symbolClicked)="handleBarClicked($event)"
+                    [yAxisTitle]="yAxisTitle">
+                </app-bar-chart2>
+            </div>
+        </div>
+
+        <div *ngIf="weeklyReportData?.spy_strong_mom_symbols">
+            <h5 class="heading" style="font-weight: bold;">Screen - Strongest Momentum S&P 500</h5>
+
+            <p class="heading">
+                These tickers are the top 20 stocks having highest Momentum out of all the tickers of S&P 500 with a 
+                technical rating of at least 5.
+                This screen can accessed and further modified by following the link:
+                <a href="https://simplevisor.com/screen-filter;id=10462-Strongest%20Momentum%20S&P%20500"
+                    target="_blank">
+                    S&P Top Momentum
+                </a>.
+            </p>
+
+            <!-- <p class="heading">
+                <span *ngIf="weeklyReportData?.spy_strong_mom_symbols?.trend">
+                    {{ weeklyReportData?.spy_strong_mom_symbols?.mostOrAll }} 
+                    of the these stocks ended
+                    <strong>
+                        {{weeklyReportData?.spy_strong_mom_symbols?.trend }}
+                    </strong>
+                    last week lead by
+                    <strong>
+                        {{weeklyReportData?.spy_strong_mom_symbols?.leader.name }}
+                    </strong>
+                    with
+                    <strong [style]="{color: weeklyReportData?.spy_strong_mom_symbols?.leader?.week_chg > 0? 'green': 'red'}">
+                        {{weeklyReportData?.spy_strong_mom_symbols?.leader?.week_chg }}%
+                    </strong> 
+                    change.
+                </span>
+            </p> -->
+
+            <div class="report-chart">
+                <app-bar-chart2 [dataArray]="weeklyReportData?.spy_strong_mom_symbols"
+                    [seriesConfig]="barChartSeriesConfig2" (symbolClicked)="handleBarClicked($event)"
+                    [yAxisTitle]="yAxisTitle">
+                </app-bar-chart2>
+            </div>
+        </div>
+
+        <div *ngIf="weeklyReportData?.us_stocks_symbols">
+            <h5 class="heading" style="font-weight: bold;">Screen - US Strong Stocks</h5>
+
+            <p class="heading">
+                These tickers are top stocks with a technical rating between 8 and 10, SV Rank of 'Buy', market
+                capitalization more than $5 billion and weekly change is postive. Visit
+                <a href="https://simplevisor.com/screen-filter" target="_blank">
+                    SimpleVisor Screener
+                </a>
+                to edit existing filters and try own fitlers to search the stocks suiting your personal investment
+                style.
+            </p>
+
+            <div class="report-chart">
+                <app-bar-chart2 [dataArray]="weeklyReportData?.us_stocks_symbols" [seriesConfig]="barChartSeriesConfig2"
+                    (symbolClicked)="handleBarClicked($event)" [yAxisTitle]="yAxisTitle">
+                </app-bar-chart2>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="flex-item-full center" *ngIf="weeklyReportData?.model_portfolio_symbols">
+        <h3 class="heading">SimpleVisor Core Portfolios Top 10 and Bottom 10</h3>
+
+        <p class="heading">Top 10 and bottom 10 performer out of the tickers held in SimpleVisor Core Portfolios</p>
+
+        <div class="report-chart">
+            <app-bar-chart2 [dataArray]="weeklyReportData?.model_portfolio_symbols"
+                [seriesConfig]="barChartSeriesConfig2" (symbolClicked)="handleBarClicked($event)"
+                [yAxisTitle]="yAxisTitle">
+            </app-bar-chart2>
+        </div>
+    </div>
+
+    <div class="flex-item-full center" *ngIf="weeklyReportData?.bonds">
+        <h3 class="heading">Bonds</h3>
+
+        <p class="heading">US Treasury and Bonds tickers.</p>
+
+        <div class="report-chart">
+            <app-bar-chart2 [dataArray]="weeklyReportData?.bonds" [seriesConfig]="barChartSeriesConfig1"
+                (symbolClicked)="handleBarClicked($event)" [yAxisTitle]="yAxisTitle">
+            </app-bar-chart2>
+        </div>
+    </div>
+
+    <div class="flex-item-full center" *ngIf="weeklyReportData?.commodities">
+        <h3 class="heading">Commodities</h3>
+
+        <p class="heading">Major commodities tickers performance.</p>
+
+        <div class="report-chart">
+            <app-bar-chart2 [dataArray]="weeklyReportData?.commodities" [seriesConfig]="barChartSeriesConfig1"
+                (symbolClicked)="handleBarClicked($event)" [yAxisTitle]="yAxisTitle">
+            </app-bar-chart2>
+        </div>
+    </div>
+
+    <div class="flex-item-full center" *ngIf="weeklyReportData?.crypto">
+        <h3 class="heading">Crypto</h3>
+
+        <p class="heading">Major crypto tickers.</p>
+
+        <div class="report-chart">
+            <app-bar-chart2 [dataArray]="weeklyReportData?.crypto" [seriesConfig]="barChartSeriesConfig1"
+                (symbolClicked)="handleBarClicked($event)" [yAxisTitle]="yAxisTitle">
+            </app-bar-chart2>
+        </div>
+    </div>
+
+    <div *ngIf="weeklyReportData?.last_week_blogs" class="flex-item-full center">
+        <h3 class="heading">SimpleVisor Blogs</h3>
+
+        <p class="heading">
+            List of insights blogs published by SimpleVisor team over last one week.
+            These blogs are published and notified to Simplevisor subscirbers.
+            To access all the blogs and insights blog website follow the link:
+            <a href="https://simplevisor.com/commentary/real-time" target="_blank">
+                SimpleVisor Insights
+            </a>
+        </p>
+
+        <div class="report-chart">
+            <div *ngFor="let post of weeklyReportData?.last_week_blogs" class="post-card saritasa-card"
+                style="text-align: left;">
+                <div class="post-card-image">
+                    <a [href]="post.link" target="_blank">
+                        <img *ngIf="post.yoast_head_json?.og_image[0]?.url"
+                            [src]="post.yoast_head_json?.og_image[0]?.url" alt="post image" />
+                    </a>
+                </div>
+
+                <div class="post-card-content">
+                    <a class="post-card-heading" [href]="post.link" target="_blank">
+                        {{ htmlDecode(post.title?.rendered) }}
+                    </a>
+
+                    <div class="post-card-wrapper">
+                        <div class="post-card-date">
+                            <span>Written by {{ post.yoast_head_json?.twitter_misc['Written by']}}</span> | <span>{{
+                                post.date | date: 'MMMM dd,yyyy' }}</span>
+                        </div>
+                        <div class="post-card-info" [innerHtml]="post.excerpt?.rendered"></div>
+                    </div>
+
+                    <a class="link" [href]="post.link" target="_blank">
+                        Continue reading
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex-item-full">
+        <div class="heading">
+            <strong>Important Disclosures</strong>
+            <p>
+                The information contained herein has been provided by SimpleVisor is for information purposes only. The
+                information has been drawn from sources believed to be reliable. Graphs and charts are used for
+                illustrative purposes only and do not reflect future values or future performance of any investment. The
+                information does not provide financial, legal, tax or investment advice. Particular investment, tax, or
+                trading strategies should be evaluated relative to each individual's objectives and risk tolerance.
+            </p>
+            <!-- <p style="text-align: center; font-size:smaller">
+                @2021 SimpleVisor, LLC. 11750 Katy Freeway, Suite 840, Houston, TX 77079. All Rights Reserved.
+                <a routerLink="/agreement" target="_blank" id="showTerms">Term &amp; Conditions</a>
+            </p> -->
+        </div>
+    </div>
+</div>
+<div class="hide center">
+    <span style="font-size: 0.8rem;">
+        &#64;2021 SimpleVisor, LLC. 11750 Katy Freeway, Suite 840, Houston, TX 77079. All Rights Reserved.
+        <a routerLink="/agreement" target="_blank" id="showTerms">Term &amp; Conditions</a>
+    </span>
+</div>
+
+<div *ngIf="!isData" style="padding: 3rem; text-align:center">
+    No Data....
+</div>

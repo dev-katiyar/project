@@ -1,0 +1,31 @@
+<ng-container *ngIf="post$ | async as post">
+  <div class="post default-card-shadow">
+    <div class="post-header">
+      <div class="post-data">
+        <span>
+          <span class="post-data-item">{{ post.date | date: 'MMMM dd, yyyy' }}</span>
+          <span class="post-data-item">Written by {{ post.author?.name || 'Unknown' }}</span>
+        </span>
+      </div>
+      <div class="post-title" [innerHtml]="post.title"></div>
+    </div>
+    <div class="post-img" *ngIf="post.media">
+      <img [src]="post.media.sourceUrl" alt="Header image" />
+    </div>
+    <div class="post-body" [innerHtml]="post.body"></div>
+    <div class="post-footer">
+      <a routerLink="../">
+        <i class="pi pi-angle-left"></i>
+        <span class="link">Previous Article</span>
+      </a>
+    </div>
+  </div>
+  <div class="sidebar">
+    <app-commentary-sidebar
+      [recentPosts]="recentPosts$ | async"
+      [popularPosts]="popularPosts$ | async">
+    </app-commentary-sidebar>
+  </div>
+</ng-container>
+
+<app-page-loader [loading]="isLoading$|async"></app-page-loader>

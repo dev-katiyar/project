@@ -1,0 +1,32 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <div class="p-grid p-fluid p-ai-center">
+            <div class="p-col-6 p-md-3">Watchlist: </div>
+    
+            <div class="p-col-6 p-md-3">
+                <p-dropdown [options]="watchlists" [(ngModel)]="selectedWatchList" optionLabel="name" appendTo="body"
+                    (onChange)="onWatchListChange()"></p-dropdown>
+            </div>
+        
+            <div class="p-col-6 p-md-3">Symbol: </div>
+
+            <div class="p-col-6 p-md-3" style="font-weight: bold;">
+                {{ symbol }}
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12">
+        <div class="p-grid p-fluid p-ai-center p-jc-end">
+            <div class="p-col-6 p-md-3">
+                <button type="button" pButton icon="pi pi-close" (click)="onCancelClick()" label="Cancel"
+                    class="p-button-outlined"
+                ></button>
+            </div>
+            <div class="p-col-6 p-md-3">
+                <button type="button" pButton icon="pi pi-check" (click)="onAddClick()" label="Add"
+                ></button>
+            </div>
+        </div>
+    </div>
+</div>

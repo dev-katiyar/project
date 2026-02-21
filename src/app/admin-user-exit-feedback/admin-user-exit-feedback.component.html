@@ -1,0 +1,232 @@
+<div class="p-grid" style="margin: -0.75rem;">
+    <!-- Charts and Filters -->
+    <div class="p-col-12 p-md-12 p-p-1">
+        <div class="border-shadow p-p-2">
+            <!-- Date Range Filters -->
+            <div class="p-grid">
+                <div class="p-col-12 p-md-6">
+                    <div class="p-text-bold p-p-1" style="font-size: 1.3rem;">User Exits by Date & by Reason</div>
+                </div>
+                <div class="p-col-12 p-md-6" style="text-align: left;">
+                    <!-- <div style="margin-top:0"> -->
+                    <span class="btn-group">
+                        <input type="button" value="YTD" class="btn-normal"
+                            [ngClass]="(period=='ytd')?'btn-green':'btn-blue'" (click)="feedbackPeriodChanged('ytd')">
+                        <input type="button" value="1M" class="btn-normal"
+                            [ngClass]="(period=='1month')?'btn-green':'btn-blue'"
+                            (click)="feedbackPeriodChanged('1month')">
+                        <input type="button" value="3M" class="btn-normal"
+                            [ngClass]="(period=='3month')?'btn-green':'btn-blue'"
+                            (click)="feedbackPeriodChanged('3month')">
+                        <input type="button" value="6M" class="btn-normal"
+                            [ngClass]="(period=='6month')?'btn-green':'btn-blue'"
+                            (click)="feedbackPeriodChanged('6month')">
+                        <input type="button" value="1Y" class="btn-normal"
+                            [ngClass]="(period=='1year')?'btn-green':'btn-blue'"
+                            (click)="feedbackPeriodChanged('1year')">
+                        <input type="button" value="2Y" class="btn-normal"
+                            [ngClass]="(period=='2year')?'btn-green':'btn-blue'"
+                            (click)="feedbackPeriodChanged('2year')">
+                        <!-- <input type="button" value="3Y" class="btn-normal"
+                                [ngClass]="(period=='3year')?'btn-green':'btn-blue'"
+                                (click)="feedbackPeriodChanged('3year')"> -->
+                        <!-- <input type="button" value="Max" class="btn-normal"
+                                [ngClass]="(period=='All')?'btn-green':'btn-blue'"
+                                (click)="feedbackPeriodChanged('All')"> -->
+                    </span>
+                    <!-- </div> -->
+
+                </div>
+            </div>
+
+            <hr class="p-mt-0">
+
+            <div class="p-grid">
+                <!-- Line Chart -->
+                <div class="p-col-12 p-md-6 p-p-1">
+                    <div class="border-shadow p-p-2">
+                        <line-chart yAxisText="User Count" barClass="chart-big"
+                            [dataTable]="dateWiseFeedbackChartData " period="1year" [isPeriodBarVisible]="false"
+                            (symbolClicked)="onLineChartPointClick($event)">
+                        </line-chart>
+                    </div>
+                </div>
+
+                <!-- Bar Chart -->
+                <div class="p-col-12 p-md-6 p-p-1">
+                    <div class="border-shadow p-p-2">
+                        <app-bar-chart2 [dataArray]="reasonWiseFeedbackChartData"
+                            [seriesConfig]="reasonWiseFeedbackChartConfig" (symbolClicked)="handleBarClicked($event)"
+                            yAxisTitle="User Exit Count" height="400px">
+                        </app-bar-chart2>
+                    </div>
+                </div>
+
+                <!-- Filtered Rows Table -->
+                <div class="p-col-12">
+                    <div class="p-text-bold p-p-1" style="font-size: 1.3rem;">Filtered Rows</div>
+
+                    <hr style="margin: 0.5rem 0;width:100%;">
+
+                    <div *ngIf="!filteredTableData || filteredTableData.length === 0" class="p-m-2 p-text-center">
+                        No data to display.
+                    </div>
+
+                    <div *ngIf="filteredTableData && filteredTableData.length > 0">
+                        <p-table #dt [value]="filteredTableData" [paginator]="true" [rows]="10" [pageLinks]="3"
+                            [resizableColumns]="true" [showCurrentPageReport]="true" [rowsPerPageOptions]="[20,40,100]"
+                            styleClass="p-datatable-positions p-datatable-striped"
+                            [tableStyle]="{'table-layout':'auto'}" [reorderableColumns]="false"
+                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="created_at" style="text-align: left;">
+                                        Date
+                                        <p-sortIcon field="created_at"></p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="firstName" style="text-align: left;">
+                                        First Name
+                                        <p-sortIcon field="firstName"></p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="lastName" style="text-align: left;">
+                                        Last Name
+                                        <p-sortIcon field="lastName"></p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="emailAddress" style="text-align: left;">
+                                        Email Address
+                                        <p-sortIcon field="emailAddress"></p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="days_at_sv" style="text-align: right;">
+                                        Days at SV
+                                        <p-sortIcon field="days_at_sv"></p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="reasons" style="text-align: left;">
+                                        Reasons
+                                        <p-sortIcon field="reasons"></p-sortIcon>
+                                    </th>
+
+                                    <th pSortableColumn="feedback" style="text-align: left;">
+                                        Feedback
+                                        <p-sortIcon field="feedback"></p-sortIcon>
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-feedback>
+                                <tr>
+                                    <td style="text-align: left;">
+                                        <div>{{feedback?.created_at | date}}</div>
+                                    </td>
+                                    <td style="text-align: left;">
+                                        <div>{{feedback?.firstName}}</div>
+                                    </td>
+                                    <td style="text-align: left;">
+                                        <div>{{feedback.lastName}}</div>
+                                    </td>
+                                    <td style="text-align: left;">
+                                        <div>{{feedback?.emailAddress}}</div>
+                                    </td>
+                                    <td style="text-align: right;padding-right: 1rem;">
+                                        <div>{{feedback?.days_at_sv}}</div>
+                                    </td>
+                                    <td style="text-align: left;">
+                                        <div *ngFor="let reason of feedback?.reasons">{{reason}}</div>
+                                    </td>
+                                    <td style="text-align: left;white-space: normal;">
+                                        <div>{{feedback?.feedback}}</div>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All raw data -->
+    <div class="p-col-12 p-md-12 p-p-1">
+        <div class="border-shadow p-p-2">
+            <div class="p-text-bold p-p-1" style="font-size: 1.3rem;">All Rows</div>
+
+            <hr style="margin: 0.5rem 0;width:100%;">
+
+            <div *ngIf="feedbackList && feedbackList.length > 0">
+                <p-table #dt [value]="feedbackList" [paginator]="true" [rows]="10" [pageLinks]="3"
+                    [resizableColumns]="true" [showCurrentPageReport]="true" [rowsPerPageOptions]="[20,40,100]"
+                    styleClass="p-datatable-positions p-datatable-striped" [tableStyle]="{'table-layout':'auto'}"
+                    [reorderableColumns]="false"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th pSortableColumn="created_at" style="text-align: left;">
+                                Date
+                                <p-sortIcon field="created_at"></p-sortIcon>
+                            </th>
+
+                            <th pSortableColumn="firstName" style="text-align: left;">
+                                First Name
+                                <p-sortIcon field="firstName"></p-sortIcon>
+                            </th>
+
+                            <th pSortableColumn="lastName" style="text-align: left;">
+                                Last Name
+                                <p-sortIcon field="lastName"></p-sortIcon>
+                            </th>
+
+                            <th pSortableColumn="emailAddress" style="text-align: left;">
+                                Email Address
+                                <p-sortIcon field="emailAddress"></p-sortIcon>
+                            </th>
+
+                            <th pSortableColumn="days_at_sv" style="text-align: right;">
+                                Days at SV
+                                <p-sortIcon field="days_at_sv"></p-sortIcon>
+                            </th>
+
+                            <th pSortableColumn="reasons" style="text-align: left;">
+                                Reasons
+                                <p-sortIcon field="reasons"></p-sortIcon>
+                            </th>
+
+                            <th pSortableColumn="feedback" style="text-align: left;">
+                                Feedback
+                                <p-sortIcon field="feedback"></p-sortIcon>
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-feedback>
+                        <tr>
+                            <td style="text-align: left;">
+                                <div>{{feedback.created_at | date:'yyyy-MM-dd'}}</div>
+                            </td>
+                            <td style="text-align: left;">
+                                <div>{{feedback?.firstName}}</div>
+                            </td>
+                            <td style="text-align: left;">
+                                <div>{{feedback?.lastName}}</div>
+                            </td>
+                            <td style="text-align: left;">
+                                <div>{{feedback?.emailAddress}}</div>
+                            </td>
+                            <td style="text-align: right;padding-right: 1rem;">
+                                <div>{{feedback?.days_at_sv}}</div>
+                            </td>
+                            <td style="text-align: left;">
+                                <div *ngFor="let reason of feedback?.reasons">{{reason}}</div>
+                            </td>
+                            <td style="text-align: left;white-space: normal;">
+                                <div>{{feedback?.feedback}}</div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,61 @@
+.heat-heading {
+    background-color: #646464;
+    font-weight: bold;
+}
+
+.heat-green {
+    background-color: green;
+}
+
+.heat-light-green {
+    background-color: #80dd91;
+}
+
+.heat-grey {
+    background-color: #adb5bd;
+}
+
+.heat-light-red {
+    background-color: #f57656;
+}
+
+.heat-red {
+    background-color: #b82a1f;
+}
+
+.rwd-table2 th,
+.rwd-table2 td {
+    text-align: center;
+}
+
+.rwd-table2 {
+    min-width: 100%;
+    color: #fff;
+    overflow: hidden;
+    // border-spacing: 1px;
+    border-collapse: separate;
+    border-spacing:0.8rem 0.2rem;
+}
+
+.rwd-table2 a {
+    text-decoration: none;
+    color: #fff;
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+.rwd-table2 th,
+.rwd-table2 td {
+    margin: 0.5em 1em;
+}
+
+.rwd-table2 th,
+.rwd-table2 td {
+    padding: 7px 1px !important;
+}
+
+.heatMap {
+    border: 1px solid white;
+    text-align: center;
+}

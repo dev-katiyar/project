@@ -1,0 +1,306 @@
+<p>test-abhilash works!</p>
+
+<p-dropdown [options]="cities" [(ngModel)]="selectedCity" optionLabel="name" optionValue="code" (onChange)="dropDownChanged($event)"></p-dropdown>
+
+<!-- <p-tabView> -->
+    <!-- <p-tabPanel header="FEB 2022"> -->
+        <!-- <ng-template pTemplate="content"> -->
+            <div class="p-grid p-fluid" style="background-color: white;">
+                <div class="p-col-12 p-sm-4 p-md-2">
+                    <div class="p-grid">
+                        <div class="p-col-12" style="padding-bottom:0">
+                            <small>Symbol</small>
+                        </div>
+                        <div class="p-col-12" style="padding-top:0">
+                            <input type="text" pInputText [(ngModel)]="stgInputs.symbol" (click)="$event.target.select()" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-sm-4 p-md-2">
+                    <div class="p-grid">
+                        <div class="p-col-12" style="padding-bottom:0">
+                            <small>from Date</small>
+                        </div>
+                        <div class="p-col-12" style="padding-top:0">
+                            <p-calendar [inputStyle]="{ width: '100%'}" [monthNavigator]="true" [yearNavigator]="true"
+                                yearRange="2015:2030"
+                                [(ngModel)]="stgInputs.start_date" [showIcon]="true" [readonlyInput]="true">
+                            </p-calendar>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-sm-4 p-md-2">
+                    <div class="p-grid">
+                        <div class="p-col-12" style="padding-bottom:0">
+                            <small>to Date</small>
+                        </div>
+                        <div class="p-col-12" style="padding-top:0">
+                            <p-calendar [inputStyle]="{ width: '100%' }" [monthNavigator]="true" [yearNavigator]="true"
+                                yearRange="2015:2030"
+                                [(ngModel)]="stgInputs.end_date" [showIcon]="true" [readonlyInput]="true">
+                            </p-calendar>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-sm-4 p-md-2">
+                    <div class="p-grid">
+                        <div class="p-col-12" style="padding-bottom:0">
+                            <small>&nbsp;</small>
+                        </div>
+                        <div class="p-col-12" style="padding-top:0">
+                            <p-button (click)="runStrategy()">Run</p-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p-tabView>
+                <p-tabPanel header="Buy Conditions">
+                    <ng-template pTemplate="content">
+                        <div class="p-grid p-fluid">
+                            <div class="p-col-3">
+                                <p-dropdown [options]="indicators" [(ngModel)]="selectedBuyIndicator" optionLabel="name"
+                                    (onChange)="buyIndicatorChanged($event)"  appendTo="body">
+                                    ></p-dropdown>
+                            </div>
+
+                            <div class="p-col-3">
+                                <p-button (click)="addBuyCondition()">Add Condition</p-button>
+                            </div>
+
+                            <div class="p-col-12 p-fluid border-shadow">
+                                <p-table #dt1 [value]="stgInputs.buy_conditions" dataKey="id"
+                                    styleClass="p-datatable-positions p-datatable-striped"
+                                    [globalFilterFields]="['symbol']" [autoLayout]="true">
+
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th>Left Indicator</th>
+
+                                            <th>Pattern</th>
+
+                                            <th>Right Indicator</th>
+
+                                            <th></th>
+                                        </tr>
+                                    </ng-template>
+
+                                    <ng-template pTemplate="body" let-condition>
+                                        <tr class="p-selectable-row">
+                                            <td style="text-align: center;">
+                                                <span>{{ condition.ind_temp.name }}</span>
+                                                <!-- <span>{{ condition.ind_temp.settings }}</span> -->
+                                                <div style="color: blue; cursor: pointer; font-size: 0.7rem;">Settings</div>
+                                            </td>
+
+                                            <td style="text-align: center;">
+                                                <span>
+                                                    <p-dropdown [options]="condition.ind_temp.operators" optionLabel="name" optionValue="key"
+                                                    [(ngModel)]="condition.operator.key" appendTo="body"></p-dropdown>
+                                                </span>
+                                                <span style="color: blue; cursor: pointer; font-size: 0.7rem;">Settings</span>
+                                            </td>
+
+                                            <td style="text-align: center;">
+                                                <span><p-dropdown [options]="getRightOptionsObj(condition.ind_temp.operators, condition.operator.key).right_options" 
+                                                    optionLabel="name" optionValue="key" [(ngModel)]="condition.operator.right_option.indicator" appendTo="body"></p-dropdown></span>
+                                                <!-- <span>{{ getRightOptionsObjSetting(getRightOptionsObj(condition.ind_temp.operators, condition.operator.key).right_options, condition.operator.right_option.indicator) }}</span> -->
+                                                <span style="color: blue; cursor: pointer; font-size: 0.7rem;">Settings</span>
+                                            </td>
+
+                                            <td style="text-align: center;">
+                                                <i (click)="deleteBuyCondition(condition)" class="pi pi-times-circle"
+                                                    title="Delete Position"
+                                                    style="font-size: 1em; cursor: pointer; color: red"></i>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-tabPanel>
+
+                <p-tabPanel header="Sell Conditions">
+                    <ng-template pTemplate="content">
+                        <div class="p-grid p-fluid">
+                            <div class="p-col-3">
+                                <p-dropdown [options]="indicators" [(ngModel)]="selectedSellIndicator" optionLabel="name"
+                                    (onChange)="sellIndicatorChanged($event)">
+                                    ></p-dropdown>
+                            </div>
+
+                            <div class="p-col-3">
+                                <p-button (click)="addSellCondition()">Add Condition</p-button>
+                            </div>
+
+                            <div class="p-col-12 p-fluid border-shadow">
+                                <p-table #dt2 [value]="stgInputs.sell_conditions" dataKey="id"
+                                    styleClass="p-datatable-positions p-datatable-striped"
+                                    [globalFilterFields]="['symbol']" [autoLayout]="true">
+
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th>Left Indicator</th>
+
+                                            <th>Pattern</th>
+
+                                            <th>Right Indicator</th>
+
+                                            <th></th>
+                                        </tr>
+                                    </ng-template>
+
+                                    <ng-template pTemplate="body" let-condition>
+                                        <tr class="p-selectable-row">
+                                            <td style="text-align: center;">
+                                                <div>{{ condition.ind_temp.name }}</div>
+                                                <div style="color: blue; cursor: pointer; font-size: 0.7rem;">Settings</div>
+                                                <!-- <app-test-abhilash-settings [settings]="condition.ind_temp.settings"></app-test-abhilash-settings> -->
+                                            </td>
+
+                                            <td style="text-align: center;">
+                                                <span>
+                                                    <p-dropdown [options]="condition.ind_temp.operators" optionLabel="name" optionValue="key"
+                                                    [(ngModel)]="condition.operator.key" appendTo="body"></p-dropdown>
+                                                </span>
+                                                <span style="color: blue; cursor: pointer; font-size: 0.7rem;">Settings</span>
+                                            </td>
+
+                                            <td style="text-align: center;">
+                                                <span><p-dropdown [options]="getRightOptionsObj(condition.ind_temp.operators, condition.operator.key).right_options" 
+                                                    optionLabel="name" optionValue="key" [(ngModel)]="condition.operator.right_option.indicator" appendTo="body"></p-dropdown></span>
+                                                <!-- <span>{{ getRightOptionsObjSetting(getRightOptionsObj(condition.ind_temp.operators, condition.operator.key).right_options, condition.operator.right_option.indicator) }}</span> -->
+                                                <span style="color: blue; cursor: pointer; font-size: 0.7rem;">Settings</span>
+                                            </td>
+
+                                            <td style="text-align: center;">
+                                                <i (click)="deleteSellCondition(condition)" class="pi pi-times-circle"
+                                                    title="Delete Position"
+                                                    style="font-size: 1em; cursor: pointer; color: red"></i>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-tabPanel>
+            </p-tabView>
+
+            <p-table [columns]="stgCols" [value]="stgData" dataKey="id" [rows]="50" [showCurrentPageReport]="true"
+                [rowsPerPageOptions]="[20,50,100,500]"
+                styleClass="p-datatable-positions p-datatable-striped" [resizableColumns]="false" [paginator]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [globalFilterFields]="['symbol']" [autoLayout]="true" [scrollable]="false"
+                [tableStyle]="{'table-layout':'auto'}">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <tr>
+                        <td *ngFor="let col of columns">
+                            {{rowData[col.field]}}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+        <!-- </ng-template> -->
+    <!-- </p-tabPanel> -->
+
+    <!-- <p-tabPanel header="AS ON FEB 2022">
+        <ng-template pTemplate="content">
+            <div>
+                <p-table [value]="sales" [scrollable]="true" scrollHeight="150px" frozenWidth="200px">
+                    <ng-template pTemplate="frozenheader">
+                        <tr>
+                            <th style="width:200px;height:84px">Brand</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="frozenbody" let-sale>
+                        <tr>
+                            <td>{{sale.brand}}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th colspan="4">Sale Rate</th>
+                        </tr>
+                        <tr>
+                            <th colspan="2">Sales</th>
+                            <th colspan="2">Profits</th>
+                        </tr>
+                        <tr>
+                            <th>Last Year</th>
+                            <th>This Year</th>
+                            <th>Last Year</th>
+                            <th>This Year</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-sale>
+                        <tr>
+                            <td>{{sale.lastYearSale}}</td>
+                            <td>{{sale.thisYearSale}}</td>
+                            <td>{{sale.lastYearProfit}}</td>
+                            <td>{{sale.thisYearProfit}}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+
+
+            <p-panel header="Top S&P500 Stocks Today">
+                Hello
+            </p-panel>
+
+
+            <div>
+                <div class="barClass" [chart]="barChart"></div>
+            </div>
+
+            <div>
+
+                <p-table [value]="sales" styleClass="p-datatable-positions p-datatable-striped">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Brand</th>
+                            <th>Last Year Sale</th>
+                            <th>This Year Sale</th>
+                            <th>Last Year Profit</th>
+                            <th>This Year Profit</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-sale>
+                        <tr>
+                            <td>{{sale.brand}}</td>
+                            <td>{{sale.lastYearSale}}</td>
+                            <td>{{sale.thisYearSale}}</td>
+                            <td>{{sale.lastYearProfit}}</td>
+                            <td>{{sale.thisYearProfit}}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="footer">
+                        <tr>
+                            <td colspan="3">Totals</td>
+                            <td>$506,202</td>
+                            <td>$531,020</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+
+            </div>
+
+            <div>
+                <div [chart]="pieChart"></div>
+            </div>
+        </ng-template>
+    </p-tabPanel>
+</p-tabView> -->

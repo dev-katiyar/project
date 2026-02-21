@@ -1,0 +1,8 @@
+<div *ngIf="title != ''">
+    <p-panel [header]="title" >
+        <div [class]="barClass" [chart]="twoDChart"></div>
+    </p-panel>
+</div>
+<div *ngIf="title == ''">
+    <div [class]="barClass" [chart]="twoDChart"></div>
+</div>

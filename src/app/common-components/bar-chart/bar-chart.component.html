@@ -1,0 +1,8 @@
+<div style="height: 100%;">
+    <div *ngIf="loading">
+       {{text}}
+    </div>
+    <div *ngIf="!loading">
+        <div [chart]="barChart" style="width: 100%;"></div>
+    </div>
+</div>

@@ -1,0 +1,5 @@
+<div class="container-div-horz-vertical" *ngIf="technicals">
+    <app-stocks-gauge [gaugeClass]="gaugeClass" [valueText]="technicals.ratingText"
+        [gaugeWidth]="gaugeWidth" [valueGauge]="technicals.rating" minValue=0 maxValue=10>
+    </app-stocks-gauge>
+</div>

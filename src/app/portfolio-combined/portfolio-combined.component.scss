@@ -1,0 +1,13 @@
+.margin-right {
+    margin-right: .30rem;
+}
+
+@media (max-width: 1023px) {
+    #summarySidebar {
+        display: none;
+    }
+
+    #portfolioDetails {
+        width: 100%;
+    }
+}

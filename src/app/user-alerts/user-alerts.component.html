@@ -1,0 +1,177 @@
+<div class="p-grid" style="margin: -0.75rem;">
+    <div class="p-col-12 p-p-1">
+        <a style="margin-left:20px;float:left;" type="button" *ngIf="!isEditMode" pButton (click)="enterEditMode()"
+            class="p-button-outlined" label="Edit"></a>
+
+        <a style="margin-left:20px; float:left;" type="button" *ngIf="isEditMode" pButton (click)="addRow()"
+            class="p-button-outlined" label="+ Add Ticker"></a>
+
+        <div class="p-mr-2" style="float: right; display: flex;align-items: center;height: 100%;">
+            <app-help-icon [style]="{'font-size': '1.4rem'}" key="portfoliosAlerts"></app-help-icon>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;">
+            <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                User Alerts
+            </span>
+      
+            <hr style="margin: 0.5rem 0;">
+
+            <p-table #dt1 [value]="alerts" dataKey="id" [rows]="10" [showCurrentPageReport]="true"
+                [resizableColumns]="true" [rowsPerPageOptions]="[5,10,20]"
+                styleClass="p-datatable-positions p-datatable-striped" [paginator]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [globalFilterFields]="['symbol']" [autoLayout]="true" [tableStyle]="{'table-layout':'auto'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: left;" pSortableColumn="symbol">
+                            <div>
+                                Symbol
+                                <p-sortIcon field="symbol"></p-sortIcon>
+                                <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto">
+                                </p-columnFilter>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="price">
+                            <div>
+                                Last
+                                <p-sortIcon field="price"></p-sortIcon>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="priceChangePct">
+                            <div>
+                                Today's Change
+                                <p-sortIcon field="priceChangePct"></p-sortIcon>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="high_target">
+                            <div>
+                                High Target
+                                <p-sortIcon field="high_target"></p-sortIcon>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="low_target">
+                            <div>
+                                Low target
+                                <p-sortIcon field="low_target"></p-sortIcon>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="daily_high">
+                            <div>
+                                Daily High %
+                                <p-sortIcon field="daily_high"></p-sortIcon>
+                            </div>
+                        </th>
+
+                        <th pSortableColumn="daily_low">
+                            <div>
+                                Daily Low %
+                                <p-sortIcon field="daily_low"></p-sortIcon>
+                            </div>
+                        </th>
+
+                        <th>
+                            <div>
+
+                            </div>
+                        </th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-alert>
+                    <tr class="p-selectable-row">
+                        <td style="text-align: left;">
+                            <div *ngIf="!alert?.isEditable" class="symbol" (click)="onSymbolClick(alert.symbol)">
+                                {{alert.symbol}}
+                            </div>
+                            <div *ngIf="alert?.isEditable" style="position: initial !important;">
+                                <app-stocks-autocomplete style="position: static !important;"
+                                    [(searchText)]="alert.symbol" (searchTextChange)="fetchLivePrice($event)">
+                                </app-stocks-autocomplete>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div *ngIf="alert.price">{{alert?.price | currency}}</div>
+                        </td>
+
+                        <td>
+                            <div *ngIf="alert.priceChange" [ngClass]="alert | upDownColor">
+                                {{alert?.priceChange | currency}} ({{alert?.priceChangePct | number:'0.2-2'}}%)
+                            </div>
+                        </td>
+
+                        <td>
+                            <div *ngIf="!alert?.isEditable">
+                                {{alert.high_target | currency}}
+                            </div>
+                            <input pInputText *ngIf="alert?.isEditable" [(ngModel)]="alert.high_target"
+                                style="text-align: right;" (click)="$event.target.select()" />
+                        </td>
+
+                        <td>
+                            <div *ngIf="!alert?.isEditable">
+                                {{alert.low_target | currency}}
+                            </div>
+                            <input pInputText *ngIf="alert?.isEditable" [(ngModel)]="alert.low_target"
+                                style="text-align: right;" (click)="$event.target.select()" />
+                        </td>
+
+                        <td>
+                            <div *ngIf="!alert?.isEditable">
+                                {{alert.daily_high }}%
+                            </div>
+                            <input pInputText *ngIf="alert?.isEditable" [(ngModel)]="alert.daily_high"
+                                style="text-align: right;" (click)="$event.target.select()" />
+                        </td>
+
+                        <td>
+                            <div *ngIf="!alert?.isEditable">
+                                {{alert.daily_low }} %
+                            </div>
+                            <input pInputText *ngIf="alert?.isEditable" [(ngModel)]="alert.daily_low"
+                                style="text-align: right;" (click)="$event.target.select()" />
+                        </td>
+
+                        <td>
+                            <button style="width:20px;height:20px" type="button"
+                                class="p-button-danger p-button-rounded" pButton *ngIf="alert.isEditable"
+                                (click)="deleteAlert(alert)" icon="pi pi-times"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-p-1" *ngIf="isEditMode">
+        <a style="margin-right:20px; float: right;" type="button" pButton (click)="saveAlerts()" label="Save"></a>
+
+        <a style="margin-right:20px; float: right" type="button" pButton (click)="cancelEditMode()"
+            class="p-button-outlined" label="Cancel"></a>
+    </div>
+</div>
+
+<p-dialog header="Alert Issue !" [(visible)]="displayDialog" [modal]="true" [style]="{width: '30vw'}" [minY]="70"
+    [maximizable]="true" [baseZIndex]="10000" [breakpoints]="{'960px': '70vw', '640px': '90vw'}">
+    <span style="color:red">{{alertError}}</span>
+    <p-footer>
+        <button type="button" pButton class="p-button-info" label="OK" (click)="displayDialog=false"></button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog header="Alert Delete Confirmation" [(visible)]="deleteDialog" [modal]="true" [style]="{width: '30vw'}"
+    [minY]="70" [maximizable]="true" [baseZIndex]="10000" [breakpoints]="{'960px': '70vw', '640px': '90vw'}">
+    <span>Do you want to delete selected ticker alert ?</span>
+    <p-footer>
+        <button type="button" class="p-button-success" pButton (click)="confirmDelete(true)" label="Yes"></button>
+        <button type="button" class="p-button-danger" pButton (click)="confirmDelete(false)" label="No"></button>
+    </p-footer>
+</p-dialog>

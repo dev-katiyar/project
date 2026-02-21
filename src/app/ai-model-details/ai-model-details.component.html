@@ -1,0 +1,20 @@
+<div class="p-grid" style="margin: -0.5rem;">
+    <div class="p-col-12 p-p-0">
+        <!-- Tabs for Sector and Factor -->
+        <p-selectButton [options]="viewTypes" optionLabel="name" (onChange)="onViewTypeChange($event)"
+            [(ngModel)]="selectedViewType">
+        </p-selectButton>
+    </div>
+
+    <div class="p-col-12 p-p-1 p-mt-1">
+        <div [ngSwitch]="selectedViewType?.code">
+            <div *ngSwitchCase="'trade-signals'">
+                <app-trade-signal [modelKey]="modelKey"></app-trade-signal>
+            </div>
+
+            <div class="p-p-1" *ngSwitchCase="'portfolios'">
+                <app-portfolio-combined [portfolioViewType]="modelKey"></app-portfolio-combined>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+<!-- Card Details -->
+<div class='p-grid p-fluid p-formgrid'>
+    <div class="p-field p-col-3">
+        <label for='cardNumber' class="bold">
+            Card Type <span class="red">*</span>
+        </label>
+
+        <p-dropdown [options]='cardInfoConstraints.cardTypes' [(ngModel)]='cardInfo.cardType'
+            optionLabel='name' optionValue='id' #cardType='ngModel'
+            (onChange)="cardTypeChanged(cardInfo.cardType)"></p-dropdown>
+    </div>
+
+    <div class="p-field p-col-9">
+        <label for='cardNumber' class="bold">
+            Card Number <span class="red">*</span>
+        </label>
+
+        <p-inputMask id="cardNumber" [mask]="cardInfoConstraints.cardNumberMask"
+            [(ngModel)]="cardInfo.cardNumber" required #cardNumber='ngModel' [autoClear]="false"></p-inputMask>
+
+        <div *ngIf="(cardNumber.invalid || cardInfo.cardNumber?.replaceAll('-', '').replaceAll('_', '').length < cardInfoConstraints.cardNumberLength) && (cardNumber.dirty || cardNumber.touched)"
+            class='error-msg text-small'>
+            Invalid credit card number
+        </div>
+    </div>
+
+    <div class="p-field p-col-4">
+        <label for='expMonth' class="bold">
+            Exp Month <span class="red">*</span>
+        </label>
+
+        <p-dropdown [options]='cardInfoConstraints.expMonthOptions' [(ngModel)]='cardInfo.expMonth'
+            optionLabel='name' optionValue='id' #expMonth='ngModel'></p-dropdown>
+    </div>
+
+    <div class="p-field p-col-4">
+        <label for='expYear' class="bold">
+            Exp Year <span class="red">*</span>
+        </label>
+
+        <p-dropdown [options]='cardInfoConstraints.expYearOptions' [(ngModel)]='cardInfo.expYear'
+            optionLabel='name' optionValue='id' #expYear='ngModel'></p-dropdown>
+    </div>
+
+    <div class="p-field p-col-4">
+        <label for='expYear' class="bold">
+            CVC <span class="red">*</span>
+        </label>
+
+        <p-inputMask [mask]="cardInfoConstraints.cardCvvMask" id='cvc' required [(ngModel)]='cardInfo.cvc' #cvc='ngModel'
+            [autoClear]="false"></p-inputMask>
+
+        <div *ngIf="(cvc.invalid || cardInfo.cvc?.replaceAll('_', '').length < cardInfoConstraints.cvcLength) && (cvc.dirty || cvc.touched)"
+            class='error-msg text-small'>
+            CVC is invalid.
+        </div>
+    </div>
+</div>

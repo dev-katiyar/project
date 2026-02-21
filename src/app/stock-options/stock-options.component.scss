@@ -1,0 +1,49 @@
+::ng-deep .p-inputtext {
+    padding: 0.5rem;
+}
+
+.btn-normal {
+    color: gray;
+    background-color: #f3f3f3;
+    vertical-align: middle;
+    font-size: 14px;
+    border: 1px solid transparent;
+    display: inline-block;
+    position: relative;
+    padding: .385em .5em;
+    text-decoration: none !important;
+    cursor: pointer;
+    text-align: center;
+    zoom: 1;
+    overflow: visible;
+    line-height: normal;
+    margin-right: 2px;
+    border-radius: 8px;
+}
+
+.btn-green {
+    background-color: white;
+    color: #0377bd;
+    font-weight: bold;
+}
+
+.btn-blue {
+    background-color: #f3f3f3;
+}
+
+.btn-group {
+    float: right;
+    background-color: #f3f3f3;
+    border-radius: 0.5rem;
+    padding: 0.2rem;
+}
+
+.in-money {
+    display: inline-block;
+    border-left: 6px solid #0198da;
+    margin-right: 1rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: #e5f5fa;
+    font-weight: bold;
+}

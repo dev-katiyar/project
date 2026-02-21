@@ -1,0 +1,22 @@
+.listStyle{
+    background:white;
+    list-style-type:none;
+    width:170px;
+    border-radius:8px;
+    border:1px solid #D9DCE0;
+    padding:4px;
+    cursor:pointer;
+}
+
+.arrow-up{
+  content:url("/assets/images/arrow-up.jpg");
+  width:31px;
+  height:31px;
+}
+
+.arrow-down{
+  content:url("/assets/images/arrow-down.jpg");
+  width:31px;
+  height:31px;
+
+}

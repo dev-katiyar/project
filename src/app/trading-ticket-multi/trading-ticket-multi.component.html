@@ -1,0 +1,228 @@
+<div class="p-grid p-no-gutter" style="padding: 1em;">
+    <div class="p-col-12 p-grid p-jc-center p-nogutter border-shadow">
+        <div class="p-col-2 p-grid p-nogutter container-div-vertical p-jc-center" style="padding: 0 1em;">
+            <div class="p-col-12"><small>Portfolio</small></div>
+            <div class="p-col-12 p-fluid">
+                <div class="container-div-vertical">
+                    <span><b>{{ selectedPortfolioDetails?.name }}</b></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-col-2 p-grid p-nogutter container-div-vertical p-jc-center">
+            <div class="p-col-12"><small>Starting Cash</small></div>
+            <div class="p-col-12 container-div-vertical"><b>{{ selectedPortfolioDetails?.startingCash | currency }}</b>
+            </div>
+        </div>
+
+        <div class="p-col-2 p-grid p-nogutter container-div-vertical p-jc-center">
+            <div class="p-col-12"><small>Current Cash</small></div>
+            <div class="p-col-12 container-div-vertical"><b>{{ selectedPortfolioDetails?.currentCash | currency }}</b>
+            </div>
+        </div>
+
+        <div class="p-col-2 p-grid p-nogutter container-div-vertical p-jc-center">
+            <div class="p-col-12"><small>Available Cash Flow</small></div>
+            <div class="p-col-12 container-div-vertical"
+                [ngStyle]="{'color': selectedPortfolioDetails?.totalCashFlow > 0 ? 'green': 'red'}">
+                <b>{{ selectedPortfolioDetails?.totalCashFlow | currency }}</b>
+            </div>
+        </div>
+
+        <div class="p-col-2 p-grid p-nogutter container-div-vertical p-jc-center">
+            <div class="p-col-12"><small>Transactions P&L</small></div>
+            <div class="p-col-12 container-div-vertical"
+                [ngStyle]="{'color': selectedPortfolioDetails?.txnPnLCash > 0 ? 'green': 'red'}">
+                <b>{{ selectedPortfolioDetails?.txnPnLCash | currency }}</b>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-lg-12" style="margin-top:1.5em;">
+        <div class="p-grid">
+            <div class="p-col-12">
+                <h3 style="float: left;">Edit/Add Positions: </h3>
+
+                <div style="margin-left:10px; float: left;">
+                    <p-fileUpload #csvReader mode="basic" customUpload="true" name="demo[]" maxFileSize="1000000"
+                        (uploadHandler)="myUploader($event)" [auto]="true" cancelLabel="Cancel"
+                        chooseLabel="Import Positions">
+                    </p-fileUpload>
+                </div>
+
+                <div style="float: left;margin-left: 10px; cursor: pointer; padding: 7px;">
+                    <span (click)="downloadSample()">
+                        <b><u><a>Sample File</a></u></b>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-fluid border-shadow">
+        <p-table #dt1 [value]="selectedPortfolioDetails.transactions" dataKey="id" [rows]="50"
+            [showCurrentPageReport]="true" [rowsPerPageOptions]="[20,50,100,500]"
+            styleClass="p-datatable-positions p-datatable-striped" [paginator]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [globalFilterFields]="['symbol']" [autoLayout]="true">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th></th>
+                    <th pSortableColumn="symbol" style="text-align: left;">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            Symbol
+                            <p-sortIcon field="symbol"></p-sortIcon>
+                            <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto">
+                            </p-columnFilter>
+                        </div>
+                    </th>
+
+                    <th>
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            Holding Qty
+                        </div>
+                    </th>
+
+                    <th>
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            Avg Cost
+                        </div>
+                    </th>
+
+                    <th>
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            Side
+                        </div>
+                    </th>
+
+                    <th>
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            Quantity
+                        </div>
+                    </th>
+
+                    <th>
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            Date
+                        </div>
+                    </th>
+
+                    <th>
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            Price
+                        </div>
+                    </th>
+
+                    <th>
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            Cash Flow
+                        </div>
+                    </th>
+
+                    <th>
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                            Profit/Loss
+                        </div>
+                    </th>
+
+                    <th>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-transaction>
+                <tr class="p-selectable-row">
+                    <td style="height: 4em;">
+                        <div *ngIf="transaction.id == 0">
+                            <i class="pi pi-plus-circle" style="color: green;" (click)="addRow()"></i>
+                        </div>
+                    </td>
+
+                    <td style="overflow: visible; text-align: left;">
+                        <div>
+                            <app-stocks-autocomplete class="input-full" *ngIf="transaction.id == 0"
+                                (searchTextChange)="onSymbolSelected($event,transaction)"
+                                [(searchText)]="transaction.symbol">
+                            </app-stocks-autocomplete>
+                        </div>
+                    </td>
+
+                    <td>
+                        <span *ngIf="transaction.side == 'Buy'|| transaction.side == 'Sell'">Long: </span>
+                        <span *ngIf="transaction.side == 'Sell Short'|| transaction.side == 'Buy To Cover'">Short:
+                        </span>
+                        <b>{{ transaction.holdings }}</b>
+                    </td>
+
+                    <td style="text-align: right;">
+                        <span>{{ transaction.avgCost | currency }}</span>
+                    </td>
+
+                    <td>
+                        <div>
+                            <p-dropdown [options]="validSides" [(ngModel)]="transaction.side" optionLabel="name"
+                                [style]="{'width':'100px'}" optionValue="id" appendTo="body"
+                                [disabled]="transaction.id != 0" (onChange)="onSideChange(transaction)"></p-dropdown>
+                        </div>
+                    </td>
+
+                    <td>
+                        <input pInputText type="number" digitOnly decimal="true" decimalSeparator="."
+                            style="text-align: right; width: 65px;" placeholder="0" pattern="[0-9]+([.][0-9]+)?"
+                            [(ngModel)]="transaction.qty" min="0" onFocus="this.select();" (click)="$event.target.select()" />
+                    </td>
+
+                     <td>
+                        <p-calendar [inputStyle]="{'width': '80px'}" [monthNavigator]="true" [yearNavigator]="true"
+                            yearRange="2000:2030" [showIcon]="true" appendTo="body" [(ngModel)]="transaction.dateObj"
+                            (onSelect)="onDateChangeHandler(transaction)">
+                        </p-calendar>
+                    </td>
+
+                    <td>
+                        <input pInputText type="text" digitOnly decimal="true" decimalSeparator="."
+                            style="text-align: right; width: 65px;" placeholder="0.00" pattern="[0-9]+([.][0-9]+)?"
+                            [(ngModel)]="transaction.price" min="0" onFocus="this.select();" (click)="$event.target.select()" />
+                    </td>
+
+                    <td style="text-align: right;">
+                        {{ transaction.cashFlow | currency}}
+                    </td>
+
+                    <td style="text-align: right;">
+                        <!-- <span *ngIf="transaction.side == 'Sell' && transaction.holdings > 0" 
+                            [ngStyle]="{'color': (transaction.price - transaction.avgCost) > 0 ? 'green': 'red'}">
+                            <b>{{ transaction.qty * (transaction.price  - transaction.avgCost) | currency}}</b>
+                        </span>
+                        <span *ngIf="transaction.side == 'Buy To Cover' && transaction.holdings > 0" 
+                            [ngStyle]="{'color': (transaction.avgCost - transaction.price) > 0 ? 'green': 'red'}">
+                            <b>{{ transaction.qty * (transaction.avgCost - transaction.price) | currency}}</b>
+                        </span> -->
+                        <span *ngIf="transaction.side == 'Buy To Cover' || transaction.side == 'Sell'"
+                            [ngStyle]="{'color': transaction.pnl > 0 ? 'green': 'red'}">
+                            <b>{{ transaction.pnl | currency}}</b>
+                        </span>
+                    </td>
+
+                    <td>
+                        <i (click)="deleteTransaction(transaction)" class="pi pi-times-circle" title="Delete Position"
+                            style="font-size: 1em; cursor: pointer; color: red"></i>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+</div>
+
+<div *ngIf="portfolioDetailsLoaded" class="p-d-flex p-jc-center" style="padding-top:20px;">
+    <div>
+        <button type="button" pButton icon="pi pi-close" (click)="onCancelClick()" label="Cancel"
+            class="p-button-danger">
+        </button>
+    </div>
+    <div style="margin-left:20px;">
+        <button type="button" class="p-button-success" pButton (click)="onSaveClick()" label="Save"
+            [disabled]="isDisabled"></button>
+    </div>
+</div>

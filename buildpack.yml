@@ -1,0 +1,4 @@
+nginx:
+  # this allows you to specify a version constraint for the nginx dependency
+  # any valid semver constraints (e.g. 1.* and 1.21.*) are also acceptable
+  version: "1.20.0"

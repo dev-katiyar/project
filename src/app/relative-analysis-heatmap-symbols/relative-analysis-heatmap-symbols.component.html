@@ -1,0 +1,37 @@
+<table class="rwd-table2">
+    <tr>
+        <th class="symbol" (click)="onSymbolClick(headKey)" *ngFor="let headKey of sortedKeys">{{headKey}}/</th>
+        <th></th>
+        <th></th>
+    </tr>
+    <tr *ngFor="let rowKey of sortedKeys">
+        <td *ngFor="let colKey of sortedKeys"
+            style="font-weight: bold; cursor: pointer;" [pTooltip]="getTooltipText(rowKey, colKey)"
+            tooltipPosition="bottom" tooltipEvent="hover">
+            <p-tag styleClass="p-mr-2" [style]="getScoreStyle(tableData[rowKey][colKey])"
+                (click)="onHeatMapPairClick(rowKey, colKey); relPanel.toggle($event);">
+                <span style="margin-right: 0.5rem;">
+                    {{tableData[rowKey][colKey] | number:'0.2-2'}}
+                </span>
+                <i class="pi pi-chevron-circle-right"></i>
+            </p-tag>
+        </td>
+        <td class="symbol" (click)="onSymbolClick(rowKey)" style="text-align: left;">{{rowKey}}</td>
+        <td style="color:black; font-weight:normal; text-align: left;">{{symbolsDict[rowKey]?.name}}</td>
+    </tr>
+</table>
+
+<!-- Relative Score Line Chart Panel-->
+<p-overlayPanel #relPanel [showCloseIcon]="true" [style]="{width: '80%'}">
+    <div style="text-align: center;">
+        <div style="display: inline-block; font-size: 1.5rem; font-weight: bold;">
+            {{ raSelectedChartConfig?.yColKey1 }} /  {{ raSelectedChartConfig?.yColKey2 }} - Relative Analysis
+        </div>
+    </div>
+    <app-relative-analysis-chart 
+        *ngIf="raHoldingsData && raSelectedChartConfig" 
+        [chartData]="raHoldingsData" 
+        [chartConfig]="raSelectedChartConfig"
+    >
+    </app-relative-analysis-chart>
+</p-overlayPanel>

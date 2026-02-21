@@ -1,0 +1,17 @@
+<div *ngFor="let item of settings" class="p-grid">
+    <div class="p-col-6">
+        <label style="margin-right:20px;">{{item.key}}</label>
+    </div>
+    <div class="p-col-6">
+        <p-inputNumber  type='text' [(ngModel)]="item.value"></p-inputNumber>
+    </div>
+</div>
+
+<div class="p-d-flex p-jc-between">
+    <button style="margin-right:10px;" type="button" class="p-button-success p-button-sm" pButton label="Save"
+        (click)="saveSettings()">
+    </button>
+
+    <button type="button" class="p-button-danger p-button-sm" pButton label="Cancel" (click)="cancelSettings()">
+    </button>
+</div>

@@ -1,0 +1,25 @@
+<div class="p-grid">
+    <!-- Heading -->
+    <div class="p-col-12 p-text-bold" style="font-size: 1.3rem;">
+        Risk Range Report
+    </div>
+
+    <!-- Risk Range Output main view  -->
+    <div class="p-col-12" *ngIf="!error && !selectedETF">
+        <app-risk-range-report-view [riskRangeSymArr]="riskRangeSymArr" (etfHoldingIconClicked)="onSymbolRowClick($event)" [isEtfView]="false"></app-risk-range-report-view>
+    </div>
+
+    <!-- Riak Range EFT Holdings View-->
+    <div class="p-col-12 p-pt-0">
+        <p-tabView *ngIf="!error && selectedETF" (onClose)="handleCloseETFTab($event)">
+            <p-tabPanel [header]="selectedETF.symbol + ': ' + selectedETF.name" [closable]="true">
+                <app-risk-range-report-view [riskRangeSymArr]="riskRangeEtfHoldingsArr" [isEtfView]="true"></app-risk-range-report-view>
+            </p-tabPanel>
+        </p-tabView>
+    </div>
+
+    <!-- In case error -->
+    <div class="p-col-12 error" *ngIf="error">
+        <span>{{ error }}</span>
+    </div>
+</div>

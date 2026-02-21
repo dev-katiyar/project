@@ -1,0 +1,16 @@
+// Minimal custom styles - using primeflex utility classes for layout
+// border-shadow class is defined globally in _mixins.scss
+
+:host {
+  display: block;
+}
+
+// Responsive adjustments for charts on smaller screens
+@media (max-width: 768px) {
+  .p-selectButton {
+    .p-button {
+      padding: 0.4rem 0.6rem;
+      font-size: 0.8rem;
+    }
+  }
+}

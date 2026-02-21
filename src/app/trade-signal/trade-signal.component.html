@@ -1,0 +1,192 @@
+<div class="p-grid">
+    <!-- List of Symbols and Chart -->
+    <div class="p-col-12" >
+        <div class="p-grid">
+            <!-- List of Symbols -->
+            <div class="p-lg-4 p-col-12 p-p-1">
+                <div class="border-shadow p-p-2" style="height: 100%;">
+                    <div class="p-p-1 p-d-flex p-ai-center">
+                        Symbols with signal in last &nbsp;
+                        <p-inputNumber [(ngModel)]="signalInLastDays" [min]="1" [max]="200" [size]="4"
+                            [step]="1" class="p-inputtext-sm"></p-inputNumber>&nbsp;
+                        calendar days &nbsp;
+
+                        <button pButton type="button" label="Filter" class="p-button-sm"
+                            (click)="getFilteredTradeSignalList()"></button>
+                    </div>
+
+                    <hr style="margin: 0.5rem 0;">
+
+                    <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                        S&P Symbols (filtered last {{ signalInLastDays }} days)
+                    </span>
+
+                    <p-table #dt1 [value]="symbols" [scrollable]="true" scrollHeight="250px"
+                        [globalFilterFields]="['ticker', 'name']">
+                        <ng-template pTemplate="caption">
+                            <div>
+                                <span class="p-input-icon-left p-ml-auto">
+                                    <i class="pi pi-search"></i>
+                                    <input pInputText type="text"
+                                        (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search"
+                                        class="p-inputtext-sm" (click)="$event.target.select()" />
+                                </span>
+                            </div>
+                        </ng-template>
+
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th class="p-text-left" style="width: 5rem;">Symbol</th>
+
+                                <th class="p-text-left">Name</th>
+
+                                <!-- <th class="p-text-left">Last 5 Signal Outcome</th> -->
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="body" let-sym>
+                            <tr (click)="onSymbolClick(sym)"
+                                [ngClass]="{'selected': sym?.ticker == selTickerAndName['ticker']}" class="symbol">
+                                <td class="p-text-left" style="width: 5rem;">{{sym?.ticker}}</td>
+
+                                <td class="p-text-left">{{sym?.name}}</td>
+
+                                <!-- AK: Removed as asked by team. We need to have some other metric to denote what does it mean to have succesful signal vs failed signal. Avg is not good. It was placeholder anyways -->
+                                <!-- <td class="p-text-left">
+                                    <div 
+                                        [pTooltip]="'Prediction Date:' + (ret['date'] | date) + '\nAvg Return: ' +  (ret['ret'] | percent:'0.2-2')"
+                                        class="p-d-inline-block p-text-bold circle-signal p-mr-1"
+                                        *ngFor="let ret of sym['last5_avg_returns']" 
+                                        [ngClass]="{ 
+                                            'bg-red': (ret['pred'] == 2 && ret['ret'] < 0) || (ret['pred'] == 0 && ret['ret'] > 0), 
+                                            'bg-green': (ret['pred'] == 2 && ret['ret'] > 0) || (ret['pred'] == 0 && ret['ret'] < 0)
+                                        }"
+                                    >
+                                        {{ ret['pred'] == 2 ? 'B' : 'S'  }}
+                                    </div>
+                                </td> -->
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+
+            <!-- Return Table -->
+            <div class="p-lg-8 p-col-12 p-p-1">
+                <div class="border-shadow p-p-2">
+                    <div>
+                        <span style="font-size: 1.2rem; font-weight: bold;">Signal found in {{ selTickerAndName['ticker'] }} on Dates.</span>
+                        <span>&nbsp;Filter signals for last&nbsp;</span>
+                        <p-inputNumber [(ngModel)]="filterTableDays" [min]="1" [max]="signalDataAll.length" [size]="4"
+                            [step]="1" class="p-inputtext-sm"
+                        ></p-inputNumber>
+
+                        <span>&nbsp;calendar days&nbsp;</span>
+
+                        <button pButton type="button" label="Filter" class="p-button-sm"
+                            (click)="filterRowsOfTable()"
+                        ></button>
+                    </div>
+
+                    <hr style="margin: 0.5rem 0;">
+
+                    <p-table [value]="singalDataFiltered" [scrollable]="true" scrollHeight="349px">
+                        <ng-template pTemplate="header">
+                            <!-- Usual Header row -->
+                            <tr>
+                                <th class="p-text-left" style="width: 5rem;">Symbol</th>
+                                <th class="p-text-left">Date</th>
+                                <th class="p-text-left">Signal</th>
+                                <th class="p-text-left">Signal Price</th>
+                                <th class="p-text-left">Sell Price (Sell Date)</th>
+                                <th class="p-text-left">Gain/Loss From Next Sell (Days)</th>
+                                <!-- <th *ngFor="let trD of this.perfTradeDays" style="width: 5rem;" class="p-text-center">
+                                    {{trD + 'D' }}
+                                </th> -->
+                                <!-- <th class="p-text-left" style="width: 5rem;" class="p-text-center">Simple Avg.</th> -->
+                            </tr>
+
+                            <!-- Positive Return Header Row -->
+                            <!-- <tr>
+                                <th colspan="4" style="background-color: #c4e1b0;vertical-align: middle;">Average Positive Return of Buy Signal</th>
+                                <th *ngFor="let trD of this.perfTradeDays" style="width: 5rem;background-color: #c4e1b0;" class="p-text-center">
+                                    <div>{{ avgBuyPosRet[getAvgKey(trD)] | percent:'0.1-1' }}</div>
+                                    <div>({{avgBuyPosRet[getAvgCountKey(trD)]}})</div>
+                                </th>
+                            </tr> -->
+
+                            <!-- Negative Return Header Row -->
+                            <!-- <tr>
+                                <th colspan="4" style="background-color: #ffb6b1;vertical-align: middle;">Average Negative Return of Buy Signal</th>
+                                <th *ngFor="let trD of this.perfTradeDays" style="width: 5rem;background-color: #ffb6b1;" class="p-text-center">
+                                    <div>{{ avgBuyNegRet[getAvgKey(trD)] | percent:'0.1-1' }}</div>
+                                    <div>({{avgBuyNegRet[getAvgCountKey(trD)]}})</div>
+                                </th>
+                            </tr> -->
+
+                        </ng-template>
+
+                        <ng-template pTemplate="body" let-row>
+                            <tr class="symbol-withoutpointer">
+                                <td class="p-text-left" style="width: 5rem;">{{selTickerAndName['ticker']}}</td>
+                                <td class="p-text-left">{{row?.Date | date}}</td>
+                                <td class="p-text-left">{{ row?.Signal }}</td>
+                                <td class="p-text-left">{{row?.Close | number}}</td>
+                                <td class="p-text-left">
+                                    {{row?.sellPrice | number}} <span *ngIf="row?.sellDate">
+                                        ({{row?.sellDate | date}})
+                                    </span>
+                                </td>
+                                <td class="p-text-left" [ngClass]="row?.gain | upDownColor">
+                                    {{ row?.gain | percent:'0.2-2' }} <span *ngIf="row?.holdDuration">
+                                        ({{ row?.holdDuration}})
+                                    </span>
+                                </td>
+                                <!-- <td *ngFor="let trD of this.perfTradeDays" style="width: 5rem;" class="p-text-center">
+                                    <div style="border-radius: 0.2rem;" class="text-white"
+                                        [ngClass]="{ 'bg-red': row[getDataKey(trD)] < 0, 'bg-green':  row[getDataKey(trD)] > 0}">
+                                        {{ row[getDataKey(trD)] | percent:'0.1-1'}}
+                                    </div>
+                                </td> -->
+
+                                <!-- AK: Removed as asked by team. We need to have some other metric to denote what does it mean to have succesful signal vs failed signal. Avg is not good. It was placeholder anyways -->
+                                <!-- <td class="p-text-left" style="width: 5rem;" class="p-text-center">
+                                    <div style="border-radius: 0.2rem;" class="text-white"
+                                        [ngClass]="{ 'bg-red': row['avg_rerturn'] < 0, 'bg-green':  row['avg_rerturn'] > 0}">
+                                        {{row?.avg_rerturn | percent:'0.2-2'}}
+                                    </div>
+                                </td> -->
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Chart with Signals -->
+    <div class="p-col-12 p-pt-0">
+        <div class="p-grid">
+            <div class="p-col-12 p-p-1">
+                <div class="border-shadow p-p-2">
+                    <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                        Chart with Trade Signals for ({{selTickerAndName['name']}})
+                    </span>
+
+                    <hr style="margin: 0.5rem 0;">
+
+                    <span>Y-Axis: </span>
+                    <input type="button" value="Logarithmic" class="btn-normal" [ngClass]="{'btn-selected': selectedScale == 'logarithmic'}" (click)="toggleYAxisScale('logarithmic')">
+                    <input type="button" value="Linear" class="btn-normal" [ngClass]="{'btn-selected': selectedScale == 'linear'}" (click)="toggleYAxisScale('linear')">
+
+                    <div class="p-text-center" style="font-size: 0.9rem;">(Select chart area to zoom a date range)</div>
+
+                    <div *ngIf="symbolData" style="width: 100%" class="p-p-2">
+                        <div [class]="barClass" [chart]="chart" style="height: 800px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

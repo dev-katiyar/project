@@ -1,0 +1,61 @@
+<div class="p-grid p-col-12">
+    <div class="p-col-12">
+        <div class="p-grid p-jc-center">
+            <h3 class="register" style="margin-top:20px;text-align:center;margin-bottom:40px;">Upgrade/Change your
+                Subscription Plan</h3>
+            <h3 *ngIf="stripeMessage !=''" class="error-msg" style="text-align:center">
+                {{stripeMessage}}
+            </h3>
+            <div class="p-grid">
+                <form #userForm="ngForm">
+                    <div class="p-grid p-jc-center">
+                        <div class="p-col-12" style="margin-bottom:20px;">
+                            <div class="form-group p-d-flex p-jc-center">
+                                <div style="margin-right:10px; padding: 1rem;">
+                                    <label>Subscription Type:</label>
+                                </div>
+                                <div>
+                                    <p-dropdown [options]="subscriptionType" optionLabel="name"
+                                        [(ngModel)]="user.subscription" placeholder="-- Select --"
+                                        [style]="{'width':'300px'}"></p-dropdown>
+                                </div>
+                                <!-- <div>
+                                    <button pButton pRipple type='button' icon='pi pi-question'
+                                        (click)='showPlanDetails()'
+                                        style='width: 1.5rem; height: 1.5rem;margin-left:10px;'
+                                        class='p-button-rounded p-button-warning'>
+                                    </button>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    </div>
+                    <div class="p-grid p-jc-center">
+                        <div class="p-col-12" id="agreement" style="margin-bottom:20px;margin-left:5%;">
+                            <input type="checkbox" [(ngModel)]="agreementSigned" name="agreementSigned"
+                                style="display: inline-block;" />
+                            <div style="display: inline; text-align: justify;"> You must read and agree to our
+                                <a href="/agreement" target="_blank">Subscriber Agreement </a>to
+                                become a subscriber to simplevisor.com for all subscriptions. Please note that your
+                                subscription
+                                will renew automatically unless you cancel prior to renewal.
+                            </div>
+                        </div>
+                        <div style="width:120px;">
+                            <button pButton label="Submit"
+                                [disabled]="(! (userForm.form.valid && agreementSigned)) || loading"
+                                (click)="saveChangedSubscription()" class="p-button-primary">
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <p-dialog header="Subscription Plan Details" [(visible)]="displayDialog" showEffect="fade" [modal]="true"
+        height="300" width="400">
+        <h3> No More Plans </h3>
+    </p-dialog>
+</div>

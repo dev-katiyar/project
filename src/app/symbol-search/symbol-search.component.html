@@ -1,0 +1,163 @@
+<div class="p-grid" style="margin: -0.75rem;">
+    <!-- Search Box -->
+    <div class="p-col-12">
+        <input
+        pInputText
+        type="text"
+        [(ngModel)]="searchText"
+        (keyup)="onSearchTextKeyUp()"
+        placeholder="Search items..."
+        (click)="$event.target.select()"
+      />
+    </div>
+    
+    <!-- SV Symbols from SV DB -->
+    <div class="p-col-12 p-md-3">
+        <h3>Already supported:</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of svDbItems">
+          <td>
+            <div (click)="onSymbolClick(item?.symbol)" class="symbol p-text-left p-p-1">
+              {{ item?.symbol }}
+            </div>
+          </td>
+          <td>{{ item?.name }}</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- Possible Symbols from Live Data Feed -->
+    <div class="p-col-12 p-md-9">
+        <h3>Other available:</h3>
+    <div *ngIf="polyError">
+        {{ polyError }}
+    </div>
+    <table *ngIf="!polyError">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>Name</th>
+          <th>Market</th>
+          <th>Type</th>
+          <th>Exchange</th>
+          <th>Country</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of feedApiItems">
+          <td>{{ item?.ticker }}</td>
+          <td>{{ item?.name }}</td>
+          <td>{{ item?.market }}</td>
+          <td>{{ item?.type }}</td>
+          <td>{{ item?.primary_exchange }}</td>
+          <td>{{ item?.locale }}</td>
+          <td><p-button (onClick)="onAddSymbolClick(item?.ticker)">Add</p-button></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+</div>
+
+
+<!-- dialog to edit/add the symbol data -->
+<p-dialog 
+  header="Symbol Details" 
+  [(visible)]="displaySymbolDetailsDialog" 
+  showEffect="fade" 
+  [modal]="true"
+  [style]="{width: '42vw'}"
+  [breakpoints]="{'1100px': '50vw', '960px': '57vw', '770px': '67vw', '640px': '80vw', '450px': '97vw'}"
+>
+  <div>
+    <div *ngIf="!symbolDetails && !yahooError">Loading...</div>
+
+    <div *ngIf="yahooError">
+      <div *ngIf="!emailSentMessage">
+        {{ yahooError }} <span (click)="sendEmail()" style="color: blue;font-weight: bold;cursor: pointer;">Sent Email</span> to support team to process. 
+      </div>
+        
+      <div *ngIf="emailSentMessage">
+        {{ emailSentMessage }}
+      </div>
+    </div>
+
+    <div *ngIf="symbolDetails" class="p-grid">
+      <div class="p-col-4">
+        Symbol:
+      </div>
+      <div class="p-col-8">
+        {{ symbolDetails?.symbol }}
+      </div>
+
+      <div class="p-col-4">
+        Name:
+      </div>
+      <div class="p-col-8">
+        {{ symbolDetails?.companyname }}
+      </div>
+
+      <div class="p-col-4">
+        Exchange:
+      </div>
+      <div class="p-col-8">
+        {{ symbolDetails?.exchange }}
+      </div>
+
+      <div class="p-col-4">
+        Asset Type:
+      </div>
+      <div class="p-col-8">
+        <p-dropdown [options]="assets" optionLabel="name" optionValue="id" [filter]="true" filterBy="name"
+        [(ngModel)]="symbolDetails.assetid" placeholder="Select Asset Type" (onChange)="onInputChange($event)">
+        </p-dropdown>
+      </div>
+
+      <div class="p-col-4">
+        Sector:
+      </div>
+      <div class="p-col-8">
+        <p-dropdown [options]="sectors" optionLabel="name" optionValue="id" [filter]="true" filterBy="name"
+        [(ngModel)]="symbolDetails.sectorid" placeholder="Select Sector" (onChange)="onInputChange($event)">
+        </p-dropdown>
+      </div>
+
+      <div class="p-col-4">
+        Asset Type:
+      </div>
+      <div class="p-col-8">
+        <p-dropdown [options]="industries" optionLabel="name" optionValue="id" [filter]="true" filterBy="name"
+        [(ngModel)]="symbolDetails.industryid" placeholder="Select Industry" (onChange)="onInputChange($event)">
+        </p-dropdown>
+      </div>
+
+      <div class="p-col-12 p-text-center p-p-4">
+        <button 
+          type="button"
+          pButton
+          label="Cancel" 
+          icon="pi pi-times" 
+          (click)="onDialogCancelClick()"
+          class="p-mr-2 p-button-outlined"
+        ></button>
+
+        <button 
+          type="button"
+          pButton
+          label="Save" 
+          icon="pi pi-save" 
+          (click)="onSaveSymbolDetails()" 
+          [disabled]="!symbolDetails?.assetid || !symbolDetails?.sectorid || !symbolDetails?.industryid"
+        ></button>
+      </div>
+    </div>
+  </div>
+</p-dialog>

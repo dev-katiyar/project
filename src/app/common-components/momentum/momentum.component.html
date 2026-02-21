@@ -1,0 +1,11 @@
+<div class="p-grid" style="margin-top: 0.5rem">
+  <div class="p-col-12 p-lg-6" *ngFor="let row of symbolsHistorical">
+    <p-panel [header]="row.name">
+      <!-- [TBD: AK]this quick fix to solve the issue of chart not loading with proper size on the first load. -->
+      <div class="quick-fix sv-center">  
+        <app-gauge-bar-combined [chartData]="row.data" [valueGauge]="row.rsi" [valueText]="row.rsiText">
+        </app-gauge-bar-combined>
+      </div>
+    </p-panel>
+  </div>
+</div>

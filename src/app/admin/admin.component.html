@@ -1,0 +1,122 @@
+<div class="p-fluid">
+<div *ngIf="isAdminUser == 0" style="margin-top:15px;">
+    <h2 style="text-align:center;color:red;">You are not authorized to view this page</h2>
+</div>
+
+<div *ngIf="isAdminUser == 1" >
+    <div class="p-grid">
+        <p-tabView class="p-col-12 sv-tabview-nopadding">
+
+        <p-tabPanel header="DashBoard">
+                <div class="p-grid p-fluid">
+                    <div class="p-col-12 p-lg-12">
+                        <div class="p-col-6 p-lg-6">
+                            <label for="greed">Date</label>
+                        </div>
+                        <div class="p-col-6 p-lg-6">
+                            <div class="p-grid">
+                                <div class="p-col-12 p-lg-6">
+                                    <div class="p-col-12 p-lg-12">
+                                        <p-calendar [inputStyle]="{'width': '70%', 'min-width': '70%'}"
+                                                    [monthNavigator]="true"
+                                                    [yearNavigator]="true" yearRange="2000:2030"
+                                                    [(ngModel)]="gaugeParams.date" [showIcon]="true"
+                                                    id="date" #date="ngModel" name="date"
+                                        ></p-calendar>
+                                    </div>
+                                    <div class="p-col-12 p-lg-7">
+                                        <button pButton class="ui-button-raised ui-button-success" label="Get Data"
+                                                (click)="getData()"
+                                        ></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-grid">
+                            <div class="p-col-12 p-lg-2">
+                                <div class="p-col-6 p-lg-12">
+                                    <label for="greed">Fear Greed Value</label>
+                                </div>
+                                <div class="p-col-6 p-lg-12">
+                                    <input type="text"  pInputText
+                                           id="greed"
+                                           [(ngModel)]="gaugeParams.fear_greed" name="fear_greed"
+                                           (click)="$event.target.select()"
+                                           #greed="ngModel">
+                                </div>
+                            </div>
+
+                            <div class="p-col-12 p-lg-2">
+                                <div class="p-col-6 p-lg-12">
+                                    <label for="technical">Technical Value</label>
+                                </div>
+                                <div class="p-col-6 p-lg-12">
+                                    <input type="text" pInputText id="technical"
+                                           [(ngModel)]="gaugeParams.technical" name="technical"
+                                           (click)="$event.target.select()"
+                                           #technical="ngModel">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-col-6 p-lg-2">
+                        <div class="p-col-12 p-lg-12">
+                            <button pButton class="p-button-raised p-button-success" label="Save Details"
+                                    (click)="saveDetails()">
+                            </button>
+                        </div>
+                    </div>
+                    <div>{{message}}</div>
+
+                </div>
+
+            <p-table #dt [value]="technicalValues" [paginator]="false" [rows]="10" [pageLinks]="3" [rowsPerPageOptions]="[5,10,20]"
+                     [resizableColumns]="false" [autoLayout]="true"
+                     styleClass="p-datatable-positions p-datatable-striped" [tableStyle]="{'table-layout':'auto'}" [scrollable]="false">
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="date">
+                            Date
+                            <p-sortIcon field="date"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="fear_greed">
+                            Fear Greed
+                            <p-sortIcon field="fear_greed"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="technical">
+                            Technical
+                            <p-sortIcon field="technical"></p-sortIcon>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row>
+                    <tr>
+                        <td style="text-align:center;min-width: 70px;">
+                            <div>{{row.date}}</div>
+                        </td>
+                        <td style="text-align: center; min-width: 70px;">
+                            <div class="center">{{row.fear_greed}}</div>
+                        </td>
+                        <td style="text-align: center; min-width: 70px;">
+                            <div class="center">{{row.technical}}</div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+
+        <p-tabPanel header="Users">
+            <app-admin-users></app-admin-users>
+        </p-tabPanel>
+
+
+        <p-tabPanel header="Symbols">
+            <app-admin-add-symbols></app-admin-add-symbols>
+        </p-tabPanel>
+
+    </p-tabView>
+</div>
+</div>
+</div>

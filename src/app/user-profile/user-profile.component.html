@@ -1,0 +1,40 @@
+<div *ngIf="userData" class="p-grid border-shadow p-p-1 p-mb-3 p-mt-1" style="background-color: white;">
+    <!-- Heading -->
+    <div class="p-col-12" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+        Account Details
+    </div>
+
+    <!-- Horizontal Divider -->
+    <hr style="margin: 0.5rem 0;width: 100%;">
+
+    <!-- Content - Profile -->
+    <div class="p-col-12">
+        <div class="p-grid p-fluid">
+            <div class="p-col-12 p-sm-6">
+                <label class="p-text-bold" for="firstName">First Name</label>
+
+                <input class="input" pInputText type="text" id="firstName" [(ngModel)]="userData.firstName" name="firstName" #firstName="ngModel" (click)="$event.target.select()">
+            </div>
+
+            <div class="p-col-12 p-sm-6">
+                <label class="p-text-bold" for="lastName">Last Name</label>
+            
+                <input class="input" pInputText type="text" id="lastName" [(ngModel)]="userData.lastName" name="lastName" #lastName="ngModel" (click)="$event.target.select()">
+            </div>
+
+            <div class="p-col-12 p-sm-6">
+                <label class="p-text-bold" for="emailAddress">Email</label>
+
+                <input class="input" pInputText type="text" size="60px;" id="emailAddress" [(ngModel)]="userData.emailAddress" name="emailAddress" #emailAddress="ngModel" (click)="$event.target.select()">
+            </div>
+
+            <div class="p-col-12 p-sm-6">
+                <label class="p-text-bold" for="password">Password</label>
+
+                <div class=".container-div-horz-vertical p-p-2">
+                    <a routerLink="/reset-password-request">Reset Password</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

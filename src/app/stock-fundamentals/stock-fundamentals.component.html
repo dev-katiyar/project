@@ -1,0 +1,48 @@
+<!-- New UI 2024 -->
+<div *ngIf="!error" class="p-grid p-mt-0" style="margin: -0.75rem;">
+    <!-- Selection Tree -->
+    <div class="p-col-12 p-md-3 p-p-1">
+        <div class="p-text-bold p-p-2">
+            <span style="font-size: larger;">Metrics</span> (select metric to see the chart in the next card)
+        </div>
+    
+        <p-tree [value]="treeNodes" scrollHeight="757px" [(selection)]="selectedNode">
+            <ng-template let-node  pTemplate="default">
+                <div (click)="onNodeSelect(node)" type="text" style="width:100%;cursor: pointer;"> {{ node.label }}</div>
+            </ng-template>
+        </p-tree>
+    </div>
+
+    <!-- Charts -->
+    <div class="p-col-12 p-md-9 p-p-1">
+        <div class="p-grid">
+            <!-- Chart - Fundamental and Price -->
+            <div class="p-col-12">
+                <div class="border-shadow p-p-2">
+                    <app-chart-fundamentals *ngIf="symbolFundamentals" [fundamentalData]="symbolFundamentals"
+                    [chartConfig]="chartConfig" [seriesConfig]="selectedSeriesConfigs" [trendLinesChecksAvailable]="true"
+                    (onPeriodChanged)="handlePriceChartPeriodChange($event)" (onFrequncyChanged)="onChartDataFrequencyChanged($event)"  [period]="selectedTimePeriod" (trendLinesSelected)="onTrendLineSelected($event)" (growthTrendLinesSelected)="onGrowthTrendLineSelected($event)">
+                </app-chart-fundamentals>
+                </div>
+            </div>
+
+            <!-- Chart - Fair Value -->
+            <div class="p-col-12">
+                <div class="border-shadow p-p-2">
+                    <app-fairvalue-chart [symbol]="symbol"></app-fairvalue-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Peer Data -->
+    <div class="p-col-12 p-md-12 p-p-1">
+        <app-composite-chart-table title="Peers" [symbols]="symbolPeers" defaultView="Tables" [rowsPerPage]="10"
+            [showChartTableDropdown]="false">
+        </app-composite-chart-table>
+    </div>
+</div>
+
+<div *ngIf="error" style="margin-top: 5rem; margin-left: 0;text-align: center;">
+    {{ error }}
+</div>

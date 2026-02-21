@@ -1,0 +1,297 @@
+<div class="p-grid">
+    <app-plaid-container></app-plaid-container>
+    <div class="p-col-12" *ngIf="!userAccounts">
+        There are no linked accounts. Please click 'Link Account' button to link your investment account.
+    </div>
+
+    <!-- already linked accounts -->
+    <div class="p-col-12">
+        <h4>Linked Accounts</h4>
+        <p-table [value]="userAccounts">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="text-align: left;">Institution</th>
+                    <th style="text-align: left;">Name</th>
+                    <th style="text-align: left;">Mask</th>
+                    <th style="text-align: left;">Type</th>
+                    <th style="text-align: left;">Sub-Type</th>
+                    <th style="text-align: left;">Account Cash Balance</th>
+                    <th style="text-align: left;">Account Cost Basis</th>
+                    <th style="width: 160px;"></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-account>
+                <tr>
+                    <td style="text-align: left;">{{account.institution_name}}</td>
+                    <td style="text-align: left;">{{account.account_name}}</td>
+                    <td style="text-align: left;">*******{{account.account_mask}}</td>
+                    <td style="text-align: left;">{{account.account_type}}</td>
+                    <td style="text-align: left;">{{account.account_subtype}}</td>
+                    <td style="text-align: left;">{{account.currentBalance | currency}}</td>
+                    <td style="text-align: left;">{{account.costBasisTotal | currency}}</td>
+                    <td>
+                        <p-button (onClick)="getAccountHoldings(account.account_id)">View Holding</p-button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <!-- holdings - view only -->
+    <div class="p-col-12" *ngIf="selectedAccount && selectedAccountHoldings">
+        <h4 style="text-align: center;">
+            {{selectedAccount.account_name}} Account Holdings
+        </h4>
+
+        <p>
+            The follow is the holdings data retrieved from your account. You can remove positions that you do not want
+            to inlcude in the SimpleVisor Linked Portfolio. Scroll below and get transactions related to the remaining
+            holdings in the table below to create SimpleVisor Linked Portfolio.
+        </p>
+
+        <p-table [value]="selectedAccountHoldings" [tableStyle]="{'min-width': '50rem'}">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="text-align: left; width: 15%;">Symbol</th>
+                    <th style="text-align: left; width: 25%;">Name</th>
+                    <th style="text-align: left;">Asset Type</th>
+                    <th style="text-align: left;">Quantity</th>
+                    <th style="text-align: left;">Cost Basis</th>
+                    <!-- <th style="text-align: left;">Currency</th> -->
+                    <th style="width: 2rem;"></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-hldg>
+                <tr>
+                    <td style="text-align: left; width: 15%;">{{hldg.symbol}}</td>
+                    <td style="text-align: left; width: 25%;">{{hldg.tickerName}}</td>
+                    <td style="text-align: left;">{{hldg.tickerType}}</td>
+                    <td style="text-align: left;">{{hldg.qty | number}}</td>
+                    <td style="text-align: left;">{{hldg.cosBasis | currency}}</td>
+                    <!-- <td style="text-align: left;">{{hldg.currencyCode}}</td> -->
+                    <td style="text-align: center;">
+                        <button *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash"
+                            (click)="onHoldingRowDelete(hldg)" class="p-button-rounded p-button-text p-button-danger">
+                        </button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+        <div style="text-align: center; margin-top: 1rem;">
+            <p-button (onClick)="getAccountTransactions(selectedAccount['account_id'])">Get Transactions</p-button>
+        </div>
+    </div>
+
+    <div class="p-col-12" *ngIf="selectedAccount && selectedAccountTransactions">
+        <h4>Create Linked SimpleVisor Portfolio</h4>
+        <p>
+            <strong>Note: </strong>Please put SimpleVisor Portfolio name as you wish and change Starting Cash as needed.
+            You can edit the transactions below before creating a tracking portfolio in SimpleVisor. Transactions can be
+            imported regularly from the Linked Portfolio page manually. We may provide end of each trading auto synch
+            transactions feature soon.
+        </p>
+
+        <div class="p-grid p-fluid" *ngIf="newLinkedPortfolio">
+            <div class="p-col-12 p-md-3 p-field">
+                <label for="portfolio-name">Portfolio Name</label>
+                <input [(ngModel)]="newLinkedPortfolio.name" pInputText placeholder="Enter Portfolio Name"
+                    id="portfolio-name" style="display: block;" maxlength="49" (click)="$event.target.select()" />
+            </div>
+
+            <div class="p-col-12 p-md-3 p-field">
+                <label for="starting-cash">Starting Cash (Holding Cost + Cash)</label>
+                <input digitOnly decimal="true" decimalSeparator="." step=".01" pattern="[0-9]+([.][0-9]+)?"
+                    [(ngModel)]="newLinkedPortfolio.startingCash" placeholder="Enter Starting Cash" pInputText (click)="$event.target.select()"
+                    id="starting-cash" />
+            </div>
+
+            <div class="p-col-12 p-md-6">
+                <div class="p-grid">
+                    <div class="p-col-12">
+                        &nbsp;
+                    </div>
+
+                    <div class="p-col-6">
+                        <button pButton [disabled]="loading" label="Create New SV Portfolio" type="button"
+                            (click)="createNewPortfolio()"></button>
+                    </div>
+
+                    <div class="p-col-6">
+                        <button pButton [disabled]="loading" label="Cancel/Restart" type="button"
+                            class="p-button-outlined" (click)="cancelCreateNewPortfolio()"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p-tabView>
+            <p-tabPanel header="Transactions">
+                <ng-template pTemplate="content">
+                    <p-table [value]="selectedAccountValidTransactions" dataKey="id" editMode="row"
+                        [tableStyle]="{'min-width': '50rem'}">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th style="text-align: left; width: 7rem;">Date</th>
+                                <th style="text-align: left; width: 15%;">Symbol</th>
+                                <th style="text-align: left; width: 25%;">Name</th>
+                                <th style="text-align: left;">Asset Type</th>
+                                <th style="text-align: left; width: 5rem;">Quantity</th>
+                                <th style="text-align: left; width: 6rem;">Cost Price</th>
+                                <th style="text-align: left;">Amount</th>
+                                <th style="text-align: left;">Type</th>
+                                <th style="text-align: left;">Sub-Type</th>
+                                <!-- <th style="text-align: left;">Currency</th> -->
+                                <th style="width: 7rem;"></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-txn let-editing="editing" let-ri="rowIndex">
+                            <tr [pEditableRow]="txn">
+                                <td style="text-align: left; width: 7rem;">{{txn.dateObj | date:'yyyy-MM-dd'}}</td>
+                                <td style="text-align: left;">{{txn.symbol}}</td>
+                                <td style="text-align: left;">{{txn.tickerName}}</td>
+                                <td style="text-align: left;">{{txn.tickerType}}</td>
+                                <td style="text-align: left;">
+                                    <p-cellEditor>
+                                        <ng-template pTemplate="input">
+                                            <input style="width: 5rem;" pInputText type="number" [(ngModel)]="txn.qty" (click)="$event.target.select()">
+                                        </ng-template>
+                                        <ng-template pTemplate="output">
+                                            {{txn.qty | number}}
+                                        </ng-template>
+                                    </p-cellEditor>
+                                </td>
+                                <td style="text-align: left;">
+                                    <p-cellEditor>
+                                        <ng-template pTemplate="input">
+                                            <input style="width: 6rem;" pInputText type="number" step="0.01" [(ngModel)]="txn.price" (click)="$event.target.select()">
+                                        </ng-template>
+                                        <ng-template pTemplate="output">
+                                            {{txn.price | currency}}
+                                        </ng-template>
+                                    </p-cellEditor>
+                                </td>
+                                <td style="text-align: left;">{{txn.amount | currency}}</td>
+                                <td style="text-align: left;">{{txn.type}}</td>
+                                <td style="text-align: left;">{{txn.side}}</td>
+                                <!-- <td style="text-align: left;">{{txn.currencyCode}}</td> -->
+                                <td>
+                                    <div class="flex align-items-center justify-content-center gap-2">
+                                        <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow
+                                            icon="pi pi-pencil" (click)="onTxnRowEditInit(txn)"
+                                            class="p-button-rounded p-button-text"></button>
+                                        <button *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash"
+                                            (click)="onTxnRowDelete(txn)"
+                                            class="p-button-rounded p-button-text  p-button-danger"></button>
+                                        <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow
+                                            icon="pi pi-check" (click)="onTxnRowEditSave(txn)"
+                                            class="p-button-rounded p-button-text p-button-success mr-2"></button>
+                                        <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow
+                                            icon="pi pi-times" (click)="onTxnRowEditCancel(txn, ri)"
+                                            class="p-button-rounded p-button-text p-button-danger"></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Cash Transactions">
+                <ng-template pTemplate="content">
+                    <p-table [value]="selectedAccountCashTransactions" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th style="text-align: left; width: 7rem;">Date</th>
+                                <th style="text-align: left; width: 8rem;">Amount</th>
+                                <th style="text-align: left; width: 5rem;">Fees</th>
+                                <th style="text-align: left; width: 5rem;">Currency</th>
+                                <th style="text-align: left;">Description</th>
+                                <th style="text-align: left; width: 10rem;">Transaction Type</th>
+                                <th style="width: 7rem;"></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-txn let-editing="editing" let-ri="rowIndex">
+                            <tr [pEditableRow]="txn">
+                                <td style="text-align: left;">{{txn.dateObj | date:'yyyy-MM-dd'}}</td>
+                                <td style="text-align: left;">
+                                    <p-cellEditor>
+                                        <ng-template pTemplate="input">
+                                            <input style="width: 8rem;" pInputText type="number" [(ngModel)]="txn.amount" (click)="$event.target.select()">
+                                        </ng-template>
+                                        <ng-template pTemplate="output">
+                                            {{txn.amount | currency}}
+                                        </ng-template>
+                                    </p-cellEditor>
+                                </td>
+                                <td style="text-align: left;">
+                                    <p-cellEditor>
+                                        <ng-template pTemplate="input">
+                                            <input style="width: 5rem;" pInputText type="number" step="0.01" [(ngModel)]="txn.fees" (click)="$event.target.select()">
+                                        </ng-template>
+                                        <ng-template pTemplate="output">
+                                            {{txn.fees | currency}}
+                                        </ng-template>
+                                    </p-cellEditor>
+                                </td>
+                                <td style="text-align: left;">{{txn.iso_currency_code}}</td>
+                                <td style="text-align: left;">{{txn.name}}</td>
+                                <td style="text-align: left;">{{txn.subtype}}</td>
+                                <td>
+                                    <div class="flex align-items-center justify-content-center gap-2">
+                                        <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow
+                                            icon="pi pi-pencil" (click)="onCashTxnRowEditInit(txn)"
+                                            class="p-button-rounded p-button-text"></button>
+                                        <button *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash"
+                                            (click)="onCashTxnRowDelete(txn)"
+                                            class="p-button-rounded p-button-text  p-button-danger"></button>
+                                        <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow
+                                            icon="pi pi-check" (click)="onCashTxnRowEditSave(txn)"
+                                            class="p-button-rounded p-button-text p-button-success mr-2"></button>
+                                        <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow
+                                            icon="pi pi-times" (click)="onCashTxnRowEditCancel(txn, ri)"
+                                            class="p-button-rounded p-button-text p-button-danger"></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Other Transactions (View)">
+                <ng-template pTemplate="content">
+                    <p-table [value]="selectedAccountTransactions" dataKey="id" 
+                        [tableStyle]="{'min-width': '50rem'}">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th style="text-align: left; width: 10%;">Date</th>
+                                <th style="text-align: left; width: 15%;">Symbol</th>
+                                <th style="text-align: left; width: 25%;">Name</th>
+                                <th style="text-align: left;">Asset Type</th>
+                                <th style="text-align: left;">Quantity</th>
+                                <th style="text-align: left;">Cost Price</th>
+                                <th style="text-align: left;">Amount</th>
+                                <th style="text-align: left;">Type</th>
+                                <th style="text-align: left;">Sub-Type</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-txn let-ri="rowIndex">
+                            <tr>
+                                <td style="text-align: left; width: 10%;">{{txn.dateObj | date:'yyyy-MM-dd'}}</td>
+                                <td style="text-align: left; width: 15%;">{{txn.symbol}}</td>
+                                <td style="text-align: left; width: 25%;">{{txn.tickerName}}</td>
+                                <td style="text-align: left;">{{txn.tickerType}}</td>
+                                <td style="text-align: left;">{{txn.qty | number}}</td>
+                                <td style="text-align: left;">{{txn.price | currency}}</td>
+                                <td style="text-align: left;">{{txn.amount}}</td>
+                                <td style="text-align: left;">{{txn.type}}</td>
+                                <td style="text-align: left;">{{txn.side}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </ng-template>
+            </p-tabPanel>
+        </p-tabView>
+    </div>
+</div>

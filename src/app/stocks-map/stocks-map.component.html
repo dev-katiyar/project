@@ -1,0 +1,7 @@
+<div *ngIf="!isFullWidth"  class="square-container">
+    <div class="square-content" [chart]="treeChart"></div>
+</div>
+
+<div *ngIf="isFullWidth" class="square-container" style="width: 98%;left: 1%;">
+    <div class="square-content" [chart]="treeChart"></div>
+</div>

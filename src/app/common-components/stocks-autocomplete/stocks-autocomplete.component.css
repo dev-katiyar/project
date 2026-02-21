@@ -1,0 +1,62 @@
+li.auto-item {
+  cursor: pointer;
+  list-style-type: none;
+  margin: 0;
+  padding-left: 10px;
+}
+
+li.auto-item:hover {
+  background-color: #2088e5;
+  color: white;
+}
+
+ul {
+  color: black;
+  background: #e6f0fc;
+  margin: 0px;
+  padding-left: 0px;
+  padding-top: 5px;
+  line-height: 1.5em;
+}
+
+.auto {
+  width: 275px;
+  z-index: 1002;
+  transform: translateY(0px);
+  opacity: 1;
+  position: absolute;
+  overflow-y: scroll;
+  overflow-x: scroll;
+}
+
+
+.display-block {
+  display: block;
+}
+
+.button-like {
+  display: inline-block;
+  padding: 0.25rem;
+  background-color: #2088e5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  width: 90%;
+}
+
+.button-like:hover {
+  background-color: #0056b3;
+  font-weight: bold;
+}
+
+.button-like:active {
+  transform: scale(0.97);
+}
+
+.button-like a {
+  text-decoration: none;
+  color: inherit;
+}

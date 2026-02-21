@@ -1,0 +1,59 @@
+.menu-wrapper {
+  background-color: white;
+  max-height: 300px;
+  overflow: auto;
+  padding: 12px;
+}
+
+.menu-item {
+  display: flex;
+  padding: 12px 0 5px;
+  margin: 0 10px;
+  border-bottom: 1px solid #d4d4d4;
+}
+
+.ng-star-inserted:last-child .menu-item {
+  border-bottom: none;
+}
+
+.menu-icon {
+  margin-right: 12px;
+
+  & img {
+    border-radius: 50%;
+  }
+}
+
+.p-divider {
+  margin: 0;
+}
+
+.menu-title {
+  font-weight: bold;
+}
+
+.menu-text {
+  font-size: 12px;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #878c96;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #62656d;
+}

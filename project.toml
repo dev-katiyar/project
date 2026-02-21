@@ -1,0 +1,30 @@
+# spec
+# https://github.com/buildpacks/spec/blob/main/extensions/project-descriptor.md#buildenv
+
+[project]
+id = "io.buildpacks.gymauto-frontend"
+name = "RiaAdv Angular Frontend"
+version = "1.0.0"
+
+[build]
+include = [
+    "nginx.conf",
+    "dist/",
+    "Procfile",
+    "buildpack.yml",
+]
+
+exclude = [
+    "node_modules/",
+    "package.json",
+    ".kubernetes"
+]
+
+# You can set nginx version by this command
+[[build.env]]
+name = "BP_NGINX_VERSION"
+value = "1.20.0"
+
+[[build.buildpacks]]
+id = "paketo-buildpacks/nginx"
+version = "0.3.1"

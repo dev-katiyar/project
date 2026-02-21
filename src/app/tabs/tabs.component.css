@@ -1,0 +1,47 @@
+
+.m-tab {
+    list-style: none;
+    width: 100%;
+    background: url(../../assets/images/chart-bg.png);
+    float: left;
+    cursor: pointer;
+}
+.m-tab li {
+    float: left;
+    height: 40px;
+    line-height: 40px;
+    font-size: 16px;
+    box-sizing: border-box;
+    background: url(../../assets//images/chart-sep.png) no-repeat center right;
+    padding: 0 10px;
+}
+
+
+.m-box{
+    width: 100%;
+    border: solid 1px #bbc1d4;
+    float: left;
+}
+ul{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.m-tab li.tab1{ border-bottom: solid 4px #007700; padding:0 10px;}
+.m-tab li.tab2{ border-bottom: solid 4px #323CC9; padding:0 10px;}
+.m-tab li.tab3{ border-bottom: solid 4px #9D3B9E; padding:0 10px;}
+.m-tab li.tab4{ border-bottom: solid 4px #11AC3E; padding:0 10px;}
+.m-tab li.tab5{ border-bottom: solid 4px #FFC701; padding:0 10px;}
+.m-tab li.tab6{ border-bottom: solid 4px #7878FF; padding:0 10px;}
+ .m-tab li.tab7{ border-bottom: solid 4px #780000; padding:0 10px;}
+ .m-tab li.tab8{ border-bottom: solid 4px #FF791C; padding:0 10px;}
+ .m-tab li.tab9{ border-bottom: solid 4px #797979; padding:0 10px;}
+ .m-tab li.tab10{ border-bottom: solid 4px #007700; padding:0 10px;}
+ .m-tab li.tab11{ border-bottom: solid 4px #323CC9; padding:0 10px;}
+ .m-tab li.tab12{ border-bottom: solid 4px #9D3B9E; padding:0 10px;}
+ .m-tab li.tab13{ border-bottom: solid 4px #11AC3E; padding:0 10px;}
+.m-tab li.active {
+    background: #FFF4CD;
+    font-weight: bold;
+}

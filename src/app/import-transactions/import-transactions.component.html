@@ -1,0 +1,153 @@
+<div class="p-grid p-fluid">
+    <div class="p-col-12">
+        <h2>{{ title }}</h2>
+    </div>
+
+    <div class="p-col-12" *ngIf="portfolio">
+        <div class="p-grid">
+            <div class="p-col-12 summary">
+                <div class="p-grid">
+                    <div class="p-col-12 p-md-3 p-field">
+                        <label for="portfolio-name">Portfolio Name</label>
+                        <input [(ngModel)]="portfolio.name" pInputText placeholder="Enter Portfolio Name"
+                            id="portfolio-name" style="display: block;" maxlength="49" (click)="$event.target.select()"/>
+                    </div>
+    
+                    <div class="p-col-12 p-md-3 p-field">
+                        <label for="starting-cash">Starting Cash</label>
+                        <input digitOnly decimal="true" decimalSeparator="." placeholder="0,00" pattern="[0-9]+([.][0-9]+)?"
+                            [(ngModel)]="portfolio.startingCash" placeholder="Enter Starting Cash" pInputText id="starting-cash" (click)="$event.target.select()"/>
+                    </div>
+    
+                    <div class="p-col-12 p-md-6">
+                        <div class="p-grid">
+                            <div class="p-col-12 sv-center" *ngIf="portfolio.transactions.length > 0">
+                                <label>Market Value of Trades: &nbsp;</label>
+                                <b><label [innerHtml]="getMarketValue() | currency"></label></b>
+                            </div>
+
+                            <div class="p-col-12 sv-center" *ngIf="portfolio.transactions.length == 0">
+                                &nbsp;
+                            </div>
+                        
+                            <div class="p-col-6">
+                                <button pButton [disabled]="loading" label="Save" type="button" (click)="saveTransactions()"></button>
+                            </div>
+                        
+                            <div class="p-col-6">
+                                <button pButton [disabled]="loading" label="Cancel" type="button" class="p-button-outlined"
+                                    (click)="handleCancel()"></button>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <p-toast position="center" class="custom-toast"></p-toast>
+                </div>
+            </div>
+    
+            <div class="p-col-12" *ngIf="portfolio.transactions.length == 0 && portfolio.id != 0">
+                <div style="text-align: center; color: red;">No transactions to edit.</div>
+            </div>
+    
+            <div class="p-col-12 border-shadow" *ngIf="portfolio.transactions.length > 0">
+                <p-table #dt1 [value]="portfolio.transactions" dataKey="id" [rows]="50" [showCurrentPageReport]="true"
+                    [rowsPerPageOptions]="[20,50,100,500]" styleClass="p-datatable-positions p-datatable-striped"  
+                    [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [globalFilterFields]="['symbol']" [autoLayout]="true" [tableStyle]="{'table-layout':'auto'}" [resizableColumns]="true">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>
+                                <div class="p-jc-between p-ai-center">
+                                    Symbol
+                                    <!-- <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto">
+                                    </p-columnFilter> -->
+                                </div>
+                            </th>
+    
+                            <th>
+                                <div class="p-jc-between p-ai-center">
+                                    Side
+                                </div>
+                            </th>
+    
+                            <th>
+                                <div class="p-jc-between p-ai-center">
+                                    Quantity
+                                </div>
+                            </th>
+    
+                            <th>
+                                <div class="p-jc-between p-ai-center" style="min-width: 5rem;">
+                                    Price
+                                </div>
+                            </th>
+    
+                            <th>
+                                <div class="p-jc-between p-ai-center" style="min-width: 9rem;">
+                                    Date
+                                </div>
+                            </th>
+    
+                            <th>
+                                <div class="p-jc-between p-ai-center">
+                                    Sub-Total
+                                </div>
+                            </th>
+    
+                            <th>
+                                <div class="p-jc-between p-ai-center">
+                                    Action
+                                </div>
+                            </th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="body" let-transaction>
+                        <tr class="p-selectable-row">
+                            <td style="overflow: visible;">
+                                <div style="text-align: left;">
+                                    <span *ngIf="transaction.id != 0">{{ transaction.symbol }}</span>
+                                </div>
+                            </td>
+    
+                            <td>
+                                <div>
+                                    <p-dropdown [options]="sidesBuy" [(ngModel)]="transaction.side" optionLabel="name"
+                                        optionValue="id" appendTo="body" [disabled]="transaction.id != 0"></p-dropdown>
+                                </div>
+                            </td>
+    
+                            <td>
+                                <input pInputText type="text" digitOnly decimal="true" decimalSeparator="."
+                                    style="text-align: right;" placeholder="0,00" pattern="[0-9]+([.][0-9]+)?"
+                                    [(ngModel)]="transaction.qty" (click)="$event.target.select()"/>
+                            </td>
+    
+                            <td>
+                                <input pInputText type="text" digitOnly decimal="true" decimalSeparator="."
+                                    style="text-align: right;" placeholder="0,00" pattern="[0-9]+([.][0-9]+)?"
+                                    [(ngModel)]="transaction.price" (click)="$event.target.select()"/>
+                            </td>
+    
+                            <td>
+                                <p-calendar [inputStyle]="{'width': '70%', 'min-width': '70%'}" [monthNavigator]="true"
+                                    [yearNavigator]="true" yearRange="2000:2030" [showIcon]="true" appendTo="body"
+                                    [(ngModel)]="transaction.date">
+                                </p-calendar>
+                            </td>
+    
+                            <td style="text-align: right;">
+                                {{ transaction.qty * transaction.price | currency}}
+                            </td>
+    
+                            <td>
+                                <i (click)="deleteTransaction(transaction)" class="pi pi-times-circle" [disabled]="loading"
+                                    style="font-size: 1em; margin-right: 2em; cursor: pointer; color: red" title="Delete Position"></i>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>

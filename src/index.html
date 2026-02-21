@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-NT2H8KX');</script>
+    <!-- End Google Tag Manager -->
+    <meta charset="utf-8">
+    <title>SimpleVisor</title>
+    <base href="/">
+
+
+    <script src="https://www.google.com/recaptcha/api.js?render=explicit&onload=initRecaptcha" async defer></script>
+    <meta http-equiv="Expires" content="0" />
+
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="Pragma" content="no-cache">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon/favicon1.png">
+
+    <link id="theme-css" rel="stylesheet" type="text/css" href="assets/theme/theme-blue-light.css">
+    <link id="layout-css" rel="stylesheet" type="text/css" href="assets/layout/css/layout-blue-light.css">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body class="mat-typography">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NT2H8KX" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+    <script src="/assets/datafeeds/udf/dist/bundle.js"></script>
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+    <script type="text/javascript">
+        // Stripe.setPublishableKey('pk_test_bFsTLl4IFCiQ1JwAnaRlfFee');
+        Stripe.setPublishableKey('pk_live_TV3YEDgEHvJsVKos7ZXLKVrW');
+    </script>
+    <app-root></app-root>
+    <!-- <script type="text/javascript">
+        (function (d, t) {
+            var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+            v.onload = function () {
+                window.voiceflow.chat.load({
+                    verify: { projectID: '659fb42174ca696fb16fc56b' },
+                    url: 'https://general-runtime.voiceflow.com',
+                    versionID: 'production'
+                });
+            }
+            v.src = "https://cdn.voiceflow.com/widget/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+        })(document, 'script');
+    </script> -->
+    <script type="text/javascript">
+        window._mfq = window._mfq || [];
+        (function () {
+            var mf = document.createElement("script");
+            mf.type = "text/javascript"; mf.defer = true;
+            mf.src = "//cdn.mouseflow.com/projects/2a71bb86-2394-4e31-8ab7-d49f789a06eb.js";
+            document.getElementsByTagName("head")[0].appendChild(mf);
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+:host {
+  position: relative;
+  // padding: 15px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+::ng-deep .p-paginator {
+  background-color: transparent;
+}
+
+.card-list {
+  margin-bottom: 0.5rem;
+}
+
+.not-found-msg {
+  text-align: center;
+  font-size: 23px;
+  padding: 0.5rem 0;
+}
+
+@media screen and (min-width: 768px) {
+  :host {
+    flex-direction: row;
+  }
+
+  // .card-list, .title {
+  //   margin-right: 1rem;
+  // }
+
+  .card-list {
+    margin-bottom: 0;
+  }
+
+  .content {
+    width: 1000px;
+  }
+
+  // .sidebar {
+  //   padding-top: 47px;
+  // }
+}

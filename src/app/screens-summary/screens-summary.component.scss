@@ -1,0 +1,23 @@
+.crop-long-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nowrap-btn {
+    white-space: nowrap;   
+}
+
+.selected {
+    color: white !important;
+    background-color: #004b8d !important;
+    font-weight: bold !important;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+.normal {
+    color: #004b8d !important;
+    cursor: pointer;
+}

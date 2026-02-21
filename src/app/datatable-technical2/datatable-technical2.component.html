@@ -1,0 +1,208 @@
+<div>
+    <p-table #dt [value]="symbolTechnicals" [paginator]="true" [rows]="rowsPerPage" [pageLinks]="3"
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[rowsPerPage*1,rowsPerPage*2,rowsPerPage*3,100,200,500]"
+        [resizableColumns]="false" [autoLayout]="true"
+        styleClass="p-datatable-positions p-datatable-striped" [tableStyle]="{'table-layout':'auto'}"
+        [scrollable]="false" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+
+        <!-- <ng-template pTemplate="frozenheader" let-frozenColumns>
+            <tr>
+              <th>Symbol</th>
+            </tr>
+          </ng-template> -->
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="symbol" style="text-align: left;">
+                    Symbol
+                    <p-sortIcon field="symbol"></p-sortIcon>
+                    <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto"></p-columnFilter>
+                </th>
+
+                <th pSortableColumn="sector">
+                    Sector
+                    <p-sortIcon field="sector"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="rating">
+                    Trend
+                    <p-sortIcon field="rating"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="price">
+                    Last
+                    <p-sortIcon field="price"></p-sortIcon>
+                </th>
+                <th pSortableColumn="fairVsLast">
+                    FairValue
+                    <p-sortIcon field="FairValue"></p-sortIcon>
+                </th>
+                <th pSortableColumn="rsi">
+                    RSI
+                    <p-sortIcon field="rsi"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="sma20VsLast">
+                    20 SMA
+                    <span class="pi pi-question-circle" [escape]="false" tooltipPosition="right"
+                        [pTooltip]="technicalService.getSMATooltip(20)" tooltipEvent="hover" showDelay="50"
+                        hideDelay="200">
+                    </span>
+                    <p-sortIcon field="sma20"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="sma50VsLast">
+                    50 SMA
+                    <span class="pi pi-question-circle" [escape]="false" tooltipPosition="right"
+                        [pTooltip]="technicalService.getSMATooltip(50)" tooltipEvent="hover" showDelay="50"
+                        hideDelay="200">
+                    </span>
+                    <p-sortIcon field="sma50"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="sma100VsLast">
+                    100 SMA
+                    <span class="pi pi-question-circle" [escape]="false" tooltipPosition="right"
+                        [pTooltip]="technicalService.getSMATooltip(100)" tooltipEvent="hover" showDelay="50"
+                        hideDelay="200">
+                    </span>
+                    <p-sortIcon field="sma100"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="MohanramScore">
+                    Mohanram
+                    <span class="pi pi-question-circle" [escape]="false" tooltipPosition="right"
+                        [pTooltip]="technicalService.getMohanramToolTip()" tooltipEvent="hover" showDelay="50"
+                        hideDelay="200">
+                    </span>
+                    <p-sortIcon field="MohanramScore"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="PiotroskiFScore">
+                    Piotroski
+                    <span class="pi pi-question-circle" [escape]="false" tooltipPosition="right"
+                        [pTooltip]="technicalService.getPiotroskiToolTip()" tooltipEvent="hover" showDelay="50"
+                        hideDelay="200">
+                    </span>
+                    <p-sortIcon field="PiotroskiFScore"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="ZacksRank">
+                    SV Rank
+                    <span class="pi pi-question-circle" [escape]="false" tooltipPosition="right"
+                        [pTooltip]="technicalService.getZacksToolTip()" tooltipEvent="hover" showDelay="50"
+                        hideDelay="200">
+                    </span>
+                    <p-sortIcon field="ZacksRank"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="dividendYield">
+                    Yield%
+                    <p-sortIcon field="dividendYield"></p-sortIcon>
+                </th>
+
+            </tr>
+        </ng-template>
+
+        <!-- <ng-template pTemplate="frozenbody" let-technical>
+        <tr>
+            <td>{{technical.symbol}}</td>
+        </tr>
+    </ng-template> -->
+
+        <ng-template pTemplate="body" let-technical>
+            <tr>
+                <td style="text-align: left;">
+                    <div class="symbol" (click)="clickSymbol(technical.symbol)">
+                        {{technical.symbol}}
+                    </div>
+                </td>
+
+                <td style="text-align: left;">
+                    <div>
+                        {{technical.sector}}
+                    </div>
+                </td>
+
+                <td>
+                    <div style="min-width: 60px;">
+                        <span>{{technical['rating']}}/10 <img class="center-img" style="width: 1.25em; display: inline;"
+                                [src]="technicalService.getUpDownImgByValue(technical.rating)"></span>
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{technical['price'] | currency}}
+                    </div>
+                </td>
+                <td>
+                    <div [ngClass]="technical.fairVsLast | upDownColor">
+                        {{technical.fair_value | currency}}({{technical.fairVsLast | percent:'1.2-2'}})
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        {{technical.rsi | number:'0.2-2'}}
+                    </div>
+                </td>
+
+                <td>
+                    <div [ngClass]="technical.sma20VsLast | upDownColor">
+                        {{technical.sma20 | currency}}({{technical.sma20VsLast | percent:'1.2-2'}})
+                    </div>
+                </td>
+
+                <td>
+                    <div [ngClass]="technical.sma50VsLast | upDownColor">
+                        {{technical.sma50 | currency}}({{technical.sma50VsLast | percent:'1.2-2'}})
+                    </div>
+                </td>
+
+                <td>
+                    <div [ngClass]="technical.sma100VsLast | upDownColor">
+                        {{technical.sma100 | currency}}({{technical.sma100VsLast | percent:'1.2-2'}})
+                    </div>
+                </td>
+
+                <td>
+                    <div class="center"
+                        [ngStyle]="technicalService.getMohanramRatingBackground(technical.MohanramScore)">
+                        {{technical.MohanramScore}}
+                    </div>
+                </td>
+
+                <td>
+                    <div class="center"
+                        [ngStyle]="technicalService.getPiotroskiRatingBackground(technical.PiotroskiFScore)">
+                        {{technical.PiotroskiFScore}}
+                    </div>
+                </td>
+
+                <td>
+                    <div class="center" [ngStyle]="technicalService.getZacksRatingBackground(technical.ZacksRank)">
+                        {{technical.ZacksRank}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{technical.dividendYield | number:'0.2-2'}}%
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+
+    </p-table>
+</div>
+
+<p-dialog header="Symbol Analytics" [(visible)]="displayDialogSymbolDetail" showEffect="fade" [modal]="true"
+    [style]="{width: '85vw'}" [breakpoints]="{'960px': '90vw', '640px': '97vw'}">
+    <app-symbol-detail-modal [symbol]="selectedSymbol"></app-symbol-detail-modal>
+</p-dialog>
+
+<div>
+    <p-table>
+
+    </p-table>
+</div>

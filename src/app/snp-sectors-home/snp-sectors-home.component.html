@@ -1,0 +1,9 @@
+<div class="p-grid p-fluid">
+    <div class="p-col-12 p-lg-9">
+        <app-sector-heatmap (onSymbolClicked)="symbolSelected($event)" style="margin:0px;"></app-sector-heatmap>
+    </div>
+
+    <div class="p-col-12 p-lg-3">
+        <synopsis gaugeClass="chart-gauge-small" [symbol]="selectedSymbol"></synopsis>
+    </div>
+</div>

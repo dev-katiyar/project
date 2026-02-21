@@ -1,0 +1,22 @@
+<div class="border-shadow p-p-3" *ngIf="user">
+    <app-card [cardInfo]="user.cardInfo"></app-card>
+
+    <h3 *ngIf="stripeMessage !=''" class="error-msg" style="text-align:center">
+        {{stripeMessage}}
+    </h3>
+
+    <div class="p-col-12" id="agreement">
+        <input type="checkbox" [(ngModel)]="agreementSigned" name="agreementSigned" style="display: inline-block;" />
+
+        <div style="display: inline; text-align: justify;">
+            You must read and agree to our <a href="/agreement" target="_blank">Subscriber Agreement</a> to
+            become a subscriber to simplevisor.com for all subscriptions. Please note that your subscription
+            will renew automatically unless you cancel prior to renewal.
+        </div>
+    </div>
+
+    <div class="sv-center">
+        <button type="button" pButton [disabled]="!(meetsUserConstraints() && agreementSigned) || loading"
+            (click)="updateCreditCard()" class="form-control p-button-info" label="Submit"></button>
+    </div>
+</div>

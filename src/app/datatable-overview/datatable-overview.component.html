@@ -1,0 +1,123 @@
+<div>
+    <p-table #dt [value]="symbolTechnicals" [paginator]="true" [rows]="rowsPerPage" [pageLinks]="3" [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[rowsPerPage*1,rowsPerPage*2,rowsPerPage*3,100,200,500]" [resizableColumns]="true"  [autoLayout]="true"
+        styleClass="p-datatable-positions p-datatable-striped" [tableStyle]="{'table-layout':'auto'}"
+        [scrollable]="false" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="symbol" style="text-align: left;">
+                    Symbol
+                    <p-sortIcon field="symbol"></p-sortIcon>
+                    <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto"></p-columnFilter>
+                </th>
+
+                <th pSortableColumn="alternate_name" style="text-align: left;">
+                    Name
+                    <p-sortIcon field="alternate_name"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="sector">
+                    Sector
+                    <p-sortIcon field="sector"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="price">
+                    Last
+                    <p-sortIcon field="price"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="priceChangePct">
+                    Today's Change
+                    <p-sortIcon field="priceChangePct"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="mtd">
+                    MTD
+                    <p-sortIcon field="mtd"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="ytd">
+                    YTD
+                    <p-sortIcon field="ytd"></p-sortIcon>
+                </th>
+
+                <th>
+                    52 Week Range (Low-High)
+                </th>
+                <th>
+                    Beta
+                </th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-technical>
+            <tr>
+                <td style="text-align: left;">
+                    <div class="symbol" (click)="clickSymbol(technical.symbol)">
+                        {{technical.symbol}}
+                    </div>
+                </td>
+
+                <td style="text-align: left;">
+                    {{technical.alternate_name}}
+                </td>
+
+                <td style="text-align: left;">
+                    <div>
+                        {{technical.sector}}
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{technical['price'] | currency}}
+                    </div>
+                </td>
+
+                <td>
+                    <div [ngClass]="technical.priceChange | upDownColor">
+                        {{technical['priceChange'] | currency}} ({{technical['priceChangePct'] | number:'0.2-2'}}%)
+                    </div>
+                </td>
+
+                <td>
+                    <div [ngClass]="technical.mtd | upDownColor">
+
+                        {{technical.mtd | number:'0.2-2'}}%
+                    </div>
+                </td>
+
+                <td>
+                    <div [ngClass]="technical.ytd | upDownColor">
+                        {{technical.ytd | number:'0.2-2'}}%
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        {{technical.low52 | currency}} - {{technical.high52 | currency}}
+                    </div>
+                </td>
+
+                <td>
+                    <div [ngClass]="technical.beta | upDownColor">
+                        {{technical.beta | number:'0.4-4'}}
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+
+    </p-table>
+</div>
+
+<p-dialog header="Symbol Analytics" [(visible)]="displayDialogSymbolDetail" showEffect="fade"
+    [modal]="true" [style]="{width: '85vw'}" [breakpoints]="{'960px': '90vw', '640px': '97vw'}">
+    <app-symbol-detail-modal [symbol]="selectedSymbol"></app-symbol-detail-modal>
+</p-dialog>
+
+<div>
+    <p-table>
+
+    </p-table>
+</div>

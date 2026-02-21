@@ -1,0 +1,108 @@
+<div *ngIf="!holdersData" style="margin-top: 5rem; margin-left: 0;text-align: center;">
+    No Data for {{currentSymbol}}
+</div>
+
+<div class="p-grid border-shadow p-mt-2">
+    <div class="p-col-12" style="font-size: 1.2rem;font-weight: bold;padding: 1rem; padding-bottom: 0;">
+        Insider Transactions Trend (# of Shares)
+    </div>
+
+    <hr style="margin: 0.5rem 0; width: 100%;">
+
+    <div class="p-col-12" *ngIf="buySellTrend?.monthly">
+        <app-bar-chart2 
+            [dataArray]="buySellTrend.monthly" 
+            [seriesConfig]="barChartSeriesConfig" 
+            height="250px" 
+            [showLegend]="true"
+        ></app-bar-chart2>
+    </div>
+</div>
+
+<div class="p-grid border-shadow" *ngIf="holdersData" style="margin-top: 0.5rem;">
+    <div class="p-col-12" style="font-size: 1.2rem;font-weight: bold;padding: 1rem;padding-bottom: 0;">
+        Insider Transactions
+    </div>
+
+    <hr style="margin: 0.5rem 0; width: 100%;">
+
+    <div class="p-col-12">
+        <p-table #dt [value]="holdersData?.insiderTransactions" [paginator]="true" [pageLinks]="3" rows="10"
+            [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,20,50,100,200,500]" [resizableColumns]="false"
+            [autoLayout]="true" styleClass="p-datatable-positions p-datatable-striped"
+            [tableStyle]="{'table-layout':'auto'}" [scrollable]="false"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="ownerName" style="text-align: left;">
+                        Insider Name
+                        <p-sortIcon field="ownerName"></p-sortIcon>
+                    </th>
+
+                    <th pSortableColumn="ownerTitle" style="text-align: left;">
+                        Title
+                        <p-sortIcon field="ownerTitle"></p-sortIcon>
+                    </th>
+
+                    <th pSortableColumn="transactionDate" style="text-align: right;">
+                        Transaction Date
+                        <p-sortIcon field="transactionDate"></p-sortIcon>
+                    </th>
+
+                    <th pSortableColumn="transactionAcquiredDisposed" style="text-align: right;">
+                        Bought/Sold
+                        <p-sortIcon field="transactionAcquiredDisposed"></p-sortIcon>
+                    </th>
+
+                    <th pSortableColumn="transactionAmount" style="text-align: right;">
+                        # Shares
+                        <p-sortIcon field="transactionAmount"></p-sortIcon>
+                    </th>
+
+                    <th pSortableColumn="transactionPrice" style="text-align: right;">
+                        Transaction Price
+                        <p-sortIcon field="transactionPrice"></p-sortIcon>
+                    </th>
+
+                    <th style="text-align: right;">
+                        Transaction Value
+                    </th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-insiderTxn>
+                <tr>
+                    <td style="text-align: left;">
+                        {{insiderTxn?.ownerName}}
+                    </td>
+
+                    <td style="text-align: left;">
+                        {{insiderTxn?.ownerTitle}}
+                    </td>
+
+                    <td>
+                        {{insiderTxn?.transactionDate}}
+                    </td>
+
+                    <td>
+                        {{insiderTxn?.transactionAcquiredDisposed == 'A'? 'BUY': 'SELL'}}
+                    </td>
+
+                    <td>
+                        {{insiderTxn?.transactionAmount | number:'0.0-0'}}
+                    </td>
+
+                    <td>
+                        {{insiderTxn?.transactionPrice | currency:'USD':'symbol':'1.2-2'}}
+                    </td>
+
+                    <td>
+                        {{insiderTxn?.transactionPrice * insiderTxn?.transactionAmount | currency:'USD':'symbol':'1.0-0'}}
+                    </td>
+                </tr>
+            </ng-template>
+
+        </p-table>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        SimpleVisor users can now import their portfilios to their SimpleVisor account to keep track of their holdings. Following are few important points 
+        <ul>
+            <li>
+                The holding and trandaction information is collected via a third party trusted by your financial instituation - Plaid
+            </li>
+            <li>
+                Clicking on button below will take you to Plaid user flow.
+            </li>
+            <li>
+                Your login infomation with your institution or any account modification rights are not shared by Plaid with SimpleVisor or saved at SimpleVisor.
+            </li>
+            <li>
+                If not able to link the link portfolios, please let us know via contact for. Your Name (top right) > Contact Us.
+            </li>
+        </ul>
+    </div>
+    <div class="p-col-12">
+        <app-scripthack type="text/javascript" src="https://cdn.plaid.com/link/v2/stable/link-initialize.js">
+        </app-scripthack>
+        <p-button (onClick)="initiatePlaidLinkUI()">
+            Link via Plaid
+        </p-button>
+        <p-message severity="info" [text]="plaidMessage" *ngIf="plaidMessage"></p-message>
+    </div>
+</div>

@@ -1,0 +1,90 @@
+<div class="p-col-12 p-lg-12" style="padding-top:0; margin-bottom:1rem">
+
+        <p-table #dt [value]="data" [paginator]="true" [rows]="100" [pageLinks]="3"
+                 [rowsPerPageOptions]="[20,40,100]" styleClass="p-datatable-positions p-datatable-striped"
+                scrollable="true" scrollHeight="375px" [reorderableColumns]="false">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="symbol">
+                        Symbol
+                        <p-sortIcon field="symbol"></p-sortIcon>
+                        <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto">
+                        </p-columnFilter>
+                    </th>
+
+                    <th pSortableColumn="date">
+                        Date
+                        <p-sortIcon field="date"></p-sortIcon>
+                        <p-columnFilter type="text" field="date" display="menu" class="p-ml-auto">
+                        </p-columnFilter>
+                    </th>
+
+                    <th pSortableColumn="name">
+                        Name
+                        <p-sortIcon field="name"></p-sortIcon>
+                        <p-columnFilter type="text" field="name" display="menu" class="p-ml-auto">
+                        </p-columnFilter>
+                    </th>
+
+                    <th pSortableColumn="type">
+                        Type
+                        <p-sortIcon field="type"></p-sortIcon>
+                    </th>
+
+                    <th pSortableColumn="shares">
+                        Shares
+                        <p-sortIcon field="shares"></p-sortIcon>
+                    </th>
+
+                    <th pSortableColumn="price">
+                        Price
+                        <p-sortIcon field="price"></p-sortIcon>
+                    </th>
+
+                    <th pSortableColumn="amount">
+                        Amount
+                        <p-sortIcon field="amount"></p-sortIcon>
+                    </th>
+
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-data>
+                <tr>
+                    <td>
+                        <div style="width:100%" class="symbol-withoutpointer ">{{data.symbol}}</div>
+                    </td>
+                    <td>
+                        <div style="width:100%" >{{data.date}}</div>
+                    </td>
+                    <td>
+                        <div >{{data.name}}</div>
+                    </td>
+                    <td>
+                        <div [ngClass]="technicalService.getInsiderBackground(data.type)">
+                            {{data.type}}
+                        </div>
+                    </td>
+                    <td>
+                        <div >
+                            {{data.shares}}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>
+                            {{data.price}}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>
+                            {{data.amount}}
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+
+        </p-table>
+</div>

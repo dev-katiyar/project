@@ -1,0 +1,124 @@
+<div>
+    <p-table #dt [value]="symbolPerformance" [paginator]="true" [rows]="rowsPerPage" [pageLinks]="3" [showCurrentPageReport]="true"
+             [rowsPerPageOptions]="[rowsPerPage*1,rowsPerPage*2,rowsPerPage*3,100,200,500]" [resizableColumns]="false"
+            [autoLayout]="true"
+             styleClass="p-datatable-positions p-datatable-striped" [tableStyle]="{'table-layout':'auto'}"
+             [scrollable]="false" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" >
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="symbol" style="text-align: left;">
+                    Symbol
+                    <p-sortIcon field="symbol"></p-sortIcon>
+                    <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto"></p-columnFilter>
+                </th>
+
+                <th pSortableColumn="wtd">
+                    WTD Chg %
+                    <p-sortIcon field="wtd"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="mtd">
+                    MTD Chg %
+                    <p-sortIcon field="mtd"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="change_oneMonth_pct">
+                    1 Month Change
+                    <p-sortIcon field="change_oneMonth_pct"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="qtd">
+                    QTD Chg %
+                    <p-sortIcon field="qtd"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="ytd">
+                    YTD Chg %
+                    <p-sortIcon field="ytd"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="priceChangeYearly">
+                    1 Year Chg %
+                    <p-sortIcon field="priceChangeYearly"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="priceChange2Year">
+                    2 Year Chg %
+                    <p-sortIcon field="priceChange2Year"></p-sortIcon>
+                </th>
+
+                <th pSortableColumn="priceChange3Year">
+                    3 Year Chg %
+                    <p-sortIcon field="priceChange3Year"></p-sortIcon>
+                </th>
+
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-performance>
+            <tr>
+                <td style="text-align: left;">
+                    <div class="symbol" (click)="clickSymbol(performance.symbol)">
+                        {{performance.symbol}}
+                    </div>
+                </td>
+
+                <td>
+                    <div [ngClass]="performance.wtd | upDownColor">
+                        {{performance.wtd}}%
+                    </div>
+                </td>
+
+                <td>
+                    <div [ngClass]="performance.mtd | upDownColor">
+                        {{performance.mtd}}%
+                    </div>
+                </td>
+
+                <td>
+                    <div [ngClass]="performance.change_oneMonth_pct | upDownColor">
+                        {{performance.change_oneMonth_pct}}%
+                    </div>
+                </td>
+
+                <td>
+                    <div [ngClass]="performance.qtd | upDownColor">
+                        {{performance.qtd}}%
+                    </div>
+                </td>
+
+                <td>
+                    <div [ngClass]="performance.ytd | upDownColor">
+                        {{performance.ytd}}%
+                    </div>
+                </td>
+
+
+                <td>
+                    <div [ngClass]="performance.priceChangeYearly | upDownColor">
+                        {{performance.priceChangeYearly}}%
+                    </div>
+                </td>
+
+                <td>
+                    <div [ngClass]="performance.priceChange2Year | upDownColor">
+                        {{performance.priceChange2Year}}%
+                    </div>
+                </td>
+
+                <td>
+                    <div [ngClass]="performance.priceChange3Year | upDownColor">
+                        {{performance.priceChange3Year}}%
+                    </div>
+                </td>
+
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog header="Symbol Analytics" [(visible)]="displayDialogSymbolDetail" showEffect="fade"
+          [modal]="true" [style]="{width: '85vw'}" [breakpoints]="{'960px': '90vw', '640px': '97vw'}">
+    <app-symbol-detail-modal [symbol]="selectedSymbol"></app-symbol-detail-modal>
+</p-dialog>

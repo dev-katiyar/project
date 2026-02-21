@@ -1,0 +1,134 @@
+<div class="p-grid" style="margin: -1rem;">
+    <!-- List of Symbols and Chart -->
+    <div class="p-col-12">
+        <div class="p-grid">
+            <!-- List of Symbols -->
+            <div class="p-lg-3 p-col-12 p-p-1">
+                <div class="border-shadow p-p-2" style="height: 100%;">
+                    <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                        S&P Symbols
+                    </span>
+                
+                    <hr style="margin: 0.5rem 0;">
+
+                    <div class="p-p-1 p-d-flex p-ai-center">
+                        Anomaly in last &nbsp;
+                        <p-inputNumber 
+                            [(ngModel)]="anomalyInLastDays" 
+                            [min]="1" 
+                            [max]="symbolData.length"
+                            [size]="4"
+                            [step]="1"
+                            class="p-inputtext-sm"
+                        ></p-inputNumber> &nbsp;
+                       trade days &nbsp;
+
+                       <button 
+                            pButton 
+                            type="button" 
+                            label="Filter" 
+                            class="p-button-sm" 
+                            (click)="filterAnomalySymbolList()"
+                        ></button>
+                    </div>
+
+                    <p-table #dt1 
+                        [value]="symbols" 
+                        [scrollable]="true" 
+                        scrollHeight="500px" 
+                        [globalFilterFields]="['symbol', 'name']"
+                    >
+                        <ng-template pTemplate="caption">
+                            <div>
+                                <span class="p-input-icon-left p-ml-auto">
+                                    <i class="pi pi-search"></i>
+                                    <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search" class="p-inputtext-sm" (click)="$event.target.select()" />
+                                </span>
+                            </div>
+                        </ng-template>
+
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th class="p-text-left" style="width: 5rem;">Symbol</th>
+    
+                                <th class="p-text-left">Name</th>
+                            </tr>
+                        </ng-template>
+    
+                        <ng-template pTemplate="body" let-sym>
+                            <tr (click)="onSymbolClick(sym)" [ngClass]="{'selected': sym?.symbol == selSymbol['symbol']}"
+                                class="symbol">
+                                <td class="p-text-left" style="width: 5rem;">{{sym?.symbol}}</td>
+    
+                                <td class="p-text-left">{{sym?.name}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="p-lg-9 p-col-12 p-p-1">
+                <div class="border-shadow p-p-2" style="height: 100%;">
+                    <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                        Chart with Anomalies for ({{selSymbol['name']}})
+                    </span>
+                
+                    <hr style="margin: 0.5rem 0;">
+
+                    <input type="button" value="Toggle Scale" class="btn-normal" (click)="toggleYAxisScale()">
+                    
+                    <div class="p-d-inline-block p-ml-2">{{ isLogScale ? 'Logarithmic' : 'Linear' }} Y-Axis</div>
+
+                    <div class="p-text-center" style="font-size: 0.9rem;">(Select chart area to zoom a date range)</div>
+
+                    <div *ngIf="symbolData" style="width: 100%" class="p-p-2">
+                        <div [class]="barClass" [chart]="chart" style="height: 500px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Perf and Anomaly Table -->
+    <div class="p-col-12 p-mt-0 p-pt-0">
+        <div class="p-grid">
+            <!-- Return Table -->
+            <div class="p-lg-12 p-col-12 p-p-1">
+                <div class="border-shadow p-p-2" style="height: 100%;">
+                    <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                        Anomaly Found in {{ selSymbol['symbol'] }} on Dates
+                    </span>
+                
+                    <hr style="margin: 0.5rem 0;">
+
+                    <p-table [value]="anomalyData" [scrollable]="true" scrollHeight="40vh">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th class="p-text-left" style="width: 5rem;">Symbol</th>
+                                <th class="p-text-left">Date</th>
+                                <th class="p-text-left">Close</th>
+                                <th class="p-text-left">Anomaly</th>
+                                <th *ngFor="let trD of this.perfTradeDays" style="width: 5rem;" class="p-text-center">{{ trD + 'D' }}</th>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="body" let-row>
+                            <tr class="symbol">
+                                <td class="p-text-left" style="width: 5rem;">{{selSymbol['symbol']}}</td>
+                                <td class="p-text-left">{{row?.Date | date}}</td>
+                                <td class="p-text-left">{{row?.Close | number}}</td>
+                                <td class="p-text-left">{{row?.Anomaly}}</td>
+                                <td *ngFor="let trD of this.perfTradeDays" style="width: 5rem;" class="p-text-center">
+                                    <div style="border-radius: 0.2rem;" class="text-white" [ngClass]="{ 'bg-red': row[trD + 'D'] < 0, 'bg-green':  row[trD + 'D'] > 0}">
+                                        {{ row[trD + 'D'] | percent}}
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

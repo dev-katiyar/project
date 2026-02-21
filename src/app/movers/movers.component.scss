@@ -1,0 +1,65 @@
+.pill-item {
+    text-align: center;
+    padding: 0.2em 1em;
+}
+
+.active-item {
+  text-align: center;
+  border-radius: 4px;
+  background-color: var(--primary-color-dark);
+  padding: 0.2em 1em;
+  color: white;
+}
+
+.btn-normal {
+  color: gray;
+  background-color: #f3f3f3;
+  vertical-align: middle;
+  font-size: 14px;
+  border: 1px solid transparent;
+  display: inline-block;
+  position: relative;
+  padding: .385em .5em;
+  text-decoration: none !important;
+  cursor: pointer;
+  text-align: center;
+  zoom: 1;
+  overflow: visible;
+  line-height: normal;
+  margin-right: 2px;
+  border-radius: 8px;
+  border: 1px solid gray;
+}
+
+.btn-green {
+  background-color: white;
+  color: #0377bd;
+  font-weight: bold;
+}
+
+.btn-blue {
+  background-color: #f3f3f3;
+}
+
+.btn-group {
+  float: right;
+  background-color: #f3f3f3;
+  border-radius: 0.5rem;
+  padding: 0.2rem;
+}
+
+::ng-deep .p-dropdown .p-dropdown-label {
+  padding: 0.25rem;
+}
+
+// ::ng-deep #etf-move-tabs .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+//   padding: 0.75rem 0.50rem;
+// }
+
+// ::ng-deep #etf-move-tabs .p-tabview-nav {
+//   flex-wrap: nowrap;
+// }
+
+// ::ng-deep #etf-move-tabs .p-tabview-panels {
+//   background: none;
+// }

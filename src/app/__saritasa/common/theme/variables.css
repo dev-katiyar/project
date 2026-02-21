@@ -1,0 +1,13 @@
+:root {
+  --primary-hover-color: #b0dafb;
+  --additional-text-color: #b1b1b1;
+  --base-page-background-color: #f8f9fa;
+
+  /* Font color for surface background. */
+  --surface-font-color: #000000;
+  /* Affect surfaces of components, such as cards, sheets, and menus */
+  --surface-base-color: #ffffff;
+
+  --card-header-color: #2e384d;
+  --card-shadow: 0 2px 4px 0px rgba(0, 0, 0, 30%);
+}

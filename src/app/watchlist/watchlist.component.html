@@ -1,0 +1,266 @@
+<div>
+    <div
+        *ngIf="!isManageWatchlistsVisible && !isEditWatchlistVisible && !isCreateWatchlistVisible && watchlists?.length > 0">
+        <div>
+            <div class="p-text-right">
+                <app-help-icon [style]="{'font-size': '1.4rem'}" key="portfoliosWatchlist"></app-help-icon>
+            </div>
+
+            <div class="p-grid p-fluid p-ai-center">
+                <div class="p-col-12 p-sm-3 p-md-2 p-lg-1">Watchlists: </div>
+
+                <div class="p-col-12 p-sm-3 p-md-3 p-lg-2">
+                    <p-dropdown [options]="watchlists" [(ngModel)]="selectedWatchList"
+                        (onChange)="onWatchListChange($event)" placeholder="Select" optionLabel="name"></p-dropdown>
+                </div>
+
+                <div class="p-col-12 p-sm-3 p-md-3 p-lg-2">
+                    <app-stocks-autocomplete [(searchText)]="symbol" [inputSize]="10"></app-stocks-autocomplete>
+                </div>
+
+                <div class="p-col-12 p-sm-3 p-md-4 p-lg-2">
+                    <a pButton pRipple type="button" label="Add" (click)="addSymbol()" icon="pi pi-plus"></a>
+                </div>
+
+                <div class="p-col-12 p-sm-6 p-md-6 p-lg-2">
+                    <a pButton pRipple type="button" label="Add Multiple" (click)="showAddSymbolsDialog()"
+                        icon="pi pi-plus"></a>
+                </div>
+
+                <div class="p-col-12 p-sm-6 p-md-6 p-lg-3">
+                    <a pButton pRipple type="button" label="Manage Watchlists" (click)="onOpenManageWatchlists()"></a>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <p-tabView class="sv-tabview-nopadding">
+                <p-tabPanel header="My Tickers">
+                    <div class="p-grid" style="margin-top: 0;">
+                        <div class="p-col-12">
+                            <div style="float: right; margin-right: 10px; padding:0 3px" class="symbol">
+                                <span (click)="exportToCSV()">
+                                    <i class="pi pi-file-excel"></i>
+                                    <u>Export to CSV</u>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="p-col-12 border-shadow" style="padding-top: 0;">
+                            <technical-datatable [model]="watchListData" type="watchlist"
+                                (onSymbolDeleted)="handleSymbolDelete($event)"
+                                [exportCSVEvent]="exportCSVSubject.asObservable()">
+                            </technical-datatable>
+                        </div>
+                    </div>
+                </p-tabPanel>
+
+                <p-tabPanel header="Performance">
+                    <ng-template pTemplate="content">
+                        <div class="p-grid" style="margin-top: 0.25rem;">
+                            <div class="p-col-12">
+                                <label for="symbolsMultiSelect" style="font-weight: bold;">Select symbols for chart (max 10): </label>
+                                <p-multiSelect 
+                                    inputId="symbolsMultiSelect"
+                                    [options]="symbols" 
+                                    [(ngModel)]="selectedTopSymbols" 
+                                    [ngModelOptions]="{standalone: true}"
+                                    [maxSelectedLabels]="10" 
+                                    [selectionLimit]="10" 
+                                    placeholder="Select symbols for chart (max 10)"
+                                    [showToggleAll]="true"
+                                    [filter]="true"
+                                    filterPlaceHolder="Search symbols"
+                                    (onPanelHide)="updateChartSymbols()"
+                                    ></p-multiSelect>
+                            </div>
+                            <div class="p-col-12 border-shadow">
+                                <line-chart barClass="chart-big" [symbols]="chartSymbols"></line-chart>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-tabPanel>
+
+                <!-- <p-tabPanel header="News">
+                    <ng-template pTemplate="content">
+                        <app-news-table [title]="title" newsClass="news-big" [symbols]="symbols"></app-news-table>
+                    </ng-template>
+                </p-tabPanel> -->
+
+                <p-tabPanel header="Alerts">
+                    <ng-template pTemplate="content">
+                        <div class="border-shadow p-p-2" style="height: 100%;margin: -0.75rem; margin-top: 0.25rem;">
+                            <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                                Alerts <p-badge [value]="techAlertsCount" severity="danger"
+                                    styleClass="p-mr-2"></p-badge>
+                            </span>
+
+                            <hr style="margin: 0.5rem 0;">
+
+                            <tech-alerts [title]="title" [symbols]="symbols" (alertsLoaded)="onAlertsLoaded($event)">
+                            </tech-alerts>
+                        </div>
+                    </ng-template>
+                </p-tabPanel>
+
+                <p-tabPanel header="Dividend/Earnings">
+                    <ng-template pTemplate="content">
+                        <div class="p-grid" style="margin: -1rem;margin-top: 0.25rem;">
+                            <div class="p-col-12 p-p-1">
+                                <div class="border-shadow p-p-2" style="height: 100%;">
+                                    <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                                        Upcoming Dividend
+                                    </span>
+
+                                    <hr style="margin: 0.5rem 0;">
+
+                                    <app-dividend-history [symbol]="symbols" upcoming="false"
+                                        [fullDividendDetail]="fullDividendDetail">
+                                    </app-dividend-history>
+                                </div>
+                            </div>
+
+                            <div class="p-col-12 p-p-1">
+                                <div class="border-shadow p-p-2" style="height: 100%;">
+                                    <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                                        Upcoming Earnings
+                                    </span>
+
+                                    <hr style="margin: 0.5rem 0;">
+
+                                    <app-earning-history [symbol]="symbols" upcoming="true"
+                                        [fullEarningDetail]="fullEarningDetail">
+                                    </app-earning-history>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-tabPanel>
+            </p-tabView>
+        </div>
+    </div>
+
+    <div *ngIf="isNoWatchlistsDivVisible" style="text-align: center;">
+        <br><br>
+        <div>There are no existing watchlists. Please create a watchlist</div>
+        <br><br>
+        <button type="button" pButton *ngIf="isAdminUser == 1" (click)="onCreateWatchlistClick()"
+            label='Create a WatchList'></button>
+        <br><br>
+    </div>
+
+    <!-- Names of attibutes are not appropriate due to reuse of manage portfolio reuse. Refactoring needed. -->
+    <div *ngIf="isManageWatchlistsVisible">
+        <app-manage-portfolios [isAdminUser]="isAdminUser" [portfolios]="watchlists" isSnapPortfolio="true"
+            (backFromManagePortfoliosClick)="onBackFromManageWatchlishsClick()" title="Watchlist"
+            (nameClick)="onNameClick($event)" (createPortfolioClick)="onCreateWatchlistClick()"
+            (deletePortfolioClick)="onDeleteWatchlistClick($event)" (editPortfolioClick)="onEditWatchlistClick($event)"
+            (closePositionsClick)="onClosePositionsClick($event)">
+        </app-manage-portfolios>
+    </div>
+
+    <div *ngIf="isEditWatchlistVisible && selectedWatchList" class="p-grid p-nogutter">
+        <div class="p-col-12 p-lg-12 p-grid">
+            <h2>Edit a WatchList</h2>
+            <div style="padding-top:15px;padding-bottom:15px;" class="p-col-12 p-grid p-nogutter p-fluid summary">
+
+                <div class="p-field p-col-12 p-md-4 p-lg-4" style="padding:0 1em">
+                    <label for="watchlist-name">WatchList Name</label>
+                    <input [(ngModel)]="watchlistName" pInputText placeholder="Enter WatchList Name" id="watchlist-name"
+                        style="display: block;" (click)="$event.target.select()" />
+                </div>
+
+                <p-toast position="center" class="custom-toast"></p-toast>
+            </div>
+
+            <div class="p-col-12 p-lg-12" style="margin-top:1.5em;">
+                <button pButton [disabled]="loading" label="Save" style="width:150px; margin-right:10px; float: right;"
+                    type="button" (click)="renameWatchlist()">
+                </button>
+
+                <button pButton [disabled]="loading" label="Cancel"
+                    style="width:150px; margin-right:10px; float: right;" type="button" class="p-button-outlined"
+                    (click)="onEditWatchlistCancelClick()">
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <div *ngIf="isCreateWatchlistVisible" class="p-grid p-nogutter">
+        <div class="p-col-12 p-lg-12 p-grid">
+            <h2>Create a WatchList</h2>
+            <div style="padding-top:15px;padding-bottom:15px;" class="p-col-12 p-grid p-nogutter p-fluid summary">
+
+                <div class="p-field p-col-12 p-md-4 p-lg-4" style="padding:0 1em">
+                    <label for="watchlist-name">WatchList Name</label>
+                    <input [(ngModel)]="watchlistName" pInputText placeholder="Enter WatchList Name" id="watchlist-name"
+                        style="display: block;" (click)="$event.target.select()" />
+                </div>
+
+                <p-toast position="center" class="custom-toast"></p-toast>
+            </div>
+
+            <div class="p-col-12 p-lg-12" style="margin-top:1.5em;">
+                <button pButton [disabled]="loading" label="Save" style="width:150px; margin-right:10px; float: right;"
+                    type="button" (click)="createNewWatchList()">
+                </button>
+
+                <button pButton [disabled]="loading" label="Cancel"
+                    style="width:150px; margin-right:10px; float: right;" type="button" class="p-button-outlined"
+                    (click)="onCreateWatchlistCancelClick()">
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <p-dialog header="Add Symbols" [(visible)]="displayAddSymbolsDialog" showEffect="fade" [modal]="true"
+        [style]="{width: '300px'}">
+        <div class="p-grid p-fluid">
+            <div class="p-col-12">
+                <label for="modalinput">Symbols</label>
+                <textarea style="width:100%;" placeholder="AAPL, GOOG, .." rows="3" cols="40"
+                    [(ngModel)]="position.symbol" name="modalinput" id="modalinput"></textarea>
+            </div>
+
+            <div class="p-col-12">
+                <span><i class="pi pi-exclamation-circle" style="font-size: 1em; color: red;"></i> </span>
+                <span> Enter up to 25 symbols separated by commas in the text box below. These symbols will be added to
+                    your watchlist.
+                </span>
+            </div>
+        </div>
+
+        <div class="p-grid p-fluid">
+            <div class="p-col-6">
+                <button type="button" pButton (click)="hideAddSymbolsDialog()" class="p-button-outlined"
+                    label="Cancel"></button>
+            </div>
+
+            <div class="p-col-6">
+                <button type="button" pButton (click)="addNewPositions()" label="Add"></button>
+            </div>
+        </div>
+    </p-dialog>
+
+    <p-dialog header="Watchlist Delete Confirmation" showEffect="fade" [(visible)]="displayDeleteWatchlistDialog"
+        [modal]="true" [style]="{width: '300px'}">
+        <span>Do you want to delete selected watchlist?</span>
+        <p-footer>
+            <button type="button" pButton icon="pi pi-check" (click)="confirmDelete(true)" label="Yes"></button>
+            <button type="button" pButton icon="pi pi-close" (click)="confirmDelete(false)" label="No"
+                class="p-button-secondary"></button>
+        </p-footer>
+    </p-dialog>
+
+    <p-dialog header="Symbol Delete Confirmation" showEffect="fade" [(visible)]="displayDeleteSymbolDialog"
+        [modal]="true" [style]="{width: '300px'}">
+        <span>Do you want to delete symbol from current watchlist?</span>
+        <p-footer>
+            <button type="button" pButton icon="pi pi-check" (click)="confirmSymbolDelete(true)" label="Yes"></button>
+            <button type="button" pButton icon="pi pi-close" (click)="confirmSymbolDelete(false)" label="No"
+                class="p-button-secondary"></button>
+        </p-footer>
+    </p-dialog>
+
+</div>

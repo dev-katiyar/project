@@ -1,0 +1,50 @@
+<!-- Heading -->
+<div class="p-col-12" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+    Email Notifications
+</div>
+
+<!-- Horizontal Divider -->
+<hr style="margin: 0.5rem 0;width: 100%;">
+
+<!-- Content - Email Notification Preferences -->
+<div class="p-p-1 p-p-md-2">
+    <div class="p-text-justify">
+        Enable/Disable all or specific email notifications to your mailbox. 
+    </div>
+
+    <div>
+        &nbsp;
+    </div>
+
+    <app-notification-pref-switch label="SV Core Portfolio Trade Alerts" [(value)]="userNotificationPrefernces.sv_trade_alerts">
+    </app-notification-pref-switch>
+
+    <app-notification-pref-switch label="SV Thematic Portfolio Trade Alerts" [(value)]="userNotificationPrefernces.sv_robo_trade_alerts">
+    </app-notification-pref-switch>
+    
+    <app-notification-pref-switch label="Blog Alerts" [(value)]="userNotificationPrefernces.blog_alerts">
+    </app-notification-pref-switch>
+    
+    <app-notification-pref-switch label="Symbols Alerts" [(value)]="userNotificationPrefernces.user_symbol_alerts">
+    </app-notification-pref-switch>
+    
+    <app-notification-pref-switch label="Weekly Report Alerts" [(value)]="userNotificationPrefernces.weekly_reports">
+    </app-notification-pref-switch>
+    
+    <app-notification-pref-switch label="TPA Blog Alerts" [(value)]="userNotificationPrefernces.tpa_blog_alerts" *ngIf="!isTPASubscriber">
+    </app-notification-pref-switch>
+</div>
+
+<div class="p-grid">
+
+    <div class="p-col-12 p-text-right">
+        <button class="p-mr-3" type="button" pButton label="Save" (click)="saveEmailNotificationPreference()">
+        </button>
+    </div>
+
+    <div *ngIf="errorMessage" style="text-align: center; color: red;padding:2rem">
+        Issue in getting the settings from server. Please 
+        <a href="mailto:contact@simplevisor.com">contact&#64;simplevisor.com
+        </a> support. 
+    </div>
+</div>

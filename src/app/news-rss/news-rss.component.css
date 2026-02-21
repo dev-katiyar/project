@@ -1,0 +1,11 @@
+.newsBorder{
+border-bottom: #AEB0B5 1px solid;
+display: inline-block;
+padding: 3%;
+margin-left: 2%;
+margin-right: 2%;
+}
+
+td,th {
+   border:none;
+}

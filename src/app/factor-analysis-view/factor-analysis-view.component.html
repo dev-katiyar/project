@@ -1,0 +1,467 @@
+<div class="p-grid">
+    <div class="p-col-12 p-pt-0">
+        <p-tabView class="sv-tabview-nopadding">
+            <p-tabPanel header="SPY Excess Returns Over Time">
+                <ng-template pTemplate="content">
+                    <!-- While Loading and NO Data -->
+                    <div *ngIf="!resFactorAnalysis">
+                        {{ loadingMessage }}
+                    </div>
+
+                    <!-- Controls on Top -->
+                    <div *ngIf="resFactorAnalysis" style="padding: 0.5rem;">
+                        <div class="p-grid">
+                            <!-- Lookback Days Input and Buttons -->
+                            <div class="p-col-12 p-md-7 p-lg-5">
+                                <span style="font-weight: bold; margin-right: 0.5rem;">Lookback Days: </span>
+
+                                <!-- INPUT look back days -->
+                                <ng-container *ngIf="editingLookBackPeriods">
+                                    <input style="margin-right: 0.5rem; padding: 0.3rem;" type="text" pInputText
+                                        [(ngModel)]="lookBackPeriodsStr" (click)="$event.target.select()"/>
+                                </ng-container>
+
+                                <!-- BUTTON Update based on Lookback days -->
+                                <button pButton class="p-button-sm" label="Update"
+                                    (click)="saveLookBackPeriods()"></button>
+                            </div>
+
+                            <!-- BUTTON Fetch Latest Price Data and Analysis -->
+                            <div class="p-col-12 p-md-5 p-lg-3 p-d-flex p-ai-center"
+                                *ngIf="this.selectedSymbolDictType && ['factor_analysis', 'factor_analysis_sector'].includes(this.selectedSymbolDictType['code'])">
+                                <span style="font-size: 0.8rem;">
+                                    Price data of <span style="color: red;"> {{resFactorAnalysis['update_date']}}
+                                    </span>
+                                    EST
+                                    <i class="pi pi-refresh p-text-bold"
+                                        style="color: red;cursor: pointer;font-size: 1.2rem;"
+                                        (click)="handleLiveDataRefresh()"></i>
+                                </span>
+                            </div>
+
+                            <!-- Scale Min and Max -->
+                            <div class="p-col-12 p-md-6 p-lg-4 center">
+                                <div class="p-grid">
+                                    <div class="p-col-12" style="padding-bottom: 0;">
+                                        <p-progressBar [value]="100" class="bargradient2" [style]="{height: '0.5rem'}"
+                                            [showValue]="false">
+                                        </p-progressBar>
+                                    </div>
+
+                                    <div class="p-col-4"
+                                        style="text-align: left;font-size: 0.9rem;font-weight: bold;padding-top: 0;">
+                                        Min
+                                    </div>
+
+                                    <div class="p-col-4" style="font-size: 0.9rem;font-weight: bold;padding-top: 0;">
+                                        0
+                                    </div>
+
+                                    <div class="p-col-4"
+                                        style="text-align: right;font-size: 0.9rem;font-weight: bold;padding-top: 0;">
+                                        Max
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Error in Lookback Inputs -->
+                            <div class="p-col-12" *ngIf="editingLookBackPeriodsErr" style="color: red;">
+                                {{editingLookBackPeriodsErr}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABLE for SPY Excess Return Analysis -->
+                    <div *ngIf="resFactorAnalysis" class="border-shadow" style="margin: -0.5rem;">
+                        <p-table [autoLayout]="true" [columns]="relPerformanceCols"
+                            [value]="resFactorAnalysis['excess_period_returns']">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th style="width: 4rem;"></th>
+                                    <th style="width: 12rem;"></th>
+                                    <th style="width: 6rem;" *ngIf="showHoldingsColumn()"></th>
+                                    <th style="text-align: center;font-size: 1.3rem;"
+                                        *ngFor="let prd of this.lookBackPeriods">{{prd}} days
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: left; width: 4rem;">Symbol</th>
+                                    <th style="text-align: left; width: 12rem;">Name</th>
+                                    <th style="text-align: center; width: 6rem;" *ngIf="showHoldingsColumn()">Top 10 Holdings</th>
+                                    <th style="text-align: center;" *ngFor="let col of columns"
+                                        pSortableColumn="{{col.field}}.value">
+                                        {{col.header}}
+                                        <p-sortIcon field="{{col.field}}.value"></p-sortIcon>
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-row let-columns="columns">
+                                <tr>
+                                    <td style="text-align: left;font-weight: bold;" class="symbol"
+                                        (click)="onSymbolClick(row.symbol)">
+                                        {{row.symbol}}
+                                    </td>
+                                    <td style="text-align: left;">{{selectedSymbolsDict[row.symbol]}}</td>
+                                    <td style="text-align: center;" *ngIf="showHoldingsColumn()">
+                                        <i *ngIf="showHoldingsIcon(row.symbol)" class="pi pi-sitemap"
+                                            style="font-size: 1.5rem;cursor: pointer;color: #004b8d;font-weight: bold;"
+                                            (click)="onSymbolRowClick({symbol: row.symbol, name: selectedSymbolsDict[row.symbol]})"></i>
+                                    </td>
+                                    <!-- <td [ngStyle]="{'background-color': row[col.field]['color']}"
+                                                                    style="font-weight:500;" *ngFor="let col of columns">
+                                                                    {{row[col.field]['value'] | percent:'1.2-2'}}</td> -->
+                                    <td style="text-align: center;" *ngFor="let col of columns">
+                                        <p-tag
+                                            [style]="{'background-color': row[col.field]['color'], 'font-size': '1rem', 'width': '5rem'}">
+                                            {{row[col.field]['value'] | percent:'1.2-2'}}
+                                        </p-tag>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="SPY Excess Return Correlations">
+                <ng-template pTemplate="content">
+                    <!-- While Loading and NO Data -->
+                    <div *ngIf="!resFactorAnalysis">
+                        {{ loadingMessage }}
+                    </div>
+
+                    <!-- Controls on Top -->
+                    <div *ngIf="resFactorAnalysis" style="padding: 0.5rem;">
+                        <div class="p-grid">
+                            <!-- CORR Days and Inputs Edits and Reload Button -->
+                            <div class="p-col-12 p-md-6 p-lg-5">
+                                <!-- WHEN Viewing -->
+                                <div class="p-d-flex p-ai-center p-jc-start p-mr-1" *ngIf="!editingCorrPeriods">
+                                    <span class="p-text-bold p-mr-2">
+                                        Corr. Days:
+                                    </span>
+
+                                    <!-- Switch Between CORR Days output -->
+                                    <p-selectButton class="p-d-inline-block p-mr-2" [options]="corrPeriods"
+                                        [(ngModel)]="selectedCorrPeriod" (onChange)="handleCorrPeriodChange($event)">
+                                    </p-selectButton>
+
+                                    <!-- Click to Edit CORR Days -->
+                                    <span class="p-text-bold p-mr-2"
+                                        style="text-decoration: underline;color: blue;cursor: pointer;"
+                                        (click)="editCorrPeriods()">
+                                        edit
+                                    </span>
+
+                                    <!-- BUTTON Recalculate Numbers -->
+                                    <button pButton class="p-button-sm" label="Update"
+                                        (click)="handleReload()"></button>
+                                </div>
+
+                                <!-- WHEN Editing -->
+                                <div class="p-mr-1 p-d-inline-block" *ngIf="editingCorrPeriods">
+                                    <span class="p-text-bold p-mr-2">Corr. Days:</span>
+
+                                    <input class="p-mr-2 p-p-1" type="text" pInputText [(ngModel)]="corrPeriodsStr" (click)="$event.target.select()"/>
+
+                                    <span class="p-text-bold p-mr-1"
+                                        style="text-decoration: underline;color: blue; cursor: pointer;"
+                                        (click)="saveCorrPeriods()">save
+                                    </span>
+
+                                    <!-- BUTTON Recalculate Numbers -->
+                                    <button pButton class="p-button-sm" label="Update"
+                                        (click)="handleReload()"></button>
+                                </div>
+                            </div>
+
+                            <div class="p-col-12 p-md-6 p-lg-3 p-d-flex p-ai-center" style="font-size: 0.8rem;"
+                                *ngIf="this.selectedSymbolDictType &&  ['factor_analysis', 'factor_analysis_sector'].includes(this.selectedSymbolDictType['code'])">
+                                <span style="font-size: 0.8rem;">
+                                    Price data of <span style="color: red;"> {{resFactorAnalysis['update_date']}}
+                                    </span>
+                                    EST
+                                    <i class="pi pi-refresh p-text-bold"
+                                        style="color: red;cursor: pointer;font-size: 1.2rem;"
+                                        (click)="handleLiveDataRefresh()"></i>
+                                </span>
+
+                            </div>
+
+                            <!-- Scale Min and Max -->
+                            <div class="p-col-12 p-md-6 p-lg-4 center">
+                                <div class="p-grid">
+                                    <div class="p-col-12" style="padding-bottom: 0;">
+                                        <p-progressBar [value]="100" class="bargradient2" [style]="{height: '0.5rem'}"
+                                            [showValue]="false">
+                                        </p-progressBar>
+                                    </div>
+
+                                    <div class="p-col-4"
+                                        style="text-align: left;font-size: 0.9rem;font-weight: bold;padding-top: 0;">
+                                        Min
+                                    </div>
+
+                                    <div class="p-col-4" style="font-size: 0.9rem;font-weight: bold;padding-top: 0;">
+                                        0
+                                    </div>
+
+                                    <div class="p-col-4"
+                                        style="text-align: right;font-size: 0.9rem;font-weight: bold;padding-top: 0;">
+                                        Max
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Error in Lookback Inputs -->
+                            <div class="p-col-12" *ngIf="editingCorrPeriodsErr" style="color: red;">
+                                {{editingCorrPeriodsErr}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABLE for SPY Excess Return CORR -->
+                    <div *ngIf="resFactorAnalysis" class="border-shadow" style="margin: -0.50rem;">
+                        <p-table [columns]="selectedSymbolsArr" [value]="selectedCorrDataArr" [autoLayout]="true">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th style="text-align: left; width: 12rem;">Name</th>
+                                    <th style="text-align: left; width: 4rem;">Symbol</th>
+                                    <th style="text-align: center; color: #004b8d;" class="symbol"
+                                        (click)="onSymbolClick(col)" *ngFor="let col of columns">{{col}}</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-row let-columns="columns">
+                                <tr>
+                                    <td style="text-align: left;">
+                                        {{row['name']}}
+                                    </td>
+                                    <td style="text-align: left;font-weight: bold;" class="symbol"
+                                        (click)="onSymbolClick(row['symbol'])">
+                                        {{row['symbol']}}
+                                    </td>
+                                    <td style="text-align: center;" *ngFor="let col of columns">
+                                        <p-tag [style]="{'background-color': row[col]['color'], 'font-size': '1rem'}">
+                                            {{row[col]['value'] | number:'1.2-2'}}
+                                        </p-tag>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Excess Return Z-Score and Rank">
+                <ng-template pTemplate="content">
+                    <!-- While loading and NO Data -->
+                    <div *ngIf="!resFactorAnalysis">
+                        {{ loadingMessage }}
+                    </div>
+
+                    <!-- Controls on Top -->
+                    <div *ngIf="resFactorAnalysis" style="padding: 0.5rem;">
+                        <div class="p-grid">
+                            <div class="p-col-12 p-md-6 p-lg-3 p-d-flex p-ai-center p-jc-center">
+                                <span class="p-text-bold p-mr-1">Score Days: </span>
+
+                                <p-selectButton class="p-d-inline-block" [options]="scorePeriods"
+                                    [(ngModel)]="selectedScorePeriod" (onChange)="handleScorePeriodChange($event)">
+                                </p-selectButton>
+                            </div>
+
+                            <div class="p-col-12 p-md-6 p-lg-3 p-d-flex p-ai-center p-jc-center">
+                                <span class="p-text-bold p-mr-1">Type: </span>
+
+                                <p-selectButton class="p-d-inline-block" [options]="scoreFieldTypes"
+                                    [(ngModel)]="selectedFiledType" optionLabel="name" optionValue="key"
+                                    (onChange)="handleScorePeriodChange($event)">
+                                </p-selectButton>
+                            </div>
+
+                            <div class="p-col-12 p-md-6 p-lg-3 p-d-flex p-ai-center p-jc-center"
+                                *ngIf="this.selectedSymbolDictType && ['factor_analysis', 'factor_analysis_sector'].includes(this.selectedSymbolDictType['code'])">
+                                <span style="font-size: 0.8rem;">
+                                    Price data of <span style="color: red;"> {{resFactorAnalysis['update_date']}}
+                                    </span>
+                                    EST
+                                    <i class="pi pi-refresh p-text-bold"
+                                        style="color: red;cursor: pointer;font-size: 1.2rem;"
+                                        (click)="handleLiveDataRefresh()"></i>
+                                </span>
+                            </div>
+
+                            <div class="p-col-12 p-md-6 p-lg-3 center">
+                                Click on score to see score trend over time.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABLE for Z-Score and Rank -->
+                    <div *ngIf="resFactorAnalysis" class="border-shadow" style="margin: -0.5rem;">
+                        <p-table [columns]="selectedSymbolsArr" [value]="scoreRankDataArr" [autoLayout]="true">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th style="text-align: left; width: 12rem;">Name</th>
+                                    <th style="text-align: left; width: 4rem;">Symbol</th>
+                                    <th style="text-align: center;color: #004b8d;" class="symbol"
+                                        (click)="onSymbolClick(col)" *ngFor="let col of columns">{{col}}</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-row let-columns="columns">
+                                <tr>
+                                    <td style="text-align: left;">{{row['name']}}</td>
+                                    <td style="text-align: left;font-weight: bold;" class="symbol"
+                                        (click)="onSymbolClick(row['symbol'])">{{row['symbol']}}</td>
+                                    <td style="text-align: center;" *ngFor="let col of columns"
+                                        (click)="handleScoreClick(row['symbol'], col)">
+                                        <p-tag
+                                            [style]="{'font-size': '1rem', 'cursor': row['symbol'] == col ? 'default' :'pointer'}"
+                                            [styleClass]="getScoreStyleClass(row[col][selectedScoreRankField])">
+                                            {{row[col][selectedScoreRankField] | number:'1.2-2'}}
+                                            <!-- <i class="pi pi-chevron-circle-right p-ml-1"></i> -->
+                                        </p-tag>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="Excess Return Z-Score and Rank - Filtered">
+                <ng-template pTemplate="content">
+                    <!-- While Loading and NO Data -->
+                    <div *ngIf="!resFactorAnalysis">
+                        {{ loadingMessage }}
+                    </div>
+
+                    <!-- Controls on Top -->
+                    <div *ngIf="resFactorAnalysis" style="padding: 0.5rem;">
+                        <div class="p-grid">
+                            <div class="p-col-12 p-lg-7 p-d-flex p-ai-center p-jc-center">
+                                <div class="p-mr-2">Correlation: </div>
+
+                                <div class="p-d-inline-block p-p-1 p-mr-2"
+                                    style="border: 1px solid gray; border-radius: 0.2rem;">
+                                    <p-radioButton class="p-d-inline-block p-mr-2" name="filter" label="less"
+                                        value="less" [(ngModel)]="correlationLessThan"></p-radioButton>
+                                    <p-radioButton class="p-d-inline-block p-mr-1" name="filter" label="more"
+                                        value="more" [(ngModel)]="correlationLessThan"></p-radioButton>
+                                </div>
+
+                                <div class="p-d-inline-block p-mr-2">
+                                    than
+                                </div>
+
+                                <p-inputNumber class="p-mr-2" inputStyleClass="p-p-2" [(ngModel)]="correlationThreshold"
+                                    size="4" min="-1" max="1" step="0.01" showButtons="true" minFractionDigits="2"
+                                    maxFractionDigits="2">
+                                </p-inputNumber>
+
+                                <p-button class="p-mr-2" label="Filter" (onClick)="getScoreAndRankFilterTableReady()">
+                                </p-button>
+                            </div>
+
+                            <div class="p-col-12 p-lg-5 p-d-flex p-ai-center p-jc-end"
+                                *ngIf="this.selectedSymbolDictType && ['factor_analysis', 'factor_analysis_sector'].includes(this.selectedSymbolDictType['code'])">
+                                <span style="font-size: 0.8rem;">
+                                    Price data of <span style="color: red;"> {{resFactorAnalysis['update_date']}}
+                                    </span>
+                                    EST
+                                    <i class="pi pi-refresh p-text-bold"
+                                        style="color: red;cursor: pointer;font-size: 1.2rem;"
+                                        (click)="handleLiveDataRefresh()"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABLE for Z-Score and Rank - FILTERED -->
+                    <div *ngIf="resFactorAnalysis" class="border-shadow" style="margin: -0.5rem;">
+                        <p-table [value]="scoreRankFilteredArr" sortField="corr" [autoLayout]="true">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="text-align: left;">Symbol Pair</th>
+                                    <th pSortableColumn="corr">
+                                        Correlation <p-sortIcon field="corr"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="21_rank">
+                                        21 Day %tile <p-sortIcon field="21_rank"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="63_rank">
+                                        63 Day %tile <p-sortIcon field="63_rank"></p-sortIcon>
+                                    </th>
+                                    <th pSortableColumn="252_rank">
+                                        252 Day %tile <p-sortIcon field="252_rank"></p-sortIcon>
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-row>
+                                <tr>
+                                    <td style="text-align: left;font-weight: bold;text-decoration: underline;">
+                                        <span (click)="handleScoreClick(row['rowSymbol'], row['colSymbol'])"
+                                            class="symbol">
+                                            {{row['rowSymbol']}}:{{row['colSymbol']}}
+                                        </span>
+                                    </td>
+
+                                    <td style="text-align: center;font-weight: 500;">{{row['corr'] | number:'1.2-2'}}
+                                    </td>
+
+                                    <td style="text-align: center;">
+                                        <p-tag [styleClass]="getPercentileStyleClass(row['21_rank'])"
+                                            [style]="{'font-size': '1rem', 'background-color': row['21_rank'] >= 75 ? '#c20000' : row['21_rank'] <= 25 ? '#004700' : '#495057', 'width': '6rem'}">
+                                            {{row['21_rank'] | number:'1.2-2'}}%
+                                        </p-tag>
+                                    </td>
+
+                                    <td style="text-align: center;">
+                                        <p-tag [styleClass]="getPercentileStyleClass(row['63_rank'])"
+                                            [style]="{'font-size': '1rem', 'background-color': row['63_rank'] >= 75 ? '#c20000' : row['63_rank'] <= 25 ? '#004700' : '#495057', 'width': '6rem'}">
+                                            {{row['63_rank'] | number:'1.2-2'}}%
+                                        </p-tag>
+                                    </td>
+
+                                    <td style="text-align: center;">
+                                        <p-tag [styleClass]="getPercentileStyleClass(row['252_rank'])"
+                                            [style]="{'font-size': '1rem', 'background-color': row['252_rank'] >= 75 ? '#c20000' : row['252_rank'] <= 25 ? '#004700' : '#495057', 'width': '6rem'}">
+                                            {{row['252_rank'] | number:'1.2-2'}}%
+                                        </p-tag>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </ng-template>
+            </p-tabPanel>
+        </p-tabView>
+
+
+        <p-sidebar [(visible)]="isChartVisible" position="top" [baseZIndex]="10000" [style]="{ height: '80vh' }" [modal]="false">
+            <div style="font-weight:normal;text-align: center;font-size: 1.5rem;" *ngIf="selectedPair">
+                <strong>21D</strong> & <strong>63D</strong> z-Score Percentile Chart:
+                <strong>{{selectedPair[0]}}/{{selectedPair[1]}}</strong>
+            </div>
+            <div style="text-align: center;" *ngIf="zScorePairData">Correlation:
+                <strong>{{this.zScorePairData['correlation'] | number}}</strong>
+            </div>
+            <div>
+                <app-chart-fundamentals *ngIf="zScorePairData" [fundamentalData]="zScorePairData"
+                    [chartConfig]="chartConfig" [seriesConfig]="selectedSeriesConfigs"
+                    [trendLinesChecksAvailable]="false" [isPeriodBarVisible]="false"
+                    (onPeriodChanged)="handlePriceChartPeriodChange($event)"
+                    [period]="selectedTimePeriod"></app-chart-fundamentals>
+
+                <div *ngIf="!zScorePairData" style="margin-top: 5rem; margin-left: 0;text-align: center;">
+                    No Chart Data for the selected pair...
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <p-button type="button" (onClick)="isChartVisible = false" label="Close"
+                    styleClass="p-button-secondary"></p-button>
+            </div>
+
+        </p-sidebar>
+    </div>
+</div>

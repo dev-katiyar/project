@@ -1,0 +1,23 @@
+.btn-normal {
+    color: gray;
+    background-color: #f3f3f3;
+    vertical-align: middle;
+    font-size: 14px;
+    border: 1px solid transparent;
+    display: inline-block;
+    position: relative;
+    padding: .385em .5em;
+    text-decoration: none !important;
+    cursor: pointer;
+    text-align: center;
+    zoom: 1;
+    overflow: visible;
+    line-height: normal;
+    margin-right: 2px;
+    border-radius: 8px;
+    border: 1px solid gray;
+}
+
+::ng-deep .p-datatable .p-datatable-header {
+    padding: 0.25rem !important;
+}

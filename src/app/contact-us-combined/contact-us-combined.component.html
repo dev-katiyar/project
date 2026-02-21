@@ -1,0 +1,19 @@
+<div class="sv-center bg-white">
+    <div style="max-width: 1000px;">
+        <h2>Have a Question?</h2>
+        <p-tabView class="sv-tabview-nopadding">
+            <p-tabPanel header="SimpleVisor Investing">
+                <ng-template pTemplate="content">
+                    <app-contact-us-investing (msgSent)="messageSent($event)"></app-contact-us-investing>
+                </ng-template>
+            </p-tabPanel>
+
+            <p-tabPanel header="SimpleVisor">
+                <ng-template pTemplate="content">
+                    <div class="p-mt-4"></div>
+                    <contact-us-diy (msgSent)="messageSent($event)" type="combined"></contact-us-diy>
+                </ng-template>
+            </p-tabPanel>
+        </p-tabView>
+    </div>
+</div>

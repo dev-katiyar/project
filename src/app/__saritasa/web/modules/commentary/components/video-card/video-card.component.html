@@ -1,0 +1,21 @@
+<div *ngIf="video.snippet" class="video-card saritasa-card border-shadow">
+    <div class="video-card-image">
+        <a [href]="'https://www.youtube.com/watch?v=' + video.snippet.resourceId.videoId" target="_blank">
+            <img *ngIf="video?.snippet.thumbnail?.url" [src]="video.snippet.thumbnail.url" alt="Vide preview" />
+        </a>
+    </div>
+
+    <div class="video-card-content">
+        <a class="video-card-heading" [href]="'https://www.youtube.com/watch?v=' + video.snippet.resourceId.videoId" target="_blank">
+            {{ video.snippet.title }}
+        </a>
+
+        <div class="video-card-wrapper">
+            <div class="video-card-channel">{{ video.snippet.channelTitle }}</div>
+        </div>
+
+        <a [href]="'https://www.youtube.com/watch?v=' + video.snippet.resourceId.videoId" class="link" target="_blank">
+            Watch now
+        </a>
+    </div>
+</div>

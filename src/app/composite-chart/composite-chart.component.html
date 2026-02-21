@@ -1,0 +1,34 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <div class="p-grid">
+            <div class="p-col-1">
+                <p-dropdown [options]="compositeChartConfig?.colsToPlot" [(ngModel)]="selectedColToPlot"
+                    optionLabel="yColName" (onChange)="onColToPlotChange($event)"></p-dropdown>
+            </div>
+
+            <div class="p-col-11 " style="text-align: center; padding: 1.2rem;">
+                <span *ngFor="let chartType of chartTypes" 
+                    style="display:inline-block ;" class="pill-item" >
+                    <a class="symbol" [ngClass]="{ 'active-item': chartType ==  selectedChartType}"
+                        (click)="onChartTypeChanged(chartType)">
+                        {{chartType}}
+                    </a>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12">
+        <app-bubble-chart *ngIf="selectedChartType == 'Bubble'"
+            [dataArray]="compositeChartConfig?.dataArray" [seriesConfig]="bubbleChartSeriesConfig"
+        ></app-bubble-chart>
+
+        <app-bar-chart2 *ngIf="selectedChartType == 'Bar'"
+            [dataArray]="compositeChartConfig?.dataArray" [seriesConfig]="barChartSeriesConfig"
+        ></app-bar-chart2>
+
+        <app-heat-chart *ngIf="selectedChartType == 'Heat Map'"
+            [dataArray]="compositeChartConfig?.dataArray" [seriesConfig]="heatChartSeriesConfig"
+        ></app-heat-chart>
+    </div>
+</div>

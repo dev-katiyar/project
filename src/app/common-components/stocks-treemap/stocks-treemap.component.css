@@ -1,0 +1,58 @@
+.heat-heading {
+  background-color: #646464;
+  font-weight: bold;
+}
+
+.heat-green {
+  background-color: #6da958;
+}
+
+.rwd-table th,
+.rwd-table td {
+  text-align: center;
+}
+
+.rwd-table {
+  min-width: 100%;
+  color: #fff;
+  overflow: hidden;
+  border-spacing: 1px;
+}
+.rwd-table a {
+  text-decoration: none;
+  color: #fff;
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.heat-light-red {
+  background-color: #fc9a99;
+}
+
+.heat-red {
+  background-color: #ec6163;
+}
+
+.heat-light-green {
+  background-color: #a2c690;
+}
+
+.heat-grey {
+  background-color: #646464;
+}
+
+.rwd-table th,
+.rwd-table td {
+  margin: 0.5em 1em;
+}
+
+.rwd-table th,
+.rwd-table td {
+  padding: 7px 1px !important;
+}
+
+.heatMap {
+  border: 1px solid white;
+  text-align: center;
+}

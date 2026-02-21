@@ -1,0 +1,59 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <a style="cursor: pointer;" (click)="onBackFromManagePortfoliosClick()"><b>&lt; Back</b></a>
+    </div>
+
+    <div class="p-col-12">
+        <div class="p-grid">
+            <div class="p-col-12 p-sm-6">
+                <h2>Manage {{ title }}s</h2>
+            </div>
+    
+            <div class="p-col-12 p-sm-6">
+                <button style="float:right" type="button" pButton *ngIf="isAdminUser == 1"
+                    (click)="onCreatePortfolioClick()" [label]="'Create a ' + title">
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="p-col-12 p-p-0">
+        <div class="border-shadow">
+            <p-table [value]="portfolios">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: center;width: 5rem;">#</th>
+    
+                        <th style="text-align: center;" pSortableColumn="name">
+                            Title
+                            <p-sortIcon field="name"></p-sortIcon>
+                        </th>
+    
+                        <th style="width: 10rem;"></th>
+                    </tr>
+                </ng-template>
+    
+                <ng-template pTemplate="body" let-portfolio let-rowIndex="rowIndex">
+                    <tr>
+                        <td style="text-align: center;">{{ rowIndex + 1 }}</td>
+    
+                        <td style="text-align: center;">
+                            <span class="symbol" (click)="onNameClick(portfolio)">{{portfolio.name }}</span>
+                        </td>
+    
+                        <td style="text-align: right;">
+                            <i (click)="onDeletePortfolioClick(portfolio)" class="pi pi-times-circle"
+                                style="font-size: 1em; margin-right: 1em; cursor: pointer; color: red"
+                                title="Delete Portfolio">
+                            Delete</i>
+
+                            <i (click)="onEditPortfolioClick(portfolio)" class="pi pi-pencil"
+                            style="font-size: 1em; margin-right: 1rem; cursor: pointer;" title="Edit Portfolio">
+                        Edit</i>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

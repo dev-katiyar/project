@@ -1,0 +1,85 @@
+::ng-deep .p-organizationchart .p-organizationchart-node-content {
+    padding: 0.25rem;
+}
+
+::ng-deep .p-organizationchart .p-organizationchart-table>tbody>tr>td {
+    padding: 0.25rem;
+}
+
+::ng-deep .p-organizationchart-table tr:nth-child(even) {
+    background-color: transparent;
+}
+
+.third-width {
+    width: 33%;
+    min-width: 400px;
+}
+
+::ng-deep .bullish {
+    color: green;
+    font-weight: bold;
+}
+
+::ng-deep .bearish {
+    color: red;
+    font-weight: bold;
+}
+
+::ng-deep .bullish-bg {
+    background-color: #d8f1d8 !important;
+}
+
+::ng-deep .bearish-bg {
+    background-color: #f0d2d5 !important;
+}
+
+::ng-deep .neutral-bg {
+    background-color: #ffff0029 !important;
+}
+
+::ng-deep .bullish-nbg {
+    background-color: #c7edc7 !important;
+}
+
+::ng-deep .bearish-nbg {
+    background-color: #f2ced2 !important;
+}
+
+::ng-deep .neutral-nbg {
+    background-color: #ffff004f !important;
+}
+
+.neutral {
+    color: unset;
+}
+
+.action-text {
+    font-size: 1.5rem;
+}
+
+.symbol-text {
+    font-size: 1.5rem;
+}
+
+// :host ::ng-deep .p-tabview .p-tabview-panels {
+//   padding: 0.1rem;
+// }
+
+:host ::ng-deep .p-tabview .p-tabview-nav .p-tabview-nav-link {
+    padding: 0.5rem;
+}
+
+.pre-formatted {
+  font-family: inherit; // Override pre's default monospace font
+  white-space: pre-line; // Preserve line breaks but wrap text
+  margin: 0; // Remove pre's default margin
+}
+
+.selected {
+    color: white !important;
+    background-color: #004b8d !important;
+    font-weight: bold !important;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0.5rem;
+}

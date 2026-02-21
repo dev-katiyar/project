@@ -1,0 +1,70 @@
+<div class="p-grid" style="margin: -0.75rem;">
+    <div class="p-col-12 p-md-6 p-p-1">
+        <div class="border-shadow p-p-2">
+            <div class="p-text-bold p-p-1" style="font-size: 1.3rem;">SimpleVisor Sentiment Historical</div>
+
+            <line-chart yAxisText="Sentiment Value" barClass="chart-big" [dataTable]="sentimentData" period="3year"
+                (onPeriodChanged)="sentimentPeriodChanged($event)" yAxisMin="-105" yAxisMax="105">
+            </line-chart>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-md-6 p-p-1">
+        <div class="border-shadow p-p-2">
+            <div class="p-text-bold p-p-1" style="font-size: 1.3rem;">SimpleVisor Strong Buy Strong Sell Ratio</div>
+
+            <line-chart yAxisText="# Stocks" barClass="chart-big" [dataTable]="buySellRatio" period="3year"
+                (onPeriodChanged)="buySellPeriodChanged($event)">
+            </line-chart>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-md-6 p-p-1">
+        <div class="border-shadow p-p-2">
+            <div class="p-text-bold p-p-1" style="font-size: 1.3rem;">S&P 500 Stocks Overbought/Oversold Count</div>
+
+            <line-chart yAxisText="% of Stocks" barClass="chart-big" [dataTable]="obos" period="3year"
+                (onPeriodChanged)="obosPeriodChanged($event)">
+            </line-chart>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-md-6 p-p-1">
+        <div class="border-shadow p-p-2">
+            <div class="p-text-bold p-p-1" style="font-size: 1.3rem;">
+                S&P 500 Stocks Above Moving Averages
+                <app-help-icon key="marketSentimentsSpyMovingAvg"></app-help-icon>
+            </div>
+
+            <line-chart yAxisText="% of Stocks" barClass="chart-big" [dataTable]="movAvg" period="3year"
+                (onPeriodChanged)="movingAvgPeriodChanged($event)" yAxisMin="0" yAxisMax="100">
+            </line-chart>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-md-6 p-p-1">
+        <div class="border-shadow p-p-2">
+            <div class="p-text-bold p-p-1" style="font-size: 1.3rem;">
+                Fear/Greed
+                <app-help-icon key="homeFearGreed"></app-help-icon>
+            </div>
+
+            <line-chart yAxisText="Fear/Greed Score" barClass="chart-big" [dataTable]="fearGreed" period="3year"
+                (onPeriodChanged)="fearGreedPeriodChanged($event)">
+            </line-chart>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-md-6 p-p-1">
+        <div class="border-shadow p-p-2">
+            <div class="p-text-bold p-p-1" style="font-size: 1.3rem;">
+                Technical Gauge
+                <app-help-icon key="homeTechnical"></app-help-icon>
+            </div>
+
+            <line-chart yAxisText="Technical Score" barClass="chart-big" [dataTable]="technicalMeasure" period="3year"
+                (onPeriodChanged)="technicalMeasurePeriodChanged($event)">
+            </line-chart>
+        </div>
+    </div>
+</div>

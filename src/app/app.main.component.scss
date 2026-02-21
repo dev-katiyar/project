@@ -1,0 +1,21 @@
+.help-icon-container {
+    margin-top: -1.2rem;
+    padding-bottom: 0.5rem;
+    text-align: right;
+}
+
+@media (min-width: 1025px) {
+    .layout-menu-container {
+        display: none;
+    }
+
+    .layout-wrapper.layout-horizontal  .layout-content {
+        padding-top: 0;
+    }
+
+    .help-icon-container {
+        margin-top: -0.9rem;
+        padding-bottom: 0.5rem;
+        text-align: right;
+    }
+}

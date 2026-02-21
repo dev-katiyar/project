@@ -1,0 +1,281 @@
+<!-- Current Plan -->
+<div *ngIf="userData" class="p-grid border-shadow p-p-1 p-mb-3 p-mt-1" style="background-color: white;">
+    <!-- Heading -->
+    <div class="p-col-12" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+        Current Plan
+    </div>
+
+    <!-- Horizontal Divider -->
+    <hr style="margin: 0.5rem 0;width: 100%;">
+
+    <!-- Content - Profile -->
+    <div class="p-col-12">
+        <div class="p-grid p-ai-center">
+            <!-- Image -->
+            <div class="p-col-12 p-md-3" style="text-align: center;">
+                <img src="./assets/images/logo-transparent.png">
+            </div>
+
+            <!-- Plan Details and Buttons -->
+            <div class="p-col-12 p-md-9">
+                <div class="p-grid p-fluid p-ai-center">
+                    <div class="p-col-12 p-md-8 p-p-3">
+                        <div *ngIf="userStripeUserSubscriptionDetails">
+                            <div *ngIf="!userStripeUserSubscriptionDetailsMessage">
+
+
+                                <div class="p-text-bold p-mb-2">
+                                    SimpleVisor
+                                    {{ userStripeUserSubscriptionDetails?.subscription?.plan?.nickname }}
+                                    (${{userStripeUserSubscriptionDetails?.subscription?.plan?.amount / 100 }}) Plan
+                                </div>
+
+                                <div class="p-mb-2">Unlimited Access to the comprehensive suit of investment research
+                                    tools,
+                                    insights, and market data for making better investment decisions.
+                                </div>
+
+                                <div class="p-mb-2">
+                                    <span class="p-text-bold">Current subscription from:</span>&nbsp;
+                                    {{ userStripeUserSubscriptionDetails?.subscription?.start_date * 1000 |
+                                    date:'fullDate'
+                                    }}
+                                </div>
+
+                                <div class="p-mb-2">
+                                    <span class="p-text-bold">Subscription status:</span>&nbsp;
+                                    {{ userStripeUserSubscriptionDetails?.subscription?.status | titlecase }} 
+                                    <span *ngIf="userStripeUserSubscriptionDetails?.subscription?.canceled_at" style="color: red;"> 
+                                        (Cancelled)
+                                    </span>
+                                </div>
+
+                                <div *ngIf="userStripeUserSubscriptionDetails?.subscription?.canceled_at"
+                                    class="p-mb-2">
+                                    <div>
+                                        <span class="p-text-bold">Cancelled on:</span>&nbsp;
+                                        {{ userStripeUserSubscriptionDetails?.subscription?.canceled_at * 1000 |
+                                        date:'fullDate' }}
+                                    </div>
+
+                                    <div>
+                                        <span class="p-text-bold">Access ends on:</span>&nbsp;
+                                        {{ userStripeUserSubscriptionDetails?.subscription?.cancel_at * 1000 |
+                                        date:'fullDate' }}
+                                    </div>
+                                </div>
+
+                                <div class="p-mb-2">
+                                    <span class="p-text-bold">User since:</span>&nbsp;
+                                    {{ userData.date | date:'fullDate' }}
+                                </div>
+                            </div>
+                            <div class="info-card" *ngIf="userStripeUserSubscriptionDetailsMessage">
+                                {{ userStripeUserSubscriptionDetailsMessage }}
+                            </div>
+                        </div>
+
+                        <div *ngIf="!userStripeUserSubscriptionDetails && !subscriptionMessage">
+                            No subscription details found for this user. Please
+                            <a routerLink="/contact-us">
+                                <span>Contact Us</span>
+                            </a>.
+                        </div>
+
+                        <div class="info-card" *ngIf="subscriptionMessage">
+                            {{ subscriptionMessage }}
+                        </div>
+                    </div>
+
+                    <div class="p-col-12 p-md-4 p-p-3" *ngIf="userData.subscriptionName">
+                        <div class="p-grid">
+                            <div class="p-col-12" *ngIf="!userStripeUserSubscriptionDetailsMessage && !userStripeUserSubscriptionDetails?.subscription?.canceled_at">
+                                <button pButton (click)="upgradePlan('changeSubscription')"
+                                    class="p-button-success p-mb-4" label="Change Plan">
+                                </button>
+
+                                <button pButton (click)="openUnsubscribeDialog()"
+                                    class="p-button-outlined" label="Cancel Subscription">
+                                </button>
+                            </div>
+
+                            <div class="p-col-12" *ngIf="userStripeUserSubscriptionDetailsMessage || userStripeUserSubscriptionDetails?.subscription?.canceled_at">
+                                <button pButton (click)="upgradePlan('subscribe')"
+                                    class="p-button-success" label="Subscribe">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- API Key -->
+<div *ngIf="userData?.api_created_at" class="p-grid border-shadow p-p-1 p-mb-3" style="background-color: white;">
+    <!-- Heading -->
+    <div class="p-col-12" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+        API Key
+    </div>
+
+    <!-- Horizontal Divider -->
+    <hr style="margin: 0.5rem 0;width: 100%;">
+
+    <!-- Content - API Details -->
+    <div class="p-col-12" *ngIf="userData?.api_created_at">
+        <div class="p-grid">
+            <div class="p-col-12">
+                The API key can be used for interact with limited set of APIs programmatically. A new API key need to be
+                generated if lost.
+            </div>
+
+            <!-- When we have old API Key -->
+            <div class="p-col-12 show_items" *ngIf="userData?.api_created_at && !newApiKey">
+                API Key: <span class="p-text-bold">{{ userData?.api_key }}</span>
+                <button pButton (click)="generateApiKey(userData?.userId)" *ngIf="userData.isPaid==1"
+                    class="p-button-rounded" label="Generate New Key"></button>
+            </div>
+
+            <!-- When we have new API Key -->
+            <div class="p-col-12 show_items" *ngIf="newApiKey">
+                API Key: <span class="p-text-bold">{{ newApiKey }}</span>
+                <button pButton (click)="copyApiKeyToClipboard()" class="p-button-rounded p-button-success"
+                    label="Copy API Key"></button>
+            </div>
+
+            <div class="p-col-12 p-text-center" style="color: green;">
+                {{newApiKeyMessage}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pyament Method -->
+<div *ngIf="userData" class="p-grid border-shadow p-p-1 p-mb-3" style="background-color: white;">
+    <!-- Heading -->
+    <div class="p-col-12" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+        Payment Method
+    </div>
+
+    <!-- Horizontal Divider -->
+    <hr style="margin: 0.5rem 0;width: 100%;">
+
+    <!-- Content - Card Details -->
+    <div class="p-col-12" *ngIf="userCard">
+        <div class="p-grid">
+            <div class="p-col-6">
+                {{ userCard.brand }}:&nbsp;**** {{ userCard.last4 }}&nbsp;<i class="pi pi-lock"></i>
+            </div>
+
+            <div class="p-col-6 p-text-right">
+                <button pButton (click)="changeCardBtnClick()" *ngIf="userCard" class="p-button-outlined"
+                    label="Update Card">
+                </button>
+            </div>
+
+            <div class="p-col-12 text-small red"
+                *ngIf="todayDate.getFullYear() == userCard?.exp_year && (todayDate.getMonth() + 1) == userCard?.exp_month">
+                Your card is expring this month. Please update the card details to continue the service.
+            </div>
+
+            <div class="p-col-12 text-small red"
+                *ngIf="todayDate.getFullYear() >= userCard?.exp_year && (todayDate.getMonth() + 1) > userCard?.exp_month">
+                Your card has expired. Please update the card details to continue the service.
+            </div>
+        </div>
+    </div>
+
+    <!-- If no card found -->
+    <div class="p-col-12" *ngIf="!userCard">
+        <div *ngIf="userCardStatus == 'Internal'">
+            You are internal or lifetime plan user. No card to show/update.
+        </div>
+
+        <div *ngIf="userCardStatus == 'Error'">
+            We could not retrive any card for this account. Please contact us
+            <a href="https://simplevisor.com/contact-us">
+                https://simplevisor.com/contact-us
+            </a>
+        </div>
+    </div>
+</div>
+
+
+<!-- Change Plan Dialog -->
+<p-dialog header="Select Subscription Plan" *ngIf="userData" [(visible)]="displayPlanDialog" showEffect="fade"
+    [modal]="true" [style]="{width: '30vw'}">
+    <form>
+        <fieldset id="group1" style="border:none;">
+            <div *ngFor="let item of subscriptionType"
+                style="font-size:18px;margin-bottom:10px;border:1px solid lightgrey;padding:10px;">
+                <input name="group1" style="margin-right:10px;" type="radio"
+                    [checked]="userData.subscriptionId == item.id" (change)="userData.subscriptionId = item.id"
+                    [ngModelOptions]="{standalone: true}" />
+                {{item.name}}
+            </div>
+        </fieldset>
+    </form>
+
+    <button style="margin-top:10px;margin-right:10px;" type="button" pButton class="p-button-success"
+        (click)="updateSubscription()">Select Plan
+    </button>
+    <button type="button" pButton class="p-button-danger" (click)="cancelUpgrade()">Cancel</button>
+</p-dialog>
+
+<!-- Unsubscribe Dialog -->
+<p-dialog header="Unsubscribe from SimpleVisor?" [(visible)]="displayUnsubscribeDialog" showEffect="fade" [modal]="true"
+    [style]="{width: '60vw'}">
+    <ng-conatiner *ngIf="userExitFeedback">
+        <div class="p-grid p-fluid">
+            <div class="p-col-12">
+                <h3>We're sorry to see you go!</h3>
+            </div>
+
+            <div class="p-col-12 p-text-bold">
+                Please let us know why you're unsubscribing. Your feedback helps us improve. This won’t affect your
+                cancellation.
+            </div>
+
+            <div class="p-col-12 p-text-left">
+                <div class="p-text-bold">
+                    Exit Reason<sup style="color: red;">*</sup>:
+                </div>
+                <div *ngFor="let userExitReason of userExitReasons" class="flex items-center p-p-1 p-ml-2">
+                    <p-checkbox [inputId]="userExitReason.id" name="reasons" [value]="userExitReason.id"
+                        [(ngModel)]="userExitFeedback.selUserExitReasons"></p-checkbox>
+                    <label [for]="userExitReason.id" class="ml-2"> {{ userExitReason.description }} </label>
+                </div>
+
+                <div *ngIf="userExitFeedback?.selUserExitReasons?.length == 0" class="error-msg">
+                    Please select at least one reason.
+                </div>
+            </div>
+
+            <div class="p-col-12">
+                <label for="exitFeedback" class="p-text-bold">Feedback<sup style="color: red;">*</sup></label>
+
+                <textarea rows="5" pInputTextarea id="exitFeedback" [(ngModel)]="userExitFeedback.feedback"></textarea>
+
+                <div *ngIf="userExitFeedback.feedback?.length == 0" class="error-msg">
+                    Please add some feedback.
+                </div>
+            </div>
+        </div>
+
+        <div class="p-col-12 p-mt-3 p-text-right">
+            <button type="button" pButton class="p-button-outlined p-mr-2 p-button-danger"
+                [disabled]="userExitFeedback?.selUserExitReasons?.length == 0 || !userExitFeedback.feedback"
+                (click)="userUnsubscribe()">Yes, Cancel</button>
+
+            <button type="button" class="p-button-success" pButton (click)="cancelUnsubscribe()">Nevermind, keep my
+                account</button>
+        </div>
+    </ng-conatiner>
+</p-dialog>
+
+<!-- Change Card Dialog -->
+<p-dialog header="Update Card" [(visible)]="displayChangeCardDialog" showEffect="fade" [modal]="true"
+    [style]="{width: '40vw'}" [breakpoints]="{'960px': '40vw', '750px': '50vw', '600px': '70vw', '450px': '90vw'}">
+    <app-payment (cardSaved)="onCardChangeDone()"></app-payment>
+</p-dialog>

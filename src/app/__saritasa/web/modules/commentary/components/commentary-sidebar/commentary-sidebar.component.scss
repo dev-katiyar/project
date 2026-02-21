@@ -1,0 +1,7 @@
+@media screen and (max-width: 768px) {
+  :host {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}

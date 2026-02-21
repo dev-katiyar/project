@@ -1,0 +1,169 @@
+<section class="dashboard">
+  <div class="p-grid">
+    <div class="p-col-12 login-btn">
+      <div class="p-pr-2">Already a user?</div>
+      <button pButton class="p-button-fill sign-up-button" routerLink="/login" label="Log In"></button>
+    </div>
+
+    <div class="p-col-12">
+      <h1 class="page-title">Are You Ready For Investing To Be Made Simple? Finally!</h1>
+    </div>
+
+    <div class="p-col-12 p-lg-6">
+      <div class="video-container">
+        <iframe src="https://www.youtube-nocookie.com/embed/pZUDxWWuKIs?si=2Huy8MWq-utQQTMk&amp;controls=0"
+          title="Simplevisor Introduction" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <div class="p-col-12 p-lg-6">
+      <div class="action-links">
+        <button *ngIf="userType !== 'tpa_only_user'" pButton style="width: 12rem" class="p-button-fill sign-up-button"
+          routerLink="/signup" label="Sign Up"></button>
+
+        <a routerLink="/upgradeplan/tpa" *ngIf="userType === 'tpa_only_user'">
+          <button pButton pRipple type="button" class="p-button-warning p-button-rounded">Upgrade</button>
+        </a>
+
+        <div *ngIf="userType !== 'tpa_only_user'" class="dashboard-text">
+          Sign up for your <span>free 30-day trial </span>of SimpleVisor
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="description">
+  <div class="container">
+    <p>
+      As an individual investor, you can get access to basic data tools from every online broker. However, can you:
+    </p>
+    <ul>
+      <li>Easily access and compare all the data points you need?</li>
+      <li>Do these sites help you uncover new information, or do they simply reinforce your existing knowledge?</li>
+      <li>Does the platform offer direct guidance from experienced professional investors?</li>
+    </ul>
+    <p>
+      You can get basic data tools at practically every online broker. However, can you easily access and compare all
+      the necessary data points?
+    </p>
+    <p>
+      Lastly, do these sites facilitate the discovery of new insights, or do they primarily reinforce existing knowledge
+      for informed investors?
+    </p>
+    <p>
+      You need a trusted source for data, insights and tools that are built from the ground up to help
+      you become a better investor.
+    </p>
+    <p class="bold">
+      <strong>
+        Introducing Simple Visor, the self-guided investor research site from the Portfolio Managers
+        at RIA Advisors.
+      </strong>
+    </p>
+    <P>
+      Simple Visor offers the features necessary for a variety of purposes, from day trading to supplemental
+      research to long-term investing.
+    </P>
+    <p>
+      As a subscriber, you can contact the pros at Simple Visor to ask questions, get
+      assistance and more
+    </p>
+    <div class="center" *ngIf="userType !== 'tpa_only_user'">
+      <a pButton routerLink="/signup" class="p-button-fill sign-up-button center">Sign Up</a>
+    </div>
+    <div class="center">
+      <a routerLink="/upgradeplan/tpa" *ngIf="userType === 'tpa_only_user'">
+        <button pButton pRipple type="button" class="p-button-warning p-button-rounded">Upgrade</button>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="container">
+    <h2 class="section-title">Eight key features of <span>SimpleVisor</span></h2>
+
+    <div class="features-content">
+      <div class="features-card">
+        <div style="height: 6rem;"><img src="/assets/home/key-1@3x.png" alt="Card" /></div>
+        <h3>Designed by investment professionals for everyday investors</h3>
+        <p>Ensures you have the key data and analysis you need in one place.</p>
+      </div>
+
+      <div class="features-card">
+        <div style="height: 6rem;"><img src="/assets/home/key-2@3x.png" alt="Card" /></div>
+        <h3>Research a wide range of investments</h3>
+        <p>Over 10,000 mutual funds, 5,000 equities, and 2,000 ETFs and counting.</p>
+      </div>
+
+      <div class="features-card">
+        <div style="height: 6rem;"><img src="/assets/home/key-3@3x.png" alt="Card" /></div>
+        <h3>Insights from professional investors</h3>
+        <p>See what the RIA Advisors Portfolio Managers invest in and why they invest in it.</p>
+      </div>
+
+      <div class="features-card">
+        <div style="height: 6rem;"><img src="/assets/home/key-4@3x.png" alt="Card" /></div>
+        <h3>Uncover your own unique insights</h3>
+        <p>Develop customized screens utilizing a wide array of tools and data points.</p>
+      </div>
+
+      <div class="features-card">
+        <div style="height: 6rem;"><img src="/assets/home/key-5@3x.png" alt="Card" /></div>
+        <h3>Hear from multiple analysts</h3>
+        <p>Access the opinion of other analysts to reinforce your ideas and gain new insights.</p>
+      </div>
+
+      <div class="features-card">
+        <div style="height: 6rem;"><img src="/assets/home/key-6@3x.png" alt="Card" /></div>
+        <h3>Receive alerts and daily emails</h3>
+        <p>Know key happenings in the markets, your portfolio and your watchlist.</p>
+      </div>
+
+      <div class="features-card">
+        <div style="height: 6rem;"><img src="/assets/home/key-7@3x.png" alt="Card" /></div>
+        <h3>Gain a comprehensive view</h3>
+        <p>Track your 401(k) plan right in the program for a 360-degree view of your investments.</p>
+      </div>
+
+      <div class="features-card">
+        <div style="height: 6rem;"><img src="/assets/home/key-8@3x.png" alt="Card" /></div>
+        <h3>30-day risk-free trial</h3>
+        <p>Want to see if Simple Visor is right for you? Try it risk free for 30 days.</p>
+      </div>
+    </div>
+
+    <div class="center" *ngIf="userType !== 'tpa_only_user'">
+      <a pButton routerLink="/signup" class="p-button-fill sign-up-button center">Sign Up</a>
+    </div>
+
+    <div class="center">
+      <a routerLink="/upgradeplan/tpa" *ngIf="userType === 'tpa_only_user'">
+        <button pButton pRipple type="button" class="p-button-warning p-button-rounded">Upgrade</button>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="slider">
+  <div class="container">
+    <h2 class="section-title">Take Control Of Your Investments Today With SimpleVisor</h2>
+    <p-carousel [value]="images" [numVisible]="1" [numScroll]="1" [responsiveOptions]="responsiveOptions">
+      <ng-template let-img pTemplate="item">
+          <img [src]="img.pic" />
+      </ng-template>
+    </p-carousel>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo"><img src="/assets/home/simplevisor-light.svg" alt="footer-logo" /></div>
+  <h2 *ngIf="userType !== 'tpa_only_user'" class="section-title">Sign up for your free 30-day trial</h2>
+  <a *ngIf="userType !== 'tpa_only_user'" pButton routerLink="/signup" class="p-button-text footer-button">Sign Up</a>
+  <a routerLink="/upgradeplan/tpa" *ngIf="userType === 'tpa_only_user'">
+    <button pButton pRipple type="button" class="p-button-warning p-button-rounded">Upgrade</button>
+  </a>
+</footer>

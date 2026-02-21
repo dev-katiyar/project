@@ -1,0 +1,10 @@
+<span style="cursor: pointer;" (click)="op.toggle($event)">
+    <i class="pi pi-question-circle help-icon" [style]="style"></i>
+</span>
+
+<!-- Please note that overlay panel does not work when placed inside an element whose position is set to 'relative'. Also the help content shown does not show well when it is on right most location, and inside a div with 'float' prop set -->
+<p-overlayPanel styleClass="help-panel" #op [dismissable]="true">
+    <ng-template pTemplate>
+        {{helpMsg}}
+    </ng-template>
+</p-overlayPanel>

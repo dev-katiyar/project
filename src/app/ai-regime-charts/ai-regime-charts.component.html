@@ -1,0 +1,440 @@
+<div class="p-grid" style="margin: -0.75rem;">
+    <!-- Regime Timeline Chart -->
+    <div class="p-col-12 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%; background-color: white;">
+            <div class="p-d-flex p-jc-between p-ai-center">
+                <span style="font-size: 1.1rem;" class="p-text-bold">
+                    Regime Timeline
+                </span>
+            </div>
+
+            <hr style="margin: 0.5rem 0;">
+
+            <!-- Period Selector -->
+            <div class="p-d-flex p-ai-center p-jc-end p-mr-4">
+                <span class="p-mr-2">Time Range:</span>
+                <p-selectButton [options]="dateRanges" optionLabel="label" [(ngModel)]="selectedRangeRegimeChart"
+                    (onChange)="onRangeChangeRegimeChart($event.value)" styleClass="p-button-sm">
+                </p-selectButton>
+                <!-- <button pButton type="button" icon="pi pi-refresh" class="p-button-rounded p-button-text p-ml-2"
+                    pTooltip="Refresh Data" (click)="refreshData()">
+                </button> -->
+            </div>
+
+            <div style="min-height: 400px; position: relative;">
+                <!-- Loading State -->
+                <!-- <div *ngIf="loadingTimeline" class="p-d-flex p-flex-column p-jc-center p-ai-center"
+                    style="height: 400px;">
+                    <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
+                    <span class="p-mt-2" style="color: #666;">Loading timeline data...</span>
+                </div> -->
+
+                <!-- Chart -->
+                <div *ngIf="!loadingTimeline && regimeTimelineChart" [chart]="regimeTimelineChart"
+                    style="width: 100%; height: 400px;">
+                </div>
+
+                <!-- No Data -->
+                <div *ngIf="!loadingTimeline && !regimeTimelineChart"
+                    class="p-d-flex p-flex-column p-jc-center p-ai-center" style="height: 400px; color: #999;">
+                    <i class="pi pi-info-circle" style="font-size: 2rem;"></i>
+                    <span class="p-mt-2">No timeline data available</span>
+                </div>
+            </div>
+
+            <!-- Regime Legend -->
+            <div *ngIf="!loadingTimeline" class="p-mt-3">
+                <div class="p-d-flex p-jc-center p-ai-center p-flex-wrap">
+                    <span class="p-mr-3" style="font-weight: 500; color: #666;">Regimes:</span>
+                    <div *ngFor="let item of getRegimeLegendItems()" class="p-d-flex p-ai-center p-mr-3 p-mb-1">
+                        <span [style.background-color]="item.color"
+                            style="width: 20px; height: 20px; border-radius: 3px; display: inline-block; margin-right: 6px;">
+                        </span>
+                        <span style="font-size: 0.9rem; color: #555;">{{ item.name }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Regime Statistics Cards -->
+            <div class="p-col-12 p-p-1" *ngIf="regimeStats.length > 0 && !loadingTimeline">
+                <div class="p-grid" style="margin: 0;">
+                    <!-- Stat Card for Each Regime -->
+                    <div class="p-col-12 p-md-6 p-lg-3 p-p-1" *ngFor="let stat of regimeStats">
+                        <div class="border-shadow p-p-3" style="background-color: white; border-radius: 8px;">
+                            <div class="p-d-flex p-ai-center">
+                                <div class="p-mr-3 p-d-flex p-jc-center p-ai-center"
+                                    [style.background-color]="stat.color"
+                                    style="width: 48px; height: 48px; border-radius: 10px; opacity: 0.9;">
+                                    <i class="pi" [ngClass]="{
+                                 'pi-arrow-up': stat.regime === 'Bull',
+                                 'pi-arrow-down': stat.regime === 'Bear',
+                                 'pi-minus': stat.regime === 'Sideways',
+                                 'pi-shield': stat.regime === 'Risk-Off'
+                               }" style="font-size: 1.25rem; color: white;">
+                                    </i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div
+                                        style="font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        {{ stat.regime }}
+                                    </div>
+                                    <div style="font-size: 1.5rem; font-weight: 600; color: #333;">
+                                        {{ stat.count }}
+                                        <span style="font-size: 0.85rem; color: #666; font-weight: 400;">days</span>
+                                    </div>
+                                    <div style="font-size: 0.95rem; font-weight: 500;" [style.color]="stat.color">
+                                        {{ stat.percentage | number:'1.1-1' }}%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-4 p-p-1">
+        <div class="border-shadow p-p-2" style="background-color: white;">
+            <div class="p-d-flex p-jc-between p-ai-center">
+                <span style="font-size: 1.1rem;" class="p-text-bold">
+                    Current Regime
+                </span>
+            </div>
+
+            <hr style="margin: 0.5rem 0;">
+
+            <div style="height: 286px;">
+                <div *ngIf="currentRegimeChart" [chart]="currentRegimeChart"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ETF Clusters Table -->
+    <div class="p-col-8 p-p-1">
+        <div class="border-shadow p-p-2" style="background-color: white;">
+            <div class="p-d-flex p-jc-between p-ai-center">
+                <span style="font-size: 1.1rem;" class="p-text-bold">
+                    ETF Clusters
+                </span>
+                <span style="font-size: 0.9rem; color: #666;">
+                    {{ etfClusterData?.length || 0 }} Clusters
+                </span>
+            </div>
+
+            <hr style="margin: 0.5rem 0;">
+
+            <div style="min-height: 200px;">
+                <p-table [value]="etfClusterData" [tableStyle]="{'min-width': '50rem'}" 
+                         styleClass="p-datatable-sm p-datatable-striped">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 80px; text-align: center;">#</th>
+                            <th style="text-align: left;">Cluster Name</th>
+                            <th style="width: 120px; text-align: center;">ETF Count</th>
+                            <th style="text-align: left;">ETFs</th>
+                            <th style="text-align: left;">Description</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-cluster>
+                        <tr>
+                            <td style="text-align: center;">
+                                <span class="p-badge" 
+                                      [style.background-color]="getClusterColor(cluster.cluster_id)" 
+                                      style="color: white; font-size: 0.9rem;">
+                                    {{ cluster.cluster_id + 1 }}
+                                </span>
+                            </td>
+                            <td style="text-align: left;">
+                                <div style="font-weight: 600; color: #333;">{{ cluster.cluster_name }}</div>
+                            </td>
+                            <td style="text-align: center;">
+                                <span>
+                                    {{ cluster.etf_count }}
+                                </span>
+                            </td>
+                            <td style="text-align: left;">
+                                <div class="p-d-flex p-flex-wrap" style="gap: 0.4rem;">
+                                    <span *ngFor="let etf of cluster.etf_list.split(', ')" 
+                                          class="p-tag p-tag-rounded" 
+                                          style="background-color: #f3f4f6; color: #374151; font-weight: 500; font-size: 0.85rem;">
+                                        {{ etf }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td style="text-align: left;">
+                                {{ cluster.description }}
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem; color: #999;">
+                                <i class="pi pi-info-circle" style="font-size: 2rem;"></i>
+                                <div class="p-mt-2">No cluster data available</div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Regime Allocation Pie Charts -->
+    <div class="p-col-12 p-p-1">
+        <div class="border-shadow p-p-2" style="background-color: white;">
+            <div class="p-d-flex p-jc-between p-ai-center">
+                <span style="font-size: 1.1rem;" class="p-text-bold">
+                    Regime-Based Allocations
+                </span>
+            </div>
+
+            <hr style="margin: 0.5rem 0;">
+
+            <div class="p-grid" style="margin: 0;">
+                <!-- Bull Regime -->
+                <div class="p-col-12 p-md-3 p-p-2">
+                    <div style="text-align: center;">
+                        <div class="p-d-flex p-jc-center p-ai-center p-mb-2">
+                            <span style="width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px;" [style.background-color]="getRegimeColor('Bull')" ></span>
+                            <span style="font-weight: 600; font-size: 1rem; color: #333;">Bull Market</span>
+                        </div>
+                        <div *ngIf="regimePieCharts?.Bull" [chart]="regimePieCharts.Bull" 
+                             style="width: 100%; height: 250px;">
+                        </div>
+                        <div *ngIf="!regimePieCharts?.Bull" 
+                             class="p-d-flex p-jc-center p-ai-center" 
+                             style="height: 250px; color: #999;">
+                            <span>No data</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bear Regime -->
+                <div class="p-col-12 p-md-3 p-p-2">
+                    <div style="text-align: center;">
+                        <div class="p-d-flex p-jc-center p-ai-center p-mb-2">
+                            <span style="width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px;" [style.background-color]="getRegimeColor('Bear')" ></span>
+                            <span style="font-weight: 600; font-size: 1rem; color: #333;">Bear Market</span>
+                        </div>
+                        <div *ngIf="regimePieCharts?.Bear" [chart]="regimePieCharts.Bear" 
+                             style="width: 100%; height: 250px;">
+                        </div>
+                        <div *ngIf="!regimePieCharts?.Bear" 
+                             class="p-d-flex p-jc-center p-ai-center" 
+                             style="height: 250px; color: #999;">
+                            <span>No data</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sideways Regime -->
+                <div class="p-col-12 p-md-3 p-p-2">
+                    <div style="text-align: center;">
+                        <div class="p-d-flex p-jc-center p-ai-center p-mb-2">
+                            <span style="width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px;" [style.background-color]="getRegimeColor('Sideways')" ></span>
+                            <span style="font-weight: 600; font-size: 1rem; color: #333;">Sideways Market</span>
+                        </div>
+                        <div *ngIf="regimePieCharts?.Sideways" [chart]="regimePieCharts.Sideways" 
+                             style="width: 100%; height: 250px;">
+                        </div>
+                        <div *ngIf="!regimePieCharts?.Sideways" 
+                             class="p-d-flex p-jc-center p-ai-center" 
+                             style="height: 250px; color: #999;">
+                            <span>No data</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk-Off Regime -->
+                <div class="p-col-12 p-md-3 p-p-2">
+                    <div style="text-align: center;">
+                        <div class="p-d-flex p-jc-center p-ai-center p-mb-2">
+                            <span style="width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px;" [style.background-color]="getRegimeColor('Risk-Off')" ></span>
+                            <span style="font-weight: 600; font-size: 1rem; color: #333;">Risk-Off Market</span>
+                        </div>
+                        <div *ngIf="regimePieCharts?.['Risk-Off']" [chart]="regimePieCharts['Risk-Off']" 
+                             style="width: 100%; height: 250px;">
+                        </div>
+                        <div *ngIf="!regimePieCharts?.['Risk-Off']" 
+                             class="p-d-flex p-jc-center p-ai-center" 
+                             style="height: 250px; color: #999;">
+                            <span>No data</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Performance Chart -->
+    <div class="p-col-12 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%; background-color: white;">
+            <div class="p-d-flex p-jc-between p-ai-center">
+                <span style="font-size: 1.1rem;" class="p-text-bold">
+                    Portfolio Performance
+                </span>
+            </div>
+
+            <hr style="margin: 0.5rem 0;">
+                        
+            <!-- Period Selector -->
+            <div class="p-d-flex p-ai-center p-jc-end p-mr-4">
+                <span class="p-mr-2">Time Range:</span>
+                <p-selectButton [options]="dateRanges" optionLabel="label" [(ngModel)]="selectedRangePerfChart"
+                    (onChange)="onRangeChangePerformanceChart($event.value)" styleClass="p-button-sm">
+                </p-selectButton>
+                <!-- <button pButton type="button" icon="pi pi-refresh" class="p-button-rounded p-button-text p-ml-2"
+                    pTooltip="Refresh Data" (click)="refreshData()">
+                </button> -->
+            </div>
+
+            <div style="min-height: 400px; position: relative;">
+                <!-- Loading State -->
+                <!-- <div *ngIf="loadingPortfolio" class="p-d-flex p-flex-column p-jc-center p-ai-center"
+                    style="height: 400px;">
+                    <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
+                    <span class="p-mt-2" style="color: #666;">Loading portfolio data...</span>
+                </div> -->
+
+                <!-- Chart -->
+                <div *ngIf="!loadingPortfolio && portfolioPerformanceChart" [chart]="portfolioPerformanceChart"
+                    style="width: 100%; height: 400px;">
+                </div>
+
+                <!-- No Data -->
+                <div *ngIf="!loadingPortfolio && !portfolioPerformanceChart"
+                    class="p-d-flex p-flex-column p-jc-center p-ai-center" style="height: 400px; color: #999;">
+                    <i class="pi pi-info-circle" style="font-size: 2rem;"></i>
+                    <span class="p-mt-2">No portfolio data available</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Configuration Performance Table -->
+    <div class="p-col-12 p-p-1">
+        <div class="border-shadow p-p-2" style="background-color: white;">
+            <div class="p-d-flex p-jc-between p-ai-center">
+                <span style="font-size: 1.1rem;" class="p-text-bold">
+                    Portfolio Configuration Performance Comparison
+                </span>
+                <span style="font-size: 0.9rem; color: #666;">
+                    {{ portfolioConfigPerformance?.length || 0 }} Configurations
+                </span>
+            </div>
+
+            <hr style="margin: 0.5rem 0;">
+
+            <div style="min-height: 200px;">
+                <p-table [value]="portfolioConfigPerformance" 
+                         [tableStyle]="{'min-width': '50rem'}" 
+                         styleClass="p-datatable-sm p-datatable-striped"
+                         [scrollable]="true"
+                         scrollHeight="400px">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="text-align: left; min-width: 200px;">Portfolio Name</th>
+                            <th style="text-align: right; min-width: 120px;">Total Return</th>
+                            <th style="text-align: right; min-width: 120px;">Excess Total Return (SPY)</th>
+                            <th style="text-align: right; min-width: 140px;">Annualized Return</th>
+                            <th style="text-align: right; min-width: 140px;">Excess Annualized Return (SPY)</th>
+                            <th style="text-align: right; min-width: 120px;">Sharpe Ratio</th>
+                            <th style="text-align: right; min-width: 120px;">Volatility</th>
+                            <th style="text-align: right; min-width: 130px;">Max Drawdown</th>
+                            <th style="text-align: right; min-width: 100px;">Trades</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-config let-rowIndex="rowIndex">
+                        <tr>
+                            <td style="text-align: left;">
+                                <div class="p-d-flex p-ai-center">
+                                    <span style="font-weight: 600; color: #333;">{{ config.name }}</span>
+                                </div>
+                            </td>
+                            <td style="text-align: right;">
+                                <span style="font-weight: 600; font-size: 1rem;">
+                                    {{ config.totalReturn }}%
+                                </span>
+                            </td>
+                            <td style="text-align: right;">
+                                <span style="font-weight: 600; color: #10b981; font-size: 1rem;">
+                                    {{ config.excessTotalReturn | number:'1.2-2'}}%
+                                </span>
+                            </td>
+                            <td style="text-align: right;">
+                                <span style="font-weight: 600;">
+                                    {{ config.annualizedReturn }}%
+                                </span>
+                            </td>
+                            <td style="text-align: right;">
+                                <span style="font-weight: 600; color: #059669;">
+                                    {{ config.excessAnnualizedReturn | number:'1.2-2'}}%
+                                </span>
+                            </td>
+                            <td style="text-align: right;">
+                                <div class="p-d-flex p-jc-end p-ai-center">
+                                    <span style="font-weight: 500; color: #333;">
+                                        {{ config.sharpe }}
+                                    </span>
+                                    <i class="pi pi-chart-line p-ml-1" 
+                                       [style.color]="getSharpeColor(config.sharpe)"
+                                       style="font-size: 0.85rem;">
+                                    </i>
+                                </div>
+                            </td>
+                            <td style="text-align: right;">
+                                <span style="color: #6366f1; font-weight: 500;">
+                                    {{ config.volatility | number:'1.2-2'}}%
+                                </span>
+                            </td>
+                            <td style="text-align: right;">
+                                <span style="font-weight: 600; color: #ef4444;">
+                                    {{ config.maxDrawdown }}%
+                                </span>
+                            </td>
+                            <td style="text-align: right;">
+                                <span class="p-tag" 
+                                      style="background-color: #f3f4f6; color: #374151; font-weight: 500;">
+                                    {{ config.trades | number }}
+                                </span>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 2rem; color: #999;">
+                                <i class="pi pi-info-circle" style="font-size: 2rem;"></i>
+                                <div class="p-mt-2">No performance data available</div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+
+                <!-- Performance Metrics Legend -->
+                <div class="p-mt-3 p-p-2" style="background-color: #f9fafb; border-radius: 6px;">
+                    <div class="p-grid" style="margin: 0;">
+                        <div class="p-col-12 p-md-4 p-mb-2">
+                            <div style="font-size: 0.85rem; color: #666;">
+                                <i class="pi pi-info-circle p-mr-1" style="color: #3b82f6;"></i>
+                                <strong>Sharpe Ratio:</strong> Risk-adjusted return (higher is better)
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-4 p-mb-2">
+                            <div style="font-size: 0.85rem; color: #666;">
+                                <i class="pi pi-info-circle p-mr-1" style="color: #3b82f6;"></i>
+                                <strong>Max Drawdown:</strong> Largest peak-to-trough decline
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-4 p-mb-2">
+                            <div style="font-size: 0.85rem; color: #666;">
+                                <i class="pi pi-info-circle p-mr-1" style="color: #3b82f6;"></i>
+                                <strong>Volatility:</strong> Standard deviation of returns
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

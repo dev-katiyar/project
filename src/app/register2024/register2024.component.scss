@@ -1,0 +1,64 @@
+.sidebar {
+    background-color: var(--primary-color);
+    padding: 3%;
+    color: #fff;
+    font-weight: 300;
+}
+
+.sidebar-image {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.sidebar-content-title {
+    font-size: 25px;
+    line-height: 1.3em;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.sidebar-content-text {
+    margin-bottom: 1rem;
+}
+
+.radio-group {
+    margin-bottom: 7px;
+
+    input[type='radio'] {
+        transform: scale(1.5);
+    }
+}
+
+.signup {
+    padding: 2%;
+}
+
+.heading {
+    padding: 1rem 0;
+    padding-bottom: 2rem;
+}
+
+.risk-info {
+    padding-top: 30px;
+    padding-left: 30px;
+    display: flex;
+}
+
+.exclamation-circle-icon {
+    margin-right: 7px;
+    font-size: 23px;
+}
+
+.accept-form-checkbox {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.text-success {
+    color: #28a745;
+}
+
+.text-error {
+    color: #dc3545;
+}

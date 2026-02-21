@@ -1,0 +1,153 @@
+<div class="p-grid p-fluid p-ai-center">
+    <div class="p-col-6">Portfolio</div>
+    <div class="p-col-6">
+        <p-dropdown *ngIf="isPortfolioNameEditable" [options]="portfolios" [(ngModel)]="selectedPortfolioId"
+            optionLabel="name" appendTo="body" (onChange)="onPortfolioChanged()" optionLabel="name" optionValue="id">
+        </p-dropdown>
+        <div *ngIf="!isPortfolioNameEditable">
+            <b>{{ selectedPortfolioDetails?.name }}</b>
+        </div>
+    </div>
+
+    <div class="p-col-6">Starting Cash</div>
+    <div class="p-col-6">
+        <b>{{ selectedPortfolioDetails?.startingCash | currency}}</b>
+    </div>
+
+    <div class="p-col-6">Available Cash</div>
+    <div class="p-col-6">
+        <b>{{ selectedPortfolioDetails?.currentCash | currency}}</b>
+    </div>
+</div>
+
+<div class="p-grid p-fluid p-ai-center" style="background:hsla(0, 17%, 95%, 0.507); border-radius: 5px; margin-top: 0;">
+    <div class="p-col-12 sv-center">
+        <b>{{ transaction.companyname }}</b>
+    </div>
+
+    <div class="p-col-4">
+        <div class="p-grid">
+            <div class="p-col-12">Symbol</div>
+
+            <div class="p-col-12" *ngIf="!isSymbolEditable">
+                <b>{{ transaction.symbol}}</b>
+            </div>
+
+            <div class="p-col-12" *ngIf="isSymbolEditable">
+                <app-stocks-autocomplete (searchTextChange)="onSymbolSelected($event, transaction)"
+                    [(searchText)]="transaction.symbol">
+                </app-stocks-autocomplete>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-4">
+        <div class="p-grid">
+            <div class="p-col-12">Side</div>
+
+            <div class="p-col-12" *ngIf="!isSideEditable"><b>Buy</b></div>
+
+            <div class="p-col-12" *ngIf="isSideEditable">
+                <p-dropdown [options]="validSides" [(ngModel)]="transaction.side" optionLabel="name" optionValue="id"
+                    appendTo="body" [style]="{'width':'100px'}" (onChange)="onSideChange()">
+                </p-dropdown>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-4">
+        <div class="p-grid">
+            <div class="p-col-12">Date</div>
+
+            <div class="p-col-12">
+                <p-calendar [inputStyle]="{'width': '110px', 'min-width': '50%'}" [monthNavigator]="true" [yearNavigator]="true"
+                    yearRange="2000:2030" [showIcon]="true" appendTo="body" [(ngModel)]="transaction.dateObj">
+                </p-calendar>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-4">
+        <div class="p-grid">
+            <div class="p-col-12">Quantity</div>
+
+            <div class="p-col-12">
+                <input pInputText type="number" digitOnly decimal="true" decimalSeparator="." style="width: 65px;"
+                    placeholder="0.00" pattern="[0-9]+([.][0-9]+)?" [(ngModel)]="transaction.qty" min="0" (click)="$event.target.select()" />
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-4">
+        <div class="p-grid">
+            <div class="p-col-12">Price</div>
+
+            <div class="p-col-12">
+                <input pInputText type="text" digitOnly decimal="true" decimalSeparator="." style="width: 65px;"
+                    pattern="[0-9]+([.][0-9]+)?" [(ngModel)]="transaction.price" min="0" (click)="$event.target.select()" />
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-4">
+        <div class="p-grid">
+            <div class="p-col-12">Trade Value</div>
+
+            <div class="p-col-12">
+                <b>{{ transaction.qty * transaction.price | currency}}</b>
+            </div>
+        </div>
+    </div>
+    
+    <div class="p-col-4">
+        <div class="p-grid">
+            <div class="p-col-12">Holding Qty</div>
+            
+            <div class="p-col-12">
+                <span *ngIf="transaction.side == 'Buy'|| transaction.side == 'Sell'">Long: </span>
+                <span *ngIf="transaction.side == 'Sell Short'|| transaction.side == 'Buy To Cover'">Short:</span>
+                <b>{{ transaction.holdings }}</b>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-4">
+        <div class="p-grid">
+            <div class="p-col-12">Avg Cost</div>
+
+            <div class="p-col-12">
+                <b>{{ transaction.avgCost | currency }}</b>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-4">
+        <div class="p-grid">
+            <div class="p-col-12">Profit/Loss</div>
+    
+            <div class="p-col-12">
+                <span *ngIf="transaction.side == 'Buy' || transaction.side == 'Sell Short'">
+                    <b>N/A</b>
+                </span>
+                <span *ngIf="transaction.side == 'Sell' && transaction.holdings > 0"
+                    [ngStyle]="{'color': (transaction.price - transaction.avgCost) > 0 ? 'green': 'red'}">
+                    <b>{{ transaction.qty * (transaction.price - transaction.avgCost) | currency}}</b>
+                </span>
+                <span *ngIf="transaction.side == 'Buy To Cover' && transaction.holdings > 0"
+                    [ngStyle]="{'color': (transaction.avgCost - transaction.price) > 0 ? 'green': 'red'}">
+                    <b>{{ transaction.qty * (transaction.avgCost - transaction.price) | currency}}</b>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="p-grid p-fluid p-ai-center" style="margin-top: 0;">
+    <div class="p-col-6">
+        <button pButton type="button" (click)="onCancelClick()" label="Cancel" class="p-button-danger"></button>
+    </div>
+
+    <div class="p-col-6">
+        <button pButton type="button" (click)="onSaveClick()" label="Add" class="p-button-success"></button>
+    </div>
+</div>

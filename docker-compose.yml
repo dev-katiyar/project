@@ -1,0 +1,143 @@
+services:
+  mysqldb:
+    image: mysql:9.4
+    container_name: sv_mysql_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: "America/New_York"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldb_data:/var/lib/mysql             # Persist data
+      # - ./mysql/init:/docker-entrypoint-initdb.d  # Initialization scripts
+    command: 
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --pid-file=/var/lib/mysql-files/mysqld.pid
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - sv_backend_nw
+
+  mongodb:
+    image: mongo:8.0
+    container_name: sv_mongo_db
+    restart: unless-stopped
+    environment:
+      # MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      # MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+      TZ: "America/New_York"
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+      # - ./mongo-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "'db.adminCommand(\"ping\")'" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sv_backend_nw
+
+  backendapi:
+    image: 174121684253.dkr.ecr.us-east-2.amazonaws.com/svrepoecr:sv_backend_26.02.12.0
+    container_name: sv_backend_api
+    restart: unless-stopped
+
+    
+    env_file:
+      - ./.env.back
+    environment:
+      TZ: "America/New_York"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysqldb
+      - mongodb
+    networks:
+      - sv_backend_nw
+      - sv_frontend_nw
+
+  frontend:
+    image: 174121684253.dkr.ecr.us-east-2.amazonaws.com/svrepoecr:sv_frontend_26.02.12.0
+    container_name: sv_frontend
+    restart: unless-stopped
+    environment:
+      TZ: "America/New_York"
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backendapi
+    networks:
+      - sv_frontend_nw
+
+  jenkins:
+    image: 174121684253.dkr.ecr.us-east-2.amazonaws.com/svrepoecr:sv-automation-jenkins_26.02.08.0
+    container_name: sv_jenkins
+    restart: unless-stopped
+    env_file:
+      - ./.env.jenkins
+    environment:
+      - JENKINS_OPTS=--httpPort=8080
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+      - TZ=America/New_York
+    ports:
+      - "8080:8080"
+      - "50000:50000"  # Jenkins agent port
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    depends_on:
+      - mysqldb
+      - mongodb
+    networks:
+      - sv_backend_nw
+
+  jenkins-ai:
+    image: 174121684253.dkr.ecr.us-east-2.amazonaws.com/svrepoecr:sv_agent_signals_26.02.08.0
+    container_name: sv_jenkins_ai
+    restart: unless-stopped
+    env_file:
+      - ./.env.jenkins.ai
+    environment:
+      - JENKINS_OPTS=--httpPort=8080
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+      - TZ=America/New_York
+    ports:
+      - "8081:8080"
+      - "50001:50000"  # Jenkins agent port
+    volumes:
+      - jenkins_home_ai:/var/jenkins_home  # Use local directory for everything
+    depends_on:
+      - mysqldb
+      - mongodb
+    networks:
+      - sv_backend_nw
+
+networks:
+  sv_frontend_nw:
+    driver: bridge
+  sv_backend_nw:
+    driver: bridge
+
+volumes:
+  mysqldb_data:
+    driver: local
+  mongodb_config:
+    driver: local
+  mongodb_data:
+    driver: local
+  jenkins_home:
+    driver: local
+  jenkins_home_ai:
+    driver: local

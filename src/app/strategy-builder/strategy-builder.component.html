@@ -1,0 +1,156 @@
+<div *ngIf="strategy_inputs">
+    <div class="p-grid p-fluid" style="background-color: white;">
+        <div class="p-col-12 p-sm-4 p-md-3">
+            <div class="p-grid">
+                <div class="p-col-12" style="padding-bottom: 0;">
+                    <small>Symbol</small>
+                </div>
+                <div class="p-col-12" style="padding-top: 0;">
+                    <app-stocks-autocomplete [(searchText)]="strategy_inputs.symbol"
+                        (onSymbolSelected)="onSymbolSelected($event)">
+                    </app-stocks-autocomplete>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-col-12 p-sm-4 p-md-3">
+            <div class="p-grid">
+                <div class="p-col-12" style="padding-top: 0;">
+                    <small>from Date</small>
+                </div>
+                <div class="p-col-12" style="padding-top: 0;">
+                    <p-calendar [inputStyle]="{ width: '100%'}" [monthNavigator]="true" [yearNavigator]="true"
+                        yearRange="2015:2030" [(ngModel)]="strategy_inputs.start_date" [showIcon]="true"
+                        [readonlyInput]="true">
+                    </p-calendar>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-col-12 p-sm-4 p-md-3">
+            <div class="p-grid">
+                <div class="p-col-12" style="padding-bottom: 0;">
+                    <small>to Date</small>
+                </div>
+                <div class="p-col-12" style="padding-top: 0;">
+                    <p-calendar [inputStyle]="{ width: '100%' }" [monthNavigator]="true" [yearNavigator]="true"
+                        yearRange="2015:2030" [(ngModel)]="strategy_inputs.end_date" [showIcon]="true"
+                        [readonlyInput]="true">
+                    </p-calendar>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-col-12 p-pt-0 p-pb-3">
+            <small>Recent: </small>
+            <span *ngIf="recentSymbols.length >= 1">
+                <ng-container *ngFor="let symbol of recentSymbols; let i=index">
+                    <span *ngIf="i != recentSymbols.length-1" class="symbol"
+                        (click)="onRecentSymbolDropdownChange(symbol)">{{ symbol }},
+                    </span>
+                    <span *ngIf="i == recentSymbols.length-1" class="symbol"
+                        (click)="onRecentSymbolDropdownChange(symbol)">{{ symbol }}
+                    </span>
+                </ng-container>
+                <i class="pi pi-times delete-icon" title="Clear Recent Symbols" (click)="clearRecentSymbols()"></i>
+            </span>
+        </div>
+    </div>
+
+    <div class="p-grid">
+        <div class="p-col-12 p-md-6">
+            <p-fieldset legend="Entry Conditions">
+                <app-sv-indicators [strategyInput]="strategy_inputs.buy_conditions"
+                    [indicators]="indicators"></app-sv-indicators>
+            </p-fieldset>
+        </div>
+
+        <div class="p-col-12 p-md-6">
+            <p-fieldset legend="Exit Conditions">
+                <app-sv-indicators [strategyInput]="strategy_inputs.sell_conditions"
+                    [indicators]="indicators"></app-sv-indicators>
+            </p-fieldset>
+        </div>
+    </div>
+
+
+    <div class="p-text-right p-m-2">
+        <button label="Reset" pButton (click)="resetStgInputs()" class="p-button-outlined p-mr-2"></button>
+        <button label="Run Strategy" pButton (click)="runStrategy()" class="p-mr-2"></button>
+    </div>
+
+    <p-tabView class="fullwidth no-pad" *ngIf="stgData">
+        <p-tabPanel header="Chart">
+            <ng-template pTemplate="content">
+                <div *ngIf="stgData" style="width: 100%;">
+                    <app-strategy-chart [chartData]="stgData" [chartSettings]="stg_chart_settings"></app-strategy-chart>
+                </div>
+            </ng-template>
+        </p-tabPanel>
+
+        <p-tabPanel header="Table">
+            <ng-template pTemplate="content">
+                <div style="margin: -0.5rem;">
+                    <p-table #dt [columns]="stgCols" [value]="stgData" [rows]="50" [paginator]="true"
+                        [showCurrentPageReport]="true" [rowsPerPageOptions]="[20,50,100,500]"
+                        styleClass="p-datatable-positions p-datatable-striped" [resizableColumns]="false"
+                        [globalFilterFields]="['symbol']" [autoLayout]="true" [scrollable]="false"
+                        [tableStyle]="{'table-layout':'auto'}">
+
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th *ngFor="let col of columns" [pSortableColumn]="col.field" style="min-width: 8rem;">
+                                    {{col.header | uppercase}}
+                                    <p-sortIcon field="symbol"></p-sortIcon>
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-columns="columns">
+                            <tr>
+                                <td *ngFor="let col of columns" style="text-align:center;">
+                                    {{rowData[col.field]}}
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </ng-template>
+        </p-tabPanel>
+    </p-tabView>
+
+    <p-dialog header="Save Strategy" showEffect="fade" [(visible)]="displaySaveDialog" [modal]="true">
+        <div>
+            <div class="form-group">
+                <label for="name" style="margin-right:58px;">Strategy Name: </label>
+                <input [(ngModel)]="strategy_inputs.name" id="name" pInputText placeholder="Enter Name"
+                    class="saveInput form-control" #name="ngModel" required name="name" (click)="$event.target.select()" />
+                <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert" style="margin-top:7px;">
+                    <div style="margin-left:70px;" *ngIf="name.errors?.required" class="error-msg">
+                        Name is required.
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="isAdminUser">
+                <label style="margin-right:10px;">Strategy Image Name: </label>
+                <p-dropdown
+                    [style]="{ width: '50%',height: '33px','margin-top':'10px','margin-bottom':'10px','z-index':'1' }"
+                    name="screenImage" placeholder='-- Select --' [options]='screenImages'
+                    [(ngModel)]='strategy_inputs.image' class="dropdown-nopad" optionValue="image_name"
+                    optionLabel='image_name'>
+                </p-dropdown>
+            </div>
+
+            <div *ngIf="isAdminUser">
+                <label style="margin-right:20px;">Strategy Description: </label>
+                <textarea pstyle="width:100%;" rows="3" cols="30" placeholder="Enter Description"
+                    [(ngModel)]="strategy_inputs.description" pTextarea></textarea>
+            </div>
+        </div>
+        <p-footer>
+            <button [disabled]="! (name.valid)" pButton type="button" icon="pi pi-save" (click)="saveStartegy()"
+                label="Save" style="margin-right:120px;cursor:pointer;" class="p-button-success">
+            </button>
+        </p-footer>
+    </p-dialog>
+</div>

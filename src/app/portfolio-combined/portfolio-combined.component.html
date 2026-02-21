@@ -1,0 +1,369 @@
+<div class="p-grid" style="margin: -0.75rem;">
+    <!-- Portfolios Summary Only view - full width summary -->
+    <div *ngIf="!showMinimalView" class="p-col-12 p-p-1">
+        <!-- SV Core Portfolios Summary-->
+        <div *ngIf="portfolioViewType === 'sv'" class="border-shadow p-p-2 p-mb-2">
+            <div class="p-grid p-m-0" style="background-color: white;">
+                <div class="p-col-12" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+                    SV Core Portfolios
+                    <app-help-icon key="portfoliosPortfoliosSVPortfolios"></app-help-icon>
+                     <button pButton class="p-button-rounded p-button-raised topbar-inves invest-smaller" [routerLink]="'/investing-solutions-info'">Invest $</button>
+                </div>
+
+                <hr style="margin: 0.5rem 0;width: 100%;">
+
+                <div class="p-col-12 p-p-0">
+                    <div style="font-size: 0.9rem;">
+                        (as on: <span style="color: red;">
+                            {{ svPortfoliosSummUpdatedAt | date:'medium' }} EST.
+                        </span> Click open the portfolio to see the latest details.)
+                    </div>
+                    <app-portfolio-summary2 [isMinimalView]="showMinimalView"
+                        (portfolioClick)="onPortfolioClick($event)" [selectedPortfolio]="selectedPortfolio"
+                        (newPortfolioCancelled)="onNewPortfolioCancelled()"
+                        (newPortfolioCreated)="onNewPortfolioCreated($event)" [portfolioSummData]="svPortfoliosSumm">
+                    </app-portfolio-summary2>
+                </div>
+            </div>
+        </div>
+
+        <!-- SV Thematic (Robo) Summary -->
+         <div *ngIf="portfolioViewType === 'sv'" class="border-shadow p-p-2 p-mb-2">
+            <div class="p-grid p-m-0" style="background-color: white;">
+                <div class="p-col-12" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+                    SV Thematic Portfolios
+                    <app-help-icon key="portfoliosPortfoliosSVRoboPortfolios"></app-help-icon>
+                     <button pButton class="p-button-rounded p-button-raised topbar-inves invest-smaller" [routerLink]="'/investing-solutions-info'">Invest $</button>
+                </div>
+
+                <hr style="margin: 0.5rem 0;width: 100%;">
+
+                <div class="p-col-12 p-p-0">
+                    <div style="font-size: 0.9rem;">
+                        (as on: <span style="color: red;">
+                            {{ svRoboPortfoliosSummUpdatedAt | date:'medium' }} EST.
+                        </span> Click open the portfolio to see the latest details.)
+                    </div>
+                    <app-portfolio-summary2 [isMinimalView]="showMinimalView"
+                        (portfolioClick)="onPortfolioClick($event)" [selectedPortfolio]="selectedPortfolio"
+                        (newPortfolioCancelled)="onNewPortfolioCancelled()"
+                        (newPortfolioCreated)="onNewPortfolioCreated($event)" [portfolioSummData]="svRoboPortfoliosSumm">
+                    </app-portfolio-summary2>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Portfolios Summary -->
+        <div *ngIf="portfolioViewType === 'sv'" class="border-shadow p-p-2">
+            <div class="p-grid p-m-0" style="background-color: white;">
+                <div class="p-col-8" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+                    My Portfolio
+                    <app-help-icon key="portfoliosPortfoliosMyPortfolios"></app-help-icon>
+                </div>
+
+                <div class="p-col-4" style="text-align: right;" *ngIf="!showMinimalView">
+                    <!-- <button pButton type="button" icon="pi pi-link" label="Link Brokerage Account"
+                    class="p-button-text margin-right sv-button"
+                    pTooltip="Link your existing brokerage account portfolio with portfolio at SimpleVisor for analysis."
+                    showDelay="700" disabled>
+                </button> -->
+
+                    <button pButton type="button" icon="pi pi-plus" label="New"
+                        class="p-button-text margin-right sv-button" (click)="onCreateNewPortfolioClick()"
+                        pTooltip="Create a new Portfolio" showDelay="700">
+                    </button>
+                </div>
+
+                <div class="p-col-4" style="text-align: right;" *ngIf="showMinimalView">
+                    <!-- <button pButton type="button" icon="pi pi-link" label="Link"
+                    class="p-button-text margin-right sv-button"
+                    pTooltip="Link your existing brokerage account portfolio with portfolio at SimpleVisor for analysis."
+                    showDelay="700" disabled>
+                </button> -->
+
+                    <button pButton type="button" icon="pi pi-plus" label="New"
+                        class="p-button-text margin-right sv-button" (click)="onCreateNewPortfolioClick()"
+                        pTooltip="Create a new Portfolio" showDelay="700">
+                    </button>
+                </div>
+
+                <hr style="margin: 0.5rem 0;width: 100%;">
+
+                <div class="p-col-12 p-p-0">
+                    <div style="font-size: 0.9rem;">
+                        (as on: <span style="color: red;">
+                            {{ userPortfoliosSummUpdatedAt | date:'medium' }} EST.
+                        </span> Click open the portfolio to see the latest details.)
+                    </div>
+                    <app-portfolio-summary2 [isMinimalView]="showMinimalView" [selectedPortfolio]="selectedPortfolio"
+                        (portfolioClick)="onPortfolioClick($event)" (newPortfolioCancelled)="onNewPortfolioCancelled()"
+                        (newPortfolioCreated)="onNewPortfolioCreated($event)" [portfolioSummData]="userPortfoliosSumm"
+                        [showCreatePortfolio]="isCreateNewPortfolioMode">
+                    </app-portfolio-summary2>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI XGB Portfolio Summary -->
+        <div *ngIf="portfolioViewType.includes('model_')" class="border-shadow p-p-2">
+            <div class="p-grid p-m-0" style="background-color: white;">
+                <div class="p-col-12" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+                    AI Portfolios
+                </div>
+
+                <hr style="margin: 0.5rem 0;width: 100%;">
+
+                <div class="p-col-12 p-p-0">
+                    <div style="font-size: 0.9rem;">
+                        (as on: <span style="color: red;">
+                            {{ aiXgbPortfoliosSummUpdatedAt | date:'medium' }} EST.
+                        </span> Click open the portfolio to see the latest details.)
+                    </div>
+                    <app-portfolio-summary2 [isMinimalView]="showMinimalView"
+                        (portfolioClick)="onPortfolioClick($event)" [selectedPortfolio]="selectedPortfolio"
+                        (newPortfolioCancelled)="onNewPortfolioCancelled()"
+                        (newPortfolioCreated)="onNewPortfolioCreated($event)" [portfolioSummData]="aiXgbPortfoliosSumm">
+                    </app-portfolio-summary2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Summary & Portfolio Details view - summary on side bar -->
+    <div id="summarySidebar" *ngIf="showMinimalView" class="p-col-3 p-p-1">
+        <!-- SV Core Portfolios Summary-->
+        <div *ngIf="portfolioViewType === 'sv'" class="border-shadow p-p-2 p-mb-2">
+            <div class="p-grid p-m-0" style="background-color: white;">
+                <div class="p-col-12" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+                    SV Core Portfolios
+                    <app-help-icon key="portfoliosPortfoliosSVPortfolios"></app-help-icon>
+                     <button pButton class="p-button-rounded p-button-raised topbar-inves invest-smaller" [routerLink]="'/investing-solutions-info'">Invest $</button>
+                </div>
+
+                <hr style="margin: 0.5rem 0;width: 100%;">
+
+                <div class="p-col-12 p-p-0">
+                    <app-portfolio-summary2 [isMinimalView]="showMinimalView"
+                        (portfolioClick)="onPortfolioClick($event)" [selectedPortfolio]="selectedPortfolio"
+                        (newPortfolioCancelled)="onNewPortfolioCancelled()"
+                        (newPortfolioCreated)="onNewPortfolioCreated($event)" [portfolioSummData]="svPortfoliosSumm">
+                    </app-portfolio-summary2>
+                </div>
+            </div>
+        </div>
+
+         <!-- SV Thematic Portfolios Summary-->
+        <div *ngIf="portfolioViewType === 'sv'" class="border-shadow p-p-2 p-mb-2">
+            <div class="p-grid p-m-0" style="background-color: white;">
+                <div class="p-col-12" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+                    SV Thematic Portfolios
+                    <app-help-icon key="portfoliosPortfoliosSVRoboPortfolios"></app-help-icon>
+                     <button pButton class="p-button-rounded p-button-raised topbar-inves invest-smaller" [routerLink]="'/investing-solutions-info'">Invest $</button>
+                </div>
+
+                <hr style="margin: 0.5rem 0;width: 100%;">
+
+                <div class="p-col-12 p-p-0">
+                    <app-portfolio-summary2 [isMinimalView]="showMinimalView"
+                        (portfolioClick)="onPortfolioClick($event)" [selectedPortfolio]="selectedPortfolio"
+                        (newPortfolioCancelled)="onNewPortfolioCancelled()"
+                        (newPortfolioCreated)="onNewPortfolioCreated($event)" [portfolioSummData]="svRoboPortfoliosSumm">
+                    </app-portfolio-summary2>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Portfolios Summary -->
+        <div *ngIf="portfolioViewType === 'sv'" class="border-shadow p-p-2">
+            <div class="p-grid p-m-0" style="background-color: white;">
+                <div class="p-col-8" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+                    My Portfolio
+                    <app-help-icon key="portfoliosPortfoliosMyPortfolios"></app-help-icon>
+                </div>
+
+                <div class="p-col-4" style="text-align: right;" *ngIf="!showMinimalView">
+                    <!-- <button pButton type="button" icon="pi pi-link" label="Link Brokerage Account"
+                    class="p-button-text margin-right sv-button"
+                    pTooltip="Link your existing brokerage account portfolio with portfolio at SimpleVisor for analysis."
+                    showDelay="700" disabled>
+                </button> -->
+
+                    <button pButton type="button" icon="pi pi-plus" label="Create New Portfolio"
+                        class="p-button-text margin-right sv-button" (click)="onCreateNewPortfolioClick()"
+                        pTooltip="Create a new Portfolio" showDelay="700">
+                    </button>
+                </div>
+
+                <div class="p-col-4" style="text-align: right;" *ngIf="showMinimalView">
+                    <!-- <button pButton type="button" icon="pi pi-link" label="Link"
+                    class="p-button-text margin-right sv-button"
+                    pTooltip="Link your existing brokerage account portfolio with portfolio at SimpleVisor for analysis."
+                    showDelay="700" disabled>
+                </button> -->
+
+                    <button pButton type="button" icon="pi pi-plus" label="New"
+                        class="p-button-text margin-right sv-button" (click)="onCreateNewPortfolioClick()"
+                        pTooltip="Create a new Portfolio" showDelay="700">
+                    </button>
+                </div>
+
+                <hr style="margin: 0.5rem 0;width: 100%;">
+
+                <div class="p-col-12 p-p-0">
+                    <app-portfolio-summary2 [isMinimalView]="showMinimalView" [selectedPortfolio]="selectedPortfolio"
+                        (portfolioClick)="onPortfolioClick($event)" (newPortfolioCancelled)="onNewPortfolioCancelled()"
+                        (newPortfolioCreated)="onNewPortfolioCreated($event)" [portfolioSummData]="userPortfoliosSumm"
+                        [showCreatePortfolio]="isCreateNewPortfolioMode">
+                    </app-portfolio-summary2>
+                </div>
+            </div>
+        </div>
+
+        <!-- TPA Portfolios Summary-->
+        <div *ngIf="portfolioViewType === 'tpa-research'" class="border-shadow p-p-2">
+            <div class="p-grid p-m-0" style="background-color: white;">
+                <div class="p-col-12" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+                    TPA Pro+ Portfolio
+                </div>
+
+                <hr style="margin: 0.5rem 0;width: 100%;">
+
+                <div class="p-col-12 p-p-0">
+                    <app-portfolio-summary2 [isMinimalView]="showMinimalView"
+                        (portfolioClick)="onPortfolioClick($event)" [selectedPortfolio]="selectedPortfolio"
+                        (newPortfolioCancelled)="onNewPortfolioCancelled()"
+                        (newPortfolioCreated)="onNewPortfolioCreated($event)" [portfolioSummData]="tpaPortfoliosSumm">
+                    </app-portfolio-summary2>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI XGB Portfolios Summary-->
+        <div *ngIf="portfolioViewType.includes('model_')" class="border-shadow p-p-2">
+            <div class="p-grid p-m-0" style="background-color: white;">
+                <div class="p-col-12" style="font-weight: bold; font-size: 1.3rem; padding-bottom: 0;">
+                    AI Portfolios
+                </div>
+
+                <hr style="margin: 0.5rem 0;width: 100%;">
+
+                <div class="p-col-12 p-p-0">
+                    <app-portfolio-summary2 [isMinimalView]="showMinimalView"
+                        (portfolioClick)="onPortfolioClick($event)" [selectedPortfolio]="selectedPortfolio"
+                        (newPortfolioCancelled)="onNewPortfolioCancelled()"
+                        (newPortfolioCreated)="onNewPortfolioCreated($event)" [portfolioSummData]="aiXgbPortfoliosSumm">
+                    </app-portfolio-summary2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolo Detail view space on the right is filled with details -->
+    <div id="portfolioDetails" *ngIf="showMinimalView" class="p-col-9 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;">
+            <div class="p-grid" style="padding: 0.5rem;" *ngIf="selectedPortfolioData">
+                <div class="p-col-12" style="font-weight: bold; font-size: 1.5rem; padding-bottom: 0;">
+                    <div class="p-grid">
+                        <div class="p-col p-d-flex p-ai-center" style="padding-bottom: 0;">
+                            <i class="pi pi-arrow-circle-left p-mr-2" (click)="onClosePortfolioDetailsClick()"
+                                pTooltip="Close to return to all Portfolios Overview." showDelay="700"
+                                style="font-size: 1.3rem;color: #004b8e; font-weight: bold;cursor: pointer;"></i>
+                            {{ selectedPortfolio.name }}
+                        </div>
+
+                        <div class="p-col-fixed p-pl-0" style="text-align: right; padding-bottom: 0;">
+                            <button *ngIf="isAdminUser" pButton type="button" icon="pi pi-plus" label="Add Transaction"
+                                class="p-button-text margin-right sv-button" (click)="onAddTransactionsClick()"
+                                pTooltip="Add one or more transaction to this Portfolio." showDelay="700">
+                            </button>
+
+                            <button *ngIf="isAdminUser" pButton type="button" icon="pi pi-pencil" label="Edit Transaction"
+                                class="p-button-text margin-right sv-button" (click)="onEditTransactionsClick()"
+                                pTooltip="Correct price, quanity, date or delete transaction of this Portfolio."
+                                showDelay="700">
+                            </button>
+
+                            <button *ngIf="isAdminUser" pButton type="button" icon="pi pi-pencil"
+                                class="p-button-text margin-right sv-button" (click)="onEditPortfolioClick()"
+                                pTooltip="Edit name and starting cash for this Portfolio." showDelay="700">
+                            </button>
+
+                            <button *ngIf="isAdminUser" pButton type="button" icon="pi pi-trash"
+                                class="p-button-text margin-right sv-button" (click)="onDeletePortfolioClick($event)"
+                                pTooltip="Delete this Portfolio." showDelay="700">
+                            </button>
+
+                            <p-confirmPopup></p-confirmPopup>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-col-12" *ngIf="showEditPortfolio">
+                    <div class="p-grid border-shadow" style="margin-top: 0.5rem;">
+                        <div class="p-col-12 p-md-4">
+                            <span>Portfolio Name&nbsp;</span>
+                            <input [(ngModel)]="editPortfolioNewName" pInputText placeholder="Enter Portfolio Name"
+                                id="portfolio-name" maxlength="49" (click)="$event.target.select()" />
+                        </div>
+
+                        <div class="p-col-12 p-md-4">
+                            <span>Starting Cash&nbsp;</span>
+                            <input digitOnly decimal="true" decimalSeparator="." placeholder="0,00"
+                                pattern="[0-9]+([.][0-9]+)?" [(ngModel)]="editPortfolioNewStatingCash"
+                                placeholder="Enter Starting Cash" pInputText id="starting-cash" (click)="$event.target.select()" />
+                        </div>
+
+                        <div class="p-col-12 p-md-4" style="text-align: left; margin-top: 0.5rem;">
+                            <button pButton label="Cancel" type="button" class="p-button-outlined"
+                                (click)="onCanelEditPortfolioClick()">
+                            </button>
+
+                            <button pButton label="Update" type="button" (click)="onUpdateEditPortfolioClick()"
+                                style="margin-left: 1rem;">
+                            </button>
+                        </div>
+
+                        <div class="p-col-12" *ngIf="editPortfolioError" style="color: red;">
+                            {{editPortfolioError}}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-col-12" style="padding-top: 0;padding-bottom: 0;">
+                    <hr style="margin: 0.5rem 0 0 0;width: 100%;">
+                </div>
+
+                <div class="p-col-12" style="padding-top: 0">
+                    <!-- 
+                    1. Update the portfolio summary details with event after portfolio loaded in model port 2023
+                    2. Pass portfolio id as paramter, and load all the details from inside of the model port 2023
+                    -->
+                    <app-model-portfolio2023 [portfolioData]="selectedPortfolioData" [isAdminUser]="isAdminUser"
+                        [selectedIndex]="modelPortfolioTabIndex" [addTxnBtnClickObs]="addTxnsSubject.asObservable()"
+                        [editTxnBtnClickObs]="editTxnsSubject.asObservable()"
+                        (reloadPotfolioData)="onPortfolioClick($event)"></app-model-portfolio2023>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-dialog header="Add Transactions" [(visible)]="isAddTradeMultiDialogVisible" showEffect="fade" [modal]="true"
+    [style]="{width: '80vw'}" [breakpoints]="{'960px': '90vw', '640px': '98vw'}">
+    <div *ngIf="isAddTradeMultiDialogVisible" class="p-grid p-nogutter">
+        <div class="p-col-12 p-grid p-nogutter" style="padding-top:1em;">
+            <app-trading-ticket-multi (cancelClick)="onTradingTicketMultiCancelClick()"
+                (saveClick)="onEditTradingTicketMultiSaveClick()" [selectedPortfolioId]="selectedPortfolio.portfolioid">
+            </app-trading-ticket-multi>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- <p-dialog header="Edit Transactions" [(visible)]="isEditTradeDialogVisible" showEffect="fade" [modal]="true"
+    [style]="{width: '80vw'}" [breakpoints]="{'960px': '90vw', '640px': '98vw'}">
+    <div *ngIf="isEditTradeDialogVisible" class="p-grid p-nogutter">
+        <div class="p-col-12 p-grid p-nogutter" style="padding-top:1em;">
+           <app-edit-transactions [portfolioData]="selectedPortfolioData" (onSave)="onEditTradeCancelClick()" (onSave)="onEditTradeSaveClick()"></app-edit-transactions>
+        </div>
+    </div>
+</p-dialog> -->

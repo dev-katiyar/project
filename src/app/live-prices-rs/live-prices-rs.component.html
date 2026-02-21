@@ -1,0 +1,50 @@
+<p-table #dt [value]="symbolData" styleClass="p-datatable-positions p-datatable-striped"
+    [paginator]="false" [autoLayout]="true">
+
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="text-align: left;" *ngIf="showChartIcon"></th>
+            <th style="text-align: left;">Symbol</th>
+            <th style="text-align: right;">Last</th>
+            <th style="text-align: right;" pSortableColumn="priceChangePct">
+                1D Change
+                <p-sortIcon field="priceChangePct"></p-sortIcon>
+            </th>
+            <th style="text-align: right;">Rel. Strength</th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-dataRow>
+        <tr>
+            <td style="width: fit-content; text-align: center;" *ngIf="showChartIcon">
+                <i (click)="onChartClick(dataRow.symbol)" class="pi pi-chart-line"
+                    [ngClass]="{'selected-item': dataRow.symbol === this.clickedSymbol}" title="Trend Chart vs SPY"
+                    style="font-size: 1.15rem; cursor: pointer;">
+                </i>
+            </td>
+            <td>
+                <div (click)="onSymbolClick(dataRow.symbol)" class="symbol p-text-left p-p-1">
+                    {{ dataRow.symbol}}
+                </div>
+            </td>
+
+            <td>
+                <div>
+                    {{ dataRow.last | currency }}
+                </div>
+            </td>
+
+            <td>
+                <div [ngClass]="dataRow.priceChange | upDownColor">
+                    {{ dataRow['priceChange'] | currency }} ({{ dataRow['priceChangePct'] | number: '0.2-2' }}%)
+                </div>
+            </td>
+
+            <td>
+                <div>
+                    {{ dataRow['Relative_strength'] | number: '0.2-2' }}
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

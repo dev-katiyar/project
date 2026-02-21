@@ -1,0 +1,63 @@
+<p *ngIf="!isAdminUser">No Admin Access</p>
+<div *ngIf="isAdminUser" class="p-grid">
+    <div class="p-col-12">
+        <div class="p-grid">
+            <div class="p-col-12 p-md-4">
+                <app-stocks-autocomplete [searchText]="symbol"
+                    (onSymbolSelected)="onSymbolSelected($event)"></app-stocks-autocomplete>
+            </div>
+
+            <div class="p-col-12 p-md-4 p-as-center">
+                <div style="display: inline;">
+                    <span *ngFor="let period of periods" style="display:inline-block;" class="pill-item">
+                        <a [ngClass]="{ 
+                                'active-item': period.code ==  selectedPeriod.code, 
+                                'inactive-item': period.code !=  selectedPeriod.code
+                            }" (click)="onPeriodChanged(period)">{{period.name}}
+                        </a>
+                    </span>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-4 p-as-center">
+                <div style="display: inline;">
+                    <span *ngFor="let freq of frequencies" style="display:inline-block;" class="pill-item">
+                        <a [ngClass]="{ 
+                                'active-item': freq.code ==  selectedFrequncy.code, 
+                                'inactive-item': freq.code !=  selectedFrequncy.code
+                            }" (click)="onFrequncyChanged(freq)">{{freq.name}}
+                        </a>
+                    </span>
+                </div>
+            </div>
+
+            <div class="p-col-12">
+                <span *ngFor="let symbol of keySymbols" (click)="onSymbolClick(symbol)" class="symbol">{{ symbol.name }}, </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12">
+        <p-table #dt [columns]="selectedCols" [value]="tableData">
+            <ng-template pTemplate="caption">
+                <div class="p-d-flex">
+                    <button type="button" pButton pRipple icon="pi pi-file-o" (click)="dt.exportCSV()" class="p-mr-2" pTooltip="CSV" tooltipPosition="bottom"></button>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns">
+                        {{col.header}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr [pSelectableRow]="rowData">
+                    <td *ngFor="let col of columns" style="text-align: center;">
+                        {{rowData[col.field]}}
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

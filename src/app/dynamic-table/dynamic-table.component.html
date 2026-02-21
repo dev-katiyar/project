@@ -1,0 +1,84 @@
+<div #customTemplates>
+    <ng-template #defaultTemplate let-col="col" let-rowData="rowData">
+        {{rowData[col.field]}}
+    </ng-template>
+    <ng-template #ratingTemplate let-col="col" let-rowData="rowData">
+        <div style="min-width: 60px;">
+                <span>({{rowData.rating}}/10)
+                    <img class="center-img" style="width: 1.25em; display: inline;"
+                         [src]="technicalService.getUpDownImgByValue(rowData.rating)">
+                </span>
+        </div>
+    </ng-template>
+    <ng-template #priceTemplate let-col="col" let-rowData="rowData">
+
+        <div [ngClass]="rowData.priceChange | classpipe ">
+            ${{rowData['priceChange']}}({{rowData['priceChangePct']}}%)
+        </div>
+    </ng-template>
+    <ng-template #week52Template let-col="col" let-rowData="rowData">
+        <div style="min-width: 120px;">
+            {{rowData.week_low_52 | currency}}-{{rowData.week_high_52 | currency}}
+        </div>
+    </ng-template>
+    <ng-template #marketCapTemplate let-col="col" let-rowData="rowData">
+        <div style="min-width: 120px;">
+            ${{rowData.marketCap | shortNumber}}
+        </div>
+    </ng-template>
+
+</div>
+
+<p-table #dt [columns]="tableCols" [value]="tableData" [paginator]="false" [rows]="10" [pageLinks]="3"
+         [rowsPerPageOptions]="[5,10,20]"
+         [resizableColumns]="true" [autoLayout]="true"
+         styleClass="p-datatable-positions p-datatable-striped" [tableStyle]="{'table-layout':'auto'}"
+         [scrollable]="false">
+
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th *ngFor="let col of columns" style="text-align: left;">
+                <ng-container
+                        [ngTemplateOutlet]="col.header_template? templateRefs[col.header_template]: defaultHeaderTemplate"
+                        [ngTemplateOutletContext]="{col:col}">
+                </ng-container>
+            </th>
+        </tr>
+    </ng-template>
+
+    <!--Template for Headers-->
+    <div>
+        <ng-template #defaultHeaderTemplate let-col="col">
+            {{col.header}}
+<!--            <p-sortIcon [field]="col.field"></p-sortIcon>-->
+        </ng-template>
+
+        <ng-template #headerFilterTemplate let-col="col">
+            {{col.header}}
+            <p-sortIcon [field]="col.field"></p-sortIcon>
+            <p-columnFilter type="text" field="col.field" display="menu" class="p-ml-auto"></p-columnFilter>
+        </ng-template>
+
+        <ng-template #toolTipTemplate let-col="col">
+            {{col.header}}
+            <span class="pi pi-question-circle" [escape]="false" tooltipPosition="right"
+                  [pTooltip]="col.tooltip" tooltipEvent="hover" showDelay="50"
+                  hideDelay="200">
+            </span>
+            <p-sortIcon [field]="col.field"></p-sortIcon>
+        </ng-template>
+    </div>
+
+
+    <ng-template pTemplate="body" let-rowData>
+        <tr>
+            <td *ngFor="let col of tableCols" style="text-align: left;">
+                <ng-container
+                        [ngTemplateOutlet]="col.template? templateRefs[col.template]: defaultTemplate"
+                        [ngTemplateOutletContext]="{col:col,rowData:rowData }">
+                </ng-container>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+

@@ -1,0 +1,31 @@
+li{
+    list-style: none;
+    float:left;
+    padding:0px;
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.imageText{
+    font-weight:bold;
+    line-height: 0.5;
+    font-size:14px;
+    margin-top:10px;
+
+}
+
+a{
+    font-weight:bold;
+    font-size:12px;
+    cursor:pointer;
+}
+
+.disclaimerText{
+    text-align: justify;
+    text-justify: inter-word;
+    margin-left:5%;
+    margin-right:5%;
+    line-height: 1;
+    font-size:11px;
+    color:#a09f9f;
+}

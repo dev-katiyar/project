@@ -1,0 +1,184 @@
+<div class="topbar clearfix">
+    <div class="column-1">
+        <a class="topbar-logo">
+            <img class="logo" routerLink="/" style="outline: none; cursor: pointer" alt="apollo-layout"
+                src="assets/images/logo/simplevisor-horizontal-light-lg.svg" />
+        </a>
+
+        <button (click)="appMain.onMenuButtonClick($event)" class="menu-button">
+            <img src="assets/images/svg/menu-expanded.svg">
+        </button>
+
+        <p-tabView class="menu-tabview" (onChange)="mainMenuItemClicked($event)"
+            [(activeIndex)]="activeMainMenuTabIndex">
+            <p-tabPanel *ngFor="let menu of menuItems[0]['items']; let i = index;">
+                <ng-template pTemplate="header">
+                    <a [routerLink]='menu.routerLink' style="color: white;padding-left: 0.5rem;padding-right: 0.5rem;">
+                        {{menu.label}}
+                    </a>
+                </ng-template>
+            </p-tabPanel>
+        </p-tabView>
+
+        <button pButton class="p-button-rounded p-button-raised topbar-invest"
+            [routerLink]="'/investing-solutions-info'">Invest $</button>
+
+        <div class="helpicon-container">
+            <img src="assets/images/svg/help-video-icon-1.svg" alt="Help Video" class="helpicon"
+                (click)="showHelpIcon()">
+        </div>
+    </div>
+
+    <!-- User Menu: different look based on login status. Drop down options below -->
+    <div class="user-menu">
+        <span class="topbar-search">
+            <app-stocks-autocomplete placeholderText="SEARCH TICKER or COMPANIES" [searchText]="symbol"
+                (onSymbolSelected)="onSymbolSelected($event)" [inputSize]="15">
+            </app-stocks-autocomplete>
+        </span>
+
+        <!--        <a class="profile" (click)="appMain.onTopbarItemClick($event, 'notifications')">-->
+        <!--            <div-->
+        <!--                    class="bell"-->
+        <!--                    *ngIf="isUserLogged">-->
+        <!--                <fa-icon-->
+        <!--                        class="bell-icon"-->
+        <!--                        [icon]="faBell">-->
+        <!--                </fa-icon>-->
+        <!--                <span class="alert-counter">{{ alertsCount }}</span>-->
+        <!--            </div>-->
+        <!--        </a>-->
+
+        <a class="profile" (click)="appMain.onTopbarItemClick($event, 'usermenu')">
+            <div *ngIf="isUserLogged">
+                <span class="initial-icon menu-button">{{ this.firstName }}</span>
+                <span class="username">{{ this.firstName }} {{ this.lastName }}</span>
+                <i style="margin-left: 20px" class="profile-submenu-icon pi pi-angle-down"></i>
+            </div>
+
+            <div *ngIf="!isUserLogged">
+                <span class="initial-text menu-button">Login</span>
+                <span class="username">Login/Sign Up</span>
+                <i class="profile-submenu-icon pi pi-angle-down"></i>
+            </div>
+        </a>
+
+        <!-- User Menu dropdown - when looged IN -->
+        <ul *ngIf="isUserLogged" class="topbar-menu fadeInDown"
+            [ngClass]="{ 'topbar-menu-visible': appMain.activeTopbarItem === 'usermenu' }">
+            <li role="menuitem">
+                <a routerLink="/profile" (click)="appMain.onTopbarSubItemClick($event)">
+                    <i class="pi pi-fw pi-user-edit"></i>
+                    <span>My Account</span>
+                </a>
+            </li>
+
+            <li role="menuitem">
+                <a routerLink="/faq" (click)="appMain.onTopbarSubItemClick($event)">
+                    <i class="pi pi-fw pi-question-circle"></i>
+                    <span>FAQs</span>
+                </a>
+            </li>
+
+            <li role="menuitem">
+                <a routerLink="/contact-us" (click)="appMain.onTopbarSubItemClick($event)">
+                    <i class="pi pi-fw pi-envelope"></i>
+                    <span>Contact Us</span>
+                </a>
+            </li>
+
+            <li role="menuitem">
+                <a href="https://realinvestmentadvice.com/ask-a-question/" target="_blank">
+                    <i class="pi pi-fw pi-question"></i>
+                    <span>Ask a Question</span>
+                </a>
+            </li>
+
+            <li role="menuitem">
+                <a href="https://realinvestmentadvice.com/make-an-appointment/" target="_blank">
+                    <i class="pi pi-fw pi-calendar-plus"></i>
+                    <span>Schedule Appointment</span>
+                </a>
+            </li>
+
+            <li role="menuitem">
+                <a routerLink="/" (click)="logOut($event)">
+                    <i class="pi pi-fw pi-sign-out"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- User Menu dropdown - when logged OUT -->
+        <ul *ngIf="!isUserLogged" class="topbar-menu fadeInDown"
+            [ngClass]="{ 'topbar-menu-visible': appMain.activeTopbarItem === 'usermenu' }">
+            <li role="menuitem">
+                <a routerLink="/login" (click)="appMain.onTopbarSubItemClick($event)">
+                    <i class="pi pi-fw pi-sign-in"></i>
+                    <span>User Login</span>
+                </a>
+            </li>
+
+            <li role="menuitem">
+                <a routerLink="/signup" (click)="appMain.onTopbarSubItemClick($event)">
+                    <i class="pi pi-fw pi-user-plus"></i>
+                    <span>Sign Up</span>
+                </a>
+            </li>
+
+            <li role="menuitem">
+                <a routerLink="/contact-us" (click)="appMain.onTopbarSubItemClick($event)">
+                    <i class="pi pi-fw pi-envelope"></i>
+                    <span>Contact Us</span>
+                </a>
+            </li>
+
+            <li role="menuitem">
+                <a href="https://realinvestmentadvice.com/ask-a-question/" target="_blank">
+                    <i class="pi pi-fw pi-question"></i>
+                    <span>Ask a Question</span>
+                </a>
+            </li>
+
+            <li role="menuitem">
+                <a href="https://realinvestmentadvice.com/make-an-appointment/" target="_blank">
+                    <i class="pi pi-fw pi-calendar-plus"></i>
+                    <span>Schedule Appointment</span>
+                </a>
+            </li>
+        </ul>
+
+
+        <!-- Notification Menu dropdown - when logged IN -->
+        <!-- <ul *ngIf="isUserLogged" class="topbar-menu fadeInDown"
+            [ngClass]="{ 'topbar-menu-visible': appMain.activeTopbarItem === 'notifications' }">
+            <app-tech-alerts-list (alertsLoaded)="alertsLoaded($event)"></app-tech-alerts-list>
+        </ul> -->
+    </div>
+</div>
+
+<!-- Sub Menu Under main tab based Main Menu -->
+<div class="sub-menu" [ngStyle]="{'height': selectedMainItem['items']?.length > 0 ? '30px': '0'}">
+    <div *ngFor="let item of selectedMainItem['items']; let i = index;" class="sub-menu-item" app-menuitem [item]='item'
+        [index]='i' [root]='true' (click)="onSubMenuItemClick(item)"
+        [ngClass]="{'sub-menu-item-active': selectedSubMenuItem.label === item.label}"></div>
+</div>
+
+<p-dialog header="Welcome to new SimpleVisor Website!!" [modal]="true" [(visible)]="displayWelcome2024"
+    [style]="{width: '50vw'}" [baseZIndex]="10000">
+    <p>We have redesigned the website to better organize similar data and make the easier to navigate.</p>
+
+    <p>Please let us know, what you think. And let us know if there are any enhancements you would like to see. <a
+            href="mailto:contact&#64;simplevisor.com?subject=[Simplevisor Support]">
+            contact&#64;simplevisor.com</a> <i class="pi pi-copy" (click)="copyToClipboard()"
+            style="font-size: 1.1rem; cursor:pointer"></i></p>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="displayWelcome2024=false" label="Continue..."
+            class="p-button-text"></p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="showIntroVideo" showEffect="fade" [modal]="true" [style]="{width: '70vw'}"
+    [breakpoints]="{'960px': '90vw', '640px': '97vw'}">
+    <app-sv-intro-video></app-sv-intro-video>
+</p-dialog>

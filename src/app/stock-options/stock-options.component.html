@@ -1,0 +1,72 @@
+<div class="p-grid p-mt-0" style="margin: -0.5rem;">
+    <div *ngIf="!expiryDates || !optionsData" class="p-col-12">
+        No data
+    </div>
+
+    <div class="p-col-12 p-p-1" *ngIf="expiryDates" style="padding-top: 1rem;padding-bottom: 0;">
+        <div class="p-d-flex p-flex-wrap"  style="gap: 0.5rem;">
+            <div class="p-mr-2">
+                <label for="expries" style="font-weight: bold;">Expiry Date: </label>
+                <p-dropdown [options]="expiryDates" [(ngModel)]="selectedExpiryDate" optionLabel="name"
+                    (onChange)="onExpiryDateChange()" class="dropdown-nopad" id="expries">
+                </p-dropdown>
+            </div>
+
+            <div class="p-mr-2">
+                <label for="strikefrom" style="font-weight: bold;">Strike From: </label>
+
+                <p-inputNumber [(ngModel)]="strikeFilterFrom" mode="decimal" [min]="0" [showButtons]="true" [size]="4"
+                    (onInput)="filterTableData()" id="strikefrom" [step]="0.5">
+                </p-inputNumber>
+
+                &nbsp;
+
+                <label for="striketo">To: </label>
+
+                <p-inputNumber [(ngModel)]="strikeFilterTo" mode="decimal" [min]="1" [showButtons]="true" [size]="4"
+                    (onInput)="filterTableData()" id="striketo" [step]="0.5">
+                </p-inputNumber>
+
+                <p-button class="p-ml-1" label="Filter" (onClick)="filterTableData()"></p-button>
+            </div>
+
+            <div class="p-mr-2">
+                <div class="in-money">In The Money</div>
+                <div class="btn-group p-mr-2">
+                    <input *ngFor="let vType of viewTypes" type="button" [value]="vType" class="btn-normal"
+                        [ngClass]="(selectedViewType == vType)?'btn-green':'btn-blue'" (click)="onViewChange(vType)">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-p-0" *ngIf="tableDataFiltered">
+        <div class="border-shadow p-p-2">
+            <p-table [columns]="selectedColumns" [value]="tableDataFiltered" sortMode="single" autoLayout="true">
+                <ng-template pTemplate="header" let-columns>
+                    <tr *ngIf="selectedViewType === 'Side by Side'">
+                        <th colspan="5" style="font-size: 1.2rem; vertical-align: middle;">Calls</th>
+                        <th colspan="1" style="font-size: 1.4rem; vertical-align: middle;">{{ selectedExpiryDate.name }}
+                        </th>
+                        <th colspan="5" style="font-size: 1.2rem; vertical-align: middle;">Puts</th>
+                    </tr>
+                    <tr>
+                        <th *ngFor="let col of columns">
+                            <!-- </th> [pSortableColumn]="col.field"> -->
+                            {{col.name}}
+                            <!-- <p-sortIcon [field]="col.field"></p-sortIcon> -->
+                        </th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-row let-columns="columns">
+                    <tr>
+                        <td *ngFor="let col of columns" style="text-align: center;" [ngStyle]="getCellStyle(row, col)">
+                            {{row[col.field]}}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

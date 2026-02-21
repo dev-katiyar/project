@@ -1,0 +1,64 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <h4 style="text-align:center;margin-bottom: 0;">Absolute Analysis of Sectors</h4>
+    </div>
+
+    <div class="p-col-12" *ngIf="!absAnaOutput">
+        <p></p>
+        <p></p>
+        <p style="text-align:center;color: indianred;">Processing absolute analysis for all sectors....</p>
+    </div>
+
+    <div class="p-col-12" *ngIf="absAnaOutput">
+        <div class="p-grid" style="padding: 0.5rem;">
+            <div class="p-col-12 border-shadow"
+                style="padding-top: 0.5rem;padding-bottom:1rem; background-color: white;">
+                <div style="text-align: center;">
+                    (click sector symbol for sector details including a absolute analysis of its top ten holdings)
+                </div>
+                <app-absolute-analysis-heatmap [dataArray]="absHeatMapData" [seriesConfig]="absHeatMapConfig"
+                    (symbolClicked)="handleHeatMapSymbolClick($event)">
+                </app-absolute-analysis-heatmap>
+                <div style="text-align:center">
+                    <strong style="color: red;">Overbought</strong> - could be a good time to reduce holdings. <strong style="color: green;">Oversold</strong> -
+                    could be a good time to increase holdings
+                </div>
+            </div>
+
+            <div class="p-col-12 border-shadow" *ngIf="!selectedSymbol"
+                style="background-color: white;padding: 1rem;margin-top: 0.5rem;">
+                <h5>About Absolute Analysis</h5>
+                <p>
+                    This analysis uses the price of the securities to establish an absolute technical score.
+                    13 technical measures are applied to the price data to determine the score.
+                </p>
+                <p>
+                    Quite often scores of + .75 or greater are good times to reduce holdings and -.75 are good times to buy.
+                    However, scores can stay extremely overbought or sold for a few weeks so at times patience is required.
+                </p>
+            </div>
+
+            <div class="p-col-12 border-shadow" *ngIf="selectedSymbol"
+                style="background-color: white;margin-top: 0.5rem;">
+                <div class="p-grid">
+                    <div class="p-col-12" style="text-align: center;padding-bottom: 0;">
+                        <h3 style="margin-bottom: 0;">{{selectedSymbol.symbol}} ({{selectedSymbol.name}}) - Absolute Analysis</h3>
+                    </div>
+
+                    <div class="p-col-12">
+                        <app-absolute-analysis-chart [chartData]="absAnaOutput" [chartConfig]="selectedChartConfig">
+                        </app-absolute-analysis-chart>
+                    </div>
+
+                    <!-- <div class="p-col-12" style="margin-top: -0.5rem; padding-top: 0; padding-right: 1rem;">
+                        <fund-overview-absolute [symbol]="selectedSymbol.symbol"></app-fund-overview>
+                    </div> -->
+
+                    <div class="p-col-12" style="margin-top: -0.5rem; padding-top: 0; padding-right: 1rem;">
+                        <app-fund-overview-absolute [symbol]="selectedSymbol.symbol"></app-fund-overview-absolute>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

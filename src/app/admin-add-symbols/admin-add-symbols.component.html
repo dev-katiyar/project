@@ -1,0 +1,136 @@
+<div class="p-grid" style="margin-top:20px;">
+    <div class="p-col-12 p-md-3 p-lg-2">
+        <input [(ngModel)]="text" placeholder="Enter Symbol" pInputText (click)="$event.target.select()"/>
+    </div>
+
+    <div class="p-col-12 p-md-3 p-lg-2">
+        <button style="float:right;" type="button" class="p-button-success" pButton
+                label="Get Symbols" (click)="getAllSymbolDetail()" [disabled]="loading">
+        </button>
+    </div>
+
+    <div class="p-col-12 p-md-3 p-lg-2">
+        <button style="float:right;" type="button" class="p-button-info" pButton
+                label="Add New Symbol" (click)="addNewSymbol()">
+        </button>
+    </div>
+
+    <div class="p-col-12 p-md-3 p-lg-2">
+        <button type="button" pButton label="Export To Csv" (click)="dt1.exportCSV()">
+            <i class="pi pi-file-excel"></i>
+        </button>
+    </div>
+</div>
+
+<p-table #dt1 [columns]="cols" [value]="symbolDetailList" [paginator]="false" [rows]="10" [pageLinks]="3" [rowsPerPageOptions]="[5,10,20]"
+         [resizableColumns]="false" [autoLayout]="true"
+         styleClass="p-datatable-positions p-datatable-striped" [tableStyle]="{'table-layout':'auto'}" [scrollable]="false">
+
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th pSortableColumn="symbol">
+                Symbol
+                <p-sortIcon field="symbol"></p-sortIcon>
+            </th>
+            <th pSortableColumn="companyname">
+                Company Name
+                <p-sortIcon field="companyname"></p-sortIcon>
+            </th>
+            <th pSortableColumn="exchange">
+                Exchange
+                <p-sortIcon field="exchange"></p-sortIcon>
+            </th>
+            <th pSortableColumn="source">
+                Source
+                <p-sortIcon field="source"></p-sortIcon>
+            </th>
+            <th pSortableColumn="asset_id">
+                Asset Id
+                <p-sortIcon field="asset_id"></p-sortIcon>
+            </th>
+            <th pSortableColumn="sector_id">
+                Sector Id
+                <p-sortIcon field="sector_id"></p-sortIcon>
+            </th>
+            <th pSortableColumn="industry_id">
+                Industry Id
+                <p-sortIcon field="industry_id"></p-sortIcon>
+            </th>
+            <th pSortableColumn="isactive">
+                Is Active
+                <p-sortIcon field="isactive"></p-sortIcon>
+            </th>
+            <th pSortableColumn="action">
+                Action
+                <p-sortIcon field="action"></p-sortIcon>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-symbolDetail>
+        <tr>
+            <td style="text-align:center;min-width: 70px;">
+                <div class="center symbol-withoutpointer" *ngIf="!symbolDetail.isEditable">{{symbolDetail.symbol}}</div>
+                <div class="center symbol-withoutpointer" *ngIf="symbolDetail.isEditable">
+                    <input pInputText type="text" [(ngModel)]="symbolDetail.symbol" (click)="$event.target.select()">
+                </div>
+            </td>
+            <td style="text-align:center;">
+                <div class="center" *ngIf="!symbolDetail.isEditable">{{symbolDetail.companyname}}</div>
+                <div class="center" *ngIf="symbolDetail.isEditable">
+                    <input pInputText type="text" [(ngModel)]="symbolDetail.companyname" (click)="$event.target.select()">
+                </div>
+            </td>
+            <td style="text-align:center;">
+                <div class="center" *ngIf="!symbolDetail.isEditable">{{symbolDetail.exchange}}</div>
+                <div class="center" *ngIf="symbolDetail.isEditable">
+                    <input pInputText type="text" [(ngModel)]="symbolDetail.exchange" (click)="$event.target.select()">
+                </div>
+            </td>
+            <td style="text-align:center;">
+                <div class="center" *ngIf="!symbolDetail.isEditable">{{symbolDetail.source}}</div>
+                <div class="center" *ngIf="symbolDetail.isEditable">
+                    <input pInputText type="text" [(ngModel)]="symbolDetail.source" (click)="$event.target.select()">
+                </div>
+            </td>
+            <td>
+                <div>
+                    <p-dropdown [options]="assets"
+                                optionLabel="asset_name" [(ngModel)]="symbolDetail.asset_id"
+                                placeholder="-- Select --" [style]="{'width':'200px'}">
+                    </p-dropdown>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <p-dropdown [options]="sectors"
+                                optionLabel="name" [(ngModel)]="symbolDetail.sector_id"
+                                placeholder="-- Select --" [style]="{'width':'200px'}">
+                    </p-dropdown>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <p-dropdown [options]="industries"
+                                optionLabel="name" [(ngModel)]="symbolDetail.industry_id"
+                                placeholder="-- Select --" [style]="{'width':'300px'}">
+                    </p-dropdown>
+                </div>
+            </td>
+            <td style="text-align:center;">
+                <div class="center" *ngIf="!symbolDetail.isEditable">{{symbolDetail.isactive}}</div>
+                <div class="center" *ngIf="symbolDetail.isEditable">
+                    <input pInputText type="text" [(ngModel)]="symbolDetail.isactive" (click)="$event.target.select()">
+                </div>
+            </td>
+            <td>
+                <button style="margin-bottom:5px;" type="button" class="p-button-success" pButton label="Save"
+                        (click)="saveSymbolData(symbolDetail)">
+                </button>
+                <button type="button" class="p-button-info" pButton label="Edit"
+                        (click)="editSymbolData(symbolDetail)">
+                </button>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+

@@ -1,0 +1,110 @@
+{
+  "symbol": "MSFT",
+  "buy_conditions": {
+    "selected_condition": "and",
+    "strategy_list": [
+      {
+        "name": "sma 100 cross below close",
+        "key": "sma",
+        "settings": [
+          {
+            "key": "timeperiod",
+            "value": "100"
+          }
+        ],
+        "selected_strategy": {
+          "key": "cb",
+          "selected_option": {
+            "key": "close"
+          }
+        }
+      },
+      {
+        "name": "sma 50 cross above sma 100",
+        "key": "sma",
+        "settings": [
+          {
+            "key": "timeperiod",
+            "value": "50"
+          }
+        ],
+        "selected_strategy": {
+          "key": "ca",
+          "selected_option": {
+            "key": "sma",
+            "settings": [
+              {
+                "key": "timeperiod",
+                "value": "100"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "key": "rsi 10  > 100",
+        "settings": [
+          {
+            "key": "timeperiod",
+            "value": 10
+          }
+        ],
+        "selected_strategy": {
+          "key": ">",
+          "selected_option": {
+            "key": "fixed",
+            "value": "100"
+          }
+        }
+      },
+      {
+        "name": "rsi 14  Bullish Divergence",
+        "key": "rsi",
+        "settings": [
+          {
+            "key": "timeperiod",
+            "value": 14
+          }
+        ],
+        "selected_strategy": {
+          "key": "bd",
+          "settings": [
+            {
+              "key": "ticks",
+              "value": 5
+            }
+          ]
+        }
+      },
+      {
+        "selected_condition": "and",
+        "strategy_list": [
+
+        ]
+      },
+      {
+        "name": "macd (26,9) momentum rising",
+        "key": "macd",
+        "settings": [
+          {
+            "key": "fast_period",
+            "value": "26"
+          },
+          {
+            "key": "slow_period",
+            "value": "9"
+          }
+        ],
+        "selected_strategy": {
+          "key": "mr",
+          "settings": [
+            {
+              "key": "ticks",
+              "value": "10"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

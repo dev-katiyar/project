@@ -1,0 +1,161 @@
+<div *ngIf="errorMsg">{{ errorMsg }}</div>
+
+<div class="p-grid" style="margin: -0.75rem;">
+    <div class="p-col-12 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;">
+            <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                Corporate Bond Spreads To US Treasuries
+            </span>
+
+            <hr style="margin: 0.5rem 0;">
+
+            <div class="p-grid">
+                <!-- table -->
+                <div class="p-col-4">
+                    <p-table #dt [value]="icsPercentiles?.data"
+                        styleClass="p-datatable-positions p-datatable-striped" [paginator]="false" [autoLayout]="true">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th rowspan="2" colspan="2" style="text-align: left;vertical-align: middle;">
+                                    Symbol
+                                </th>
+
+                                <th rowspan="2" [pTooltip]="'This is the difference between the Bank of America yield for similarly rated corporate bonds versus similar maturity US Treasury bonds. As on ' + icsToday?.date" style="border-right: 2px solid #e0e0e0; width: 26%; vertical-align: middle;">
+                                    Current Yield Spread
+                                    <sup>
+                                        <span style="color: #007ad9;">&#9432;</span>
+                                    </sup>
+                                </th>
+
+                                <th colspan="4" pTooltip="This measures how the current spread ranks within the data set of each time frame. The lower the number, the tighter the spread, i.e., investors are getting paid less to take credit risk." style="vertical-align: middle;">
+                                    Historical Percentile Over Periods
+                                    <sup>
+                                        <span style="color: #007ad9;">&#9432;</span>
+                                    </sup>
+                                </th>
+                            </tr>
+                            
+                            <tr>
+                                <th style="text-align: center;" *ngFor="let col of icsPeriods">
+                                    {{ col.key }}
+                                </th>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="body" let-row>
+                            <tr>
+                                <td style="width: fit-content; text-align: center;">
+                                    <i (click)="onChartClick(row?.symbol)" class="pi pi-chart-line"
+                                        [ngClass]="{'selected-item': row.symbol === symNameMap[selSymbol]}" title="Historical Spread Chart"
+                                        style="font-size: 1.15rem; cursor: pointer;">
+                                    </i>
+                                </td>
+
+                                <td style="text-align: left; font-weight: bold;">
+                                    {{ row?.symbol }}
+                                </td>
+                                    
+                                <td style="text-align: center;border-right: 2px solid #e0e0e0;">
+                                    {{row['current_oas'] | number:'0.2-2' }}%
+                                </td>
+
+                                <td style="text-align: center;" *ngFor="let col of icsPeriods">
+                                    {{ row[col.key] | percent:'1.2-2'}}
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+
+                <!-- bar chart -->
+                <!-- <div class="p-col-8">
+                    <app-bar-chart showLegends="true" [chartData]="icsPercentileChartData" yAxisTitle="Historical %tile" chartType="column" [chartHeight]="300" [tickPositions]="[0, 25, 50, 75, 100]">
+                    </app-bar-chart>
+                </div> -->
+
+                <!-- line chart -->
+                <div class="p-col-8">
+                    <app-credit-spread-chart [symbol]="selSymbol"></app-credit-spread-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- intra_credit_spread_last -->
+    <div class="p-col-6 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;">
+            <span pTooltip="This measures the yield differences between all of the corporate bond indexes by rating." style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                Intra Credit Spread as of {{ icsToday?.date }}
+                <sup>
+                    <span style="color: #007ad9;">&#9432;</span>
+                </sup>
+            </span>
+
+            <hr style="margin: 0.5rem 0;">
+
+            <div>
+                <p-table #dt [value]="icsToday?.data"
+                    styleClass="p-datatable-positions p-datatable-striped" [paginator]="false" [autoLayout]="true">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="text-align: left;">Symbol</th>
+
+                            <th style="text-align: center;" *ngFor="let col of icsCols">
+                                {{ col.header }}
+                            </th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="body" let-row>
+                        <tr>
+                            <td style="text-align: left;font-weight: bold;">
+                                {{ row?.symbol }}
+                            </td>
+
+                            <td style="text-align: center;" *ngFor="let col of icsCols">
+                                {{ row[col.field] | number:'1.2-2'}}
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-6 p-p-1">
+        <div class="border-shadow p-p-2" style="height: 100%;">
+            <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+                Intra Credit Spread Change Since last 4 Weeks
+            </span>
+
+            <hr style="margin: 0.5rem 0;">
+
+            <div>
+                <p-table #dt [value]="ics4wkChange?.data"
+                    styleClass="p-datatable-positions p-datatable-striped" [paginator]="false" [autoLayout]="true">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="text-align: left;">Symbol</th>
+
+                            <th style="text-align: center;" *ngFor="let col of icsCols">
+                                {{ col.header }}
+                            </th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="body" let-row>
+                        <tr>
+                            <td style="text-align: left; font-weight: bold;">
+                                {{ row?.symbol }}
+                            </td>
+
+                            <td style="text-align: center;" *ngFor="let col of icsCols">
+                                {{ row[col.field] | number:'1.2-2'}}
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>

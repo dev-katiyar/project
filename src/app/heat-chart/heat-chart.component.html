@@ -1,0 +1,10 @@
+<div class="p-grid p-jc-center rwd-table" style="margin-top:0;">
+    <div class="heatMap" *ngFor="let row of dataArray" [ngClass]="getHeatCls(row[seriesConfig.yCol])"
+        style="width:110px; padding: 1rem;">
+        <a class="heatmapAnchor cursorPointer" (click)="symbolClick(row[seriesConfig.clickEventCol])">
+            <div [innerHtml]="getDisplayData(row)"></div>
+        </a>
+    </div>
+</div>
+
+<div *ngIf="dataArray.length < 1">No Data</div>

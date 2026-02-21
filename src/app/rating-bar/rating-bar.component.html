@@ -1,0 +1,19 @@
+<div class="p-grid" style="margin-top: 1rem;">
+    <div class="p-col-6" style="text-align: left; padding: 0 0.5rem; font-weight: bold;">
+        {{ name }}
+    </div>
+
+    <div class="p-col-6" style="text-align: right; padding: 0 0.5rem;">
+        {{ ratingText }}
+    </div>
+
+    <div class="p-col-12" style="padding: 0 0.5rem;">
+        <p-progressBar 
+            [value]="ratingValue * 100 / 4 | number:'1.0-0'" 
+            [class]="getRatingClass(ratingValue)"
+            [style]="getRatingStyle()" 
+            [showValue]="false"
+        >
+        </p-progressBar>
+    </div>
+</div>

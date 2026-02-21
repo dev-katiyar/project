@@ -1,0 +1,17 @@
+<div class="p-grid">
+    <div class="p-col-8 p-text-bold">
+        <p>{{label}}</p>
+    </div>
+    <div class="p-col-4">
+        <div class="p-grid">
+            <div class="p-col-6 p-text-right" style="font-size: 0.9rem;"
+                [ngStyle]="{'color':(value ? 'green': 'black') }">
+                {{ value ? 'Active': 'Activate' }}
+            </div>
+
+            <div class="p-col-6">
+                <p-inputSwitch [(ngModel)]="value" (onChange)="onChangeClick($event)"></p-inputSwitch>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+<div class="p-grid p-fluid">
+    <div class="p-col-12">
+        <div class="p-grid">
+            <div class="p-md-2 p-col-12">
+                Symbol
+            </div>
+
+            <div class="p-md-2 p-col-12">
+                <app-stocks-autocomplete [(searchText)]="symbol" (onSymbolSelected)="onSymbolSelected1($event)">
+                </app-stocks-autocomplete>
+            </div>
+
+            <div class="p-md-2 p-col-12">
+                <button label="Run Backtest" pButton (click)="getBackTest()"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-col-12" *ngIf="bt_output">
+        <table>
+            <tr>
+                <th style="padding-right: 1rem;">Period</th>
+                <th style="padding-right: 1rem;">Starting Capital</th>
+                <th style="padding-right: 1rem;">End Potfolio Value</th>
+                <th style="padding-right: 1rem;">Alpha</th>
+                <th style="padding-right: 1rem;">Beta</th>
+                <th style="padding-right: 1rem;">Algo Volatility</th>
+                <th style="padding-right: 1rem;">Benchmark Volatility</th>
+                <th style="padding-right: 1rem;">Algo Return</th>
+                <th style="padding-right: 1rem;">Benchmark Return - SPY</th>
+            </tr>
+            <tr>
+                <td>{{ bt_output['period_label'] }}</td>
+                <td>100,000</td>
+                <td>{{ bt_output['portfolio_value'] | number }}</td>
+                <td>{{ bt_output["alpha"] | number }}</td>
+                <td>{{ bt_output["beta"] | number }}</td>
+                <td>{{ bt_output["algo_volatility"] | number }}</td>
+                <td>{{ bt_output["benchmark_volatility"] | number }}</td>
+                <td>{{ bt_output["algorithm_period_return"] | number }}</td>
+                <td>{{ bt_output["benchmark_period_return"] | number }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="p-col-12" *ngIf="bt_output">
+        <h4>Transactions</h4>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Symbol</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+            <tr *ngFor="let txn of bt_output['transactions']">
+                <td>{{ txn['dt'] | date}}</td>
+                <td>{{ txn['sid'] }}</td>
+                <td>{{ txn['amount'] }}</td>
+                <td>{{ txn['price'] | number:'0.2-2'}}</td>
+            </tr>
+        </table>
+    </div>
+</div>

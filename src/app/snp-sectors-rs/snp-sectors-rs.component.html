@@ -1,0 +1,29 @@
+<div id="SectorRelativeStrength">
+    <div class="p-grid p-nogutter" style="padding-top:0.5rem">
+        <div class="p-col-12 p-lg-6" style="padding-left:0.5rem">
+            <p-panel header="Click on Sector/Industry to See Top Symbols">
+                <app-sector-heatmap (onSymbolClicked)="symbolSelected($event)" style="margin:0px;"></app-sector-heatmap>
+            </p-panel>
+        </div>
+
+        <div class="p-col-12 p-lg-6" style="padding-left:0.5rem">
+            <p-panel [header]="titlePerformance">
+                <data-table-technical [title]="titlePerformance" [symbols]="bestPerfSymbols"></data-table-technical>
+            </p-panel>
+        </div>
+    </div>
+
+    <div class="p-grid p-nogutter" style="padding-top:0.5rem">
+        <div class="p-col-12 p-lg-6" style="padding-left:0.5rem">
+            <p-panel header="Sector Ytd Performance">
+                <line-chart barClass="chart-big" [symbols]="sectorSymbols"></line-chart>
+            </p-panel>
+        </div>
+        
+        <div class="p-col-12 p-lg-6" style="padding-left:0.5rem">
+            <p-panel [header]="titlePerformance">
+                <line-chart barClass="chart-big" [symbols]="bestPerfSymbols"></line-chart>
+            </p-panel>
+        </div>
+    </div>
+</div>

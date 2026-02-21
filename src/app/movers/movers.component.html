@@ -1,0 +1,88 @@
+<div class="p-grid" style="margin: -1rem;">
+    <!-- TOP Controls -->
+    <div class="p-col-12 p-p-1">
+        <div style="display: flex; align-items: center;">
+            <!-- CATEGORY ETFs / Sectors / Stocks Switcher -->
+            <span class="btn-group p-mr-3">
+                <input *ngFor="let tClass of tickerClasses" type="button" [value]="tClass" class="btn-normal"
+                    [ngClass]="(selectedClass == tClass)?'btn-green':'btn-blue'" (click)="onTickerClassClick(tClass)">
+            </span>
+
+            <!-- SECTOR Swithcer/Dropdown -->
+            <span *ngIf="selectedClass=='Sectors'" class="p-mr-2 p-text-bold">Sector: </span>
+
+            <p-dropdown *ngIf="selectedClass=='Sectors'" [options]="sectors" [(ngModel)]="selectedSector"
+                optionLabel="short_name" (onChange)="onSectorChange()"></p-dropdown>
+        </div>
+    </div>
+
+    <!-- CONTENT AS PER SELECTION -->
+
+    <!-- WHEN ETFs or Stocks -->
+    <div class="p-col-12 p-pt-1">
+        <div class="border-shadow">
+            <p-tabView id="etf-move-tabs" (onChange)="moveTabClicked($event)">
+                <p-tabPanel [header]="move.name" *ngFor="let move of moves; let i = index" [selected]="i == 0">
+                    <ng-template pTemplate="content">
+                        <div class="p-grid">
+                            <!-- WHEN NO DATA -->
+                            <div class="p-col-12" *ngIf="!symbolTechnicals">
+                                No Data
+                            </div>
+
+                            <!-- BAR CHART  - 1D Change for SYMBOLS-->
+                            <!-- <div class="p-col-12 p-md-6 p-p-1" *ngIf="symbolTechnicals" >
+                                <div class="border-shadow p-p-2" style="height: 100%;background-color: white;">
+                                    <div class="title">
+                                        1D Change
+                                    </div>
+                        
+                                    <hr style="margin: 0.5rem 0;width: 100%;">
+                        
+                                    <div style="overflow: auto;">
+                                        <app-bar-chart barClass="chart-big" [technicalData]="symbolTechnicals" columnToPlot="priceChangePct"
+                                            yAxisTitle="% Change" chartType="bar">
+                                        </app-bar-chart>
+                                    </div>
+                                </div>
+                            </div> -->
+
+                            <!-- BAR CHART  - MACD Momentum for SYMBOLS -->
+                            <!-- <div class="p-col-12 p-md-6 p-p-1" *ngIf="symbolTechnicals">
+                                <div class="border-shadow p-p-2" style="height: 100%;background-color: white;">
+                                    <div class="title">
+                                        Momentum
+                                    </div>
+                        
+                                    <hr style="margin: 0.5rem 0;width: 100%;">
+                        
+                                    <div style="overflow: auto;">
+                                        <app-bar-chart barClass="chart-big" [technicalData]="symbolTechnicals" columnToPlot="macdhist"
+                                            yAxisTitle="Momentum" chartType="bar">
+                                        </app-bar-chart>
+                                    </div>
+                                </div>
+                            </div> -->
+
+                            <!-- Techncial Table - SYMBOLS  -->
+                            <div class="p-col-12 p-p-1" *ngIf="symbolTechnicals">
+                                <div class="p-p-2" style="height: 100%;background-color: white;">
+                                    <div class="title">
+                                        Symbol Technicals
+                                    </div>
+
+                                    <hr style="margin: 0.5rem 0;width: 100%;">
+
+                                    <div>
+                                        <technical-datatable [model]="symbolTechnicals">
+                                        </technical-datatable>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-tabPanel>
+            </p-tabView>
+        </div>
+    </div>
+</div>

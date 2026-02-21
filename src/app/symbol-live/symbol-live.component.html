@@ -1,0 +1,22 @@
+<div class="p-grid">
+    <ul class="p-sm-4 p-md-3 p-lg-2" *ngFor="let row of recommendedSymbolDetails">
+        <li class="listStyle" (click)="recommendedSymbolClicked(row.symbol)">
+            <div class="p-grid" >
+                <div class="p-col-12" >
+                    <div style="padding:0px;font-size:15px;font-weight:bold;">{{row.companyname}}</div>
+                </div>
+                <div class="p-col-3">
+                    <div><img [ngClass]="technicalService.setImageClass(row.priceChangePct)" alt=""></div>
+                </div>
+                <div class="p-col-4">
+                    <div style="font-weight:bold;font-size:14px;">{{row.symbol}}</div>
+                    <div >{{row.price | number:'0.2-2'}}</div>
+                </div>
+                <div class="p-col-3">
+                    <div [ngClass]="row.priceChange | upDownColor">{{row.priceChange | number:'0.2-2'}}</div>
+                    <div [ngClass]="row.priceChangePct | upDownColor">{{row.priceChangePct | number:'0.2-2'}}%</div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>

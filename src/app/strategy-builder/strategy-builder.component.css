@@ -1,0 +1,20 @@
+.fullwidth {
+    width: 100%;
+}
+
+
+:host ::ng-deep  .p-fieldset .p-fieldset-content {
+    padding: 0;
+}
+
+
+.delete-icon {
+    color: red;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.no-pad .p-tabview .p-tabview-panels {
+    padding: 0;
+}

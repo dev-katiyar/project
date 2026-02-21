@@ -1,0 +1,42 @@
+<div>
+    <div *ngIf="loading">
+        {{text}}
+    </div>
+    <div *ngIf="!loading">
+        <div *ngIf="isPeriodBarVisible" style="margin-bottom: 0.5rem; padding-right: 1rem;">
+            <!-- Series Name -->
+            <span style="font-weight: bold; float: left; font-size: 1.2rem; margin-left: 1rem;">{{ chartConfig?.yAxes[0]?.title?.text }}</span>
+
+            <!-- Frequecy (Quarter/Year) Buttons -->
+            <span class="btn-group">
+                <input type="button" value="Quarterly" class="btn-normal" [ngClass]="(frequency.code=='quarterly')?'btn-green':'btn-blue'"
+                    (click)="frequencyChanged('quarterly')">
+                <input type="button" value="Yearly" class="btn-normal"
+                    [ngClass]="(frequency.code=='annual')?'btn-green':'btn-blue'" (click)="frequencyChanged('annual')">
+            </span>
+
+            <!-- Time Period Buttons -->
+            <span class="btn-group p-mr-2">
+                <input type="button" value="3Y" class="btn-normal" [ngClass]="(period=='3year')?'btn-green':'btn-blue'"
+                    (click)="periodChanged('3year')">
+                <input type="button" value="10Y" class="btn-normal"
+                    [ngClass]="(period=='10year')?'btn-green':'btn-blue'" (click)="periodChanged('10year')">
+                <input type="button" value="20Y" class="btn-normal"
+                    [ngClass]="(period=='20year')?'btn-green':'btn-blue'" (click)="periodChanged('20year')">
+            </span>
+        </div>
+
+        <!-- Chart -->
+        <div [class]="barClass" [chart]="barChart">
+        </div>
+
+        <!-- Trendline Select Buttons -->
+        <div style="text-align: center;" *ngIf="trendLinesChecksAvailable">
+            <div style="display: inline-block;font-weight: bold;margin-right: 1rem;">Show:</div> 
+            <div style="display: inline-block; background-color: #f3f3f3;padding: 0.25rem;padding: 0.4rem; border-radius: 0.25rem;">
+                <!-- <p-checkbox value="trend" [binary]="true" [(ngModel)]="trendLineVisible" (onChange)="onTrendLineCheck()" label="Trend Line" class="p-mr-1"></p-checkbox> -->
+                <p-checkbox value="growthTrend" [binary]="true" [(ngModel)]="growthTrendLineVisible" (onChange)="onGrowthTrendLineCheck()" label="5 Yr Annualized Growth" class="p-mr-1"></p-checkbox>
+            </div>
+        </div>
+    </div>
+</div>

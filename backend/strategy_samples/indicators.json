@@ -1,0 +1,147 @@
+{
+  "indicators": [
+    {
+      "name": "MACD",
+      "key": "macd",
+      "settings": [
+        {
+          "key": "fastperiod",
+          "value": 12
+        },
+        {
+          "key": "slowperiod",
+          "value": 26
+        },
+        {
+          "key": "signalperiod",
+          "value": 9
+        }
+      ],
+      "strategies": [
+        {
+          "name": "crosses above",
+          "key": "ca",
+          "type": "double",
+          "settings": [],
+          "options": [
+            {
+              "name": "Signal",
+              "key": "macdsignal",
+              "settings": []
+            }
+          ]
+        },
+        {
+          "name": "crosses below",
+          "key": "cb",
+          "type": "double",
+          "settings": [],
+          "options": [
+            {
+              "name": "Signal",
+              "key": "macdsignal",
+              "settings": []
+            }
+          ]
+        },
+        {
+          "name": "Bullish Divergent",
+          "key": "bud",
+          "type": "strategy",
+          "settings": [
+            {
+              "key": "ticks",
+              "value": 5
+            }
+          ]
+        },
+        {
+          "name": "Bearish Divergent",
+          "key": "bed",
+          "type": "strategy",
+          "settings": [
+            {
+              "key": "ticks",
+              "value": 5
+            }
+          ]
+        },
+        {
+          "name": "greater than",
+          "key": "gt",
+          "type": "double",
+          "options": [
+            {
+              "name": "Fixed Value",
+              "key": "fixed",
+              "settings": [
+                {
+                  "key": "value",
+                  "value": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SMA",
+      "key": "sma",
+      "settings": [
+        {
+          "key": "timeperiod",
+          "value": 20
+        }
+      ],
+      "strategies": [
+        {
+          "name": "crosses above",
+          "key": "ca",
+          "type": "double",
+          "settings": [],
+          "options": [
+            {
+              "name": "SMA",
+              "key": "sma",
+              "settings": [
+                {
+                  "key": "timeperiod",
+                  "value": 50
+                }
+              ]
+            },
+            {
+              "name": "Price",
+              "key": "close",
+              "settings": []
+            }
+          ]
+        },
+        {
+          "name": "crosses below",
+          "key": "cb",
+          "settings": [],
+          "type": "double",
+          "options": [
+            {
+              "name": "SMA",
+              "key": "sma",
+              "settings": [
+                {
+                  "key": "timeperiod",
+                  "value": 50
+                }
+              ]
+            },
+            {
+              "name": "Price",
+              "key": "close",
+              "settings": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

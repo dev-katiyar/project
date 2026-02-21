@@ -1,0 +1,159 @@
+<p-table #dt1 [value]="alerts" dataKey="id" [rows]="50" [showCurrentPageReport]="true" [rowsPerPageOptions]="[20,50,100,200]"
+    styleClass="p-datatable-positions p-datatable-striped" [paginator]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [globalFilterFields]="['symbol']"
+    [autoLayout]="true" [tableStyle]="{'table-layout':'auto'}" [resizableColumns]="false">
+
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="symbol">
+                Symbol
+                <p-sortIcon field="symbol"></p-sortIcon>
+                <p-columnFilter type="text" field="symbol" display="menu" class="p-ml-auto"></p-columnFilter>
+            </th>
+
+            <th pSortableColumn="currentPrice">
+                Current Quote
+                <p-sortIcon field="currentPrice"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="changePct">
+                Today's Change
+                <p-sortIcon field="changePct"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="MohanramScore">
+                Mohanram Score
+                <span class="pi pi-question-circle" [escape]="false" tooltipPosition="right"
+                    [pTooltip]="technicalService.getMohanramToolTip()" tooltipEvent="hover" showDelay="50"
+                    hideDelay="200">
+                </span>
+                <p-sortIcon field="MohanramScore"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="PiotroskiFScore">
+                Piotroski Score
+                <span class="pi pi-question-circle" [escape]="false" tooltipPosition="right"
+                    [pTooltip]="technicalService.getPiotroskiToolTip()" tooltipEvent="hover" showDelay="50"
+                    hideDelay="200">
+                </span>
+                <p-sortIcon field="PiotroskiFScore"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="ZacksRank">
+                SV Rank
+                <span class="pi pi-question-circle" [escape]="false" tooltipPosition="right"
+                    [pTooltip]="technicalService.getZacksToolTip()" tooltipEvent="hover" showDelay="50" hideDelay="200">
+                </span>
+                <p-sortIcon field="ZacksRank"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="sma50">
+                50Day Moving Avg.
+                <p-sortIcon field="sma50"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="sma150">
+                150Day Moving Avg.
+                <p-sortIcon field="sma150"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="sma200">
+                200Day Moving Avg.
+                <p-sortIcon field="sma200"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="stop_loss">
+                Stop Loss
+                <p-sortIcon field="stop_loss"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="distance_to_stop">
+                Distance To Stop
+                <p-sortIcon field="distance_to_stop"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="buy_signal">
+                MA XVER Bullish
+                <p-sortIcon field="buy_signal"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="sell_signal">
+                MA XVER Bearish
+                <p-sortIcon field="sell_signal"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="stop_loss_alert">
+                Stop Loss Alert
+                <p-sortIcon field="stop_loss_alert"></p-sortIcon>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-alert>
+        <tr class="p-selectable-row">
+            <td style="text-align:left;">
+                <div class="symbol" (click)="onSymbolClick(alert.symbol)">{{alert.symbol}}</div>
+            </td>
+
+            <td>
+                <div>{{alert.currentPrice | currency}}</div>
+            </td>
+
+            <td>
+                <div [ngClass]="alert.priceChange | classpipe ">
+                    {{alert['priceChange'] | currency}}({{alert['changePct']}}%)
+                </div>
+            </td>
+
+            <td style="text-align:center;">
+                <div [ngStyle]="technicalService.getMohanramRatingBackground(alert.MohanramScore)">
+                    {{alert.MohanramScore}}
+                </div>
+            </td>
+
+            <td style="text-align:center;">
+                <div [ngStyle]="technicalService.getPiotroskiRatingBackground(alert.PiotroskiFScore)">
+                    {{alert.PiotroskiFScore}}
+                </div>
+            </td>
+
+            <td style="text-align:center;">
+                <div [ngStyle]="technicalService.getZacksRatingBackground(alert.ZacksRank)">
+                    {{alert.ZacksRank}}
+                </div>
+            </td>
+
+            <td>
+                <div>{{alert.sma50 | currency}}</div>
+            </td>
+
+            <td>
+                <div>{{alert.sma150 | currency}}</div>
+            </td>
+
+            <td>
+                <div>{{alert.sma200 | currency}}</div>
+            </td>
+
+            <td>
+                <div [ngClass]="alert.stop_loss | classpipe ">{{alert.stop_loss | currency}}</div>
+            </td>
+
+            <td>
+                <div>{{alert.distance_to_stop | currency}}</div>
+            </td>
+
+            <td>
+                <div [ngClass]="alert.buy_signal | classpipe " style="text-align:left;">{{alert.buy_signal}}</div>
+            </td>
+
+            <td>
+                <div [ngClass]="alert.sell_signal | classpipe " style="text-align:left;">{{alert.sell_signal}}</div>
+            </td>
+
+            <td>
+                <div style="text-align:left;" [ngClass]="alert.stop_loss_alert | classpipe ">{{alert.stop_loss_alert}}
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

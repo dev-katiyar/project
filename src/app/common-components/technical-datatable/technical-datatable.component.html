@@ -1,0 +1,177 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <p-table #dt1 [columns]="cols" [value]="model" dataKey="id" [rows]="50" [showCurrentPageReport]="true"
+            [rowsPerPageOptions]="[20,50,100,500]"
+            styleClass="p-datatable-positions p-datatable-striped" [resizableColumns]="false"
+            [paginator]="model?.length > 50"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [globalFilterFields]="['symbol']" [autoLayout]="true" [scrollable]="false"
+            [tableStyle]="{'table-layout':'auto'}">
+
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th style="text-align: left;" *ngIf="showChartIcon"></th>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field"
+                        [hidden]="col.field == 'watchlist' && type !='watchlist'">
+                        {{col.header}}
+                        <p-columnFilter *ngIf="col.field == 'symbol'" type="text" field="symbol" display="menu"
+                            class="p-ml-auto">
+                        </p-columnFilter>
+                        <span *ngIf="col.field == 'ZacksRank'" class="pi pi-question-circle" [escape]="false"
+                            tooltipPosition="right" [pTooltip]="technicalService.getZacksToolTip()" tooltipEvent="hover"
+                            showDelay="50" hideDelay="200">
+                        </span>
+                        <span *ngIf="col.field == 'PiotroskiFScore'" class="pi pi-question-circle" [escape]="false"
+                            tooltipPosition="right" [pTooltip]="technicalService.getPiotroskiToolTip()"
+                            tooltipEvent="hover" showDelay="50" hideDelay="200">
+                        </span>
+                        <span *ngIf="col.field == 'MohanramScore'" class="pi pi-question-circle" [escape]="false"
+                            tooltipPosition="right" [pTooltip]="technicalService.getMohanramToolTip()"
+                            tooltipEvent="hover" showDelay="50" hideDelay="200">
+                        </span>
+                        <p-sortIcon [field]="col.field" *ngIf="showSortIcon(col)">
+                        </p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-position>
+                <tr class="p-selectable-row">
+                    <td style="width: fit-content; text-align: center;" *ngIf="showChartIcon">
+                        <i (click)="onChartClick(position.symbol)" class="pi pi-chart-line"
+                            [ngClass]="{'selected-item': position.symbol === this.selectedSymbol}"
+                            title="Trend Chart vs SPY" style="font-size: 1.15rem; cursor: pointer;">
+                        </i>
+                    </td>
+
+                    <td *ngIf="type=='watchlist'" style="text-align: center;">
+                        <i (click)="deletePosition(position)" class="pi pi-times-circle" title="Delete Symbol"
+                            style="font-size: 1em; cursor: pointer; color: red;"></i>
+                    </td>
+                    <!-- <td style="width: fit-content; ">
+                            <i (click)="showSymbolDetailDialog(position.symbol)" class="pi pi-chart-line"
+                                title="Charts and Stats" style="font-size: 1.15rem; cursor: pointer;">
+                            </i>
+                        </td> -->
+
+                    <td style="text-align: left;">
+                        <span (click)="onSymbolClick(position.symbol)" class="symbol">{{position.symbol}}</span>
+                    </td>
+
+                    <td style="text-align: left;min-width: 22rem;">
+                        {{position.alternate_name}}
+                    </td>
+
+                    <td>
+                        <div>{{position.price | currency}}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div style="min-width: 120px;" [ngClass]="position.priceChange | upDownColor">
+                            {{position['priceChange'] | currency }} ({{position['priceChangePct'] | number:'0.2-2'}})%
+                        </div>
+                    </td>
+
+                    <td>
+                        <div [ngClass]="position.mtd | upDownColor">{{position.mtd |
+                            number:'0.2-2'}}%
+                        </div>
+                    </td>
+
+                    <td>
+                        <div [ngClass]="position.ytd | upDownColor">{{position.ytd |
+                            number:'0.2-2'}}%
+                        </div>
+                    </td>
+
+                    <td>
+                        <div [ngClass]="position.change_oneyearbeforedate_pct | upDownColor">
+                            {{position.change_oneyearbeforedate_pct |
+                            number:'0.2-2'}}%
+                        </div>
+                    </td>
+
+                    <td style="font-size: 0.9rem;">{{position.low52 | currency}}</td>
+
+                    <td style="min-width: 7.5rem;padding-left: 0.5rem;padding-right: 0.5rem;">
+                        <p-slider [(ngModel)]="position.price" [min]="position.low52" [max]="position.high52"
+                            [disabled]="true">
+                        </p-slider>
+                    </td>
+
+                    <td style="font-size: 0.9rem;">{{position.high52 | currency}}</td>
+
+                    <td>
+                        <div>{{position.rsi | number:'0.2-2'}}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>{{position.sma20 | currency}}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>{{position.sma50 | currency}}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>{{position.sma100 | currency}}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>{{position.sma200 | currency}}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div style="min-width: 60px;">
+                            <span>{{position['rating']}}/10 <img class="center-img"
+                                    style="width: 1rem; display: inline;"
+                                    [src]="technicalService.getUpDownImgByValue(position.rating)"></span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="center"
+                            [ngStyle]="technicalService.getMohanramRatingBackground(position.MohanramScore)">
+                            {{position.MohanramScore}}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="center"
+                            [ngStyle]="technicalService.getPiotroskiRatingBackground(position.PiotroskiFScore)">
+                            {{position.PiotroskiFScore}}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="center" [ngStyle]="technicalService.getZacksRatingBackground(position.ZacksRank)">
+                            {{position.ZacksRank}}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>{{position['dividendYield'] | number:'0.2-2'}}%</div>
+                    </td>
+
+                    <td>
+                        <div [ngClass]="position.macd | upDownColor">
+                            {{position['macd'] | number:'0.2-2'}}
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <p-dialog header="Symbol Analytics" [(visible)]="displayDialogSymbolDetail" showEffect="fade" [modal]="true"
+        [style]="{width: '85vw'}" [breakpoints]="{'960px': '90vw', '640px': '97vw'}">
+        <app-symbol-detail-modal [symbol]="selectedSymbol"></app-symbol-detail-modal>
+    </p-dialog>
+
+</div>

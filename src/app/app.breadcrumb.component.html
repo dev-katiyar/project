@@ -1,0 +1,18 @@
+<div class="layout-breadcrumb">
+  <ul>
+    <ng-template ngFor let-item let-last="last" [ngForOf]="items">
+      <li>
+        <a [routerLink]="item.routerLink" *ngIf="item.routerLink">{{ item.label }}</a>
+        <ng-container *ngIf="!item.routerLink">{{ item.label }}</ng-container>
+      </li>
+      <li *ngIf="!last">/</li>
+    </ng-template>
+  </ul>
+
+  <!-- Too many custom as parent div and class having too many styles   -->
+  <!-- <span class="help-btn">
+    <button type="button" pButton pRipple icon="pi pi-question-circle" label="Help" (click)="menu.toggle($event)"
+      class="p-button-sm p-button-rounded p-button-outlined"></button>
+    <p-menu #menu [popup]="true" [model]="helpMenuItems"></p-menu>
+  </span> -->
+</div>

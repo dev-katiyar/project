@@ -1,0 +1,15 @@
+<div class="border-shadow p-p-2 p-mt-1" style="margin: -0.5rem;">
+    <span style="font-size: 1.2rem; font-weight: bold;margin-right: 1rem;">
+        Short Interest Ratio
+      </span>
+
+    <hr style="margin: 0.5rem 0;">
+
+    <app-chart-fundamentals *ngIf="allData" [fundamentalData]="allData" [chartConfig]="chartConfig"
+    [seriesConfig]="selectedSeriesConfigs" [trendLinesChecksAvailable]="false" [isPeriodBarVisible]="false"
+    (onPeriodChanged)="handlePriceChartPeriodChange($event)" [period]="selectedTimePeriod"></app-chart-fundamentals>
+</div>
+
+<div *ngIf="!allData" style="margin-top: 5rem; margin-left: 0;text-align: center;">
+        No Short Interest Data for {{symbol}}
+</div>

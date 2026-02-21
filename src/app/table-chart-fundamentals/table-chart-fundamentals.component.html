@@ -1,0 +1,61 @@
+<div *ngIf="!error" class="p-grid p-justify-center">
+    <div class="p-col-12" style="margin-top: 0.5rem">
+        <div class="p-grid">
+            <div class="p-col-12 p-md-7">
+                <p-selectButton [style]="{padding: 0}" [options]="fundamentalDataCategories"
+                    [(ngModel)]="selectedFundamentalCategory" optionLabel="name" (onChange)="onCategoryChange($event)">
+                </p-selectButton>
+            </div>
+            <div class="p-col-12 p-md-2 p-as-center">
+                <span *ngFor="let freq of chartDataFrequency" style="display:inline-block;" class="pill-item">
+                    <a [ngClass]="{ 
+                                'active-item': freq.code ==  selectedChartDataFrequency.code, 
+                                'inactive-item': freq.code !=  selectedChartDataFrequency.code
+                            }" (click)="onChartDataFrequencyChanged(freq)">{{freq.name}}
+                    </a>
+                </span>
+            </div>
+
+            <div class="p-col-12 p-md-3 p-as-center">
+                <span style="display:inline-block;" class="pill-item">
+                    <a [ngClass]="{ 
+                            'active-item': isTrendLineVisible, 
+                            'inactive-item': !isTrendLineVisible
+                        }" (click)="onTrendLinePillClick()">Trend Line
+                    </a>
+                </span>
+                <span style="display:inline-block;" class="pill-item">
+                    <a [ngClass]="{ 
+                            'active-item': isGrowthTrendCurveVisible, 
+                            'inactive-item': !isGrowthTrendCurveVisible
+                        }" (click)="onGrowthTrendLinePillClick()">5 Yr Annualised Growth
+                    </a>
+                </span>
+            </div>
+
+            <div class="p-col-12">
+                <p-selectButton [style]="{padding: 0}" [options]="selectedFundamentalCategory.codes"
+                    [(ngModel)]="selectedFundamentalDataItem" optionLabel="name" (onChange)="onDataTypeChange($event)">
+                </p-selectButton>
+            </div>
+        </div>
+
+
+        <app-chart-fundamentals *ngIf="symbolFundamentals" [fundamentalData]="symbolFundamentals"
+            [chartConfig]="chartConfig" [seriesConfig]="selectedSeriesConfigs" [trendLinesChecksAvailable]="false"
+            (onPeriodChanged)="handlePriceChartPeriodChange($event)"
+            [period]="selectedTimePeriod"></app-chart-fundamentals>
+    </div>
+
+    <div class="p-col-12">
+        <app-composite-chart-table title="Peers" [symbols]="symbolPeers" defaultView="Tables" [rowsPerPage]="10"
+            [showChartTableDropdown]="false" ></app-composite-chart-table>
+    </div>
+
+    <div class="p-col-12 p-md-6">
+        <app-fairvalue-chart [symbol]="symbol"></app-fairvalue-chart>
+    </div>
+</div>
+<div *ngIf="error" style="margin-top: 5rem; margin-left: 0;text-align: center;">
+    {{ error }}
+</div>

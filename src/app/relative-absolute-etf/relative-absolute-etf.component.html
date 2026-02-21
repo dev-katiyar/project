@@ -1,0 +1,165 @@
+<div class="p-grid" style="margin: -1.5rem;">
+    <div class="p-col-12" style="background: white;">
+        <div class="border-shadow p-p-2" style="height: 100%;">
+            <span style="font-size: 1.2rem;font-weight: bold;">
+                {{symbolData["name"]}} Analysis - Absolute and Relative Score (vs SPY)
+            </span>
+
+            <hr style="margin: 0.5rem 0;width: 100%;">
+
+            <div class="p-grid">
+                <!-- Loading... placeholder -->
+                <div class="p-col-12 p-md-5" *ngIf="!relAbsLatest">
+                    Loading data...
+                </div>
+
+                <!-- Rel Abs Table and How it works -->
+                <div class="p-col-12 p-md-6" *ngIf="relAbsLatest">
+                    <div class="p-grid">
+                        <div class="p-col-12">
+                            <p-table [value]="relAbsLatest" styleClass="p-datatable-striped" [autoLayout]="true">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="text-align: left; width: 4rem;">Symbol</th>
+                                        <th style="text-align: left;">Name</th>
+                                        <th style="text-align: left;">Holding</th>
+                                        <th style="text-align: center;" pSortableColumn="absolute_score">
+                                            Absolute Score
+                                            <p-sortIcon field="absolute_score"></p-sortIcon>
+                                        </th>
+                                        <th style="text-align: center;" pSortableColumn="relative_score">
+                                            Relative Score (vs SPY)
+                                            <p-sortIcon field="relative_score"></p-sortIcon>
+                                        </th>
+                                        <th style="text-align: center;width: 6rem;">Chart
+                                            <p-checkbox class="center-checkbox" [(ngModel)]="showAllLines" binary="true"
+                                                (onChange)="showAllSwitchHandler($event)">
+                                            </p-checkbox>
+                                        </th>
+                                    </tr>
+                                </ng-template>
+
+                                <ng-template pTemplate="body" let-row>
+                                    <tr>
+                                        <td style="text-align: left;" class="symbol"
+                                            (click)="onSymbolClick(row.symbol)">
+                                            {{row.symbol}}
+                                        </td>
+                                        <td style="text-align: left;">{{row.name}}</td>
+                                        <td style="text-align: left;">{{row.holdingPercent * 100 | number:'0.2-2'}}%
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <p-tag styleClass="p-mr-2" [style]="getScoreStyle(row.absolute_score)"
+                                                (click)="onSymbolAbsoluteClick(row); absPanel.toggle($event);">
+                                                <span style="margin-right: 0.5rem;">
+                                                    {{row.absolute_score | number:'0.2-2'}}
+                                                </span>
+                                                <i class="pi pi-chevron-circle-right"></i>
+                                            </p-tag>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <p-tag styleClass="p-mr-2" [style]="getScoreStyle(row.relative_score)"
+                                                (click)="onSymbolRelativeClick(row); relPanel.toggle($event);">
+                                                <span style="margin-right: 0.5rem;">
+                                                    {{row.relative_score | number:'0.2-2'}}
+                                                </span>
+                                                <i class="pi pi-chevron-circle-right"></i>
+                                            </p-tag>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <p-checkbox type="checkbox" binary="true" [(ngModel)]="row.isInChart"
+                                                (onChange)="onChartSelectToggle($event, row)"></p-checkbox>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+
+                        <div class="p-col-12">
+                            <hr style="margin: 0.5rem 0;">
+                        </div>
+
+                        <div class="p-col-12">
+                            <app-relative-absolute-score-meter></app-relative-absolute-score-meter>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Rel Abs Chart and Its Controls -->
+                <div class="p-col-12 p-md-6" style="overflow-x: auto;" *ngIf="relAbsLatest">
+                    <div style="width: 600px;margin: auto;">
+                        <div [chart]="bubbleChart" style="margin: 1em auto;"></div>
+                    </div>
+
+                    <div class="p-grid p-jc-center">
+                        <div class="p-col-12 p-md-7 tail-box">
+                            <p-checkbox class="center-checkbox" [(ngModel)]="show_tail" binary="true" inputId="minmax"
+                                (onChange)="onShowHideTailClick()">
+                            </p-checkbox>
+
+                            <label for="minmax" style="cursor: pointer;font-weight: bold;">
+                                Tail Length
+                            </label>
+
+                            <p-slider [(ngModel)]="show_tail_len" (onChange)="onTailLengthChange()" [min]="1" [max]="12"
+                                [step]="1" class="tail-slider"></p-slider>
+
+                            <span class="tail-length-number">{{show_tail_len}}</span>
+
+                            <span style="margin: 0 0.5rem;">Weeks</span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr style="width: 100%;">
+
+                <!-- Heat Map for Holding Symbols Relative Analysis -->
+                <div class="p-col-12" style="overflow-x: auto;">
+                    <div *ngIf="!raHoldingsScore" style="text-align:center;color: indianred;">
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p>Processing top 10 holdings relative score...</p>
+                    </div>
+                    <div *ngIf="raHoldingsScore">
+                        <div style="font-size: 1.3rem;font-weight: bold;text-align: center;padding-bottom: 1rem;">
+                            Top 10 Holdings Relative Analysis with Each Other
+                        </div>
+                        <div>
+                            <app-relative-analysis-heatmap-symbols [tableData]="raHoldingsScore"
+                                [symbolsDict]="dictHoldings" [raHoldingsData]="raHoldingsData"
+                                [raHoldingChartConfigs]="raHoldingChartConfigs">
+                            </app-relative-analysis-heatmap-symbols>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Absolute Score Line Chart Panel-->
+                <p-overlayPanel #absPanel [showCloseIcon]="true" [style]="{width: '80%'}">
+                    <div style="text-align: center;">
+                        <div style="display: inline-block; font-size: 1.5rem; font-weight: bold;">
+                            {{ absChartDataInputs?.symbol1 }} - Absolute Analysis
+                        </div>
+                    </div>
+                    <app-absolute-analysis-chart *ngIf="absChartData && absChartConfig" [chartData]="absChartData"
+                        [chartConfig]="absChartConfig">
+                    </app-absolute-analysis-chart>
+                </p-overlayPanel>
+
+                <!-- Relative Score Line Chart Panel-->
+                <p-overlayPanel #relPanel [showCloseIcon]="true" [style]="{width: '80%'}">
+                    <div style="text-align: center;">
+                        <div style="display: inline-block; font-size: 1.5rem; font-weight: bold;">
+                            {{ relChartDataInputs?.symbol1 }} / {{ relChartDataInputs?.symbol2 }} - Relative Analysis
+                        </div>
+                    </div>
+                    <app-relative-analysis-chart *ngIf="relChartData && relChartConfig" [chartData]="relChartData"
+                        [chartConfig]="relChartConfig">
+                    </app-relative-analysis-chart>
+                </p-overlayPanel>
+            </div>
+        </div>
+    </div>
+</div>
