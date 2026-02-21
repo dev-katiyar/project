@@ -41,3 +41,5 @@ reference-angular/src/conf/apache-conf/openssl.cnf
 reference-angular/src/conf/api-keys.txt
 reference-angular/src/environments/environment.prod.ts
 reference-angular/src/environments/environment.ts
+*.pem
+*.zip
