@@ -1,0 +1,385 @@
+/* ==========================================================================
+   SimpleVisor AI - Theme Variables & Minimal Global Styles
+   Everything else uses PrimeFlex utilities + PrimeReact components.
+   ========================================================================== */
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--sv-bg-body);
+  color: var(--sv-text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  line-height: 1.6;
+}
+
+a {
+  color: var(--sv-accent);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--sv-accent-hover);
+}
+
+/* ---------- Font Size Scales ---------- */
+[data-font-size="small"] {
+  font-size: 13px;
+}
+[data-font-size="medium"] {
+  font-size: 15px;
+}
+[data-font-size="large"] {
+  font-size: 17px;
+}
+
+/* ======================================================================
+   THEME VARIABLES
+   ====================================================================== */
+
+/* ---------- DARK ---------- */
+[data-theme="dark"] {
+  --sv-bg-body: #0a0e17;
+  --sv-bg-surface: #111827;
+  --sv-bg-card: #1a2234;
+  --sv-bg-card-hover: #1f2b3f;
+  --sv-bg-input: #1a2234;
+  --sv-bg-header: #0d1320;
+  --sv-bg-overlay: rgba(0, 0, 0, 0.6);
+  --sv-border: #1e2d44;
+  --sv-border-light: #162032;
+  --sv-border-focus: #00d4ff;
+  --sv-text-primary: #e8edf5;
+  --sv-text-secondary: #8899aa;
+  --sv-text-muted: #5a6b7d;
+  --sv-text-inverse: #0a0e17;
+  --sv-accent: #00d4ff;
+  --sv-accent-hover: #33ddff;
+  --sv-accent-bg: rgba(0, 212, 255, 0.12);
+  --sv-accent-gradient: linear-gradient(135deg, #00d4ff 0%, #0098b3 100%);
+  --sv-success: #22c55e;
+  --sv-success-bg: rgba(34, 197, 94, 0.12);
+  --sv-danger: #ef4444;
+  --sv-danger-bg: rgba(239, 68, 68, 0.12);
+  --sv-warning: #f59e0b;
+  --sv-warning-bg: rgba(245, 158, 11, 0.12);
+  --sv-info: #3b82f6;
+  --sv-info-bg: rgba(59, 130, 246, 0.12);
+  --sv-gain: #22c55e;
+  --sv-loss: #ef4444;
+  --sv-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --sv-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --sv-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --sv-shadow-glow: 0 0 20px rgba(0, 212, 255, 0.15);
+  --sv-scrollbar-track: #111827;
+  --sv-scrollbar-thumb: #2a3548;
+  --sv-chart-bg: #1a2234;
+  --sv-chart-grid: #1e2d44;
+  --sv-chart-text: #8899aa;
+}
+
+/* ---------- DIM ---------- */
+[data-theme="dim"] {
+  --sv-bg-body: #15202b;
+  --sv-bg-surface: #192734;
+  --sv-bg-card: #22303c;
+  --sv-bg-card-hover: #2a3a48;
+  --sv-bg-input: #22303c;
+  --sv-bg-header: #15202b;
+  --sv-bg-overlay: rgba(0, 0, 0, 0.5);
+  --sv-border: #38444d;
+  --sv-border-light: #2a3640;
+  --sv-border-focus: #1d9bf0;
+  --sv-text-primary: #e7e9ea;
+  --sv-text-secondary: #8b98a5;
+  --sv-text-muted: #6e7c87;
+  --sv-text-inverse: #15202b;
+  --sv-accent: #1d9bf0;
+  --sv-accent-hover: #4db5f5;
+  --sv-accent-bg: rgba(29, 155, 240, 0.12);
+  --sv-accent-gradient: linear-gradient(135deg, #1d9bf0 0%, #1470b0 100%);
+  --sv-success: #00ba7c;
+  --sv-success-bg: rgba(0, 186, 124, 0.12);
+  --sv-danger: #f4212e;
+  --sv-danger-bg: rgba(244, 33, 46, 0.12);
+  --sv-warning: #ffad1f;
+  --sv-warning-bg: rgba(255, 173, 31, 0.12);
+  --sv-info: #1d9bf0;
+  --sv-info-bg: rgba(29, 155, 240, 0.12);
+  --sv-gain: #00ba7c;
+  --sv-loss: #f4212e;
+  --sv-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --sv-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --sv-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --sv-shadow-glow: 0 0 20px rgba(29, 155, 240, 0.15);
+  --sv-scrollbar-track: #192734;
+  --sv-scrollbar-thumb: #38444d;
+  --sv-chart-bg: #22303c;
+  --sv-chart-grid: #38444d;
+  --sv-chart-text: #8b98a5;
+}
+
+/* ---------- LIGHT ---------- */
+[data-theme="light"] {
+  --sv-bg-body: #f5f7fa;
+  --sv-bg-surface: #ffffff;
+  --sv-bg-card: #ffffff;
+  --sv-bg-card-hover: #f0f3f7;
+  --sv-bg-input: #f5f7fa;
+  --sv-bg-header: #ffffff;
+  --sv-bg-overlay: rgba(0, 0, 0, 0.3);
+  --sv-border: #dce1e8;
+  --sv-border-light: #edf0f5;
+  --sv-border-focus: #0078d4;
+  --sv-text-primary: #1a2234;
+  --sv-text-secondary: #5a6b7d;
+  --sv-text-muted: #8899aa;
+  --sv-text-inverse: #ffffff;
+  --sv-accent: #0078d4;
+  --sv-accent-hover: #106ebe;
+  --sv-accent-bg: rgba(0, 120, 212, 0.08);
+  --sv-accent-gradient: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+  --sv-success: #16a34a;
+  --sv-success-bg: rgba(22, 163, 74, 0.08);
+  --sv-danger: #dc2626;
+  --sv-danger-bg: rgba(220, 38, 38, 0.08);
+  --sv-warning: #d97706;
+  --sv-warning-bg: rgba(217, 119, 6, 0.08);
+  --sv-info: #2563eb;
+  --sv-info-bg: rgba(37, 99, 235, 0.08);
+  --sv-gain: #16a34a;
+  --sv-loss: #dc2626;
+  --sv-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --sv-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --sv-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --sv-shadow-glow: 0 0 20px rgba(0, 120, 212, 0.1);
+  --sv-scrollbar-track: #f5f7fa;
+  --sv-scrollbar-thumb: #c5cbd3;
+  --sv-chart-bg: #ffffff;
+  --sv-chart-grid: #edf0f5;
+  --sv-chart-text: #5a6b7d;
+}
+
+/* ======================================================================
+   PrimeReact component overrides to honour theme vars
+   ====================================================================== */
+.p-card {
+  background: var(--sv-bg-card) !important;
+  border: 1px solid var(--sv-border) !important;
+  color: var(--sv-text-primary) !important;
+  box-shadow: var(--sv-shadow-sm) !important;
+  border-radius: 12px !important;
+}
+.p-card:hover {
+  box-shadow: var(--sv-shadow-md) !important;
+}
+
+.p-inputtext {
+  background: var(--sv-bg-input) !important;
+  border-color: var(--sv-border) !important;
+  color: var(--sv-text-primary) !important;
+}
+.p-inputtext:enabled:focus {
+  border-color: var(--sv-border-focus) !important;
+  box-shadow: 0 0 0 2px var(--sv-accent-bg) !important;
+}
+
+.p-button.p-button-primary {
+  background: var(--sv-accent-gradient) !important;
+  border: none !important;
+}
+.p-button.p-button-primary:hover {
+  box-shadow: var(--sv-shadow-glow) !important;
+}
+
+.p-button.p-button-outlined {
+  color: var(--sv-accent) !important;
+  border-color: var(--sv-accent) !important;
+  background: transparent !important;
+}
+.p-button.p-button-outlined:hover {
+  background: var(--sv-accent-bg) !important;
+}
+
+.p-button.p-button-text {
+  color: var(--sv-text-secondary) !important;
+}
+.p-button.p-button-text:hover {
+  background: var(--sv-bg-card) !important;
+  color: var(--sv-text-primary) !important;
+}
+
+.p-sidebar {
+  background: var(--sv-bg-surface) !important;
+  border-color: var(--sv-border) !important;
+}
+.p-sidebar .p-sidebar-header {
+  background: var(--sv-bg-surface) !important;
+}
+
+.p-message {
+  border-radius: 8px !important;
+}
+
+.p-divider.p-divider-horizontal::before {
+  border-color: var(--sv-border) !important;
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--sv-scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--sv-scrollbar-thumb);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sv-text-muted);
+}
+
+::selection {
+  background: var(--sv-accent);
+  color: var(--sv-text-inverse);
+}
+
+:focus-visible {
+  outline: 2px solid var(--sv-border-focus);
+  outline-offset: 2px;
+}
+
+/* ======================================================================
+   Minimal custom classes — ONLY for things with no PrimeFlex/PrimeReact equivalent
+   ====================================================================== */
+
+/* Header: sticky + glass effect */
+.sv-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--sv-bg-header);
+  border-bottom: 1px solid var(--sv-border);
+  backdrop-filter: blur(12px);
+  height: 60px;
+}
+
+/* Nav links (React Router NavLink) */
+.sv-nav-link {
+  padding: 0.5rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--sv-text-secondary);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.sv-nav-link:hover,
+.sv-nav-link.active {
+  color: var(--sv-text-primary);
+  background: var(--sv-bg-card);
+  text-decoration: none;
+}
+.sv-nav-link.active {
+  color: var(--sv-accent);
+}
+
+/* Search input expand animation */
+.sv-search-input {
+  background: var(--sv-bg-input);
+  border: 1px solid var(--sv-border);
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem 0.45rem 2.25rem;
+  color: var(--sv-text-primary);
+  font-size: 0.85rem;
+  width: 220px;
+  transition: all 0.2s ease;
+}
+.sv-search-input:focus {
+  border-color: var(--sv-border-focus);
+  width: 280px;
+  outline: none;
+}
+
+/* Settings panel slide-over (no PrimeReact Sidebar used here to keep it lightweight) */
+.sv-settings-panel {
+  position: fixed;
+  top: 0;
+  right: -360px;
+  width: 340px;
+  height: 100vh;
+  background: var(--sv-bg-surface);
+  border-left: 1px solid var(--sv-border);
+  box-shadow: var(--sv-shadow-lg);
+  z-index: 2000;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+.sv-settings-panel.open {
+  right: 0;
+}
+
+.sv-settings-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--sv-bg-overlay);
+  z-index: 1999;
+}
+
+/* Settings option toggle buttons */
+.sv-option-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--sv-border);
+  background: var(--sv-bg-card);
+  color: var(--sv-text-secondary);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.sv-option-btn:hover {
+  border-color: var(--sv-accent);
+  color: var(--sv-text-primary);
+}
+.sv-option-btn.active {
+  border-color: var(--sv-accent);
+  background: var(--sv-accent-bg);
+  color: var(--sv-accent);
+}
+
+/* Sentiment gauge ring (unique widget) */
+.sv-sentiment-ring {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--sv-accent);
+}
+
+/* Responsive hide nav on mobile */
+@media (max-width: 768px) {
+  .sv-header-nav-hide {
+    display: none !important;
+  }
+  .sv-search-input {
+    width: 150px;
+  }
+  .sv-search-input:focus {
+    width: 200px;
+  }
+}
