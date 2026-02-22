@@ -2,8 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 
-// Styles — themes.css holds CSS vars + minimal custom classes; rest is PrimeFlex
+// Styles
 import "./styles/themes.css";
+import "./styles/layout.css";
 
 // PrimeReact theme & core (imported here so Vite bundles them)
 import "primereact/resources/themes/lara-dark-cyan/theme.css";
