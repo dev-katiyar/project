@@ -87,7 +87,14 @@ const HomePage: React.FC = () => {
               >
                 AI Sentiment Score
               </div>
-              <div className="sv-sentiment-ring flex flex-column align-items-center justify-content-center mx-auto mb-2">
+              <div
+                className="border-circle flex flex-column align-items-center justify-content-center mx-auto mb-2"
+                style={{
+                  width: 120,
+                  height: 120,
+                  border: "4px solid var(--sv-accent)",
+                }}
+              >
                 <span
                   className="text-3xl font-bold"
                   style={{ color: "var(--sv-accent)" }}

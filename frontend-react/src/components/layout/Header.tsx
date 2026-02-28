@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { Avatar } from "primereact/avatar";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 
@@ -31,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
     : "?";
 
   return (
-    <header className="sv-header flex align-items-center px-3">
+    <header className="sv-header sticky top-0 flex align-items-center px-3">
       <div
         className="flex align-items-center justify-content-between w-full mx-auto"
         style={{ maxWidth: 1600 }}
@@ -63,7 +64,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
         </Link>
 
         {/* Navigation */}
-        <nav className="flex align-items-center gap-1 sv-header-nav-hide">
+        <nav className="hidden md:flex align-items-center gap-1">
           {isAuthenticated ? (
             <>
               <NavLink to="/overview" className="sv-nav-link">
@@ -132,13 +133,17 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
           />
 
           {isAuthenticated ? (
-            <button
-              className="sv-avatar-btn"
-              title={user?.username}
+            <Avatar
+              label={userInitial}
+              shape="circle"
               onClick={handleLogout}
-            >
-              {userInitial}
-            </button>
+              title={user?.username}
+              className="cursor-pointer"
+              style={{
+                background: "var(--sv-accent-gradient)",
+                color: "var(--sv-text-inverse)",
+              }}
+            />
           ) : (
             <Button
               label="Start Free Trial"
