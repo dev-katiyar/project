@@ -91,6 +91,40 @@ a:hover {
   --sv-chart-bg: #121a2e;
   --sv-chart-grid: #1c2840;
   --sv-chart-text: #7a8da8;
+
+  /* PrimeReact variable bridge */
+  --primary-color: var(--sv-accent);
+  --primary-color-text: var(--sv-text-inverse);
+  --text-color: var(--sv-text-primary);
+  --text-color-secondary: var(--sv-text-secondary);
+  --surface-ground: var(--sv-bg-body);
+  --surface-section: var(--sv-bg-body);
+  --surface-card: var(--sv-bg-card);
+  --surface-overlay: var(--sv-bg-surface);
+  --surface-border: var(--sv-border);
+  --surface-hover: rgba(232, 237, 245, 0.03);
+  --surface-a: var(--sv-bg-surface);
+  --surface-b: var(--sv-bg-body);
+  --surface-c: rgba(232, 237, 245, 0.03);
+  --surface-d: var(--sv-border);
+  --surface-e: var(--sv-bg-card);
+  --surface-f: var(--sv-bg-card);
+  --surface-0: #07090f;
+  --surface-50: #0a0e19;
+  --surface-100: #0d1220;
+  --surface-200: #121a2e;
+  --surface-300: #182235;
+  --surface-400: #1c2840;
+  --surface-500: #4a5e78;
+  --surface-600: #7a8da8;
+  --surface-700: #a0b4cc;
+  --surface-800: #c8d4e8;
+  --surface-900: #e8edf5;
+  --focus-ring: 0 0 0 0.2rem var(--sv-accent-bg);
+  --maskbg: var(--sv-bg-overlay);
+  --highlight-bg: var(--sv-accent-bg);
+  --highlight-text-color: var(--sv-text-primary);
+  color-scheme: dark;
 }
 
 /* ---------- DIM ----------
@@ -134,6 +168,40 @@ a:hover {
   --sv-chart-bg: #1c2945;
   --sv-chart-grid: #283a5c;
   --sv-chart-text: #7a92b8;
+
+  /* PrimeReact variable bridge */
+  --primary-color: var(--sv-accent);
+  --primary-color-text: var(--sv-text-inverse);
+  --text-color: var(--sv-text-primary);
+  --text-color-secondary: var(--sv-text-secondary);
+  --surface-ground: var(--sv-bg-body);
+  --surface-section: var(--sv-bg-body);
+  --surface-card: var(--sv-bg-card);
+  --surface-overlay: var(--sv-bg-surface);
+  --surface-border: var(--sv-border);
+  --surface-hover: rgba(216, 224, 240, 0.03);
+  --surface-a: var(--sv-bg-surface);
+  --surface-b: var(--sv-bg-body);
+  --surface-c: rgba(216, 224, 240, 0.03);
+  --surface-d: var(--sv-border);
+  --surface-e: var(--sv-bg-card);
+  --surface-f: var(--sv-bg-card);
+  --surface-0: #0f1729;
+  --surface-50: #131d35;
+  --surface-100: #162038;
+  --surface-200: #1c2945;
+  --surface-300: #223354;
+  --surface-400: #283a5c;
+  --surface-500: #4a6080;
+  --surface-600: #7a92b8;
+  --surface-700: #9ab0d0;
+  --surface-800: #bccce5;
+  --surface-900: #d8e0f0;
+  --focus-ring: 0 0 0 0.2rem var(--sv-accent-bg);
+  --maskbg: var(--sv-bg-overlay);
+  --highlight-bg: var(--sv-accent-bg);
+  --highlight-text-color: var(--sv-text-primary);
+  color-scheme: dark;
 }
 
 /* ---------- LIGHT ----------
@@ -178,71 +246,107 @@ a:hover {
   --sv-chart-bg: #ffffff;
   --sv-chart-grid: #dfe7f5;
   --sv-chart-text: #4a5e78;
+
+  /* PrimeReact variable bridge */
+  --primary-color: var(--sv-accent);
+  --primary-color-text: var(--sv-text-inverse);
+  --text-color: var(--sv-text-primary);
+  --text-color-secondary: var(--sv-text-secondary);
+  --surface-ground: var(--sv-bg-body);
+  --surface-section: var(--sv-bg-body);
+  --surface-card: var(--sv-bg-card);
+  --surface-overlay: var(--sv-bg-surface);
+  --surface-border: var(--sv-border);
+  --surface-hover: rgba(13, 20, 37, 0.03);
+  --surface-a: var(--sv-bg-surface);
+  --surface-b: var(--sv-bg-body);
+  --surface-c: rgba(13, 20, 37, 0.03);
+  --surface-d: var(--sv-border);
+  --surface-e: var(--sv-bg-card);
+  --surface-f: var(--sv-bg-card);
+  --surface-0: #ffffff;
+  --surface-50: #f8fafe;
+  --surface-100: #f0f4fb;
+  --surface-200: #e2e8f4;
+  --surface-300: #c8d4ec;
+  --surface-400: #a8b8d8;
+  --surface-500: #7a8da8;
+  --surface-600: #4a5e78;
+  --surface-700: #2d3b52;
+  --surface-800: #1a2438;
+  --surface-900: #0d1425;
+  --focus-ring: 0 0 0 0.2rem var(--sv-accent-bg);
+  --maskbg: var(--sv-bg-overlay);
+  --highlight-bg: var(--sv-accent-bg);
+  --highlight-text-color: var(--sv-text-primary);
+  color-scheme: light;
 }
 
 /* ======================================================================
-   PrimeReact component overrides to honour theme vars
+   PrimeReact component overrides
+   PrimeReact component styles live inside @layer primereact, so these
+   un-layered rules always win — no !important needed.
    ====================================================================== */
 .p-card {
-  background: var(--sv-bg-card) !important;
-  border: 1px solid var(--sv-border) !important;
-  color: var(--sv-text-primary) !important;
-  box-shadow: var(--sv-shadow-sm) !important;
-  border-radius: 12px !important;
+  background: var(--sv-bg-card);
+  border: 1px solid var(--sv-border);
+  color: var(--sv-text-primary);
+  box-shadow: var(--sv-shadow-sm);
+  border-radius: 12px;
 }
 .p-card:hover {
-  box-shadow: var(--sv-shadow-md) !important;
+  box-shadow: var(--sv-shadow-md);
 }
 
 .p-inputtext {
-  background: var(--sv-bg-input) !important;
-  border-color: var(--sv-border) !important;
-  color: var(--sv-text-primary) !important;
+  background: var(--sv-bg-input);
+  border-color: var(--sv-border);
+  color: var(--sv-text-primary);
 }
 .p-inputtext:enabled:focus {
-  border-color: var(--sv-border-focus) !important;
-  box-shadow: 0 0 0 2px var(--sv-accent-bg) !important;
+  border-color: var(--sv-border-focus);
+  box-shadow: 0 0 0 2px var(--sv-accent-bg);
 }
 
 .p-button.p-button-primary {
-  background: var(--sv-accent-gradient) !important;
-  border: none !important;
+  background: var(--sv-accent-gradient);
+  border: none;
 }
 .p-button.p-button-primary:hover {
-  box-shadow: var(--sv-shadow-glow) !important;
+  box-shadow: var(--sv-shadow-glow);
 }
 
 .p-button.p-button-outlined {
-  color: var(--sv-accent) !important;
-  border-color: var(--sv-accent) !important;
-  background: transparent !important;
+  color: var(--sv-accent);
+  border-color: var(--sv-accent);
+  background: transparent;
 }
 .p-button.p-button-outlined:hover {
-  background: var(--sv-accent-bg) !important;
+  background: var(--sv-accent-bg);
 }
 
 .p-button.p-button-text {
-  color: var(--sv-text-secondary) !important;
+  color: var(--sv-text-secondary);
 }
 .p-button.p-button-text:hover {
-  background: var(--sv-bg-card) !important;
-  color: var(--sv-text-primary) !important;
+  background: var(--sv-bg-card);
+  color: var(--sv-text-primary);
 }
 
 .p-sidebar {
-  background: var(--sv-bg-surface) !important;
-  border-color: var(--sv-border) !important;
+  background: var(--sv-bg-surface);
+  border-color: var(--sv-border);
 }
 .p-sidebar .p-sidebar-header {
-  background: var(--sv-bg-surface) !important;
+  background: var(--sv-bg-surface);
 }
 
 .p-message {
-  border-radius: 8px !important;
+  border-radius: 8px;
 }
 
 .p-divider.p-divider-horizontal::before {
-  border-color: var(--sv-border) !important;
+  border-color: var(--sv-border);
 }
 
 /* ---------- Scrollbar ---------- */
