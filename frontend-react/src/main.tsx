@@ -4,7 +4,6 @@ import App from "./App";
 
 // Styles
 import "./styles/themes.css";
-import "./styles/layout.css";
 
 // PrimeReact theme & core (imported here so Vite bundles them)
 import "primereact/resources/themes/lara-dark-cyan/theme.css";
