@@ -5,7 +5,7 @@ import { Card } from "primereact/card";
 import { Divider } from "primereact/divider";
 
 /**
- * Public landing page — matches the SimpleVisor AI hero layout from the design.
+ * Public landing page — matches the SimpleVisor Pro hero layout from the design.
  * Uses PrimeReact components + PrimeFlex utility classes exclusively.
  */
 const HomePage: React.FC = () => {
@@ -58,7 +58,7 @@ const HomePage: React.FC = () => {
       <section className="mx-auto" style={{ maxWidth: 1000 }}>
         <Card>
           <div className="flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-            <span className="font-semibold">SimpleVisor AI Dashboard</span>
+            <span className="font-semibold">SimpleVisor Pro Dashboard</span>
             <span>
               Market Status:{" "}
               <span style={{ color: "var(--sv-gain)" }}>● Open</span>

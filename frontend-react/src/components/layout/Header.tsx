@@ -59,7 +59,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
               letterSpacing: "-0.01em",
             }}
           >
-            Simple<span style={{ color: "var(--sv-accent)" }}>Visor</span> AI
+            Simple<span style={{ color: "var(--sv-accent)" }}>Visor</span> Pro
           </span>
         </Link>
 
