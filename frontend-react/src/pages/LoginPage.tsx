@@ -74,7 +74,7 @@ const LoginPage: React.FC = () => {
               Password
             </label>
             <Password
-              id="password"
+              inputId="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required

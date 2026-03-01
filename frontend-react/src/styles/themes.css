@@ -309,6 +309,11 @@ a:hover {
   border-radius: 8px;
 }
 
+/* Password component: the internal IconField wrapper must fill its container. Else issue was that the field was not filling the 100% of container div. */
+.p-password .p-icon-field {
+  width: 100%;
+}
+
 /* ---------- Scrollbar ---------- */
 ::-webkit-scrollbar {
   width: 8px;
