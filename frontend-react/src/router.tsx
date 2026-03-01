@@ -9,6 +9,7 @@ const HomePage = lazy(() => import("@/pages/HomePage"));
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
+const TermsPage = lazy(() => import("@/pages/TermsPage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
       { path: "reset-password", element: withSuspense(<NotFoundPage />) }, // TODO
       { path: "faq", element: withSuspense(<NotFoundPage />) }, // TODO
       { path: "contact-us", element: withSuspense(<NotFoundPage />) }, // TODO
+      { path: "terms", element: withSuspense(<TermsPage />) },
       { path: "weekly-report", element: withSuspense(<NotFoundPage />) }, // TODO
 
       // -------- Authenticated routes --------

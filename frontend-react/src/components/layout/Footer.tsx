@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Divider } from "primereact/divider";
 
 const Footer: React.FC = () => {
@@ -21,6 +22,13 @@ const Footer: React.FC = () => {
         </span>
 
         <div className="flex align-items-center gap-3">
+          <Link
+            to="/terms"
+            className="text-sm"
+            style={{ color: "var(--sv-text-muted)" }}
+          >
+            Terms &amp; Conditions
+          </Link>
           <a
             href="/faq"
             className="text-sm"
