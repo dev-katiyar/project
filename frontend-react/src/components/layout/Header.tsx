@@ -1,9 +1,19 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme, ThemeName } from "@/contexts/ThemeContext";
 import { Avatar } from "primereact/avatar";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+
+import logoOnDark from "@/assets/brand/simplevisor-horizontal-light-lg.svg";
+import logoOnLight from "@/assets/brand/simplevisor-horizontal-color@3x.png";
+
+const THEME_LOGO: Record<ThemeName, string> = {
+  dark: logoOnDark,   // white SVG — readable on dark amber bg
+  dim: logoOnDark,    // white SVG — readable on dark blue bg
+  light: logoOnLight, // dark-text PNG — readable on light bg
+};
 
 interface HeaderProps {
   onOpenSettings: () => void;
@@ -11,6 +21,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
   const { user, isAuthenticated, logout } = useAuth();
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
 
@@ -40,27 +51,13 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
         {/* Brand */}
         <Link
           to={isAuthenticated ? "/overview" : "/"}
-          className="flex align-items-center gap-2 no-underline"
+          className="flex align-items-center no-underline"
         >
-          <div
-            className="flex align-items-center justify-content-center border-round font-bold text-white text-xs"
-            style={{
-              width: 36,
-              height: 36,
-              background: "var(--sv-accent-gradient)",
-            }}
-          >
-            RIA
-          </div>
-          <span
-            className="font-bold text-lg"
-            style={{
-              color: "var(--sv-text-primary)",
-              letterSpacing: "-0.01em",
-            }}
-          >
-            Simple<span style={{ color: "var(--sv-accent)" }}>Visor</span> Pro
-          </span>
+          <img
+            src={THEME_LOGO[theme]}
+            alt="SimpleVisor Pro"
+            style={{ height: 32, width: "auto" }}
+          />
         </Link>
 
         {/* Navigation */}
