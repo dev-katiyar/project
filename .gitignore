@@ -43,4 +43,4 @@ reference-angular/src/environments/environment.prod.ts
 reference-angular/src/environments/environment.ts
 *.pem
 *.zip
-*tmpclaude-*-cwd
+tmpclaude-*-cwd
