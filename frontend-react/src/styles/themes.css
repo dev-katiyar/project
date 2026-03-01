@@ -283,29 +283,18 @@ a:hover {
 }
 
 /* ======================================================================
-   PrimeReact component overrides
-   PrimeReact component styles live inside @layer primereact, so these
-   un-layered rules always win — no !important needed.
+   PrimeReact brand tweaks
+   The base PrimeReact theme (lara-dark-amber / lara-dark-blue /
+   lara-light-blue) is loaded dynamically by ThemeContext.  These few
+   rules only adjust brand-specific visuals that differ from stock Lara.
    ====================================================================== */
 .p-card {
-  background: var(--sv-bg-card);
   border: 1px solid var(--sv-border);
-  color: var(--sv-text-primary);
   box-shadow: var(--sv-shadow-sm);
   border-radius: 12px;
 }
 .p-card:hover {
   box-shadow: var(--sv-shadow-md);
-}
-
-.p-inputtext {
-  background: var(--sv-bg-input);
-  border-color: var(--sv-border);
-  color: var(--sv-text-primary);
-}
-.p-inputtext:enabled:focus {
-  border-color: var(--sv-border-focus);
-  box-shadow: 0 0 0 2px var(--sv-accent-bg);
 }
 
 .p-button.p-button-primary {
@@ -316,37 +305,8 @@ a:hover {
   box-shadow: var(--sv-shadow-glow);
 }
 
-.p-button.p-button-outlined {
-  color: var(--sv-accent);
-  border-color: var(--sv-accent);
-  background: transparent;
-}
-.p-button.p-button-outlined:hover {
-  background: var(--sv-accent-bg);
-}
-
-.p-button.p-button-text {
-  color: var(--sv-text-secondary);
-}
-.p-button.p-button-text:hover {
-  background: var(--sv-bg-card);
-  color: var(--sv-text-primary);
-}
-
-.p-sidebar {
-  background: var(--sv-bg-surface);
-  border-color: var(--sv-border);
-}
-.p-sidebar .p-sidebar-header {
-  background: var(--sv-bg-surface);
-}
-
 .p-message {
   border-radius: 8px;
-}
-
-.p-divider.p-divider-horizontal::before {
-  border-color: var(--sv-border);
 }
 
 /* ---------- Scrollbar ---------- */

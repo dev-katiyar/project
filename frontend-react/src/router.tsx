@@ -46,7 +46,7 @@ const router = createBrowserRouter([
       { path: "weekly-report", element: withSuspense(<NotFoundPage />) }, // TODO
 
       // -------- Authenticated routes --------
-      { path: "overview", element: withProtection(<DashboardPage />) },
+      { path: "overview", element: withSuspense(<DashboardPage />) },
       { path: "majormarkets", element: withProtection(<DashboardPage />) }, // TODO
       { path: "markets", element: withProtection(<DashboardPage />) }, // TODO
       { path: "snp-sectors", element: withProtection(<NotFoundPage />) },

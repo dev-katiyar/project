@@ -2,8 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 
-// PrimeReact theme & core (loaded first so our overrides win in cascade)
-import "primereact/resources/themes/lara-dark-cyan/theme.css";
+// PrimeReact core styles (theme CSS is swapped dynamically by ThemeContext)
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";

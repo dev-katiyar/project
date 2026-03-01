@@ -6,6 +6,11 @@ import React, {
   useCallback,
 } from "react";
 
+// Vite `?url` imports — resolved to asset URLs at build time
+import laraDarkAmber from "primereact/resources/themes/lara-dark-amber/theme.css?url";
+import laraDarkBlue from "primereact/resources/themes/lara-dark-blue/theme.css?url";
+import laraLightBlue from "primereact/resources/themes/lara-light-blue/theme.css?url";
+
 // --------------- Types ---------------
 export type ThemeName = "dark" | "dim" | "light";
 export type FontSize = "small" | "medium" | "large";
@@ -19,6 +24,14 @@ interface ThemeContextValue {
 
 const THEME_KEY = "sv-theme";
 const FONT_SIZE_KEY = "sv-font-size";
+const LINK_ID = "sv-primereact-theme";
+
+/** Map each app theme to the closest PrimeReact lara variant */
+const PRIME_THEME_URL: Record<ThemeName, string> = {
+  dark: laraDarkAmber,
+  dim: laraDarkBlue,
+  light: laraLightBlue,
+};
 
 // --------------- Context ---------------
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
@@ -45,9 +58,21 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.setItem(FONT_SIZE_KEY, s);
   }, []);
 
-  // Apply to <html> element
+  // Apply data-theme attribute
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
+
+  // Swap PrimeReact theme stylesheet
+  useEffect(() => {
+    let link = document.getElementById(LINK_ID) as HTMLLinkElement | null;
+    if (!link) {
+      link = document.createElement("link");
+      link.id = LINK_ID;
+      link.rel = "stylesheet";
+      document.head.appendChild(link);
+    }
+    link.href = PRIME_THEME_URL[theme];
   }, [theme]);
 
   useEffect(() => {
