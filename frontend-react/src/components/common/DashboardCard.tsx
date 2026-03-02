@@ -18,7 +18,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
   children,
 }) => {
   return (
-    <Card style={{ height: "100%" }}>
+    <Card className="h-full">
       <div
         className="flex align-items-center justify-content-between mb-3"
         style={{ minHeight: 0 }}
@@ -27,9 +27,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
         {linkTo && (
           <Link
             to={linkTo}
-            className="text-sm no-underline"
-            style={{ color: "var(--sv-accent)" }}
-          >
+            className="text-sm">
             {linkLabel}
           </Link>
         )}

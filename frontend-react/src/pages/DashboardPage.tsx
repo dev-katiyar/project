@@ -43,8 +43,7 @@ const DashboardPage: React.FC = () => {
       {/* Page header */}
       <div className="mb-4">
         <h1
-          className="text-2xl font-bold mt-0 mb-1"
-          style={{ letterSpacing: "-0.02em" }}
+          className="text-2xl font-bold mt-0 mb-1 sv-page-title"
         >
           Dashboard
         </h1>

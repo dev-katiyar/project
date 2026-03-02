@@ -92,7 +92,7 @@ const LoginPage: React.FC = () => {
 
         <div className="text-center mt-4 text-sm">
           <Link to="/forgot-password">Forgot password?</Link>
-          <span className="mx-2" style={{ color: "var(--sv-text-muted)" }}>
+          <span className="mx-2 sv-text-muted">
             &middot;
           </span>
           <Link to="/signup">Create account</Link>

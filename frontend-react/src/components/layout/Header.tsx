@@ -341,15 +341,11 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
     <>
       <header className="sv-header sticky top-0 flex align-items-center px-3">
         <div
-          className="flex align-items-center justify-content-between w-full mx-auto"
-          style={{ maxWidth: 1600 }}
-        >
+          className="sv-layout-wrap flex align-items-center justify-content-between w-full mx-auto">
           {/* ── Brand ── */}
           <Link
             to={isAuthenticated ? "/overview" : "/"}
-            className="flex align-items-center no-underline"
-            style={{ flexShrink: 0 }}
-          >
+            className="flex align-items-center no-underline flex-shrink-0">
             <img
               src={THEME_LOGO[theme]}
               alt="SimpleVisor Pro"
@@ -393,9 +389,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
 
           {/* ── Actions ── */}
           <div
-            className="flex align-items-center gap-2"
-            style={{ flexShrink: 0 }}
-          >
+            className="flex align-items-center gap-2 flex-shrink-0">
             {isAuthenticated && (
               <>
                 {/* Search — hidden on mobile, flex on md+ */}
@@ -445,11 +439,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
                 shape="circle"
                 onClick={handleLogout}
                 title={`${user?.username} — click to sign out`}
-                className="cursor-pointer"
-                style={{
-                  background: "var(--sv-accent-gradient)",
-                  color: "var(--sv-text-inverse)",
-                }}
+                className="sv-avatar cursor-pointer"
               />
             ) : (
               <Button

@@ -80,11 +80,12 @@ a:hover {
    Layout — section padding and centered content wrapper
    ====================================================================== */
 
-.sv-section { padding: 4rem 1.5rem; }
-.sv-content-wrap { max-width: 1200px; margin: 0 auto; }
+.sv-section       { padding: 4rem 1.5rem; }
+.sv-content-wrap  { max-width: 1200px; margin: 0 auto; }
+.sv-layout-wrap   { max-width: 1600px; margin: 0 auto; }
 
 /* ======================================================================
-   Header: glass effect (sticky + top-0 handled by PrimeFlex on element)
+   Header / Footer — shared surface + border treatment
    ====================================================================== */
 
 .sv-header {
@@ -93,6 +94,11 @@ a:hover {
   border-bottom: 1px solid var(--sv-border);
   backdrop-filter: blur(12px);
   height: 60px;
+}
+
+.sv-footer {
+  background: var(--sv-bg-header);
+  border-top: 1px solid var(--sv-border);
 }
 
 /* ======================================================================
@@ -200,8 +206,19 @@ a:hover {
 }
 
 /* ======================================================================
-   Search input with expand animation
+   Search input with expand animation + icon helper
    ====================================================================== */
+
+/* Absolute-positioned icon overlaying a text/search input from the left */
+.sv-input-icon-left {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-color-secondary);
+  pointer-events: none;
+  font-size: 0.85rem;
+}
 
 .sv-search-input {
   background: var(--sv-bg-input);
@@ -309,6 +326,11 @@ a:hover {
 
 .sv-text-accent { color: var(--sv-accent); }
 .sv-text-muted  { color: var(--sv-text-muted); }
+.sv-text-gain   { color: var(--sv-gain); }
+.sv-text-loss   { color: var(--sv-loss); }
+
+/* Page heading — tight letter-spacing for large titles */
+.sv-page-title  { letter-spacing: -0.02em; }
 
 /* ======================================================================
    Shared UI atoms — used across multiple pages
@@ -320,6 +342,21 @@ a:hover {
   height: 2.25rem;
   background: var(--sv-accent-bg);
   color: var(--sv-accent);
+}
+
+/* User avatar — gradient circle with inverse text */
+.sv-avatar {
+  background: var(--sv-accent-gradient);
+  color: var(--sv-text-inverse);
+}
+
+/* Theme color swatch — background-color is set inline per item */
+.sv-swatch {
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 2px solid var(--sv-border);
+  border-radius: 4px;
+  flex-shrink: 0;
 }
 
 /* Info label: uppercase letter-spacing */

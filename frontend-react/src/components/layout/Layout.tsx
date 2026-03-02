@@ -16,7 +16,7 @@ const Layout: React.FC = () => {
       <Header onOpenSettings={() => setSettingsOpen(true)} />
 
       <main className="flex-1">
-        <div className="w-full mx-auto p-3" style={{ maxWidth: 1600 }}>
+        <div className="sv-layout-wrap w-full mx-auto p-3">
           <Outlet />
         </div>
       </main>

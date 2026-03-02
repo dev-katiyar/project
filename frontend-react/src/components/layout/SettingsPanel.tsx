@@ -34,10 +34,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ open, onClose }) => {
       onHide={onClose}
       style={{ width: "340px" }}
       header={
-        <span
-          className="font-semibold text-lg"
-          style={{ color: "var(--sv-text-primary)" }}
-        >
+        <span className="font-semibold text-lg text-color">
           Display Settings
         </span>
       }
@@ -45,9 +42,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ open, onClose }) => {
       {/* Theme Selection */}
       <div className="mb-4">
         <div
-          className="text-xs font-bold uppercase mb-2"
-          style={{ color: "var(--sv-text-muted)", letterSpacing: "0.05em" }}
-        >
+          className="sv-info-label text-xs font-bold mb-2">
           Theme
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -59,13 +54,8 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ open, onClose }) => {
             >
               <span className="flex align-items-center gap-2">
                 <span
-                  className="inline-block border-circle"
-                  style={{
-                    width: 18,
-                    height: 18,
-                    backgroundColor: t.swatch,
-                    border: "2px solid var(--sv-border)",
-                  }}
+                  className="sv-swatch border-circle inline-block"
+                  style={{ backgroundColor: t.swatch }}
                 />
                 {t.label}
               </span>
@@ -77,9 +67,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ open, onClose }) => {
       {/* Font Size Selection */}
       <div className="mb-4">
         <div
-          className="text-xs font-bold uppercase mb-2"
-          style={{ color: "var(--sv-text-muted)", letterSpacing: "0.05em" }}
-        >
+          className="sv-info-label text-xs font-bold mb-2">
           Font Size
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -98,16 +86,14 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ open, onClose }) => {
       {/* Preview */}
       <div className="mb-3">
         <div
-          className="text-xs font-bold uppercase mb-2"
-          style={{ color: "var(--sv-text-muted)", letterSpacing: "0.05em" }}
-        >
+          className="sv-info-label text-xs font-bold mb-2">
           Preview
         </div>
         <Card className="mt-2">
           <div className="font-semibold mb-2">S&P 500</div>
           <div className="flex justify-content-between">
             <span>5,234.18</span>
-            <span style={{ color: "var(--sv-gain)" }}>+1.23%</span>
+            <span className="sv-text-gain">+1.23%</span>
           </div>
         </Card>
       </div>

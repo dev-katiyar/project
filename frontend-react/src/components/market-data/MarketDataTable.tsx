@@ -211,13 +211,12 @@ const MarketDataTable: React.FC<MarketDataTableProps> = ({
         const name = showName && row["name"] ? ` (${row["name"]})` : "";
         return (
           <span
-            className="cursor-pointer"
-            style={{ color: "var(--sv-accent)" }}
+            className="sv-text-accent cursor-pointer"
             onClick={() => onSymbolClick?.(symbol)}
           >
             {symbol}
             {name && (
-              <span style={{ color: "var(--sv-text-secondary)" }}>{name}</span>
+              <span className="text-color-secondary">{name}</span>
             )}
           </span>
         );
@@ -294,13 +293,7 @@ const MarketDataTable: React.FC<MarketDataTableProps> = ({
             const sym = String(row["symbol"] ?? "");
             return (
               <i
-                className={`pi pi-chart-line cursor-pointer ${selectedSymbol === sym ? "font-bold" : ""}`}
-                style={{
-                  color:
-                    selectedSymbol === sym
-                      ? "var(--sv-accent)"
-                      : "var(--sv-text-muted)",
-                }}
+                className={`pi pi-chart-line cursor-pointer ${selectedSymbol === sym ? "sv-text-accent font-bold" : "sv-text-muted"}`}
                 onClick={() => handleChartClick(sym)}
               />
             );
