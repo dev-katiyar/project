@@ -80,9 +80,10 @@ a:hover {
    Layout — section padding and centered content wrapper
    ====================================================================== */
 
-.sv-section       { padding: 4rem 1.5rem; }
-.sv-content-wrap  { max-width: 1200px; margin: 0 auto; }
-.sv-layout-wrap   { max-width: 1600px; margin: 0 auto; }
+.sv-section         { padding: 4rem 1.5rem; }
+.sv-content-narrow  { max-width: 900px; }
+.sv-content-wrap    { max-width: 1200px; margin: 0 auto; }
+.sv-layout-wrap     { max-width: 1600px; margin: 0 auto; }
 
 /* ======================================================================
    Header / Footer — shared surface + border treatment

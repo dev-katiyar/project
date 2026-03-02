@@ -4,7 +4,7 @@ import { Card } from "primereact/card";
 const TermsPage: React.FC = () => {
   return (
     <div className="flex justify-content-center py-6 px-3">
-      <Card className="w-full" style={{ maxWidth: 900 }}>
+      <Card className="w-full sv-content-narrow">
         <h2 className="mt-0 text-center">Terms and Conditions</h2>
 
         <p>
@@ -136,7 +136,7 @@ const TermsPage: React.FC = () => {
           indication of future results.
         </p>
 
-        <ul style={{ marginLeft: 30 }}>
+        <ul className="pl-5">
           <li>
             1. ACCOUNT REGISTRATION AND POLICIES
 
@@ -166,7 +166,7 @@ const TermsPage: React.FC = () => {
             </p>
 
             (B) Termination of Account
-            <ul style={{ marginLeft: 30 }}>
+            <ul className="pl-5">
               <li>
                 (i) Member. Subject to the terms described herein, each Member has the right to
                 terminate such Member's Account at any time upon written notice to the Company. Each
@@ -184,7 +184,7 @@ const TermsPage: React.FC = () => {
                 (ii) Company. The Company may terminate a Member's account at any time in its sole
                 and absolute discretion for any reason including, without limitation, upon the
                 occurrence of any one of the events:
-                <ul style={{ marginLeft: 30 }}>
+                <ul className="pl-5">
                   <li>(a) Improper use of the Member's login ID or password.</li>
                   <li>
                     (b) The information provided by a Member during the Account registration process
@@ -215,7 +215,7 @@ const TermsPage: React.FC = () => {
 
           <li>
             2. RESTRICTIONS AND OBLIGATIONS
-            <ul style={{ marginLeft: 30 }}>
+            <ul className="pl-5">
               <li>
                 (A) Modification to Service
                 <br />
@@ -240,7 +240,7 @@ const TermsPage: React.FC = () => {
                 may not access the Service. The Service and the information that you are able to
                 access through the Service are protected by copyright laws and international
                 copyright treaties, as well as other intellectual property laws and treaties.
-                <ul style={{ marginLeft: 30 }}>
+                <ul className="pl-5">
                   <li>
                     (i) Grant of License. This EULA grants you the following rights:
                     <br />
@@ -272,7 +272,7 @@ const TermsPage: React.FC = () => {
                     conditions applicable to you or the entity with which you are associated.
                     <br />
                     (iii) Restrictions.
-                    <ul style={{ marginLeft: 30 }}>
+                    <ul className="pl-5">
                       <li>
                         (a) Limitations of Reverse Engineering, Decompilation and Disassembly. You
                         may not reverse engineer, decompile, or disassemble any material available
