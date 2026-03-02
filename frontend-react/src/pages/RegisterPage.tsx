@@ -634,12 +634,30 @@ const RegisterPage: React.FC = () => {
           flex-direction: column;
           justify-content: center;
         }
-        @media (max-width: 767px) {
-          .sv-register-hero { display: none; }
-          .sv-register-wrap { border-radius: 16px !important; }
-        }
         .sv-register-wrap {
           border-radius: 0 16px 16px 0;
+        }
+        @media (max-width: 767px) {
+          .sv-register-outer { flex-direction: column; }
+          .sv-register-hero {
+            order: 2;
+            border-radius: 0 0 16px 16px;
+            min-width: unset !important;
+            max-width: unset !important;
+            flex: unset !important;
+            padding: 1.5rem;
+            justify-content: flex-start;
+          }
+          .sv-register-wrap {
+            order: 1;
+            border-radius: 16px 16px 0 0 !important;
+          }
+          .sv-feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+          }
+          .sv-feature-item { margin-bottom: 0; }
         }
         .sv-feature-item {
           display: flex;
@@ -716,7 +734,7 @@ const RegisterPage: React.FC = () => {
 
       <div className="flex justify-content-center py-6 px-2">
         <div
-          className="w-full shadow-5 border-round-2xl overflow-hidden flex"
+          className="sv-register-outer w-full shadow-5 border-round-2xl overflow-hidden flex"
           style={{ maxWidth: 960 }}
         >
           {/* ---- Left: Marketing Sidebar ---- */}
@@ -738,7 +756,7 @@ const RegisterPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="mb-4">
+            <div className="sv-feature-grid mb-4">
               {[
                 {
                   icon: "pi-globe",
