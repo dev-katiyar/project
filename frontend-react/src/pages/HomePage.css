@@ -1,0 +1,102 @@
+/* ── Video: responsive 16:9 aspect ratio ── */
+.hp-video-wrap {
+  position: relative;
+  padding-top: 56.25%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: var(--sv-shadow-md);
+}
+.hp-video-wrap iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Section containers ── */
+.hp-section {
+  padding: 4rem 1.5rem;
+}
+.hp-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── Section backgrounds ── */
+.hp-hero      { background: var(--sv-bg-surface); border-bottom: 1px solid var(--sv-border); }
+.hp-desc      { background: var(--sv-bg-body); }
+.hp-features  { background: var(--sv-bg-surface); }
+.hp-footer-section {
+  background: var(--sv-bg-card);
+  border-top: 1px solid var(--sv-border);
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+/* ── Feature card ── */
+.hp-feature-card {
+  border: 1px solid var(--sv-border);
+  border-radius: 12px;
+  background: var(--sv-bg-card);
+  padding: 1.5rem 1rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.hp-feature-card:hover {
+  box-shadow: var(--sv-shadow-md);
+  transform: translateY(-2px);
+}
+.hp-feature-card img {
+  height: 4.5rem;
+  object-fit: contain;
+}
+.hp-feature-card h3 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--sv-text-primary);
+  line-height: 1.4;
+}
+.hp-feature-card p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--sv-text-secondary);
+  line-height: 1.5;
+}
+
+/* ── Description prose ── */
+.hp-prose {
+  max-width: 780px;
+  margin: 0 auto;
+  color: var(--sv-text-secondary);
+  line-height: 1.8;
+  font-size: 1rem;
+}
+.hp-prose p  { margin: 0 0 1rem; }
+.hp-prose ul { margin: 0 0 1rem; padding-left: 1.5rem; }
+.hp-prose li { margin-bottom: 0.4rem; }
+.hp-prose strong { color: var(--sv-text-primary); }
+
+/* ── Section title ── */
+.hp-section-title {
+  color: var(--sv-text-primary);
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 2.5rem;
+  line-height: 1.25;
+}
+.hp-section-title span { color: var(--sv-accent); }
+
+/* ── CTA signup button ── */
+.hp-signup-btn {
+  min-width: 11rem;
+  font-size: 1rem;
+}
