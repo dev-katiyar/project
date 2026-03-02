@@ -230,7 +230,7 @@ const ResetPasswordPage: React.FC = () => {
             <>
               <div className="flex justify-content-center mb-3">
                 <div className="sv-status-circle sv-status-circle--err flex align-items-center justify-content-center border-round-full">
-                  <i className="pi pi-times" style={{ fontSize: "1.4rem" }} />
+                  <i className="pi pi-times" />
                 </div>
               </div>
               <h2 className="mt-0 mb-2 font-bold text-xl text-center">
@@ -403,7 +403,7 @@ const ResetPasswordPage: React.FC = () => {
             <>
               <div className="flex justify-content-center mb-3">
                 <div className="sv-status-circle sv-status-circle--ok flex align-items-center justify-content-center border-round-full">
-                  <i className="pi pi-check" style={{ fontSize: "1.6rem" }} />
+                  <i className="pi pi-check" />
                 </div>
               </div>
               <h2 className="mt-0 mb-2 font-bold text-xl text-center">
