@@ -340,6 +340,8 @@ a:hover {
 .sv-text-gain   { color: var(--sv-gain); }
 .sv-text-loss   { color: var(--sv-loss); }
 
+.sv-min-w-60    { min-width: 60px; }
+
 /* Page heading — tight letter-spacing for large titles */
 .sv-page-title  { letter-spacing: -0.02em; }
 

@@ -125,8 +125,8 @@ const fmtDecimal = (v: number | null | undefined) =>
 const fmtInteger = (v: number | null | undefined) =>
   v == null ? "—" : v.toLocaleString("en-US", { maximumFractionDigits: 0 });
 
-const changeColor = (v: number | null | undefined) =>
-  v == null ? undefined : v >= 0 ? "var(--sv-gain)" : "var(--sv-loss)";
+const changeClass = (v: number | null | undefined) =>
+  v == null ? "" : v >= 0 ? "sv-text-gain" : "sv-text-loss";
 
 /* ── Props ───────────────────────────────────────────────── */
 
@@ -227,14 +227,14 @@ const MarketDataTable: React.FC<MarketDataTableProps> = ({
 
       case "percentage":
         return (
-          <span style={{ color: changeColor(num) }}>{fmtPercent(num)}</span>
+          <span className={changeClass(num)}>{fmtPercent(num)}</span>
         );
 
       case "change": {
         const pctField = col.changePercentField ?? "priceChangePct";
         const pct = row[pctField] as number | undefined;
         return (
-          <span style={{ color: changeColor(num) }}>
+          <span className={changeClass(num)}>
             {fmtCurrency(num)} ({fmtPercent(pct)})
           </span>
         );
@@ -258,8 +258,7 @@ const MarketDataTable: React.FC<MarketDataTableProps> = ({
               min={lo}
               max={hi || lo + 1}
               disabled
-              className="flex-1"
-              style={{ minWidth: 60 }}
+              className="flex-1 sv-min-w-60"
             />
             <span className="text-sm">{fmtDecimal(hi)}</span>
           </div>
