@@ -1,0 +1,189 @@
+/* ==========================================================================
+   SimpleVisor Pro — Global Styles
+   Non-theme resets, typography, scrollbar, PrimeReact overrides, and
+   shared component utility classes. Theme color tokens come from themes.css.
+   ========================================================================== */
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ---------- Base ---------- */
+html {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--sv-bg-body);
+  color: var(--sv-text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  line-height: 1.6;
+}
+
+a {
+  color: var(--sv-accent);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--sv-accent-hover);
+}
+
+/* ---------- Font Size Scales ---------- */
+[data-font-size="small"] {
+  font-size: 13px;
+}
+[data-font-size="medium"] {
+  font-size: 15px;
+}
+[data-font-size="large"] {
+  font-size: 17px;
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--sv-scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--sv-scrollbar-thumb);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sv-text-muted);
+}
+
+/* ---------- Selection & Focus ---------- */
+::selection {
+  background: var(--sv-accent);
+  color: var(--sv-text-inverse);
+}
+
+:focus-visible {
+  outline: 2px solid var(--sv-border-focus);
+  outline-offset: 2px;
+}
+
+/* ======================================================================
+   PrimeReact brand overrides
+   The base PrimeReact theme (lara-dark-amber / lara-dark-blue /
+   lara-light-blue) is loaded dynamically by ThemeContext. These rules
+   only adjust brand-specific visuals that differ from stock Lara.
+   ====================================================================== */
+.p-card {
+  border: 1px solid var(--sv-border);
+  box-shadow: var(--sv-shadow-sm);
+  border-radius: 12px;
+}
+.p-card:hover {
+  box-shadow: var(--sv-shadow-md);
+}
+
+.p-button.p-button-primary {
+  background: var(--sv-accent-gradient);
+  border: none;
+}
+.p-button.p-button-primary:hover {
+  box-shadow: var(--sv-shadow-glow);
+}
+
+.p-message {
+  border-radius: 8px;
+}
+
+/* Password: internal IconField wrapper must fill its container */
+.p-password .p-icon-field {
+  width: 100%;
+}
+
+/* ======================================================================
+   Component utility classes — only for things with no PrimeFlex/PrimeReact equivalent
+   ====================================================================== */
+
+/* Header: glass effect (sticky + top-0 handled by PrimeFlex on element) */
+.sv-header {
+  z-index: 1000;
+  background: var(--sv-bg-header);
+  border-bottom: 1px solid var(--sv-border);
+  backdrop-filter: blur(12px);
+  height: 60px;
+}
+
+/* Nav links (React Router NavLink) */
+.sv-nav-link {
+  padding: 0.5rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--sv-text-secondary);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.sv-nav-link:hover,
+.sv-nav-link.active {
+  color: var(--sv-text-primary);
+  background: var(--sv-bg-card);
+  text-decoration: none;
+}
+.sv-nav-link.active {
+  color: var(--sv-accent);
+}
+
+/* Search input with expand animation */
+.sv-search-input {
+  background: var(--sv-bg-input);
+  border: 1px solid var(--sv-border);
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem 0.45rem 2.25rem;
+  color: var(--sv-text-primary);
+  font-size: 0.85rem;
+  width: 220px;
+  transition: all 0.2s ease;
+}
+.sv-search-input:focus {
+  border-color: var(--sv-border-focus);
+  width: 280px;
+  outline: none;
+}
+
+/* Settings option toggle buttons */
+.sv-option-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--sv-border);
+  background: var(--sv-bg-card);
+  color: var(--sv-text-secondary);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.sv-option-btn:hover {
+  border-color: var(--sv-accent);
+  color: var(--sv-text-primary);
+}
+.sv-option-btn.active {
+  border-color: var(--sv-accent);
+  background: var(--sv-accent-bg);
+  color: var(--sv-accent);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .sv-search-input {
+    width: 150px;
+  }
+  .sv-search-input:focus {
+    width: 200px;
+  }
+}
