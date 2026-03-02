@@ -7,13 +7,8 @@ const NotFoundPage: React.FC = () => {
 
   return (
     <div className="text-center py-8 px-2">
-      <h1
-        className="text-7xl font-bold mb-2"
-        style={{ color: "var(--sv-accent)" }}
-      >
-        404
-      </h1>
-      <p className="text-lg mb-4" style={{ color: "var(--sv-text-secondary)" }}>
+      <h1 className="text-7xl font-bold mb-2 sv-text-accent">404</h1>
+      <p className="text-lg mb-4 text-color-secondary">
         Page not found
       </p>
       <Button

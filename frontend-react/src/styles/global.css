@@ -295,3 +295,214 @@ a:hover {
   .sv-search-input { width: 150px; }
   .sv-search-input:focus { width: 200px; }
 }
+
+/* ======================================================================
+   Layout — section padding and centered content wrapper
+   ====================================================================== */
+
+.sv-section {
+  padding: 4rem 1.5rem;
+}
+
+.sv-content-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ======================================================================
+   Video embed — 16:9 aspect-ratio responsive wrapper
+   ====================================================================== */
+
+.sv-video-16x9 {
+  position: relative;
+  overflow: hidden;
+  padding-top: 56.25%;
+  background: #000;
+}
+
+.sv-video-16x9 iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* ======================================================================
+   Feature card — CSS hover lift (replaces JS hover state)
+   ====================================================================== */
+
+.sv-feature-card {
+  border: 1px solid var(--surface-border);
+  padding: 1.5rem 1rem;
+  gap: 0.75rem;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.sv-feature-card:hover {
+  box-shadow: var(--sv-shadow-md);
+  transform: translateY(-2px);
+}
+
+.sv-feature-card img {
+  height: 4.5rem;
+  object-fit: contain;
+}
+
+.sv-feature-card h3 {
+  font-size: 0.9rem;
+  color: var(--text-color);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.sv-feature-card p {
+  font-size: 0.82rem;
+  color: var(--text-color-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ======================================================================
+   Accent text utility
+   ====================================================================== */
+
+.sv-text-accent { color: var(--sv-accent); }
+.sv-text-muted  { color: var(--sv-text-muted); }
+
+/* ======================================================================
+   Hero section — gradient background with radial overlay
+   ====================================================================== */
+
+.sv-hero {
+  background: var(--sv-accent-gradient);
+}
+
+.sv-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 120%, rgba(255,255,255,0.08) 0%, transparent 70%);
+}
+
+/* ======================================================================
+   Shared UI atoms — used across multiple pages
+   ====================================================================== */
+
+/* Icon badge: fixed 36×36 with accent colors */
+.sv-icon-badge {
+  width: 2.25rem;
+  height: 2.25rem;
+  background: var(--sv-accent-bg);
+  color: var(--sv-accent);
+}
+
+/* Info label: uppercase letter-spacing */
+.sv-info-label {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--sv-text-muted);
+}
+
+/* Accent-colored link (for non-anchor elements) */
+.sv-accent-link { color: var(--sv-accent); text-decoration: none; word-break: break-all; }
+.sv-accent-link:hover { text-decoration: underline; }
+
+/* Bare icon button */
+.sv-icon-btn {
+  background: none;
+  border: none;
+  padding: 0 0 0 0.25rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  vertical-align: middle;
+  color: var(--sv-text-muted);
+  transition: color 0.15s;
+}
+.sv-icon-btn:hover { color: var(--sv-accent); }
+
+/* Sticky sidebar */
+.sv-sidebar-sticky { position: sticky; top: 80px; }
+
+/* Quick-link hover */
+.sv-quick-link { text-decoration: none; color: var(--sv-text-secondary); transition: background 0.15s, color 0.15s; }
+.sv-quick-link:hover { background: var(--sv-accent-bg); color: var(--sv-accent); }
+
+/* Success banner */
+.sv-success-banner {
+  background: var(--sv-success-bg);
+  border: 1px solid var(--sv-success);
+  color: var(--sv-success);
+}
+
+/* Error alert box */
+.sv-alert-error {
+  background: var(--sv-danger-bg);
+  border: 1px solid var(--sv-danger);
+  color: var(--sv-danger);
+}
+
+/* Field error text */
+.sv-error-text { color: var(--sv-danger); }
+
+/* Status ok — captcha verified, passwords match, etc. */
+.sv-status-ok { color: var(--sv-success); }
+
+/* Required field asterisk */
+.sv-required { color: var(--sv-danger); }
+
+/* Gradient button — primary call-to-action */
+.sv-gradient-btn { background: var(--sv-accent-gradient) !important; border: none !important; }
+.sv-gradient-btn:not(:disabled):hover { filter: brightness(1.08); }
+.sv-gradient-btn:disabled { opacity: 0.5 !important; }
+
+/* ======================================================================
+   Password pages — step flow, status circles, progress & strength meters
+   ====================================================================== */
+
+/* Gradient icon badge */
+.sv-pw-badge {
+  width: 4rem;
+  height: 4rem;
+  background: var(--sv-accent-gradient);
+  box-shadow: var(--sv-shadow-glow);
+}
+
+/* Step connector line */
+.sv-step-line {
+  flex: 1;
+  max-width: 2.5rem;
+  height: 2px;
+  background: var(--sv-border);
+  border-radius: 2px;
+}
+
+/* Status circle */
+.sv-status-circle {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+}
+.sv-status-circle--ok {
+  background: var(--sv-success-bg);
+  color: var(--sv-success);
+  border: 2px solid var(--sv-success);
+}
+.sv-status-circle--err {
+  background: var(--sv-danger-bg);
+  color: var(--sv-danger);
+  border: 2px solid var(--sv-danger);
+}
+
+/* Countdown progress bar */
+.sv-countdown-track { height: 6px; background: var(--sv-border); }
+.sv-countdown-bar {
+  height: 100%;
+  background: var(--sv-accent-gradient);
+  transition: width 1s linear;
+}
+
+/* Password strength meter */
+.sv-strength-track { height: 5px; background: var(--sv-border); }
+.sv-strength-bar { height: 100%; transition: width 0.3s ease, background 0.3s ease; }

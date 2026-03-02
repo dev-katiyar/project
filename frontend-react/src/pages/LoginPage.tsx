@@ -40,10 +40,7 @@ const LoginPage: React.FC = () => {
     <div className="flex justify-content-center py-8 px-2">
       <Card className="w-full" style={{ maxWidth: 420 }}>
         <h2 className="mt-0 mb-1 font-bold">Welcome back</h2>
-        <p
-          className="mt-0 mb-4 text-sm"
-          style={{ color: "var(--sv-text-secondary)" }}
-        >
+        <p className="mt-0 mb-4 text-sm text-color-secondary">
           Sign in to your SimpleVisor account
         </p>
 
@@ -94,15 +91,11 @@ const LoginPage: React.FC = () => {
         </form>
 
         <div className="text-center mt-4 text-sm">
-          <Link to="/forgot-password" style={{ color: "var(--sv-accent)" }}>
-            Forgot password?
-          </Link>
+          <Link to="/forgot-password">Forgot password?</Link>
           <span className="mx-2" style={{ color: "var(--sv-text-muted)" }}>
             &middot;
           </span>
-          <Link to="/signup" style={{ color: "var(--sv-accent)" }}>
-            Create account
-          </Link>
+          <Link to="/signup">Create account</Link>
         </div>
       </Card>
     </div>

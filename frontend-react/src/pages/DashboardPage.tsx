@@ -10,9 +10,7 @@ import MarketDataTable, {
 } from "@/components/market-data/MarketDataTable";
 
 const Placeholder: React.FC<{ text: string }> = ({ text }) => (
-  <p className="text-sm m-0" style={{ color: "var(--sv-text-muted)" }}>
-    {text}
-  </p>
+  <p className="text-sm m-0 sv-text-muted">{text}</p>
 );
 
 /* ── API paths for asset-class tabs (static lists) ─────── */
@@ -50,10 +48,7 @@ const DashboardPage: React.FC = () => {
         >
           Dashboard
         </h1>
-        <p
-          className="mt-0 text-sm"
-          style={{ color: "var(--sv-text-secondary)" }}
-        >
+        <p className="mt-0 text-sm text-color-secondary">
           Market overview and portfolio summary
         </p>
       </div>

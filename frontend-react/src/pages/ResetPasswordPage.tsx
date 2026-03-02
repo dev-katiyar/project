@@ -275,7 +275,7 @@ const ResetPasswordPage: React.FC = () => {
                 />
               </Link>
               <div className="text-center text-sm">
-                <Link to="/login" style={{ color: "var(--sv-accent)" }}>
+                <Link to="/login">
                   <i className="pi pi-arrow-left text-xs mr-1" />
                   Back to Sign In
                 </Link>
@@ -289,9 +289,7 @@ const ResetPasswordPage: React.FC = () => {
               <h2 className="mt-0 mb-1 font-bold text-xl">Set New Password</h2>
               <p className="mt-0 mb-4 text-sm text-color-secondary line-height-3">
                 Choose a strong password. If you need help,{" "}
-                <Link to="/contact-us" style={{ color: "var(--sv-accent)" }}>
-                  contact us
-                </Link>
+                <Link to="/contact-us">contact us</Link>
                 .
               </p>
 
@@ -455,43 +453,6 @@ const ResetPasswordPage: React.FC = () => {
         </div>
       </div>
 
-      <style>{`
-        .sv-pw-badge {
-          width: 4rem; height: 4rem;
-          background: var(--sv-accent-gradient);
-          box-shadow: var(--sv-shadow-glow);
-        }
-        .sv-step-line {
-          flex: 1; max-width: 2.5rem; height: 2px;
-          background: var(--sv-border); border-radius: 2px;
-        }
-        .sv-status-circle {
-          width: 4rem; height: 4rem; border-radius: 50%;
-        }
-        .sv-status-circle--ok {
-          background: var(--sv-success-bg);
-          color: var(--sv-success);
-          border: 2px solid var(--sv-success);
-        }
-        .sv-status-circle--err {
-          background: var(--sv-danger-bg);
-          color: var(--sv-danger);
-          border: 2px solid var(--sv-danger);
-        }
-        .sv-strength-track { height: 5px; background: var(--sv-border); }
-        .sv-strength-bar { height: 100%; transition: width 0.3s ease, background 0.3s ease; }
-        .sv-alert-error {
-          background: var(--sv-danger-bg);
-          border: 1px solid var(--sv-danger);
-          color: var(--sv-danger);
-        }
-        .sv-error-text { color: var(--sv-danger); }
-        .sv-status-ok { color: var(--sv-success); }
-        .sv-required { color: var(--sv-danger); }
-        .sv-gradient-btn { background: var(--sv-accent-gradient) !important; border: none !important; }
-        .sv-gradient-btn:not(:disabled):hover { filter: brightness(1.08); }
-        .sv-gradient-btn:disabled { opacity: 0.5 !important; }
-      `}</style>
     </div>
   );
 };

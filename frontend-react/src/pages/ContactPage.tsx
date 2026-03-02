@@ -215,7 +215,7 @@ const ContactPage: React.FC = () => {
 
       {/* ── Hero ── */}
       <div className="sv-hero text-center px-4 py-7 overflow-hidden relative">
-        <div className="relative" style={{ zIndex: 1 }}>
+        <div className="relative z-1">
           <i
             className="pi pi-envelope block mb-3"
             style={{ fontSize: "2.8rem", color: "rgba(255,255,255,0.9)" }}
@@ -226,20 +226,14 @@ const ContactPage: React.FC = () => {
           >
             Contact Us
           </h1>
-          <p
-            className="mt-0 text-lg"
-            style={{ color: "rgba(255,255,255,0.82)" }}
-          >
+          <p className="mt-0 text-lg" style={{ color: "rgba(255,255,255,0.82)" }}>
             Have a question or feedback? We'd love to hear from you.
           </p>
         </div>
       </div>
 
       {/* ── Body ── */}
-      <div
-        className="grid mx-auto px-3 py-5 align-items-start"
-        style={{ maxWidth: 1100 }}
-      >
+      <div className="grid mx-auto px-3 py-5 align-items-start" style={{ maxWidth: 1100 }}>
         {/* ── Sidebar ── */}
         <div className="col-12 md:col-4 lg:col-3">
           <div className="surface-card border-1 surface-border border-round-xl p-5 shadow-4 sv-sidebar-sticky">
@@ -401,7 +395,7 @@ const ContactPage: React.FC = () => {
                   </small>
                 )}
                 {isCaptchaVerified && (
-                  <small className="flex align-items-center gap-1 mt-1 sv-captcha-ok">
+                  <small className="flex align-items-center gap-1 mt-1 sv-status-ok">
                     <i className="pi pi-check-circle" /> Verified
                   </small>
                 )}
@@ -414,86 +408,13 @@ const ContactPage: React.FC = () => {
                 icon={isSubmitting ? "pi pi-spin pi-spinner" : "pi pi-send"}
                 iconPos="right"
                 disabled={!isFormValid || isSubmitting}
-                className="sv-submit-btn w-full"
+                className="sv-gradient-btn w-full"
               />
             </form>
           </div>
         </div>
       </div>
 
-      {/* ── Minimal custom styles ── */}
-      <style>{`
-        /* Hero: gradient bg + radial overlay – can't do with PrimeFlex */
-        .sv-hero {
-          background: var(--sv-accent-gradient);
-        }
-        .sv-hero::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(ellipse at 50% 120%, rgba(255,255,255,0.08) 0%, transparent 70%);
-        }
-
-        /* Icon badge: fixed 36×36 with CSS-var accent colors */
-        .sv-icon-badge {
-          width: 2.25rem;
-          height: 2.25rem;
-          background: var(--sv-accent-bg);
-          color: var(--sv-accent);
-        }
-
-        /* Info label: uppercase letter-spacing */
-        .sv-info-label {
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          color: var(--sv-text-muted);
-        }
-
-        /* Accent-colored link */
-        .sv-accent-link { color: var(--sv-accent); text-decoration: none; word-break: break-all; }
-        .sv-accent-link:hover { text-decoration: underline; }
-
-        /* Bare icon button */
-        .sv-icon-btn {
-          background: none;
-          border: none;
-          padding: 0 0 0 0.25rem;
-          cursor: pointer;
-          font-size: 0.85rem;
-          vertical-align: middle;
-          color: var(--sv-text-muted);
-          transition: color 0.15s;
-        }
-        .sv-icon-btn:hover { color: var(--sv-accent); }
-
-        /* Sticky sidebar */
-        .sv-sidebar-sticky { position: sticky; top: 80px; }
-
-        /* Quick-link hover */
-        .sv-quick-link { text-decoration: none; color: var(--sv-text-secondary); transition: background 0.15s, color 0.15s; }
-        .sv-quick-link:hover { background: var(--sv-accent-bg); color: var(--sv-accent); }
-
-        /* Success banner */
-        .sv-success-banner {
-          background: var(--sv-success-bg);
-          border: 1px solid var(--sv-success);
-          color: var(--sv-success);
-        }
-
-        /* Field error text */
-        .sv-error-text { color: var(--sv-danger); }
-
-        /* Captcha verified */
-        .sv-captcha-ok { color: var(--sv-success); }
-
-        /* Required asterisk */
-        .sv-required { color: var(--sv-danger); }
-
-        /* Submit: gradient bg overrides PrimeReact button defaults */
-        .sv-submit-btn { background: var(--sv-accent-gradient) !important; border: none !important; }
-        .sv-submit-btn:not(:disabled):hover { filter: brightness(1.08); }
-        .sv-submit-btn:disabled { opacity: 0.5 !important; }
-      `}</style>
     </div>
   );
 };
