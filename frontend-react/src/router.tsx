@@ -13,6 +13,7 @@ const TermsPage = lazy(() => import("@/pages/TermsPage"));
 const ContactPage = lazy(() => import("@/pages/ContactPage"));
 const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
 const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
+const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -41,9 +42,11 @@ const router = createBrowserRouter([
       // -------- Public routes --------
       { index: true, element: withSuspense(<HomePage />) },
       { path: "login", element: withSuspense(<LoginPage />) },
-      { path: "signup", element: withSuspense(<LoginPage />) }, // TODO: RegisterPage
-      { path: "register2024", element: <Navigate to="/signup" replace /> },
-      { path: "forgot-password", element: withSuspense(<ForgotPasswordPage />) },
+      { path: "signup", element: withSuspense(<RegisterPage />) },
+      {
+        path: "forgot-password",
+        element: withSuspense(<ForgotPasswordPage />),
+      },
       { path: "reset-password", element: withSuspense(<ResetPasswordPage />) },
       { path: "faq", element: withSuspense(<NotFoundPage />) }, // TODO
       { path: "contact-us", element: withSuspense(<ContactPage />) },
