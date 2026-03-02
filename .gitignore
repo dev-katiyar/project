@@ -44,3 +44,4 @@ reference-angular/src/environments/environment.ts
 *.pem
 *.zip
 tmpclaude-*-cwd
+CLAUDE.md
