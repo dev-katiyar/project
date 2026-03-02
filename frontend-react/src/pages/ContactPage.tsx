@@ -216,24 +216,18 @@ const ContactPage: React.FC = () => {
       {/* ── Hero ── */}
       <div className="sv-hero text-center px-4 py-7 overflow-hidden relative">
         <div className="relative z-1">
-          <i
-            className="pi pi-envelope block mb-3"
-            style={{ fontSize: "2.8rem", color: "rgba(255,255,255,0.9)" }}
-          />
-          <h1
-            className="text-white font-bold mt-0 mb-2"
-            style={{ fontSize: "2.25rem", letterSpacing: "-0.5px" }}
-          >
+          <i className="pi pi-envelope block mb-3 sv-hero-icon" />
+          <h1 className="text-white font-bold mt-0 mb-2 sv-hero-heading">
             Contact Us
           </h1>
-          <p className="mt-0 text-lg" style={{ color: "rgba(255,255,255,0.82)" }}>
+          <p className="mt-0 text-lg sv-hero-subtitle">
             Have a question or feedback? We'd love to hear from you.
           </p>
         </div>
       </div>
 
       {/* ── Body ── */}
-      <div className="grid mx-auto px-3 py-5 align-items-start" style={{ maxWidth: 1100 }}>
+      <div className="grid mx-auto px-3 py-5 align-items-start sv-content-medium">
         {/* ── Sidebar ── */}
         <div className="col-12 md:col-4 lg:col-3">
           <div className="surface-card border-1 surface-border border-round-xl p-5 shadow-4 sv-sidebar-sticky">
@@ -370,8 +364,7 @@ const ContactPage: React.FC = () => {
                   onBlur={() => handleBlur("body")}
                   rows={7}
                   placeholder="Tell us more about your question or issue..."
-                  className={`w-full${errors.body && touched.body ? " p-invalid" : ""}`}
-                  style={{ resize: "vertical" }}
+                  className={`w-full sv-resize-vertical${errors.body && touched.body ? " p-invalid" : ""}`}
                 />
                 <div className="text-right text-xs text-color-secondary mt-1">
                   {form.body.length} characters
