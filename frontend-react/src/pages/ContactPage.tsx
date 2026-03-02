@@ -408,7 +408,7 @@ const ContactPage: React.FC = () => {
                 icon={isSubmitting ? "pi pi-spin pi-spinner" : "pi pi-send"}
                 iconPos="right"
                 disabled={!isFormValid || isSubmitting}
-                className="sv-gradient-btn w-full"
+                className="p-button-primary w-full"
               />
             </form>
           </div>

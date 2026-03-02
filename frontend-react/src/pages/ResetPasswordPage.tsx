@@ -271,7 +271,7 @@ const ResetPasswordPage: React.FC = () => {
                 <Button
                   label="Request New Reset Link"
                   icon="pi pi-refresh"
-                  className="sv-gradient-btn w-full mb-3"
+                  className="p-button-primary w-full mb-3"
                 />
               </Link>
               <div className="text-center text-sm">
@@ -420,7 +420,7 @@ const ResetPasswordPage: React.FC = () => {
                   }
                   iconPos="right"
                   disabled={isSubmitting || !isCaptchaVerified}
-                  className="sv-gradient-btn w-full"
+                  className="p-button-primary w-full"
                 />
               </form>
             </>
@@ -446,7 +446,7 @@ const ResetPasswordPage: React.FC = () => {
                 icon="pi pi-sign-in"
                 iconPos="right"
                 onClick={() => navigate("/login")}
-                className="sv-gradient-btn w-full"
+                className="p-button-primary w-full"
               />
             </>
           )}

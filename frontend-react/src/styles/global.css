@@ -37,42 +37,19 @@ a:hover {
 }
 
 /* ---------- Font Size Scales ---------- */
-[data-font-size="small"] {
-  font-size: 13px;
-}
-[data-font-size="medium"] {
-  font-size: 15px;
-}
-[data-font-size="large"] {
-  font-size: 17px;
-}
+[data-font-size="small"]  { font-size: 13px; }
+[data-font-size="medium"] { font-size: 15px; }
+[data-font-size="large"]  { font-size: 17px; }
 
 /* ---------- Scrollbar ---------- */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--sv-scrollbar-track);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--sv-scrollbar-thumb);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--sv-text-muted);
-}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--sv-scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--sv-scrollbar-thumb); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--sv-text-muted); }
 
 /* ---------- Selection & Focus ---------- */
-::selection {
-  background: var(--sv-accent);
-  color: var(--sv-text-inverse);
-}
-
-:focus-visible {
-  outline: 2px solid var(--sv-border-focus);
-  outline-offset: 2px;
-}
+::selection { background: var(--sv-accent); color: var(--sv-text-inverse); }
+:focus-visible { outline: 2px solid var(--sv-border-focus); outline-offset: 2px; }
 
 /* ======================================================================
    PrimeReact brand overrides
@@ -80,37 +57,36 @@ a:hover {
    lara-light-blue) is loaded dynamically by ThemeContext. These rules
    only adjust brand-specific visuals that differ from stock Lara.
    ====================================================================== */
+
 .p-card {
   border: 1px solid var(--sv-border);
   box-shadow: var(--sv-shadow-sm);
   border-radius: 12px;
 }
-.p-card:hover {
-  box-shadow: var(--sv-shadow-md);
-}
+.p-card:hover { box-shadow: var(--sv-shadow-md); }
 
 .p-button.p-button-primary {
   background: var(--sv-accent-gradient);
   border: none;
 }
-.p-button.p-button-primary:hover {
-  box-shadow: var(--sv-shadow-glow);
-}
+.p-button.p-button-primary:not(:disabled):hover { box-shadow: var(--sv-shadow-glow); }
 
-.p-message {
-  border-radius: 8px;
-}
+.p-message { border-radius: 8px; }
 
 /* Password: internal IconField wrapper must fill its container */
-.p-password .p-icon-field {
-  width: 100%;
-}
+.p-password .p-icon-field { width: 100%; }
 
 /* ======================================================================
-   Component utility classes — only for things with no PrimeFlex/PrimeReact equivalent
+   Layout — section padding and centered content wrapper
    ====================================================================== */
 
-/* Header: glass effect (sticky + top-0 handled by PrimeFlex on element) */
+.sv-section { padding: 4rem 1.5rem; }
+.sv-content-wrap { max-width: 1200px; margin: 0 auto; }
+
+/* ======================================================================
+   Header: glass effect (sticky + top-0 handled by PrimeFlex on element)
+   ====================================================================== */
+
 .sv-header {
   z-index: 1000;
   background: var(--sv-bg-header);
@@ -119,66 +95,25 @@ a:hover {
   height: 60px;
 }
 
-/* Nav links — only interaction states; layout/spacing via PrimeFlex in JSX */
-.sv-nav-link {
-  color: var(--text-color-secondary);
-  transition: color 0.15s ease, background-color 0.15s ease;
-  text-decoration: none;
-}
-.sv-nav-link:hover,
-.sv-nav-link.active {
-  color: var(--text-color);
-  background-color: var(--surface-hover);
-  text-decoration: none;
-}
-.sv-nav-link.active {
-  color: var(--primary-color);
-}
-
-/* Search input with expand animation */
-.sv-search-input {
-  background: var(--sv-bg-input);
-  border: 1px solid var(--sv-border);
-  border-radius: 8px;
-  padding: 0.45rem 0.75rem 0.45rem 2.25rem;
-  color: var(--sv-text-primary);
-  font-size: 0.85rem;
-  width: 220px;
-  transition: all 0.2s ease;
-}
-.sv-search-input:focus {
-  border-color: var(--sv-border-focus);
-  width: 280px;
-  outline: none;
-}
-
-/* Settings option toggle buttons */
-.sv-option-btn {
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  border: 1px solid var(--sv-border);
-  background: var(--sv-bg-card);
-  color: var(--sv-text-secondary);
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 500;
-  transition: all 0.15s ease;
-}
-.sv-option-btn:hover {
-  border-color: var(--sv-accent);
-  color: var(--sv-text-primary);
-}
-.sv-option-btn.active {
-  border-color: var(--sv-accent);
-  background: var(--sv-accent-bg);
-  color: var(--sv-accent);
-}
-
 /* ======================================================================
-   Dropdown trigger — only interaction states; layout via PrimeFlex in JSX
+   Navigation interactive elements
+   Hover and active states are shared across nav links, dropdown items,
+   triggers, and mobile menu items via grouped selectors.
    ====================================================================== */
 
-.sv-dropdown-trigger {
+/* Link-style elements (anchors, router Links) */
+.sv-nav-link,
+.sv-dropdown-item,
+.sv-mobile-item,
+.sv-mobile-subitem {
+  color: var(--text-color-secondary);
+  text-decoration: none;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+/* Button-style triggers (bare buttons that act like nav items) */
+.sv-dropdown-trigger,
+.sv-mobile-group-trigger {
   color: var(--text-color-secondary);
   background: transparent;
   border: none;
@@ -186,13 +121,34 @@ a:hover {
   cursor: pointer;
   transition: color 0.15s ease, background-color 0.15s ease;
 }
+
+/* Shared hover state */
+.sv-nav-link:hover,
+.sv-dropdown-item:hover,
+.sv-mobile-item:hover,
+.sv-mobile-subitem:hover,
 .sv-dropdown-trigger:hover,
-.sv-dropdown-trigger.active {
+.sv-mobile-group-trigger:hover {
   color: var(--text-color);
   background-color: var(--surface-hover);
 }
-.sv-dropdown-trigger.active { color: var(--primary-color); }
 
+/* Shared active — accent color for all, plus surface for panel items */
+.sv-nav-link.active,
+.sv-dropdown-trigger.active,
+.sv-mobile-group-trigger.active {
+  color: var(--primary-color);
+  background-color: var(--surface-hover);
+}
+
+.sv-dropdown-item.active,
+.sv-mobile-item.active,
+.sv-mobile-subitem.active {
+  color: var(--primary-color);
+  background-color: var(--highlight-bg);
+}
+
+/* Dropdown chevron rotation */
 .sv-dropdown-chevron {
   font-size: 0.6rem;
   opacity: 0.55;
@@ -201,7 +157,7 @@ a:hover {
 .sv-dropdown-trigger.open .sv-dropdown-chevron { transform: rotate(180deg); }
 
 /* ======================================================================
-   Dropdown panel — absolute positioning + fade/slide animation.
+   Dropdown panel — absolute positioning + fade/slide animation
    Background, border, shadow added via PrimeFlex/inline in JSX.
    ====================================================================== */
 
@@ -222,24 +178,8 @@ a:hover {
   transform: translateX(-50%) translateY(0);
 }
 
-/* Dropdown items — only interaction states; layout via PrimeFlex in JSX */
-.sv-dropdown-item {
-  color: var(--text-color-secondary);
-  text-decoration: none;
-  transition: color 0.12s ease, background-color 0.12s ease;
-}
-.sv-dropdown-item:hover {
-  color: var(--text-color);
-  background-color: var(--surface-hover);
-  text-decoration: none;
-}
-.sv-dropdown-item.active {
-  color: var(--primary-color);
-  background-color: var(--highlight-bg);
-}
-
 /* ======================================================================
-   Mobile menu — fixed positioning + slide animation.
+   Mobile menu — fixed positioning + slide animation
    Background, border, padding added via PrimeFlex/inline in JSX.
    ====================================================================== */
 
@@ -259,33 +199,51 @@ a:hover {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Mobile item interactive states; layout via PrimeFlex in JSX */
-.sv-mobile-item {
-  color: var(--text-color-secondary);
-  text-decoration: none;
-  transition: color 0.12s ease, background-color 0.12s ease;
-}
-.sv-mobile-item:hover { color: var(--text-color); background-color: var(--surface-hover); text-decoration: none; }
-.sv-mobile-item.active { color: var(--primary-color); background-color: var(--highlight-bg); }
+/* ======================================================================
+   Search input with expand animation
+   ====================================================================== */
 
-.sv-mobile-group-trigger {
-  color: var(--text-color-secondary);
-  background: transparent;
-  border: none;
-  font-family: inherit;
+.sv-search-input {
+  background: var(--sv-bg-input);
+  border: 1px solid var(--sv-border);
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem 0.45rem 2.25rem;
+  color: var(--sv-text-primary);
+  font-size: 0.85rem;
+  width: 220px;
+  /* Named properties only — avoid transition: all for performance */
+  transition: border-color 0.2s ease, width 0.2s ease;
+}
+.sv-search-input:focus {
+  border-color: var(--sv-border-focus);
+  width: 280px;
+  outline: none;
+}
+
+/* ======================================================================
+   Settings option toggle buttons
+   ====================================================================== */
+
+.sv-option-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--sv-border);
+  background: var(--sv-bg-card);
+  color: var(--sv-text-secondary);
   cursor: pointer;
-  transition: color 0.12s ease, background-color 0.12s ease;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
-.sv-mobile-group-trigger:hover { color: var(--text-color); background-color: var(--surface-hover); }
-.sv-mobile-group-trigger.active { color: var(--primary-color); }
-
-.sv-mobile-subitem {
-  color: var(--text-color-secondary);
-  text-decoration: none;
-  transition: color 0.12s ease, background-color 0.12s ease;
+.sv-option-btn:hover {
+  border-color: var(--sv-accent);
+  color: var(--sv-text-primary);
 }
-.sv-mobile-subitem:hover { color: var(--text-color); background-color: var(--surface-hover); text-decoration: none; }
-.sv-mobile-subitem.active { color: var(--primary-color); background-color: var(--highlight-bg); }
+.sv-option-btn.active {
+  border-color: var(--sv-accent);
+  background: var(--sv-accent-bg);
+  color: var(--sv-accent);
+}
 
 /* ======================================================================
    Responsive — only what PrimeFlex responsive classes cannot cover
@@ -294,19 +252,6 @@ a:hover {
 @media (max-width: 768px) {
   .sv-search-input { width: 150px; }
   .sv-search-input:focus { width: 200px; }
-}
-
-/* ======================================================================
-   Layout — section padding and centered content wrapper
-   ====================================================================== */
-
-.sv-section {
-  padding: 4rem 1.5rem;
-}
-
-.sv-content-wrap {
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 /* ======================================================================
@@ -319,7 +264,6 @@ a:hover {
   padding-top: 56.25%;
   background: #000;
 }
-
 .sv-video-16x9 iframe {
   position: absolute;
   top: 0;
@@ -339,52 +283,32 @@ a:hover {
   gap: 0.75rem;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
-
 .sv-feature-card:hover {
   box-shadow: var(--sv-shadow-md);
   transform: translateY(-2px);
 }
-
-.sv-feature-card img {
-  height: 4.5rem;
-  object-fit: contain;
-}
-
-.sv-feature-card h3 {
-  font-size: 0.9rem;
-  color: var(--text-color);
-  line-height: 1.4;
-  margin: 0;
-}
-
-.sv-feature-card p {
-  font-size: 0.82rem;
-  color: var(--text-color-secondary);
-  line-height: 1.5;
-  margin: 0;
-}
-
-/* ======================================================================
-   Accent text utility
-   ====================================================================== */
-
-.sv-text-accent { color: var(--sv-accent); }
-.sv-text-muted  { color: var(--sv-text-muted); }
+.sv-feature-card img { height: 4.5rem; object-fit: contain; }
+.sv-feature-card h3  { font-size: 0.9rem;  color: var(--text-color);           line-height: 1.4; margin: 0; }
+.sv-feature-card p   { font-size: 0.82rem; color: var(--text-color-secondary); line-height: 1.5; margin: 0; }
 
 /* ======================================================================
    Hero section — gradient background with radial overlay
    ====================================================================== */
 
-.sv-hero {
-  background: var(--sv-accent-gradient);
-}
-
+.sv-hero { background: var(--sv-accent-gradient); }
 .sv-hero::before {
   content: '';
   position: absolute;
   inset: 0;
   background: radial-gradient(ellipse at 50% 120%, rgba(255,255,255,0.08) 0%, transparent 70%);
 }
+
+/* ======================================================================
+   Text color utilities
+   ====================================================================== */
+
+.sv-text-accent { color: var(--sv-accent); }
+.sv-text-muted  { color: var(--sv-text-muted); }
 
 /* ======================================================================
    Shared UI atoms — used across multiple pages
@@ -405,8 +329,8 @@ a:hover {
   color: var(--sv-text-muted);
 }
 
-/* Accent-colored link (for non-anchor elements) */
-.sv-accent-link { color: var(--sv-accent); text-decoration: none; word-break: break-all; }
+/* Accent link — global a{} handles color/text-decoration; this adds word-break for long emails */
+.sv-accent-link { word-break: break-all; }
 .sv-accent-link:hover { text-decoration: underline; }
 
 /* Bare icon button */
@@ -426,42 +350,31 @@ a:hover {
 .sv-sidebar-sticky { position: sticky; top: 80px; }
 
 /* Quick-link hover */
-.sv-quick-link { text-decoration: none; color: var(--sv-text-secondary); transition: background 0.15s, color 0.15s; }
+.sv-quick-link { color: var(--sv-text-secondary); transition: background 0.15s, color 0.15s; }
 .sv-quick-link:hover { background: var(--sv-accent-bg); color: var(--sv-accent); }
 
-/* Success banner */
+/* Status banners */
 .sv-success-banner {
   background: var(--sv-success-bg);
   border: 1px solid var(--sv-success);
   color: var(--sv-success);
 }
-
-/* Error alert box */
 .sv-alert-error {
   background: var(--sv-danger-bg);
   border: 1px solid var(--sv-danger);
   color: var(--sv-danger);
 }
 
-/* Field error text */
-.sv-error-text { color: var(--sv-danger); }
-
-/* Status ok — captcha verified, passwords match, etc. */
-.sv-status-ok { color: var(--sv-success); }
-
-/* Required field asterisk */
+/* Field feedback — sv-error-text on messages, sv-required on asterisks; same style, distinct semantics */
+.sv-error-text,
 .sv-required { color: var(--sv-danger); }
 
-/* Gradient button — primary call-to-action */
-.sv-gradient-btn { background: var(--sv-accent-gradient) !important; border: none !important; }
-.sv-gradient-btn:not(:disabled):hover { filter: brightness(1.08); }
-.sv-gradient-btn:disabled { opacity: 0.5 !important; }
+.sv-status-ok { color: var(--sv-success); }
 
 /* ======================================================================
    Password pages — step flow, status circles, progress & strength meters
    ====================================================================== */
 
-/* Gradient icon badge */
 .sv-pw-badge {
   width: 4rem;
   height: 4rem;
@@ -469,7 +382,6 @@ a:hover {
   box-shadow: var(--sv-shadow-glow);
 }
 
-/* Step connector line */
 .sv-step-line {
   flex: 1;
   max-width: 2.5rem;
@@ -478,31 +390,12 @@ a:hover {
   border-radius: 2px;
 }
 
-/* Status circle */
-.sv-status-circle {
-  width: 4rem;
-  height: 4rem;
-  border-radius: 50%;
-}
-.sv-status-circle--ok {
-  background: var(--sv-success-bg);
-  color: var(--sv-success);
-  border: 2px solid var(--sv-success);
-}
-.sv-status-circle--err {
-  background: var(--sv-danger-bg);
-  color: var(--sv-danger);
-  border: 2px solid var(--sv-danger);
-}
+.sv-status-circle { width: 4rem; height: 4rem; border-radius: 50%; }
+.sv-status-circle--ok  { background: var(--sv-success-bg); color: var(--sv-success); border: 2px solid var(--sv-success); }
+.sv-status-circle--err { background: var(--sv-danger-bg);  color: var(--sv-danger);  border: 2px solid var(--sv-danger); }
 
-/* Countdown progress bar */
 .sv-countdown-track { height: 6px; background: var(--sv-border); }
-.sv-countdown-bar {
-  height: 100%;
-  background: var(--sv-accent-gradient);
-  transition: width 1s linear;
-}
+.sv-countdown-bar   { height: 100%; background: var(--sv-accent-gradient); transition: width 1s linear; }
 
-/* Password strength meter */
 .sv-strength-track { height: 5px; background: var(--sv-border); }
-.sv-strength-bar { height: 100%; transition: width 0.3s ease, background 0.3s ease; }
+.sv-strength-bar   { height: 100%; transition: width 0.3s ease, background 0.3s ease; }

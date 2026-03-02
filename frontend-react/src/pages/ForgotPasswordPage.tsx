@@ -260,7 +260,7 @@ const ForgotPasswordPage: React.FC = () => {
                   }
                   iconPos="right"
                   disabled={pageState === "loading" || !isCaptchaVerified}
-                  className="sv-gradient-btn w-full"
+                  className="p-button-primary w-full"
                 />
               </form>
 
@@ -313,7 +313,7 @@ const ForgotPasswordPage: React.FC = () => {
                 icon={canTryAgain ? "pi pi-refresh" : "pi pi-clock"}
                 disabled={!canTryAgain}
                 onClick={handleTryAgain}
-                className="sv-gradient-btn w-full mb-3"
+                className="p-button-primary w-full mb-3"
               />
               <div className="text-center text-sm">
                 <Link to="/login">
