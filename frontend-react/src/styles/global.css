@@ -82,6 +82,7 @@ a:hover {
 
 .sv-section         { padding: 4rem 1.5rem; }
 .sv-page-min-h      { min-height: 80vh; }
+.sv-page-min-h-60   { min-height: 60vh; }
 .sv-content-narrow  { max-width: 900px; }
 .sv-form-wrap       { max-width: 460px; }
 .sv-content-wrap    { max-width: 1200px; margin: 0 auto; }
@@ -442,6 +443,12 @@ a:hover {
 .sv-step-circle--active { background: var(--sv-accent);   color: var(--sv-text-inverse); }
 .sv-step-circle--done   { background: var(--sv-success);  color: var(--sv-text-inverse); }
 .sv-step-circle i       { font-size: 0.7rem; }
+.sv-step-circle--lg     { width: 2.25rem; height: 2.25rem; }
+.sv-step-circle--lg i   { font-size: 0.875rem; }
+
+/* Result / abort state circle (72px) — used by early-return screens */
+.sv-state-circle   { width: 4.5rem; height: 4.5rem; }
+.sv-state-circle i { font-size: 2rem; }
 
 .sv-step-label         { font-size: 0.68rem; white-space: nowrap; }
 .sv-step-label--idle   { color: var(--sv-text-muted); }

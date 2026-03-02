@@ -150,56 +150,21 @@ const StepIndicator: React.FC<StepProps> = ({ current, steps }) => (
     {steps.map((label, i) => {
       const isComplete = i < current;
       const isActive = i === current;
+      const state = isComplete ? "done" : isActive ? "active" : "idle";
       return (
         <React.Fragment key={i}>
           <div className="flex flex-column align-items-center gap-1">
             <div
-              className="flex align-items-center justify-content-center border-circle font-bold text-sm"
-              style={{
-                width: 36,
-                height: 36,
-                background: isComplete
-                  ? "var(--sv-success)"
-                  : isActive
-                    ? "var(--sv-accent)"
-                    : "var(--surface-border)",
-                color: isComplete || isActive ? "#fff" : "var(--sv-text-muted)",
-                transition: "all 0.3s",
-              }}
+              className={`sv-step-circle sv-step-circle--lg sv-step-circle--${state} flex align-items-center justify-content-center border-circle font-bold text-sm`}
             >
-              {isComplete ? (
-                <i className="pi pi-check" style={{ fontSize: 14 }} />
-              ) : (
-                i + 1
-              )}
+              {isComplete ? <i className="pi pi-check" /> : i + 1}
             </div>
-            <span
-              className="text-xs font-medium"
-              style={{
-                color: isActive
-                  ? "var(--sv-accent)"
-                  : isComplete
-                    ? "var(--sv-success)"
-                    : "var(--sv-text-muted)",
-              }}
-            >
+            <span className={`text-xs font-medium sv-step-label sv-step-label--${state}`}>
               {label}
             </span>
           </div>
           {i < steps.length - 1 && (
-            <div
-              style={{
-                flex: 1,
-                height: 2,
-                minWidth: 24,
-                maxWidth: 64,
-                marginBottom: 20,
-                background: isComplete
-                  ? "var(--sv-success)"
-                  : "var(--surface-border)",
-                transition: "background 0.3s",
-              }}
-            />
+            <div className={`sv-step-connector${isComplete ? " sv-step-connector--done" : ""}`} />
           )}
         </React.Fragment>
       );
@@ -490,28 +455,13 @@ const RegisterPage: React.FC = () => {
     const isReturning = abortStatus === "returning";
     const isInternal = abortStatus === "internal";
     return (
-      <div
-        className="flex justify-content-center align-items-center py-8 px-3"
-        style={{ minHeight: "60vh" }}
-      >
-        <div
-          className="surface-card border-1 surface-border border-round-2xl shadow-4 p-5 text-center"
-          style={{ maxWidth: 460 }}
-        >
+      <div className="flex justify-content-center align-items-center py-8 px-3 sv-page-min-h-60">
+        <div className="surface-card border-1 surface-border border-round-2xl shadow-4 p-5 text-center sv-form-wrap">
           <div
-            className="flex align-items-center justify-content-center border-circle mx-auto mb-4"
-            style={{
-              width: 72,
-              height: 72,
-              background: isReturning
-                ? "var(--sv-accent)"
-                : "var(--sv-warning, #f97316)",
-            }}
+            className="sv-state-circle flex align-items-center justify-content-center border-circle mx-auto mb-4"
+            style={{ background: isReturning ? "var(--sv-accent)" : "var(--sv-warning, #f97316)" }}
           >
-            <i
-              className={`pi ${isReturning ? "pi-user" : "pi-info-circle"} text-white`}
-              style={{ fontSize: 32 }}
-            />
+            <i className={`pi ${isReturning ? "pi-user" : "pi-info-circle"} text-white`} />
           </div>
           <h2 className="mt-0 mb-2 font-bold">
             {isReturning
@@ -520,10 +470,7 @@ const RegisterPage: React.FC = () => {
                 ? "Internal Account Detected"
                 : "Registration Error"}
           </h2>
-          <p
-            className="mt-0 mb-4 line-height-3"
-            style={{ color: "var(--sv-text-secondary)" }}
-          >
+          <p className="mt-0 mb-4 line-height-3 text-color-secondary">
             {isReturning
               ? "We found an existing account with that email address. Please sign in instead."
               : isInternal
@@ -558,34 +505,18 @@ const RegisterPage: React.FC = () => {
   if (regStatus) {
     const isSuccess = regStatus === "registered";
     return (
-      <div
-        className="flex justify-content-center align-items-center py-8 px-3"
-        style={{ minHeight: "60vh" }}
-      >
-        <div
-          className="surface-card border-1 surface-border border-round-2xl shadow-4 p-5 text-center"
-          style={{ maxWidth: 460 }}
-        >
+      <div className="flex justify-content-center align-items-center py-8 px-3 sv-page-min-h-60">
+        <div className="surface-card border-1 surface-border border-round-2xl shadow-4 p-5 text-center sv-form-wrap">
           <div
-            className="flex align-items-center justify-content-center border-circle mx-auto mb-4"
-            style={{
-              width: 72,
-              height: 72,
-              background: isSuccess ? "var(--sv-success)" : "var(--sv-danger)",
-            }}
+            className="sv-state-circle flex align-items-center justify-content-center border-circle mx-auto mb-4"
+            style={{ background: isSuccess ? "var(--sv-success)" : "var(--sv-danger)" }}
           >
-            <i
-              className={`pi ${isSuccess ? "pi-check" : "pi-times"} text-white`}
-              style={{ fontSize: 32 }}
-            />
+            <i className={`pi ${isSuccess ? "pi-check" : "pi-times"} text-white`} />
           </div>
           <h2 className="mt-0 mb-2 font-bold">
             {isSuccess ? "Welcome to SimpleVisor Pro!" : "Registration Failed"}
           </h2>
-          <p
-            className="mt-0 mb-4 line-height-3"
-            style={{ color: "var(--sv-text-secondary)" }}
-          >
+          <p className="mt-0 mb-4 line-height-3 text-color-secondary">
             {isSuccess
               ? "Your account has been created successfully. Check your inbox for a confirmation email, then sign in to get started."
               : regStatus === "error_email"
@@ -625,6 +556,7 @@ const RegisterPage: React.FC = () => {
   return (
     <>
       <style>{`
+        .sv-register-outer { max-width: 960px; }
         .sv-register-hero {
           background: var(--sv-accent-gradient, linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%));
           border-radius: 16px 0 0 16px;
@@ -633,10 +565,12 @@ const RegisterPage: React.FC = () => {
           display: flex;
           flex-direction: column;
           justify-content: center;
+          min-width: 280px;
+          max-width: 320px;
+          flex: 0 0 300px;
         }
-        .sv-register-wrap {
-          border-radius: 0 16px 16px 0;
-        }
+        .sv-register-hero .p-divider-horizontal:before { border-top-color: rgba(255,255,255,0.2); }
+        .sv-register-wrap { border-radius: 0 16px 16px 0; }
         @media (max-width: 767px) {
           .sv-register-outer { flex-direction: column; }
           .sv-register-hero {
@@ -648,23 +582,11 @@ const RegisterPage: React.FC = () => {
             padding: 1.5rem;
             justify-content: flex-start;
           }
-          .sv-register-wrap {
-            order: 1;
-            border-radius: 16px 16px 0 0 !important;
-          }
-          .sv-feature-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
-          }
+          .sv-register-wrap { order: 1; border-radius: 16px 16px 0 0 !important; }
+          .sv-feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
           .sv-feature-item { margin-bottom: 0; }
         }
-        .sv-feature-item {
-          display: flex;
-          align-items: flex-start;
-          gap: 0.75rem;
-          margin-bottom: 1rem;
-        }
+        .sv-feature-item { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1rem; }
         .sv-feature-icon {
           width: 32px;
           height: 32px;
@@ -674,7 +596,29 @@ const RegisterPage: React.FC = () => {
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
+          font-size: 0.875rem;
         }
+        .sv-hero-brand-icon { font-size: 1.75rem; }
+        .sv-hero-desc       { opacity: 0.85; }
+        .sv-hero-feat-desc  { opacity: 0.8; }
+        .sv-hero-legal      { opacity: 0.7; }
+        .sv-trial-banner {
+          background: rgba(var(--sv-accent-rgb, 59,130,246), 0.08);
+          border: 1px solid rgba(var(--sv-accent-rgb, 59,130,246), 0.25);
+        }
+        .sv-gift-icon { color: var(--sv-accent); font-size: 1.125rem; flex-shrink: 0; }
+        .sv-lock-icon { font-size: 0.6875rem; }
+        .sv-strength-segment { flex: 1; height: 4px; border-radius: 2px; transition: background 0.3s; }
+        .sv-step-connector {
+          flex: 1;
+          height: 2px;
+          min-width: 24px;
+          max-width: 64px;
+          margin-bottom: 20px;
+          background: var(--surface-border);
+          transition: background 0.3s;
+        }
+        .sv-step-connector--done { background: var(--sv-success); }
         .sv-plan-card {
           cursor: pointer;
           border-radius: 12px;
@@ -682,9 +626,7 @@ const RegisterPage: React.FC = () => {
           padding: 1rem 1.25rem;
           transition: border-color 0.2s, box-shadow 0.2s;
         }
-        .sv-plan-card:hover {
-          border-color: var(--sv-accent);
-        }
+        .sv-plan-card:hover { border-color: var(--sv-accent); }
         .sv-plan-card.selected {
           border-color: var(--sv-accent);
           box-shadow: 0 0 0 3px rgba(var(--sv-accent-rgb, 59,130,246), 0.15);
@@ -712,9 +654,7 @@ const RegisterPage: React.FC = () => {
           border-color: var(--sv-accent);
           background: rgba(var(--sv-accent-rgb, 59,130,246), 0.06);
         }
-        .sv-risk-option:hover {
-          border-color: var(--sv-accent);
-        }
+        .sv-risk-option:hover { border-color: var(--sv-accent); }
         .sv-card-field {
           background: var(--surface-ground);
           border: 1px solid var(--surface-border);
@@ -727,30 +667,19 @@ const RegisterPage: React.FC = () => {
           transition: border-color 0.2s;
           font-family: inherit;
         }
-        .sv-card-field:focus {
-          border-color: var(--sv-accent);
-        }
+        .sv-card-field:focus { border-color: var(--sv-accent); }
       `}</style>
 
       <div className="flex justify-content-center py-6 px-2">
-        <div
-          className="sv-register-outer w-full shadow-5 border-round-2xl overflow-hidden flex"
-          style={{ maxWidth: 960 }}
-        >
+        <div className="sv-register-outer w-full shadow-5 border-round-2xl overflow-hidden flex">
           {/* ---- Left: Marketing Sidebar ---- */}
-          <div
-            className="sv-register-hero"
-            style={{ minWidth: 280, maxWidth: 320, flex: "0 0 300px" }}
-          >
+          <div className="sv-register-hero">
             <div className="mb-4">
               <div className="flex align-items-center gap-2 mb-3">
-                <i className="pi pi-chart-line" style={{ fontSize: 28 }} />
+                <i className="pi pi-chart-line sv-hero-brand-icon" />
                 <span className="font-bold text-xl">SimpleVisor Pro</span>
               </div>
-              <p
-                className="mt-0 mb-4 line-height-3 text-sm"
-                style={{ opacity: 0.85 }}
-              >
+              <p className="mt-0 mb-4 line-height-3 text-sm sv-hero-desc">
                 Professional-grade financial analysis and portfolio tools for
                 serious investors.
               </p>
@@ -786,14 +715,11 @@ const RegisterPage: React.FC = () => {
               ].map((f) => (
                 <div className="sv-feature-item" key={f.icon}>
                   <div className="sv-feature-icon">
-                    <i className={`pi ${f.icon}`} style={{ fontSize: 14 }} />
+                    <i className={`pi ${f.icon}`} />
                   </div>
                   <div>
                     <div className="font-semibold text-sm mb-1">{f.title}</div>
-                    <div
-                      className="text-xs line-height-2"
-                      style={{ opacity: 0.8 }}
-                    >
+                    <div className="text-xs line-height-2 sv-hero-feat-desc">
                       {f.desc}
                     </div>
                   </div>
@@ -801,11 +727,8 @@ const RegisterPage: React.FC = () => {
               ))}
             </div>
 
-            <Divider style={{ borderColor: "rgba(255,255,255,0.2)" }} />
-            <p
-              className="text-xs mt-3 mb-0 line-height-3"
-              style={{ opacity: 0.7 }}
-            >
+            <Divider />
+            <p className="text-xs mt-3 mb-0 line-height-3 sv-hero-legal">
               Trusted by thousands of investors. Your data is encrypted and
               never shared.
             </p>
@@ -814,14 +737,9 @@ const RegisterPage: React.FC = () => {
           {/* ---- Right: Form ---- */}
           <div className="sv-register-wrap surface-card flex-1 p-5">
             <h2 className="mt-0 mb-1 font-bold">Create your account</h2>
-            <p
-              className="mt-0 mb-4 text-sm"
-              style={{ color: "var(--sv-text-secondary)" }}
-            >
+            <p className="mt-0 mb-4 text-sm text-color-secondary">
               Already have an account?{" "}
-              <Link to="/login" style={{ color: "var(--sv-accent)" }}>
-                Sign in
-              </Link>
+              <Link to="/login" className="sv-text-accent">Sign in</Link>
             </p>
 
             <StepIndicator
@@ -835,8 +753,7 @@ const RegisterPage: React.FC = () => {
                 <div className="grid">
                   <div className="col-12 md:col-6">
                     <label className="block text-sm font-medium mb-1">
-                      First Name{" "}
-                      <span style={{ color: "var(--sv-danger)" }}>*</span>
+                      First Name <span className="sv-required">*</span>
                     </label>
                     <InputText
                       value={firstName}
@@ -848,8 +765,7 @@ const RegisterPage: React.FC = () => {
                   </div>
                   <div className="col-12 md:col-6">
                     <label className="block text-sm font-medium mb-1">
-                      Last Name{" "}
-                      <span style={{ color: "var(--sv-danger)" }}>*</span>
+                      Last Name <span className="sv-required">*</span>
                     </label>
                     <InputText
                       value={lastName}
@@ -862,8 +778,7 @@ const RegisterPage: React.FC = () => {
 
                 <div className="mb-3">
                   <label className="block text-sm font-medium mb-1">
-                    Email Address{" "}
-                    <span style={{ color: "var(--sv-danger)" }}>*</span>
+                    Email Address <span className="sv-required">*</span>
                   </label>
                   <InputText
                     type="email"
@@ -876,8 +791,7 @@ const RegisterPage: React.FC = () => {
 
                 <div className="mb-3">
                   <label className="block text-sm font-medium mb-1">
-                    Password{" "}
-                    <span style={{ color: "var(--sv-danger)" }}>*</span>
+                    Password <span className="sv-required">*</span>
                   </label>
                   <Password
                     value={password}
@@ -894,16 +808,8 @@ const RegisterPage: React.FC = () => {
                         {[1, 2, 3, 4].map((s) => (
                           <div
                             key={s}
-                            style={{
-                              flex: 1,
-                              height: 4,
-                              borderRadius: 2,
-                              background:
-                                strength >= s
-                                  ? STRENGTH_COLORS[strength]
-                                  : "var(--surface-border)",
-                              transition: "background 0.3s",
-                            }}
+                            className="sv-strength-segment"
+                            style={{ background: strength >= s ? STRENGTH_COLORS[strength] : "var(--surface-border)" }}
                           />
                         ))}
                       </div>
@@ -913,10 +819,7 @@ const RegisterPage: React.FC = () => {
                       >
                         {STRENGTH_LABELS[strength]}
                       </span>
-                      <span
-                        className="text-xs ml-2"
-                        style={{ color: "var(--sv-text-muted)" }}
-                      >
+                      <span className="text-xs ml-2 sv-text-muted">
                         Use 8+ chars, uppercase, numbers, and symbols
                       </span>
                     </div>
@@ -945,10 +848,7 @@ const RegisterPage: React.FC = () => {
             {/* ============ STEP 2: Risk Profile ============ */}
             {step === 1 && (
               <div>
-                <p
-                  className="mt-0 mb-4 text-sm line-height-3"
-                  style={{ color: "var(--sv-text-secondary)" }}
-                >
+                <p className="mt-0 mb-4 text-sm line-height-3 text-color-secondary">
                   Help us personalize your experience. All fields are optional —
                   you can update these anytime from your profile.
                 </p>
@@ -1014,10 +914,7 @@ const RegisterPage: React.FC = () => {
                             <div className="font-semibold text-sm">
                               {opt.label}
                             </div>
-                            <div
-                              className="text-xs mt-1"
-                              style={{ color: "var(--sv-text-muted)" }}
-                            >
+                            <div className="text-xs mt-1 sv-text-muted">
                               {opt.description}
                             </div>
                           </div>
@@ -1049,10 +946,7 @@ const RegisterPage: React.FC = () => {
                             <div className="font-semibold text-sm">
                               {opt.label}
                             </div>
-                            <div
-                              className="text-xs mt-1"
-                              style={{ color: "var(--sv-text-muted)" }}
-                            >
+                            <div className="text-xs mt-1 sv-text-muted">
                               {opt.description}
                             </div>
                           </div>
@@ -1084,33 +978,13 @@ const RegisterPage: React.FC = () => {
             {step === 2 && (
               <div>
                 {/* 30-day trial banner */}
-                <div
-                  className="flex align-items-start gap-3 border-round-xl p-3 mb-4"
-                  style={{
-                    background: "rgba(var(--sv-accent-rgb, 59,130,246), 0.08)",
-                    border:
-                      "1px solid rgba(var(--sv-accent-rgb, 59,130,246), 0.25)",
-                  }}
-                >
-                  <i
-                    className="pi pi-gift mt-1"
-                    style={{
-                      color: "var(--sv-accent)",
-                      fontSize: 18,
-                      flexShrink: 0,
-                    }}
-                  />
+                <div className="flex align-items-start gap-3 border-round-xl p-3 mb-4 sv-trial-banner">
+                  <i className="pi pi-gift mt-1 sv-gift-icon" />
                   <div>
-                    <div
-                      className="font-semibold text-sm mb-1"
-                      style={{ color: "var(--sv-accent)" }}
-                    >
+                    <div className="font-semibold text-sm mb-1 sv-text-accent">
                       30-Day Free Trial — No Charge Today
                     </div>
-                    <p
-                      className="text-xs line-height-3 m-0"
-                      style={{ color: "var(--sv-text-secondary)" }}
-                    >
+                    <p className="text-xs line-height-3 m-0 text-color-secondary">
                       Your card is required to secure your plan but{" "}
                       <strong>will not be charged</strong> until your 30-day
                       free trial ends. You can cancel anytime before the trial
@@ -1130,8 +1004,7 @@ const RegisterPage: React.FC = () => {
                 ) : (
                   <div className="mb-4">
                     <label className="block text-sm font-semibold mb-2">
-                      Choose Plan{" "}
-                      <span style={{ color: "var(--sv-danger)" }}>*</span>
+                      Choose Plan <span className="sv-required">*</span>
                     </label>
                     <div className="flex flex-column gap-2">
                       {plans.map((plan) => {
@@ -1168,31 +1041,19 @@ const RegisterPage: React.FC = () => {
                                     {plan.name || plan.id}
                                   </div>
                                   {plan.description && (
-                                    <div
-                                      className="text-xs mt-1"
-                                      style={{ color: "var(--sv-text-muted)" }}
-                                    >
+                                    <div className="text-xs mt-1 sv-text-muted">
                                       {plan.description}
                                     </div>
                                   )}
                                 </div>
                               </div>
                               <div className="text-right flex-shrink-0">
-                                <div
-                                  className="text-xs font-semibold mb-1"
-                                  style={{ color: "var(--sv-success)" }}
-                                >
+                                <div className="text-xs font-semibold mb-1 sv-text-gain">
                                   Free for 30 days
                                 </div>
-                                <div
-                                  className="text-xs"
-                                  style={{ color: "var(--sv-text-muted)" }}
-                                >
+                                <div className="text-xs sv-text-muted">
                                   then{" "}
-                                  <span
-                                    className="font-bold"
-                                    style={{ color: "var(--text-color)" }}
-                                  >
+                                  <span className="font-bold text-color">
                                     ${priceDollars}
                                   </span>
                                   {plan.frequency && `/${plan.frequency}`}
@@ -1250,14 +1111,10 @@ const RegisterPage: React.FC = () => {
                 {/* Card Details */}
                 <div className="mb-4">
                   <label className="block text-sm font-semibold mb-2">
-                    Payment Details{" "}
-                    <span style={{ color: "var(--sv-danger)" }}>*</span>
+                    Payment Details <span className="sv-required">*</span>
                   </label>
                   <div className="mb-3">
-                    <label
-                      className="block text-xs font-medium mb-1"
-                      style={{ color: "var(--sv-text-secondary)" }}
-                    >
+                    <label className="block text-xs font-medium mb-1 text-color-secondary">
                       Card Number
                     </label>
                     <input
@@ -1277,8 +1134,7 @@ const RegisterPage: React.FC = () => {
                   <div className="grid">
                     <div className="col-4">
                       <label
-                        className="block text-xs font-medium mb-1"
-                        style={{ color: "var(--sv-text-secondary)" }}
+                        className="block text-xs font-medium mb-1 text-color-secondary"
                       >
                         Exp Month
                       </label>
@@ -1297,8 +1153,7 @@ const RegisterPage: React.FC = () => {
                     </div>
                     <div className="col-4">
                       <label
-                        className="block text-xs font-medium mb-1"
-                        style={{ color: "var(--sv-text-secondary)" }}
+                        className="block text-xs font-medium mb-1 text-color-secondary"
                       >
                         Exp Year
                       </label>
@@ -1317,8 +1172,7 @@ const RegisterPage: React.FC = () => {
                     </div>
                     <div className="col-4">
                       <label
-                        className="block text-xs font-medium mb-1"
-                        style={{ color: "var(--sv-text-secondary)" }}
+                        className="block text-xs font-medium mb-1 text-color-secondary"
                       >
                         CVC
                       </label>
@@ -1336,11 +1190,8 @@ const RegisterPage: React.FC = () => {
                       />
                     </div>
                   </div>
-                  <p
-                    className="text-xs mt-2 mb-0 flex align-items-center gap-1"
-                    style={{ color: "var(--sv-text-muted)" }}
-                  >
-                    <i className="pi pi-lock" style={{ fontSize: 11 }} />
+                  <p className="text-xs mt-2 mb-0 flex align-items-center gap-1 sv-text-muted">
+                    <i className="pi pi-lock sv-lock-icon" />
                     Your payment info is encrypted and processed securely via
                     Stripe.
                   </p>
@@ -1357,15 +1208,10 @@ const RegisterPage: React.FC = () => {
                   />
                   <label
                     htmlFor="agree"
-                    className="text-sm line-height-3"
-                    style={{ cursor: "pointer" }}
+                    className="text-sm line-height-3 cursor-pointer"
                   >
                     I agree to the{" "}
-                    <Link
-                      to="/terms"
-                      style={{ color: "var(--sv-accent)" }}
-                      target="_blank"
-                    >
+                    <Link to="/terms" className="sv-text-accent" target="_blank">
                       Terms of Service
                     </Link>
                   </label>
@@ -1382,10 +1228,7 @@ const RegisterPage: React.FC = () => {
                     onExpired={handleCaptchaExpired}
                   />
                   {captchaError && (
-                    <p
-                      className="text-xs mt-1 mb-0"
-                      style={{ color: "var(--sv-danger)" }}
-                    >
+                    <p className="text-xs mt-1 mb-0 sv-error-text">
                       {captchaError}
                     </p>
                   )}
