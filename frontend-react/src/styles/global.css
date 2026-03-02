@@ -102,6 +102,8 @@ a:hover {
   height: 60px;
 }
 
+.sv-header-logo { height: 32px; width: auto; }
+
 .sv-footer {
   background: var(--sv-bg-header);
   border-top: 1px solid var(--sv-border);
@@ -170,8 +172,13 @@ a:hover {
 
 /* ======================================================================
    Dropdown panel — absolute positioning + fade/slide animation
-   Background, border, shadow added via PrimeFlex/inline in JSX.
    ====================================================================== */
+
+/* Accent top-border treatment for the open dropdown panel */
+.sv-dropdown-panel-border {
+  border: 1px solid var(--surface-border);
+  border-top: 2px solid var(--primary-color);
+}
 
 .sv-dropdown-panel {
   position: absolute;
@@ -192,7 +199,6 @@ a:hover {
 
 /* ======================================================================
    Mobile menu — fixed positioning + slide animation
-   Background, border, padding added via PrimeFlex/inline in JSX.
    ====================================================================== */
 
 .sv-mobile-menu {
@@ -204,7 +210,11 @@ a:hover {
   max-height: calc(100dvh - 60px);
   overflow-y: auto;
   animation: svSlideDown 0.18s ease forwards;
+  border-color: var(--surface-border);
 }
+
+/* Left-border indent for mobile sub-nav groups */
+.sv-mobile-indent { border-left: 2px solid var(--surface-border); }
 
 @keyframes svSlideDown {
   from { opacity: 0; transform: translateY(-8px); }
@@ -214,6 +224,9 @@ a:hover {
 /* ======================================================================
    Search input with expand animation + icon helper
    ====================================================================== */
+
+/* Left padding for inputs that have an overlaid icon on the left */
+.sv-input-pl-icon { padding-left: 2.25rem; }
 
 /* Absolute-positioned icon overlaying a text/search input from the left */
 .sv-input-icon-left {

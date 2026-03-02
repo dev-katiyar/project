@@ -140,11 +140,7 @@ const DesktopNavItem: React.FC<DesktopNavItemProps> = ({
 
       {/* Panel — positioning via sv-dropdown-panel; appearance via PrimeFlex + inline */}
       <div
-        className={`sv-dropdown-panel surface-overlay border-round-lg shadow-3 p-1${isOpen ? " open" : ""}`}
-        style={{
-          border: "1px solid var(--surface-border)",
-          borderTop: "2px solid var(--primary-color)",
-        }}
+        className={`sv-dropdown-panel sv-dropdown-panel-border surface-overlay border-round-lg shadow-3 p-1${isOpen ? " open" : ""}`}
       >
         {item.items.map((sub) => (
           <NavLink
@@ -190,26 +186,15 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ onClose }) => {
     /* PrimeFlex handles: background, border, shadow, padding */
     <div
       className="sv-mobile-menu surface-overlay border-bottom-1 shadow-3 px-3 py-2"
-      style={{ borderBottomColor: "var(--surface-border)" }}
     >
       {/* Search */}
       <form onSubmit={handleSearch} className="relative mb-3">
-        <i
-          className="pi pi-search absolute text-xs"
-          style={{
-            left: "0.75rem",
-            top: "50%",
-            transform: "translateY(-50%)",
-            color: "var(--text-color-secondary)",
-            pointerEvents: "none",
-          }}
-        />
+        <i className="pi pi-search sv-input-icon-left" />
         <InputText
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           placeholder="Search ticker…"
-          className="w-full"
-          style={{ paddingLeft: "2.25rem" }}
+          className="w-full sv-input-pl-icon"
         />
       </form>
 
@@ -257,10 +242,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ onClose }) => {
 
             {/* Sub-items */}
             {isExpanded && (
-              <div
-                className="pl-3 ml-3 py-1"
-                style={{ borderLeft: "2px solid var(--surface-border)" }}
-              >
+              <div className="sv-mobile-indent pl-3 ml-3 py-1">
                 {item.items.map((sub) => (
                   <NavLink
                     key={sub.path}
@@ -349,7 +331,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
             <img
               src={THEME_LOGO[theme]}
               alt="SimpleVisor Pro"
-              style={{ height: 32, width: "auto" }}
+              className="sv-header-logo"
             />
           </Link>
 
@@ -397,16 +379,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
                   onSubmit={handleSearch}
                   className="relative hidden md:flex align-items-center"
                 >
-                  <i
-                    className="pi pi-search absolute text-xs"
-                    style={{
-                      left: "0.65rem",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      color: "var(--text-color-secondary)",
-                      pointerEvents: "none",
-                    }}
-                  />
+                  <i className="pi pi-search sv-input-icon-left" />
                   <InputText
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
