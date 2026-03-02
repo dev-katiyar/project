@@ -85,6 +85,7 @@ a:hover {
 .sv-page-min-h-60   { min-height: 60vh; }
 .sv-content-narrow  { max-width: 900px; }
 .sv-form-wrap       { max-width: 460px; }
+.sv-login-wrap      { max-width: 420px; }
 .sv-content-wrap    { max-width: 1200px; margin: 0 auto; }
 .sv-layout-wrap     { max-width: 1600px; margin: 0 auto; }
 

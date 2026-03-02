@@ -38,7 +38,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="flex justify-content-center py-8 px-2">
-      <Card className="w-full" style={{ maxWidth: 420 }}>
+      <Card className="w-full sv-login-wrap">
         <h2 className="mt-0 mb-1 font-bold">Welcome back</h2>
         <p className="mt-0 mb-4 text-sm text-color-secondary">
           Sign in to your SimpleVisor account
