@@ -10,8 +10,8 @@ import logoOnDark from "@/assets/brand/simplevisor-horizontal-light-lg.svg";
 import logoOnLight from "@/assets/brand/simplevisor-horizontal-color@3x.png";
 
 const THEME_LOGO: Record<ThemeName, string> = {
-  dark: logoOnDark,   // white SVG — readable on dark amber bg
-  dim: logoOnDark,    // white SVG — readable on dark blue bg
+  dark: logoOnDark, // white SVG — readable on dark amber bg
+  dim: logoOnDark, // white SVG — readable on dark blue bg
   light: logoOnLight, // dark-text PNG — readable on light bg
 };
 
@@ -90,9 +90,6 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
               </NavLink>
               <NavLink to="/login" className="sv-nav-link">
                 Sign In
-              </NavLink>
-              <NavLink to="/signup" className="sv-nav-link">
-                Register
               </NavLink>
             </>
           )}

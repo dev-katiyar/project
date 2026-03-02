@@ -29,13 +29,13 @@ const Footer: React.FC = () => {
           >
             Terms &amp; Conditions
           </Link>
-          <a
+          {/* <a
             href="/faq"
             className="text-sm"
             style={{ color: "var(--sv-text-muted)" }}
           >
             FAQ
-          </a>
+          </a> */}
           <a
             href="/contact-us"
             className="text-sm"
