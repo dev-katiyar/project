@@ -466,3 +466,31 @@ a:hover {
 
 .sv-strength-track { height: 5px; background: var(--sv-border); }
 .sv-strength-bar   { height: 100%; transition: width 0.3s ease, background 0.3s ease; }
+
+/* ======================================================================
+   Home page — hero, description, section headings, CTA, footer
+   ====================================================================== */
+
+.sv-hero-title {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  line-height: 1.2;
+  margin: 0 auto 2.5rem;
+  max-width: 760px;
+}
+
+.sv-desc-wrap {
+  max-width: 780px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+.sv-section-title {
+  font-size: 2rem;
+  line-height: 1.25;
+  margin: 0 0 2.5rem;
+}
+
+.sv-cta-btn { min-width: 11rem; font-size: 1rem !important; }
+
+.sv-footer-cta  { padding: 3rem 1.5rem; }
+.sv-footer-logo { height: 2.5rem; }
