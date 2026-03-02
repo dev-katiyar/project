@@ -474,6 +474,10 @@ a:hover {
 /* Result / abort state circle (72px) — used by early-return screens */
 .sv-state-circle   { width: 4.5rem; height: 4.5rem; }
 .sv-state-circle i { font-size: 2rem; }
+.sv-state-circle--accent  { background: var(--sv-accent);           color: var(--sv-text-inverse); }
+.sv-state-circle--warning { background: var(--sv-warning, #f97316); color: var(--sv-text-inverse); }
+.sv-state-circle--success { background: var(--sv-success);          color: var(--sv-text-inverse); }
+.sv-state-circle--danger  { background: var(--sv-danger);           color: var(--sv-text-inverse); }
 
 .sv-step-label         { font-size: 0.68rem; white-space: nowrap; }
 .sv-step-label--idle   { color: var(--sv-text-muted); }
@@ -490,6 +494,20 @@ a:hover {
 
 .sv-strength-track { height: 5px; background: var(--sv-border); }
 .sv-strength-bar   { height: 100%; transition: width 0.3s ease, background 0.3s ease; }
+
+/* Strength segment fill colors (background) and label text colors */
+.sv-strength-inactive { background: var(--surface-border); }
+.sv-strength-1-seg    { background: var(--sv-danger); }
+.sv-strength-2-seg    { background: #f97316; }
+.sv-strength-3-seg    { background: #60a5fa; }
+.sv-strength-4-seg    { background: var(--sv-success); }
+.sv-strength-1-text   { color: var(--sv-danger); }
+.sv-strength-2-text   { color: #f97316; }
+.sv-strength-3-text   { color: #60a5fa; }
+.sv-strength-4-text   { color: var(--sv-success); }
+
+/* Small spinner — 40×40 */
+.sv-spinner-sm { width: 40px; height: 40px; }
 
 /* ======================================================================
    Home page — hero, description, section headings, CTA, footer
@@ -518,3 +536,134 @@ a:hover {
 
 .sv-footer-cta  { padding: 3rem 1.5rem; }
 .sv-footer-logo { height: 2.5rem; }
+
+/* ======================================================================
+   Register page — two-column hero layout, plan cards, risk options,
+   step connector, trial banner, and card payment field
+   ====================================================================== */
+
+.sv-register-outer { max-width: 960px; }
+
+.sv-register-hero {
+  background: var(--sv-accent-gradient, linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%));
+  border-radius: 16px 0 0 16px;
+  padding: 2.5rem 2rem;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 280px;
+  max-width: 320px;
+  flex: 0 0 300px;
+}
+.sv-register-hero .p-divider-horizontal:before { border-top-color: rgba(255,255,255,0.2); }
+
+.sv-register-wrap { border-radius: 0 16px 16px 0; }
+
+@media (max-width: 767px) {
+  .sv-register-outer { flex-direction: column; }
+  .sv-register-hero {
+    order: 2;
+    border-radius: 0 0 16px 16px;
+    min-width: unset !important;
+    max-width: unset !important;
+    flex: unset !important;
+    padding: 1.5rem;
+    justify-content: flex-start;
+  }
+  .sv-register-wrap { order: 1; border-radius: 16px 16px 0 0 !important; }
+  .sv-feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .sv-feature-item { margin-bottom: 0; }
+}
+
+.sv-feature-item { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1rem; }
+.sv-feature-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.875rem;
+}
+
+.sv-hero-brand-icon { font-size: 1.75rem; }
+.sv-hero-desc       { opacity: 0.85; }
+.sv-hero-feat-desc  { opacity: 0.8; }
+.sv-hero-legal      { opacity: 0.7; }
+
+.sv-trial-banner {
+  background: rgba(var(--sv-accent-rgb, 59,130,246), 0.08);
+  border: 1px solid rgba(var(--sv-accent-rgb, 59,130,246), 0.25);
+}
+
+.sv-gift-icon { color: var(--sv-accent); font-size: 1.125rem; flex-shrink: 0; }
+.sv-lock-icon { font-size: 0.6875rem; }
+
+.sv-strength-segment { flex: 1; height: 4px; border-radius: 2px; transition: background 0.3s; }
+
+.sv-step-connector {
+  flex: 1;
+  height: 2px;
+  min-width: 24px;
+  max-width: 64px;
+  margin-bottom: 20px;
+  background: var(--surface-border);
+  transition: background 0.3s;
+}
+.sv-step-connector--done { background: var(--sv-success); }
+
+.sv-plan-card {
+  cursor: pointer;
+  border-radius: 12px;
+  border: 2px solid var(--surface-border);
+  padding: 1rem 1.25rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.sv-plan-card:hover { border-color: var(--sv-accent); }
+.sv-plan-card.selected {
+  border-color: var(--sv-accent);
+  box-shadow: 0 0 0 3px rgba(var(--sv-accent-rgb, 59,130,246), 0.15);
+}
+
+.sv-grad-btn {
+  background: var(--sv-accent-gradient, linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%));
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+}
+.sv-grad-btn:hover {
+  opacity: 0.9;
+  background: var(--sv-accent-gradient, linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)) !important;
+  border: none !important;
+}
+
+.sv-risk-option {
+  border: 2px solid var(--surface-border);
+  border-radius: 10px;
+  padding: 0.875rem 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.sv-risk-option.selected {
+  border-color: var(--sv-accent);
+  background: rgba(var(--sv-accent-rgb, 59,130,246), 0.06);
+}
+.sv-risk-option:hover { border-color: var(--sv-accent); }
+
+.sv-card-field {
+  background: var(--surface-ground);
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  padding: 0.625rem 0.875rem;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+.sv-card-field:focus { border-color: var(--sv-accent); }

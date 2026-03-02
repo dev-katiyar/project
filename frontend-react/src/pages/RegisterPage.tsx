@@ -119,13 +119,6 @@ const RISK_TOLERANCE_OPTIONS = [
   },
 ];
 
-const STRENGTH_COLORS = [
-  "",
-  "var(--sv-danger)",
-  "#f97316",
-  "#60a5fa",
-  "var(--sv-success)",
-];
 const STRENGTH_LABELS = ["", "Weak", "Fair", "Good", "Strong"];
 
 function calcStrength(pwd: string): number {
@@ -458,8 +451,7 @@ const RegisterPage: React.FC = () => {
       <div className="flex justify-content-center align-items-center py-8 px-3 sv-page-min-h-60">
         <div className="surface-card border-1 surface-border border-round-2xl shadow-4 p-5 text-center sv-form-wrap">
           <div
-            className="sv-state-circle flex align-items-center justify-content-center border-circle mx-auto mb-4"
-            style={{ background: isReturning ? "var(--sv-accent)" : "var(--sv-warning, #f97316)" }}
+            className={`sv-state-circle flex align-items-center justify-content-center border-circle mx-auto mb-4 sv-state-circle--${isReturning ? "accent" : "warning"}`}
           >
             <i className={`pi ${isReturning ? "pi-user" : "pi-info-circle"} text-white`} />
           </div>
@@ -508,8 +500,7 @@ const RegisterPage: React.FC = () => {
       <div className="flex justify-content-center align-items-center py-8 px-3 sv-page-min-h-60">
         <div className="surface-card border-1 surface-border border-round-2xl shadow-4 p-5 text-center sv-form-wrap">
           <div
-            className="sv-state-circle flex align-items-center justify-content-center border-circle mx-auto mb-4"
-            style={{ background: isSuccess ? "var(--sv-success)" : "var(--sv-danger)" }}
+            className={`sv-state-circle flex align-items-center justify-content-center border-circle mx-auto mb-4 sv-state-circle--${isSuccess ? "success" : "danger"}`}
           >
             <i className={`pi ${isSuccess ? "pi-check" : "pi-times"} text-white`} />
           </div>
@@ -555,121 +546,6 @@ const RegisterPage: React.FC = () => {
   // ---- Main Wizard ----
   return (
     <>
-      <style>{`
-        .sv-register-outer { max-width: 960px; }
-        .sv-register-hero {
-          background: var(--sv-accent-gradient, linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%));
-          border-radius: 16px 0 0 16px;
-          padding: 2.5rem 2rem;
-          color: #fff;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          min-width: 280px;
-          max-width: 320px;
-          flex: 0 0 300px;
-        }
-        .sv-register-hero .p-divider-horizontal:before { border-top-color: rgba(255,255,255,0.2); }
-        .sv-register-wrap { border-radius: 0 16px 16px 0; }
-        @media (max-width: 767px) {
-          .sv-register-outer { flex-direction: column; }
-          .sv-register-hero {
-            order: 2;
-            border-radius: 0 0 16px 16px;
-            min-width: unset !important;
-            max-width: unset !important;
-            flex: unset !important;
-            padding: 1.5rem;
-            justify-content: flex-start;
-          }
-          .sv-register-wrap { order: 1; border-radius: 16px 16px 0 0 !important; }
-          .sv-feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
-          .sv-feature-item { margin-bottom: 0; }
-        }
-        .sv-feature-item { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1rem; }
-        .sv-feature-icon {
-          width: 32px;
-          height: 32px;
-          border-radius: 8px;
-          background: rgba(255,255,255,0.15);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-          font-size: 0.875rem;
-        }
-        .sv-hero-brand-icon { font-size: 1.75rem; }
-        .sv-hero-desc       { opacity: 0.85; }
-        .sv-hero-feat-desc  { opacity: 0.8; }
-        .sv-hero-legal      { opacity: 0.7; }
-        .sv-trial-banner {
-          background: rgba(var(--sv-accent-rgb, 59,130,246), 0.08);
-          border: 1px solid rgba(var(--sv-accent-rgb, 59,130,246), 0.25);
-        }
-        .sv-gift-icon { color: var(--sv-accent); font-size: 1.125rem; flex-shrink: 0; }
-        .sv-lock-icon { font-size: 0.6875rem; }
-        .sv-strength-segment { flex: 1; height: 4px; border-radius: 2px; transition: background 0.3s; }
-        .sv-step-connector {
-          flex: 1;
-          height: 2px;
-          min-width: 24px;
-          max-width: 64px;
-          margin-bottom: 20px;
-          background: var(--surface-border);
-          transition: background 0.3s;
-        }
-        .sv-step-connector--done { background: var(--sv-success); }
-        .sv-plan-card {
-          cursor: pointer;
-          border-radius: 12px;
-          border: 2px solid var(--surface-border);
-          padding: 1rem 1.25rem;
-          transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .sv-plan-card:hover { border-color: var(--sv-accent); }
-        .sv-plan-card.selected {
-          border-color: var(--sv-accent);
-          box-shadow: 0 0 0 3px rgba(var(--sv-accent-rgb, 59,130,246), 0.15);
-        }
-        .sv-grad-btn {
-          background: var(--sv-accent-gradient, linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%));
-          border: none;
-          color: #fff;
-          border-radius: 8px;
-          font-weight: 600;
-        }
-        .sv-grad-btn:hover {
-          opacity: 0.9;
-          background: var(--sv-accent-gradient, linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)) !important;
-          border: none !important;
-        }
-        .sv-risk-option {
-          border: 2px solid var(--surface-border);
-          border-radius: 10px;
-          padding: 0.875rem 1rem;
-          cursor: pointer;
-          transition: border-color 0.2s;
-        }
-        .sv-risk-option.selected {
-          border-color: var(--sv-accent);
-          background: rgba(var(--sv-accent-rgb, 59,130,246), 0.06);
-        }
-        .sv-risk-option:hover { border-color: var(--sv-accent); }
-        .sv-card-field {
-          background: var(--surface-ground);
-          border: 1px solid var(--surface-border);
-          border-radius: 8px;
-          padding: 0.625rem 0.875rem;
-          color: var(--text-color);
-          font-size: 0.9rem;
-          width: 100%;
-          outline: none;
-          transition: border-color 0.2s;
-          font-family: inherit;
-        }
-        .sv-card-field:focus { border-color: var(--sv-accent); }
-      `}</style>
-
       <div className="flex justify-content-center py-6 px-2">
         <div className="sv-register-outer w-full shadow-5 border-round-2xl overflow-hidden flex">
           {/* ---- Left: Marketing Sidebar ---- */}
@@ -808,15 +684,11 @@ const RegisterPage: React.FC = () => {
                         {[1, 2, 3, 4].map((s) => (
                           <div
                             key={s}
-                            className="sv-strength-segment"
-                            style={{ background: strength >= s ? STRENGTH_COLORS[strength] : "var(--surface-border)" }}
+                            className={`sv-strength-segment ${strength >= s ? `sv-strength-${strength}-seg` : "sv-strength-inactive"}`}
                           />
                         ))}
                       </div>
-                      <span
-                        className="text-xs font-medium"
-                        style={{ color: STRENGTH_COLORS[strength] }}
-                      >
+                      <span className={`text-xs font-medium sv-strength-${strength}-text`}>
                         {STRENGTH_LABELS[strength]}
                       </span>
                       <span className="text-xs ml-2 sv-text-muted">
@@ -997,7 +869,7 @@ const RegisterPage: React.FC = () => {
                 {plansLoading ? (
                   <div className="flex justify-content-center py-4">
                     <ProgressSpinner
-                      style={{ width: 40, height: 40 }}
+                      className="sv-spinner-sm"
                       strokeWidth="4"
                     />
                   </div>
