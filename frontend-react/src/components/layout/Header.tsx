@@ -142,7 +142,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
             <Button
               label="Start Free Trial"
               className="p-button-primary p-button-sm"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/signup")}
             />
           )}
         </div>
