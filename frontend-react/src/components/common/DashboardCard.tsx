@@ -19,10 +19,7 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
 }) => {
   return (
     <Card className="h-full">
-      <div
-        className="flex align-items-center justify-content-between mb-3"
-        style={{ minHeight: 0 }}
-      >
+      <div className="flex align-items-center justify-content-between mb-3 min-h-0">
         <span className="font-semibold">{title}</span>
         {linkTo && (
           <Link
