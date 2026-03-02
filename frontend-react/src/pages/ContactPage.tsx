@@ -1,10 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Toast } from "primereact/toast";
 import { Divider } from "primereact/divider";
+import { useTheme } from "@/contexts/ThemeContext";
 import api from "@/services/api";
 
 // --------------- Types ---------------
@@ -78,6 +79,10 @@ const ContactPage: React.FC = () => {
   const toast = useRef<Toast>(null);
   const captchaRef = useRef<ReCAPTCHA>(null);
 
+  const { theme } = useTheme();
+  // reCAPTCHA only supports "dark" | "light"; dim counts as dark
+  const captchaTheme = theme === "light" ? "light" : "dark";
+
   const [form, setForm] = useState<FormState>({
     userName: "",
     email: "",
@@ -95,6 +100,12 @@ const ContactPage: React.FC = () => {
   const [captchaError, setCaptchaError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  // Remount the widget (via key) when captchaTheme changes; reset verified state
+  useEffect(() => {
+    setIsCaptchaVerified(false);
+    setCaptchaError("");
+  }, [captchaTheme]);
 
   const handleChange = (field: keyof FormState, value: string) => {
     const updated = { ...form, [field]: value };
@@ -375,13 +386,14 @@ const ContactPage: React.FC = () => {
               </div>
 
               {/* reCAPTCHA */}
-              <div className="flex flex-column align-items-start gap-1 mb-4">
+              <div className="flex flex-column align-items-center gap-1 mb-4">
                 <ReCAPTCHA
+                  key={captchaTheme}
                   ref={captchaRef}
                   sitekey={RECAPTCHA_SITE_KEY}
                   onChange={handleCaptchaChange}
                   onExpired={handleCaptchaExpired}
-                  theme="dark"
+                  theme={captchaTheme}
                 />
                 {captchaError && (
                   <small className="flex align-items-center gap-1 mt-1 sv-error-text">
