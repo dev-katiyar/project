@@ -40,37 +40,15 @@ function StepPill({
   active?: boolean;
   done?: boolean;
 }) {
+  const state = done ? "done" : active ? "active" : "idle";
   return (
     <div className="flex flex-column align-items-center gap-1">
       <div
-        className="flex align-items-center justify-content-center border-round-full font-bold"
-        style={{
-          width: "2rem",
-          height: "2rem",
-          background: done
-            ? "var(--sv-success)"
-            : active
-              ? "var(--sv-accent)"
-              : "var(--sv-border)",
-          color: done || active ? "#fff" : "var(--sv-text-muted)",
-          fontSize: "0.8rem",
-          flexShrink: 0,
-          transition: "background 0.3s",
-        }}
+        className={`sv-step-circle sv-step-circle--${state} flex align-items-center justify-content-center border-round-full font-bold`}
       >
-        {done ? <i className="pi pi-check" style={{ fontSize: "0.7rem" }} /> : n}
+        {done ? <i className="pi pi-check" /> : n}
       </div>
-      <span
-        style={{
-          fontSize: "0.68rem",
-          whiteSpace: "nowrap",
-          color: done
-            ? "var(--sv-success)"
-            : active
-              ? "var(--sv-accent)"
-              : "var(--sv-text-muted)",
-        }}
-      >
+      <span className={`sv-step-label sv-step-label--${state}`}>
         {label}
       </span>
     </div>
@@ -209,18 +187,12 @@ const ResetPasswordPage: React.FC = () => {
   const allDone = verifyState === "success";
 
   return (
-    <div
-      className="flex justify-content-center align-items-start py-8 px-2"
-      style={{ minHeight: "80vh" }}
-    >
-      <div className="w-full" style={{ maxWidth: 460 }}>
+    <div className="flex justify-content-center align-items-start py-8 px-2 sv-page-min-h">
+      <div className="w-full sv-form-wrap">
         {/* Gradient icon badge */}
         <div className="flex justify-content-center mb-4">
           <div className="sv-pw-badge flex align-items-center justify-content-center border-round-2xl">
-            <i
-              className={`pi ${allDone ? "pi-check" : "pi-lock"}`}
-              style={{ fontSize: "1.8rem", color: "#fff" }}
-            />
+            <i className={`pi ${allDone ? "pi-check" : "pi-lock"}`} />
           </div>
         </div>
 

@@ -81,7 +81,9 @@ a:hover {
    ====================================================================== */
 
 .sv-section         { padding: 4rem 1.5rem; }
+.sv-page-min-h      { min-height: 80vh; }
 .sv-content-narrow  { max-width: 900px; }
+.sv-form-wrap       { max-width: 460px; }
 .sv-content-wrap    { max-width: 1200px; margin: 0 auto; }
 .sv-layout-wrap     { max-width: 1600px; margin: 0 auto; }
 
@@ -419,6 +421,7 @@ a:hover {
   background: var(--sv-accent-gradient);
   box-shadow: var(--sv-shadow-glow);
 }
+.sv-pw-badge i { font-size: 1.8rem; color: var(--sv-text-inverse); }
 
 .sv-step-line {
   flex: 1;
@@ -428,7 +431,25 @@ a:hover {
   border-radius: 2px;
 }
 
+.sv-step-circle {
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+  transition: background 0.3s;
+}
+.sv-step-circle--idle   { background: var(--sv-border);   color: var(--sv-text-muted); }
+.sv-step-circle--active { background: var(--sv-accent);   color: var(--sv-text-inverse); }
+.sv-step-circle--done   { background: var(--sv-success);  color: var(--sv-text-inverse); }
+.sv-step-circle i       { font-size: 0.7rem; }
+
+.sv-step-label         { font-size: 0.68rem; white-space: nowrap; }
+.sv-step-label--idle   { color: var(--sv-text-muted); }
+.sv-step-label--active { color: var(--sv-accent); }
+.sv-step-label--done   { color: var(--sv-success); }
+
 .sv-status-circle { width: 4rem; height: 4rem; border-radius: 50%; }
+.sv-status-circle i { font-size: 1.5rem; }
 .sv-status-circle--ok  { background: var(--sv-success-bg); color: var(--sv-success); border: 2px solid var(--sv-success); }
 .sv-status-circle--err { background: var(--sv-danger-bg);  color: var(--sv-danger);  border: 2px solid var(--sv-danger); }
 
