@@ -119,24 +119,20 @@ a:hover {
   height: 60px;
 }
 
-/* Nav links (React Router NavLink) */
+/* Nav links — only interaction states; layout/spacing via PrimeFlex in JSX */
 .sv-nav-link {
-  padding: 0.5rem 0.85rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--sv-text-secondary);
-  transition: all 0.15s ease;
-  white-space: nowrap;
+  color: var(--text-color-secondary);
+  transition: color 0.15s ease, background-color 0.15s ease;
+  text-decoration: none;
 }
 .sv-nav-link:hover,
 .sv-nav-link.active {
-  color: var(--sv-text-primary);
-  background: var(--sv-bg-card);
+  color: var(--text-color);
+  background-color: var(--surface-hover);
   text-decoration: none;
 }
 .sv-nav-link.active {
-  color: var(--sv-accent);
+  color: var(--primary-color);
 }
 
 /* Search input with expand animation */
@@ -178,12 +174,124 @@ a:hover {
   color: var(--sv-accent);
 }
 
-/* ---------- Responsive ---------- */
+/* ======================================================================
+   Dropdown trigger — only interaction states; layout via PrimeFlex in JSX
+   ====================================================================== */
+
+.sv-dropdown-trigger {
+  color: var(--text-color-secondary);
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+.sv-dropdown-trigger:hover,
+.sv-dropdown-trigger.active {
+  color: var(--text-color);
+  background-color: var(--surface-hover);
+}
+.sv-dropdown-trigger.active { color: var(--primary-color); }
+
+.sv-dropdown-chevron {
+  font-size: 0.6rem;
+  opacity: 0.55;
+  transition: transform 0.2s ease;
+}
+.sv-dropdown-trigger.open .sv-dropdown-chevron { transform: rotate(180deg); }
+
+/* ======================================================================
+   Dropdown panel — absolute positioning + fade/slide animation.
+   Background, border, shadow added via PrimeFlex/inline in JSX.
+   ====================================================================== */
+
+.sv-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  min-width: 210px;
+  z-index: 1100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+}
+.sv-dropdown-panel.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Dropdown items — only interaction states; layout via PrimeFlex in JSX */
+.sv-dropdown-item {
+  color: var(--text-color-secondary);
+  text-decoration: none;
+  transition: color 0.12s ease, background-color 0.12s ease;
+}
+.sv-dropdown-item:hover {
+  color: var(--text-color);
+  background-color: var(--surface-hover);
+  text-decoration: none;
+}
+.sv-dropdown-item.active {
+  color: var(--primary-color);
+  background-color: var(--highlight-bg);
+}
+
+/* ======================================================================
+   Mobile menu — fixed positioning + slide animation.
+   Background, border, padding added via PrimeFlex/inline in JSX.
+   ====================================================================== */
+
+.sv-mobile-menu {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  z-index: 1099;
+  max-height: calc(100dvh - 60px);
+  overflow-y: auto;
+  animation: svSlideDown 0.18s ease forwards;
+}
+
+@keyframes svSlideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile item interactive states; layout via PrimeFlex in JSX */
+.sv-mobile-item {
+  color: var(--text-color-secondary);
+  text-decoration: none;
+  transition: color 0.12s ease, background-color 0.12s ease;
+}
+.sv-mobile-item:hover { color: var(--text-color); background-color: var(--surface-hover); text-decoration: none; }
+.sv-mobile-item.active { color: var(--primary-color); background-color: var(--highlight-bg); }
+
+.sv-mobile-group-trigger {
+  color: var(--text-color-secondary);
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.12s ease, background-color 0.12s ease;
+}
+.sv-mobile-group-trigger:hover { color: var(--text-color); background-color: var(--surface-hover); }
+.sv-mobile-group-trigger.active { color: var(--primary-color); }
+
+.sv-mobile-subitem {
+  color: var(--text-color-secondary);
+  text-decoration: none;
+  transition: color 0.12s ease, background-color 0.12s ease;
+}
+.sv-mobile-subitem:hover { color: var(--text-color); background-color: var(--surface-hover); text-decoration: none; }
+.sv-mobile-subitem.active { color: var(--primary-color); background-color: var(--highlight-bg); }
+
+/* ======================================================================
+   Responsive — only what PrimeFlex responsive classes cannot cover
+   ====================================================================== */
+
 @media (max-width: 768px) {
-  .sv-search-input {
-    width: 150px;
-  }
-  .sv-search-input:focus {
-    width: 200px;
-  }
+  .sv-search-input { width: 150px; }
+  .sv-search-input:focus { width: 200px; }
 }
