@@ -19,6 +19,8 @@ const AiToolsPage = lazy(() => import("@/pages/AiToolsPage"));
 const TvChartsPage = lazy(() => import("@/pages/TvChartsPage"));
 const RelativeAbsoluteSectorsPage = lazy(() => import("@/pages/RelativeAbsoluteSectorsPage"));
 const FactorAnalysisPage = lazy(() => import("@/pages/FactorAnalysisPage"));
+const RiskRangeReportPage = lazy(() => import("@/pages/RiskRangeReportPage"));
+const CreditSpreadReportPage = lazy(() => import("@/pages/CreditSpreadReportPage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -86,8 +88,8 @@ const router = createBrowserRouter([
         element: withProtection(<NotFoundPage />),
       },
       { path: "factor-analysis", element: withProtection(<FactorAnalysisPage />) },
-      { path: "risk-range-report", element: withProtection(<NotFoundPage />) },
-      { path: "credit-spead", element: withProtection(<NotFoundPage />) },
+      { path: "risk-range-report", element: withProtection(<RiskRangeReportPage />) },
+      { path: "credit-spead", element: withProtection(<CreditSpreadReportPage />) },
       { path: "backtesting", element: withProtection(<NotFoundPage />) },
       {
         path: "relative-absolute-analysis-sectors",
