@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
 
 // Augment window to expose TradingView and Datafeeds globals loaded via script tags
 declare global {
@@ -44,10 +45,58 @@ const TIME_FRAMES = [
   { text: "50Y", resolution: "3M", description: "50 Years", title: "All" },
 ];
 
+// Map each app theme to TradingView theme + matching color overrides
+const TV_THEME_CONFIG: Record<
+  ThemeName,
+  {
+    theme: "Dark" | "Light";
+    toolbar_bg: string;
+    overrides: Record<string, string>;
+  }
+> = {
+  dark: {
+    theme: "Dark",
+    toolbar_bg: "#0d1220",
+    overrides: {
+      "paneProperties.background": "#121a2e",
+      "paneProperties.backgroundType": "solid",
+      "paneProperties.vertGridProperties.color": "#1c2840",
+      "paneProperties.horzGridProperties.color": "#1c2840",
+      "scalesProperties.textColor": "#7a8da8",
+      "scalesProperties.backgroundColor": "#121a2e",
+    },
+  },
+  dim: {
+    theme: "Dark",
+    toolbar_bg: "#162038",
+    overrides: {
+      "paneProperties.background": "#1c2945",
+      "paneProperties.backgroundType": "solid",
+      "paneProperties.vertGridProperties.color": "#283a5c",
+      "paneProperties.horzGridProperties.color": "#283a5c",
+      "scalesProperties.textColor": "#7a92b8",
+      "scalesProperties.backgroundColor": "#1c2945",
+    },
+  },
+  light: {
+    theme: "Light",
+    toolbar_bg: "#ffffff",
+    overrides: {
+      "paneProperties.background": "#ffffff",
+      "paneProperties.backgroundType": "solid",
+      "paneProperties.vertGridProperties.color": "#dfe7f5",
+      "paneProperties.horzGridProperties.color": "#dfe7f5",
+      "scalesProperties.textColor": "#4a5e78",
+      "scalesProperties.backgroundColor": "#ffffff",
+    },
+  },
+};
+
 const TvChartsPage: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetRef = useRef<ITvWidget | null>(null);
   const { user } = useAuth();
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -55,6 +104,7 @@ const TvChartsPage: React.FC = () => {
 
     const userId = user?.userId ?? "sv_unknown_user";
     const symbol = localStorage.getItem("currentSymbol") ?? "AAPL";
+    const tvConfig = TV_THEME_CONFIG[theme];
 
     const widgetOptions = {
       symbol,
@@ -66,6 +116,9 @@ const TvChartsPage: React.FC = () => {
       container: containerRef.current,
       library_path: LIBRARY_PATH,
       locale: "en",
+      theme: tvConfig.theme,
+      toolbar_bg: tvConfig.toolbar_bg,
+      overrides: tvConfig.overrides,
       disabled_features: ["use_localstorage_for_settings"],
       enabled_features: ["study_templates"],
       charts_storage_url: "https://saveload.tradingview.com",
@@ -104,7 +157,7 @@ const TvChartsPage: React.FC = () => {
         widgetRef.current = null;
       }
     };
-  }, [user]);
+  }, [user, theme]);
 
   return (
     <div className="sv-page-min-h">
