@@ -17,12 +17,19 @@ const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
 const AiDashboardPage = lazy(() => import("@/pages/AiDashboardPage"));
 const AiToolsPage = lazy(() => import("@/pages/AiToolsPage"));
 const TvChartsPage = lazy(() => import("@/pages/TvChartsPage"));
-const RelativeAbsoluteSectorsPage = lazy(() => import("@/pages/RelativeAbsoluteSectorsPage"));
+const RelativeAbsoluteSectorsPage = lazy(
+  () => import("@/pages/RelativeAbsoluteSectorsPage"),
+);
 const FactorAnalysisPage = lazy(() => import("@/pages/FactorAnalysisPage"));
 const RiskRangeReportPage = lazy(() => import("@/pages/RiskRangeReportPage"));
-const CreditSpreadReportPage = lazy(() => import("@/pages/CreditSpreadReportPage"));
+const CreditSpreadReportPage = lazy(
+  () => import("@/pages/CreditSpreadReportPage"),
+);
 const ScreensCombinedPage = lazy(() => import("@/pages/ScreensCombinedPage"));
 const StockSummaryPage = lazy(() => import("@/pages/StockSummaryPage"));
+const StrategyDashboardPage = lazy(
+  () => import("@/pages/StrategyDashboardPage"),
+);
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -82,16 +89,28 @@ const router = createBrowserRouter([
       },
       { path: "aixgb-portfolios", element: withProtection(<NotFoundPage />) },
       { path: "linkedportfolio", element: withProtection(<NotFoundPage />) },
-      { path: "screenscombined", element: withProtection(<ScreensCombinedPage />) },
+      {
+        path: "screenscombined",
+        element: withProtection(<ScreensCombinedPage />),
+      },
       { path: "options", element: withProtection(<NotFoundPage />) },
       { path: "super-investor", element: withProtection(<NotFoundPage />) },
       {
         path: "super-investor/:code",
         element: withProtection(<NotFoundPage />),
       },
-      { path: "factor-analysis", element: withProtection(<FactorAnalysisPage />) },
-      { path: "risk-range-report", element: withProtection(<RiskRangeReportPage />) },
-      { path: "credit-spead", element: withProtection(<CreditSpreadReportPage />) },
+      {
+        path: "factor-analysis",
+        element: withProtection(<FactorAnalysisPage />),
+      },
+      {
+        path: "risk-range-report",
+        element: withProtection(<RiskRangeReportPage />),
+      },
+      {
+        path: "credit-spead",
+        element: withProtection(<CreditSpreadReportPage />),
+      },
       { path: "backtesting", element: withProtection(<NotFoundPage />) },
       {
         path: "relative-absolute-analysis-sectors",
@@ -111,7 +130,10 @@ const router = createBrowserRouter([
         element: withProtection(<NotFoundPage />),
       },
       { path: "ai-regime-charts", element: withProtection(<NotFoundPage />) },
-      { path: "strategy-dashboard", element: withProtection(<NotFoundPage />) },
+      {
+        path: "strategy-dashboard",
+        element: withProtection(<StrategyDashboardPage />),
+      },
       { path: "sv-ideas", element: withProtection(<NotFoundPage />) },
       {
         path: "symbol-search/:searchText",
