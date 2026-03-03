@@ -18,6 +18,7 @@ const AiDashboardPage = lazy(() => import("@/pages/AiDashboardPage"));
 const AiToolsPage = lazy(() => import("@/pages/AiToolsPage"));
 const TvChartsPage = lazy(() => import("@/pages/TvChartsPage"));
 const RelativeAbsoluteSectorsPage = lazy(() => import("@/pages/RelativeAbsoluteSectorsPage"));
+const FactorAnalysisPage = lazy(() => import("@/pages/FactorAnalysisPage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -84,7 +85,7 @@ const router = createBrowserRouter([
         path: "super-investor/:code",
         element: withProtection(<NotFoundPage />),
       },
-      { path: "factor-analysis", element: withProtection(<NotFoundPage />) },
+      { path: "factor-analysis", element: withProtection(<FactorAnalysisPage />) },
       { path: "risk-range-report", element: withProtection(<NotFoundPage />) },
       { path: "credit-spead", element: withProtection(<NotFoundPage />) },
       { path: "backtesting", element: withProtection(<NotFoundPage />) },
