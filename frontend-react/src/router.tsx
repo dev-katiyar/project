@@ -16,6 +16,7 @@ const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
 const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
 const AiDashboardPage = lazy(() => import("@/pages/AiDashboardPage"));
 const AiToolsPage = lazy(() => import("@/pages/AiToolsPage"));
+const TvChartsPage = lazy(() => import("@/pages/TvChartsPage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -64,7 +65,7 @@ const router = createBrowserRouter([
       { path: "holdingsmap", element: withProtection(<NotFoundPage />) },
       { path: "movers", element: withProtection(<NotFoundPage />) },
       { path: "overview-stock", element: withProtection(<NotFoundPage />) },
-      { path: "tvcharts", element: withProtection(<NotFoundPage />) },
+      { path: "tvcharts", element: withProtection(<TvChartsPage />) },
       { path: "stock-analysis", element: withProtection(<NotFoundPage />) },
       { path: "watchlist", element: withProtection(<NotFoundPage />) },
       { path: "alerts", element: withProtection(<NotFoundPage />) },
