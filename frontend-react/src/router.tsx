@@ -21,6 +21,7 @@ const RelativeAbsoluteSectorsPage = lazy(() => import("@/pages/RelativeAbsoluteS
 const FactorAnalysisPage = lazy(() => import("@/pages/FactorAnalysisPage"));
 const RiskRangeReportPage = lazy(() => import("@/pages/RiskRangeReportPage"));
 const CreditSpreadReportPage = lazy(() => import("@/pages/CreditSpreadReportPage"));
+const ScreensCombinedPage = lazy(() => import("@/pages/ScreensCombinedPage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -80,7 +81,7 @@ const router = createBrowserRouter([
       },
       { path: "aixgb-portfolios", element: withProtection(<NotFoundPage />) },
       { path: "linkedportfolio", element: withProtection(<NotFoundPage />) },
-      { path: "screenscombined", element: withProtection(<NotFoundPage />) },
+      { path: "screenscombined", element: withProtection(<ScreensCombinedPage />) },
       { path: "options", element: withProtection(<NotFoundPage />) },
       { path: "super-investor", element: withProtection(<NotFoundPage />) },
       {
