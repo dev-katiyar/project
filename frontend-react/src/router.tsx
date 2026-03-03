@@ -14,6 +14,8 @@ const ContactPage = lazy(() => import("@/pages/ContactPage"));
 const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
 const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
 const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
+const AiDashboardPage = lazy(() => import("@/pages/AiDashboardPage"));
+const AiToolsPage = lazy(() => import("@/pages/AiToolsPage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -94,9 +96,9 @@ const router = createBrowserRouter([
       },
       { path: "anomaly-spy", element: withProtection(<NotFoundPage />) },
       { path: "trade-signal-spy", element: withProtection(<NotFoundPage />) },
-      { path: "ai-tools", element: withProtection(<NotFoundPage />) },
-      { path: "ai-tools/:symbol", element: withProtection(<NotFoundPage />) },
-      { path: "ai-dashbaord", element: withProtection(<NotFoundPage />) },
+      { path: "ai-tools", element: withProtection(<AiToolsPage />) },
+      { path: "ai-tools/:symbol", element: withProtection(<AiToolsPage />) },
+      { path: "ai-dashbaord", element: withProtection(<AiDashboardPage />) },
       {
         path: "ai-models/:modelKey",
         element: withProtection(<NotFoundPage />),
