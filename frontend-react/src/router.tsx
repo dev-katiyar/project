@@ -22,6 +22,7 @@ const FactorAnalysisPage = lazy(() => import("@/pages/FactorAnalysisPage"));
 const RiskRangeReportPage = lazy(() => import("@/pages/RiskRangeReportPage"));
 const CreditSpreadReportPage = lazy(() => import("@/pages/CreditSpreadReportPage"));
 const ScreensCombinedPage = lazy(() => import("@/pages/ScreensCombinedPage"));
+const StockSummaryPage = lazy(() => import("@/pages/StockSummaryPage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -69,7 +70,7 @@ const router = createBrowserRouter([
       { path: "marketinternals", element: withProtection(<NotFoundPage />) },
       { path: "holdingsmap", element: withProtection(<NotFoundPage />) },
       { path: "movers", element: withProtection(<NotFoundPage />) },
-      { path: "overview-stock", element: withProtection(<NotFoundPage />) },
+      { path: "overview-stock", element: withProtection(<StockSummaryPage />) },
       { path: "tvcharts", element: withProtection(<TvChartsPage />) },
       { path: "stock-analysis", element: withProtection(<NotFoundPage />) },
       { path: "watchlist", element: withProtection(<NotFoundPage />) },
