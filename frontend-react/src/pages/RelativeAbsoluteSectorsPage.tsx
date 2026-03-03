@@ -9,9 +9,18 @@ import { Slider } from "primereact/slider";
 import { Dialog } from "primereact/dialog";
 import { Skeleton } from "primereact/skeleton";
 import api from "@/services/api";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
 
 // ─── Constants ─────────────────────────────────────────────────────────────────
+
+// Static mapping from theme name → chart colors (matches values in themes.css).
+// This avoids the timing bug where getComputedStyle reads CSS vars before
+// ThemeContext's useEffect has applied the new data-theme attribute.
+const CHART_COLORS: Record<ThemeName, { bg: string; grid: string; text: string; border: string }> = {
+  dark: { bg: "#121a2e", grid: "#1c2840", text: "#7a8da8", border: "#1c2840" },
+  dim:  { bg: "#1c2945", grid: "#283a5c", text: "#7a92b8", border: "#283a5c" },
+  light:{ bg: "#ffffff", grid: "#dfe7f5", text: "#4a5e78", border: "#c8d4ec" },
+};
 
 const SERIES_COLORS = [
   "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6",
@@ -160,18 +169,9 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
   const chartRef = useRef<HighchartsReact.RefObject>(null);
   const latestDate = rows[0]?.date ?? null;
 
-  // ── Chart CSS-var colors (theme-reactive) ───────────────────────────────────
-  const cc = useMemo(() => {
-    const s = getComputedStyle(document.documentElement);
-    const get = (v: string, fb: string) => s.getPropertyValue(v).trim() || fb;
-    return {
-      bg:       get("--sv-chart-bg",        "#121a2e"),
-      grid:     get("--sv-chart-grid",      "#1c2840"),
-      text:     get("--sv-chart-text",      "#7a8da8"),
-      accent:   get("--sv-accent",          "#2e5be6"),
-      border:   get("--sv-border",          "#1c2840"),
-    };
-  }, [theme]);
+  // ── Chart colors — read directly from the static map so the memo updates
+  //    in the same render cycle as the theme change (no useEffect timing lag).
+  const cc = CHART_COLORS[theme];
 
   // ── Fetch symbol dictionaries on mount ──────────────────────────────────────
   useEffect(() => {
