@@ -114,7 +114,7 @@ const DesktopNavItem: React.FC<DesktopNavItemProps> = ({
   }
 
   const hasActiveChild = item.items.some(
-    (sub) => location.pathname === sub.path
+    (sub) => location.pathname === sub.path,
   );
 
   return (
@@ -184,9 +184,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ onClose }) => {
   return (
     /* sv-mobile-menu handles: fixed position, z-index, max-height, overflow, animation */
     /* PrimeFlex handles: background, border, shadow, padding */
-    <div
-      className="sv-mobile-menu surface-overlay border-bottom-1 shadow-3 px-3 py-2"
-    >
+    <div className="sv-mobile-menu surface-overlay border-bottom-1 shadow-3 px-3 py-2">
       {/* Search */}
       <form onSubmit={handleSearch} className="relative mb-3">
         <i className="pi pi-search sv-input-icon-left" />
@@ -218,7 +216,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ onClose }) => {
 
         const isExpanded = !!expanded[item.label];
         const hasActive = item.items.some(
-          (sub) => location.pathname === sub.path
+          (sub) => location.pathname === sub.path,
         );
 
         return (
@@ -322,12 +320,12 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
   return (
     <>
       <header className="sv-header sticky top-0 flex align-items-center px-3">
-        <div
-          className="sv-layout-wrap flex align-items-center justify-content-between w-full mx-auto">
+        <div className="sv-layout-wrap flex align-items-center justify-content-between w-full mx-auto">
           {/* ── Brand ── */}
           <Link
             to={isAuthenticated ? "/overview" : "/"}
-            className="flex align-items-center no-underline flex-shrink-0">
+            className="flex align-items-center no-underline flex-shrink-0"
+          >
             <img
               src={THEME_LOGO[theme]}
               alt="SimpleVisor Pro"
@@ -370,8 +368,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
           )}
 
           {/* ── Actions ── */}
-          <div
-            className="flex align-items-center gap-2 flex-shrink-0">
+          <div className="flex align-items-center gap-2 flex-shrink-0">
             {isAuthenticated && (
               <>
                 {/* Search — hidden on mobile, flex on md+ */}

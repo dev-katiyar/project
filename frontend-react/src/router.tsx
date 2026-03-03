@@ -17,6 +17,7 @@ const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
 const AiDashboardPage = lazy(() => import("@/pages/AiDashboardPage"));
 const AiToolsPage = lazy(() => import("@/pages/AiToolsPage"));
 const TvChartsPage = lazy(() => import("@/pages/TvChartsPage"));
+const RelativeAbsoluteSectorsPage = lazy(() => import("@/pages/RelativeAbsoluteSectorsPage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -89,7 +90,7 @@ const router = createBrowserRouter([
       { path: "backtesting", element: withProtection(<NotFoundPage />) },
       {
         path: "relative-absolute-analysis-sectors",
-        element: withProtection(<NotFoundPage />),
+        element: withProtection(<RelativeAbsoluteSectorsPage />),
       },
       {
         path: "absolute-analysis-sectors",
