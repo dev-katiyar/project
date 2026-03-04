@@ -30,6 +30,9 @@ const StockSummaryPage = lazy(() => import("@/pages/StockSummaryPage"));
 const StrategyDashboardPage = lazy(
   () => import("@/pages/StrategyDashboardPage"),
 );
+const PortfoliosCombinedPage = lazy(
+  () => import("@/pages/PortfoliosCombinedPage"),
+);
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -82,10 +85,13 @@ const router = createBrowserRouter([
       { path: "stock-analysis", element: withProtection(<NotFoundPage />) },
       { path: "watchlist", element: withProtection(<NotFoundPage />) },
       { path: "alerts", element: withProtection(<NotFoundPage />) },
-      { path: "portfolioscombined", element: withProtection(<NotFoundPage />) },
+      {
+        path: "portfolioscombined",
+        element: withProtection(<PortfoliosCombinedPage />),
+      },
       {
         path: "portfolioscombined/:selPortType/:selPortId",
-        element: withProtection(<NotFoundPage />),
+        element: withProtection(<PortfoliosCombinedPage />),
       },
       { path: "aixgb-portfolios", element: withProtection(<NotFoundPage />) },
       { path: "linkedportfolio", element: withProtection(<NotFoundPage />) },
