@@ -9,6 +9,7 @@ import { Message } from "primereact/message";
 import PortfolioSummaryTable, {
   type Portfolio,
 } from "@/components/portfolio/PortfolioSummaryTable";
+import PortfolioDetailPanel from "@/components/portfolio/PortfolioDetailPanel";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -28,9 +29,6 @@ const fmtCompact = (v: number) =>
     notation: "compact",
     maximumFractionDigits: 1,
   }).format(v ?? 0);
-
-const fmtPct = (v: number) =>
-  `${v >= 0 ? "+" : ""}${(v ?? 0).toFixed(2)}%`;
 
 const fmtTimestamp = (ts: string | number | null): string => {
   if (!ts) return "";
@@ -220,7 +218,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
               className="pi pi-clock"
               style={{ fontSize: "0.65rem", marginRight: "0.25rem" }}
             />
-            As of {fmtTimestamp(updatedAt)} — click a row to select portfolio
+            As of {fmtTimestamp(updatedAt)} — click a row to view portfolio details
           </div>
         )}
       </div>
@@ -244,131 +242,11 @@ const SectionCard: React.FC<SectionCardProps> = ({
   );
 };
 
-// ─── Selected portfolio summary banner ───────────────────────────────────────
-
-const SelectedBanner: React.FC<{
-  portfolio: Portfolio;
-  onClose: () => void;
-}> = ({ portfolio, onClose }) => {
-  const fmtFull = (v: number) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(v ?? 0);
-
-  const stats: { label: string; value: string; color?: string }[] = [
-    { label: "Market Value", value: fmtFull(portfolio.portfolioValue) },
-    {
-      label: "P&L (Inception)",
-      value: `${fmtFull(portfolio.pnl)} (${fmtPct(portfolio.pnlPercent)})`,
-      color: gainColor(portfolio.pnl),
-    },
-    {
-      label: "Today's P&L",
-      value: `${fmtFull(portfolio.dailyPnl)} (${fmtPct(portfolio.dailyPnlPercentage)})`,
-      color: gainColor(portfolio.dailyPnl),
-    },
-    { label: "Starting Cash", value: fmtFull(portfolio.startingCash) },
-    { label: "Cash", value: fmtFull(portfolio.currentCash) },
-    { label: "Dividends", value: fmtFull(portfolio.dividend) },
-  ];
-
-  return (
-    <div
-      style={{
-        background: "var(--sv-bg-card)",
-        border: "1px solid var(--sv-border)",
-        borderTop: "3px solid var(--sv-accent)",
-        borderRadius: "10px",
-        padding: "1rem 1.25rem",
-        marginBottom: "1.5rem",
-        boxShadow: "var(--sv-shadow-sm)",
-      }}
-    >
-      <div className="flex align-items-center justify-content-between mb-3">
-        <div className="flex align-items-center gap-2">
-          <i
-            className="pi pi-wallet"
-            style={{ color: "var(--sv-accent)", fontSize: "1rem" }}
-          />
-          <span
-            style={{
-              fontWeight: 700,
-              fontSize: "1rem",
-              color: "var(--sv-text-primary)",
-            }}
-          >
-            {portfolio.name}
-          </span>
-          <span
-            style={{
-              fontSize: "0.72rem",
-              color: "var(--sv-accent)",
-              textTransform: "uppercase",
-              letterSpacing: "0.04em",
-              background: "var(--sv-accent-bg)",
-              padding: "0.15rem 0.5rem",
-              borderRadius: "4px",
-            }}
-          >
-            {portfolio.portfolio_type ?? "portfolio"}
-          </span>
-        </div>
-        <Button
-          icon="pi pi-times"
-          text
-          rounded
-          size="small"
-          onClick={onClose}
-          style={{ color: "var(--sv-text-muted)" }}
-        />
-      </div>
-
-      <div className="grid">
-        {stats.map((s) => (
-          <div key={s.label} className="col-6 md:col-4 lg:col-2">
-            <div
-              style={{
-                background: "var(--sv-bg-surface)",
-                borderRadius: "8px",
-                padding: "0.65rem 0.75rem",
-                border: "1px solid var(--sv-border)",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "0.68rem",
-                  color: "var(--sv-text-muted)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.04em",
-                  marginBottom: "0.2rem",
-                }}
-              >
-                {s.label}
-              </div>
-              <div
-                style={{
-                  fontWeight: 700,
-                  fontSize: "0.88rem",
-                  color: s.color ?? "var(--sv-text-primary)",
-                }}
-              >
-                {s.value}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 const PortfoliosCombinedPage: React.FC = () => {
   const toast = useRef<Toast>(null);
+  const detailRef = useRef<HTMLDivElement>(null);
 
   const [svSection, setSvSection] = useState<SectionState>(defaultSection());
   const [svRoboSection, setSvRoboSection] =
@@ -377,6 +255,12 @@ const PortfoliosCombinedPage: React.FC = () => {
     useState<SectionState>(defaultSection());
 
   const [selected, setSelected] = useState<Portfolio | null>(null);
+
+  useEffect(() => {
+    if (selected) {
+      setTimeout(() => detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+    }
+  }, [selected]);
 
   // Create portfolio dialog
   const [showCreate, setShowCreate] = useState(false);
@@ -511,12 +395,14 @@ const PortfoliosCombinedPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ── Selected portfolio banner ── */}
+      {/* ── Selected portfolio detail panel ── */}
       {selected && (
-        <SelectedBanner
-          portfolio={selected}
-          onClose={() => setSelected(null)}
-        />
+        <div ref={detailRef}>
+          <PortfolioDetailPanel
+            portfolio={selected}
+            onClose={() => setSelected(null)}
+          />
+        </div>
       )}
 
       {/* ── SV Core Portfolios ── */}
