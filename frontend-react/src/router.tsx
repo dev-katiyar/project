@@ -33,6 +33,8 @@ const StrategyDashboardPage = lazy(
 const PortfoliosCombinedPage = lazy(
   () => import("@/pages/PortfoliosCombinedPage"),
 );
+const WatchlistPage = lazy(() => import("@/pages/WatchlistPage"));
+const AlertsPage = lazy(() => import("@/pages/AlertsPage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -83,8 +85,8 @@ const router = createBrowserRouter([
       { path: "overview-stock", element: withProtection(<StockSummaryPage />) },
       { path: "tvcharts", element: withProtection(<TvChartsPage />) },
       { path: "stock-analysis", element: withProtection(<NotFoundPage />) },
-      { path: "watchlist", element: withProtection(<NotFoundPage />) },
-      { path: "alerts", element: withProtection(<NotFoundPage />) },
+      { path: "watchlist", element: withProtection(<WatchlistPage />) },
+      { path: "alerts", element: withProtection(<AlertsPage />) },
       {
         path: "portfolioscombined",
         element: withProtection(<PortfoliosCombinedPage />),
