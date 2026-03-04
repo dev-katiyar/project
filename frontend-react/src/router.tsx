@@ -35,6 +35,7 @@ const PortfoliosCombinedPage = lazy(
 );
 const WatchlistPage = lazy(() => import("@/pages/WatchlistPage"));
 const AlertsPage = lazy(() => import("@/pages/AlertsPage"));
+const SuperInvestorPage = lazy(() => import("@/pages/SuperInvestorPage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -102,10 +103,10 @@ const router = createBrowserRouter([
         element: withProtection(<ScreensCombinedPage />),
       },
       { path: "options", element: withProtection(<NotFoundPage />) },
-      { path: "super-investor", element: withProtection(<NotFoundPage />) },
+      { path: "super-investor", element: withProtection(<SuperInvestorPage />) },
       {
         path: "super-investor/:code",
-        element: withProtection(<NotFoundPage />),
+        element: withProtection(<SuperInvestorPage />),
       },
       {
         path: "factor-analysis",
