@@ -39,6 +39,8 @@ const SuperInvestorPage = lazy(() => import("@/pages/SuperInvestorPage"));
 const MajorMarketsPage = lazy(() => import("@/pages/MajorMarketsPage"));
 const BroadMarketsPage = lazy(() => import("@/pages/BroadMarketsPage"));
 const HoldingsMapPage = lazy(() => import("@/pages/HoldingsMapPage"));
+const MarketInternalsPage = lazy(() => import("@/pages/MarketInternalsPage"));
+const MarketMoversPage = lazy(() => import("@/pages/MarketMoversPage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -83,9 +85,9 @@ const router = createBrowserRouter([
       { path: "majormarkets", element: withProtection(<MajorMarketsPage />) },
       { path: "markets", element: withProtection(<BroadMarketsPage />) },
       { path: "snp-sectors", element: withProtection(<NotFoundPage />) },
-      { path: "marketinternals", element: withProtection(<NotFoundPage />) },
+      { path: "marketinternals", element: withProtection(<MarketInternalsPage />) },
       { path: "holdingsmap", element: withProtection(<HoldingsMapPage />) },
-      { path: "movers", element: withProtection(<NotFoundPage />) },
+      { path: "movers", element: withProtection(<MarketMoversPage />) },
       { path: "overview-stock", element: withProtection(<StockSummaryPage />) },
       { path: "tvcharts", element: withProtection(<TvChartsPage />) },
       { path: "stock-analysis", element: withProtection(<NotFoundPage />) },
