@@ -36,6 +36,7 @@ const PortfoliosCombinedPage = lazy(
 const WatchlistPage = lazy(() => import("@/pages/WatchlistPage"));
 const AlertsPage = lazy(() => import("@/pages/AlertsPage"));
 const SuperInvestorPage = lazy(() => import("@/pages/SuperInvestorPage"));
+const MajorMarketsPage = lazy(() => import("@/pages/MajorMarketsPage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -77,7 +78,7 @@ const router = createBrowserRouter([
 
       // -------- Authenticated routes --------
       { path: "overview", element: withSuspense(<DashboardPage />) },
-      { path: "majormarkets", element: withProtection(<DashboardPage />) }, // TODO
+      { path: "majormarkets", element: withProtection(<MajorMarketsPage />) },
       { path: "markets", element: withProtection(<DashboardPage />) }, // TODO
       { path: "snp-sectors", element: withProtection(<NotFoundPage />) },
       { path: "marketinternals", element: withProtection(<NotFoundPage />) },
