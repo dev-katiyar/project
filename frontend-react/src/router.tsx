@@ -41,6 +41,7 @@ const BroadMarketsPage = lazy(() => import("@/pages/BroadMarketsPage"));
 const HoldingsMapPage = lazy(() => import("@/pages/HoldingsMapPage"));
 const MarketInternalsPage = lazy(() => import("@/pages/MarketInternalsPage"));
 const MarketMoversPage = lazy(() => import("@/pages/MarketMoversPage"));
+const TradingDiaryPage = lazy(() => import("@/pages/TradingDiaryPage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -161,6 +162,10 @@ const router = createBrowserRouter([
       {
         path: "insights/latest-insights",
         element: withProtection(<NotFoundPage />),
+      },
+      {
+        path: "commentary/diary",
+        element: withProtection(<TradingDiaryPage />),
       },
       { path: "news-rss", element: withProtection(<NotFoundPage />) },
       { path: "admin", element: withProtection(<NotFoundPage />) },
