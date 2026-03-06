@@ -42,6 +42,11 @@ const HoldingsMapPage = lazy(() => import("@/pages/HoldingsMapPage"));
 const MarketInternalsPage = lazy(() => import("@/pages/MarketInternalsPage"));
 const MarketMoversPage = lazy(() => import("@/pages/MarketMoversPage"));
 const TradingDiaryPage = lazy(() => import("@/pages/TradingDiaryPage"));
+const CommentaryVideosPage = lazy(() => import("@/pages/CommentaryVideosPage"));
+const RecentRIAPage = lazy(() => import("@/pages/RecentRIAPage"));
+const RealTimeCommentaryPage = lazy(() => import("@/pages/RealTimeCommentaryPage"));
+const NewsletterPage = lazy(() => import("@/pages/NewsletterPage"));
+const LatestInsightsPage = lazy(() => import("@/pages/LatestInsightsPage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -161,11 +166,27 @@ const router = createBrowserRouter([
       },
       {
         path: "insights/latest-insights",
-        element: withProtection(<NotFoundPage />),
+        element: withProtection(<LatestInsightsPage />),
       },
       {
         path: "commentary/diary",
         element: withProtection(<TradingDiaryPage />),
+      },
+      {
+        path: "commentary/videos",
+        element: withProtection(<CommentaryVideosPage />),
+      },
+      {
+        path: "commentary/recent-ria",
+        element: withProtection(<RecentRIAPage />),
+      },
+      {
+        path: "commentary/real-time",
+        element: withProtection(<RealTimeCommentaryPage />),
+      },
+      {
+        path: "commentary/newsletter",
+        element: withProtection(<NewsletterPage />),
       },
       { path: "news-rss", element: withProtection(<NotFoundPage />) },
       { path: "admin", element: withProtection(<NotFoundPage />) },
