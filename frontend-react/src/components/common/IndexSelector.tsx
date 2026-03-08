@@ -68,6 +68,7 @@ const IndexSelector: React.FC<IndexSelectorProps> = ({ value, onChange }) => {
       onChange={(e: DropdownChangeEvent) => onChange(e.value)}
       optionLabel="name"
       className="sv-dropdown-sm"
+      panelClassName="sv-dropdown-sm-panel"
       style={{ maxWidth: 160 }}
     />
   );
