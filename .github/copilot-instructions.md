@@ -54,7 +54,7 @@ The original Angular frontend lives in `reference-angular/`. Use this as the sou
 
 ### Menu Structure (sidebar categories)
 
-1. **Home** → `/overview`
+1. **Home** → `/dashboard`
 2. **Insights** (6) — Latest Insights, Newsletters, Commentaries, RIA Blogs, Videos, Trade Alerts
 3. **Markets** (5) — Major Markets, Asset Classes, Holdings Map, Sentiment, Leaders & Laggers
 4. **Portfolios** (4) — Portfolios, Watchlists, Alerts, Super Investor

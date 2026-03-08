@@ -44,7 +44,9 @@ const MarketMoversPage = lazy(() => import("@/pages/MarketMoversPage"));
 const TradingDiaryPage = lazy(() => import("@/pages/TradingDiaryPage"));
 const CommentaryVideosPage = lazy(() => import("@/pages/CommentaryVideosPage"));
 const RecentRIAPage = lazy(() => import("@/pages/RecentRIAPage"));
-const RealTimeCommentaryPage = lazy(() => import("@/pages/RealTimeCommentaryPage"));
+const RealTimeCommentaryPage = lazy(
+  () => import("@/pages/RealTimeCommentaryPage"),
+);
 const NewsletterPage = lazy(() => import("@/pages/NewsletterPage"));
 const LatestInsightsPage = lazy(() => import("@/pages/LatestInsightsPage"));
 
@@ -87,11 +89,14 @@ const router = createBrowserRouter([
       { path: "weekly-report", element: withSuspense(<NotFoundPage />) }, // TODO
 
       // -------- Authenticated routes --------
-      { path: "overview", element: withSuspense(<DashboardPage />) },
+      { path: "dashboard", element: withSuspense(<DashboardPage />) },
       { path: "majormarkets", element: withProtection(<MajorMarketsPage />) },
       { path: "markets", element: withProtection(<BroadMarketsPage />) },
       { path: "snp-sectors", element: withProtection(<NotFoundPage />) },
-      { path: "marketinternals", element: withProtection(<MarketInternalsPage />) },
+      {
+        path: "marketinternals",
+        element: withProtection(<MarketInternalsPage />),
+      },
       { path: "holdingsmap", element: withProtection(<HoldingsMapPage />) },
       { path: "movers", element: withProtection(<MarketMoversPage />) },
       { path: "overview-stock", element: withProtection(<StockSummaryPage />) },
@@ -114,7 +119,10 @@ const router = createBrowserRouter([
         element: withProtection(<ScreensCombinedPage />),
       },
       { path: "options", element: withProtection(<NotFoundPage />) },
-      { path: "super-investor", element: withProtection(<SuperInvestorPage />) },
+      {
+        path: "super-investor",
+        element: withProtection(<SuperInvestorPage />),
+      },
       {
         path: "super-investor/:code",
         element: withProtection(<SuperInvestorPage />),

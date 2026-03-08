@@ -19,7 +19,7 @@ const LoginPage: React.FC = () => {
 
   const from =
     (location.state as { from?: { pathname: string } })?.from?.pathname ||
-    "/overview";
+    "/dashboard";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,9 +92,7 @@ const LoginPage: React.FC = () => {
 
         <div className="text-center mt-4 text-sm">
           <Link to="/forgot-password">Forgot password?</Link>
-          <span className="mx-2 sv-text-muted">
-            &middot;
-          </span>
+          <span className="mx-2 sv-text-muted">&middot;</span>
           <Link to="/signup">Create account</Link>
         </div>
       </Card>

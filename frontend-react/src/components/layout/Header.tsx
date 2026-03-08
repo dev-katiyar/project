@@ -27,7 +27,7 @@ interface MenuItem {
 }
 
 const NAV_ITEMS: MenuItem[] = [
-  { label: "Home", path: "/overview" },
+  { label: "Home", path: "/dashboard" },
   {
     label: "Insights",
     items: [
@@ -323,7 +323,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
         <div className="sv-layout-wrap flex align-items-center justify-content-between w-full mx-auto">
           {/* ── Brand ── */}
           <Link
-            to={isAuthenticated ? "/overview" : "/"}
+            to={isAuthenticated ? "/dashboard" : "/"}
             className="flex align-items-center no-underline flex-shrink-0"
           >
             <img
