@@ -11,6 +11,7 @@ import { ColumnConfig } from "./MarketDataTable";
 interface SymbolEntry {
   symbol: string;
   name?: string;
+  ui_order?: number;
 }
 
 /* ── Formatting helpers ──────────────────────────────────── */
@@ -81,12 +82,14 @@ const LivePricesTable: React.FC<LivePricesTableProps> = ({
 
         const entries = res.data ?? [];
         const dict: Record<string, string> = {};
+        const orderMap: Record<string, number> = {};
         const symbols: string[] = [];
 
-        entries.forEach((item) => {
+        entries.forEach((item, idx) => {
           const sym = item.symbol;
           symbols.push(sym);
           dict[sym] = item.name ?? sym;
+          orderMap[sym] = item.ui_order ?? idx;
         });
 
         setSymbolNameDict(dict);
@@ -103,11 +106,10 @@ const LivePricesTable: React.FC<LivePricesTableProps> = ({
           .then((techRes) => {
             if (cancelled) return;
             const data = techRes.data ?? [];
-            // preserve original symbol order
             data.sort(
               (a, b) =>
-                symbols.indexOf(a["symbol"] as string) -
-                symbols.indexOf(b["symbol"] as string),
+                (orderMap[a["symbol"] as string] ?? 0) -
+                (orderMap[b["symbol"] as string] ?? 0),
             );
             setRows(data);
             if (data.length > 0 && !selectedSymbol) {
