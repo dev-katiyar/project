@@ -825,19 +825,19 @@ const DashboardPage: React.FC = () => {
               <TabPanel header="Top 10">
                 <MarketDataTable
                   columns={COLUMN_PRESETS.PERFORMERS} listURL={highlightsIndex.urls.top10}
-                  showChartIcon onChartClick={handleChartClick} scrollHeight="220px"
+                  scrollHeight="220px"
                 />
               </TabPanel>
               <TabPanel header="Bottom 10">
                 <MarketDataTable
                   columns={COLUMN_PRESETS.PERFORMERS} listURL={highlightsIndex.urls.bottom10}
-                  showChartIcon onChartClick={handleChartClick} scrollHeight="220px"
+                  scrollHeight="220px"
                 />
               </TabPanel>
               <TabPanel header="Most Active">
                 <MarketDataTable
                   columns={COLUMN_PRESETS.MOST_ACTIVE} listURL={highlightsIndex.urls.topActive}
-                  showChartIcon onChartClick={handleChartClick} scrollHeight="220px"
+                  scrollHeight="220px"
                 />
               </TabPanel>
             </TabView>
@@ -853,7 +853,6 @@ const DashboardPage: React.FC = () => {
           >
             <MarketDataTable
               columns={COLUMN_PRESETS.SECTORS} listURL="/sector/liveprices"
-              showChartIcon onChartClick={handleChartClick}
               showName scrollHeight="310px"
             />
           </Panel>
