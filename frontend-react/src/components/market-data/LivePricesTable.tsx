@@ -240,16 +240,21 @@ const LivePricesTable: React.FC<LivePricesTableProps> = ({
         />
       )}
 
-      {columns.map((col) => (
-        <Column
-          key={col.field}
-          header={col.header}
-          sortable={col.sortable}
-          sortField={col.sortField ?? col.field}
-          style={col.width ? { width: col.width } : undefined}
-          body={(row: Record<string, unknown>) => renderCell(col, row)}
-        />
-      ))}
+      {columns.map((col) => {
+        const align = col.align ?? (col.type === "symbol" ? "left" : "right");
+        return (
+          <Column
+            key={col.field}
+            header={col.header}
+            sortable={col.sortable}
+            sortField={col.sortField ?? col.field}
+            style={col.width ? { width: col.width } : undefined}
+            align={align}
+            alignHeader={align}
+            body={(row: Record<string, unknown>) => renderCell(col, row)}
+          />
+        );
+      })}
     </DataTable>
   );
 };

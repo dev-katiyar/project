@@ -26,6 +26,8 @@ export interface ColumnConfig {
   sortable?: boolean;
   sortField?: string;
   width?: string;
+  /** Alignment for both header and body cell; defaults to "left" for symbol, "right" for numeric types */
+  align?: "left" | "right" | "center";
 }
 
 /* ── Column presets ──────────────────────────────────────── */
@@ -304,16 +306,21 @@ const MarketDataTable: React.FC<MarketDataTableProps> = ({
         />
       )}
 
-      {columns.map((col) => (
-        <Column
-          key={col.field}
-          header={col.header}
-          sortable={col.sortable}
-          sortField={col.sortField ?? col.field}
-          style={col.width ? { width: col.width } : undefined}
-          body={(row: Record<string, unknown>) => renderCell(col, row)}
-        />
-      ))}
+      {columns.map((col) => {
+        const align = col.align ?? (col.type === "symbol" ? "left" : "right");
+        return (
+          <Column
+            key={col.field}
+            header={col.header}
+            sortable={col.sortable}
+            sortField={col.sortField ?? col.field}
+            style={col.width ? { width: col.width } : undefined}
+            align={align}
+            alignHeader={align}
+            body={(row: Record<string, unknown>) => renderCell(col, row)}
+          />
+        );
+      })}
     </DataTable>
   );
 };
