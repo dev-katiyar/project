@@ -396,6 +396,24 @@ a:hover {
   font-weight: 600;
 }
 
+/* ======================================================================
+   Compact Dropdown — .sv-dropdown-sm
+   Reduces padding/font to match small table/toolbar UI elements
+   ====================================================================== */
+
+.sv-dropdown-sm.p-dropdown .p-dropdown-label {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.82rem;
+}
+
+.sv-dropdown-sm.p-dropdown .p-dropdown-trigger {
+  width: 2rem;
+}
+
+.sv-dropdown-sm.p-dropdown .p-dropdown-trigger .p-dropdown-trigger-icon {
+  font-size: 0.7rem;
+}
+
 /* Remove the default bottom-border ink bar */
 .sv-tabs.p-tabview .p-tabview-nav-btn,
 .sv-tabs.p-tabview .p-tabview-ink-bar { display: none; }
