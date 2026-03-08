@@ -15,6 +15,7 @@ import IndexSelector, {
   INDEX_OPTIONS,
   type IndexOption,
 } from "@/components/common/IndexSelector";
+import AssetLineChart from "@/components/common/AssetLineChart";
 import PortfolioSummaryTable, {
   type Portfolio,
 } from "@/components/portfolio/PortfolioSummaryTable";
@@ -314,84 +315,6 @@ const GaugeChart: React.FC<{ value?: number; title: string; ct: ChartTheme }> =
     return <HighchartsReact highcharts={Highcharts} options={options} />;
   };
 
-/* ── Historical price chart ──────────────────────────────────────────────── */
-
-const AssetLineChart: React.FC<{ symbol: string | null; ct: ChartTheme }> =
-  ({ symbol, ct }) => {
-    const [pts, setPts] = useState<[number, number][]>([]);
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-      if (!symbol) return;
-      let cancelled = false;
-      setLoading(true);
-      setPts([]);
-      api.get("/symbol/historical", { params: { tickers: symbol } })
-        .then(({ data: raw }) => {
-          if (cancelled || !Array.isArray(raw) || !raw.length) return;
-          const first = raw[0];
-          let series: [number, number][] = [];
-          if (Array.isArray(first)) {
-            series = raw;
-          } else if (first.date != null && first.close != null) {
-            series = raw.map((d: any) => [new Date(d.date).getTime(), parseFloat(d.close)]);
-          } else if (first.t != null && first.c != null) {
-            series = raw.map((d: any) => [d.t * 1000, parseFloat(d.c)]);
-          } else if (first.timestamp != null && first.close != null) {
-            series = raw.map((d: any) => [d.timestamp * 1000, parseFloat(d.close)]);
-          }
-          if (!cancelled) setPts(series);
-        })
-        .catch(() => { if (!cancelled) setPts([]); })
-        .finally(() => { if (!cancelled) setLoading(false); });
-      return () => { cancelled = true; };
-    }, [symbol]);
-
-    const options = useMemo((): Highcharts.Options => ({
-      chart: { type: "area", backgroundColor: ct.bg, height: 270, spacing: [4, 4, 8, 4], animation: false },
-      title: { text: undefined },
-      xAxis: {
-        type: "datetime",
-        labels: { style: { color: ct.label, fontSize: "9px" } },
-        lineColor: ct.grid, tickColor: ct.grid,
-      },
-      yAxis: {
-        title: { text: undefined },
-        gridLineColor: ct.grid,
-        labels: { style: { color: ct.label, fontSize: "9px" } },
-      },
-      series: [{
-        type: "area", name: symbol ?? "", data: pts,
-        color: ct.accent,
-        fillColor: {
-          linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-          stops: [[0, `${ct.accent}55`], [1, `${ct.accent}00`]],
-        },
-        lineWidth: 2, marker: { enabled: false },
-      }],
-      tooltip: {
-        backgroundColor: ct.tooltipBg, borderColor: ct.tooltipBorder,
-        style: { color: ct.tooltipText }, xDateFormat: "%b %d, %Y", valueDecimals: 2,
-      },
-      legend: { enabled: false }, credits: { enabled: false },
-    }), [pts, ct, symbol]);
-
-    if (!symbol) {
-      return (
-        <div style={{ height: 270, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "var(--sv-text-muted)" }}>
-          <i className="pi pi-chart-line" style={{ fontSize: "2.5rem", marginBottom: "0.75rem", opacity: 0.2 }} />
-          <span style={{ fontSize: "0.78rem" }}>Click <i className="pi pi-chart-line" style={{ fontSize: "0.75rem" }} /> on any symbol to view its chart</span>
-        </div>
-      );
-    }
-    if (loading) return <Skeleton height="270px" />;
-    if (!pts.length) return (
-      <div style={{ height: 270, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--sv-text-muted)", fontSize: "0.78rem" }}>
-        Historical data unavailable for <strong style={{ marginLeft: "0.25rem" }}>{symbol}</strong>
-      </div>
-    );
-    return <HighchartsReact highcharts={Highcharts} options={options} />;
-  };
 
 /* ── Market Map (treemap) ────────────────────────────────────────────────── */
 
@@ -773,7 +696,7 @@ const DashboardPage: React.FC = () => {
             title={selectedSymbol ? `${selectedSymbol} — Price History` : "Price Chart"}
             minH={300}
           >
-            <AssetLineChart symbol={selectedSymbol} ct={ct} />
+            <AssetLineChart symbols={[selectedSymbol]} />
           </Panel>
         </div>
 
