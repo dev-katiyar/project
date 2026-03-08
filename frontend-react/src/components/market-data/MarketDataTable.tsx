@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { DataTable, DataTableSortEvent } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { Skeleton } from "primereact/skeleton";
 import { Slider } from "primereact/slider";
 import api from "@/services/api";
 
@@ -277,6 +278,27 @@ const MarketDataTable: React.FC<MarketDataTableProps> = ({
   };
 
   /* ── Render ────────────────────────────────── */
+
+  const skeletonRows = Array.from({ length: 5 }, (_, i) => ({ _id: i }));
+  const skeletonBody = () => <Skeleton height="1rem" />;
+
+  if (loading && rows.length === 0) {
+    return (
+      <DataTable
+        value={skeletonRows}
+        size="small"
+        scrollable
+        scrollHeight={scrollHeight ?? "320px"}
+      >
+        {showChartIcon && (
+          <Column header="" style={{ width: "2.5rem" }} body={skeletonBody} />
+        )}
+        {columns.map((col) => (
+          <Column key={col.field} header={col.header} body={skeletonBody} />
+        ))}
+      </DataTable>
+    );
+  }
 
   return (
     <DataTable
