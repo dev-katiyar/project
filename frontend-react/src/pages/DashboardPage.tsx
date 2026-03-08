@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import api from "@/services/api";
 import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
 import MarketDataTable, { COLUMN_PRESETS } from "@/components/market-data/MarketDataTable";
+import LivePricesTable from "@/components/market-data/LivePricesTable";
 import IndexSelector, {
   INDEX_OPTIONS,
   type IndexOption,
@@ -739,26 +740,26 @@ const DashboardPage: React.FC = () => {
           <Panel title="Asset Classes" minH={300}>
             <TabView>
               <TabPanel header="Indices">
-                <MarketDataTable
-                  columns={COLUMN_PRESETS.GENERIC} listURL={ASSET_URLS.indices}
+                <LivePricesTable
+                  columns={COLUMN_PRESETS.GENERIC} symbolsURL={ASSET_URLS.indices}
                   showChartIcon onChartClick={handleChartClick} scrollHeight="250px"
                 />
               </TabPanel>
               <TabPanel header="Bonds">
-                <MarketDataTable
-                  columns={COLUMN_PRESETS.BONDS} listURL={ASSET_URLS.bonds}
+                <LivePricesTable
+                  columns={COLUMN_PRESETS.BONDS} symbolsURL={ASSET_URLS.bonds}
                   showChartIcon onChartClick={handleChartClick} scrollHeight="250px"
                 />
               </TabPanel>
               <TabPanel header="Commodities">
-                <MarketDataTable
-                  columns={COLUMN_PRESETS.GENERIC} listURL={ASSET_URLS.commodities}
+                <LivePricesTable
+                  columns={COLUMN_PRESETS.GENERIC} symbolsURL={ASSET_URLS.commodities}
                   showChartIcon onChartClick={handleChartClick} scrollHeight="250px"
                 />
               </TabPanel>
               <TabPanel header="Cryptos">
-                <MarketDataTable
-                  columns={COLUMN_PRESETS.GENERIC} listURL={ASSET_URLS.cryptos}
+                <LivePricesTable
+                  columns={COLUMN_PRESETS.GENERIC} symbolsURL={ASSET_URLS.cryptos}
                   showChartIcon onChartClick={handleChartClick} scrollHeight="250px"
                 />
               </TabPanel>
