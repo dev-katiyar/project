@@ -738,7 +738,7 @@ const DashboardPage: React.FC = () => {
         {/* 1. Asset Classes */}
         <div className="col-12 lg:col-4 p-1">
           <Panel title="Asset Classes" minH={300}>
-            <TabView>
+            <TabView pt={{ root: { className: "sv-tabs" } }}>
               <TabPanel header="Indices">
                 <LivePricesTable
                   columns={COLUMN_PRESETS.GENERIC} symbolsURL={ASSET_URLS.indices}
@@ -822,7 +822,7 @@ const DashboardPage: React.FC = () => {
             extra={<IndexDrop value={highlightsIndex} onChange={setHighlightsIndex} />}
             minH={280}
           >
-            <TabView>
+            <TabView pt={{ root: { className: "sv-tabs" } }}>
               <TabPanel header="Top 10">
                 <MarketDataTable
                   columns={COLUMN_PRESETS.PERFORMERS} listURL={highlightsIndex.urls.top10}
@@ -881,7 +881,7 @@ const DashboardPage: React.FC = () => {
             extra={<IndexDrop value={rsiIndex} onChange={setRsiIndex} />}
             minH={200}
           >
-            <TabView>
+            <TabView pt={{ root: { className: "sv-tabs" } }}>
               <TabPanel header="Top 10 Oversold">
                 <MarketDataTable
                   columns={COLUMN_PRESETS.RSI} listURL={rsiIndex.urls.rsiOverSold10}
@@ -905,7 +905,7 @@ const DashboardPage: React.FC = () => {
             extra={<IndexDrop value={momentumIndex} onChange={setMomentumIndex} />}
             minH={200}
           >
-            <TabView>
+            <TabView pt={{ root: { className: "sv-tabs" } }}>
               <TabPanel header="Top 10 Increase">
                 <MarketDataTable
                   columns={COLUMN_PRESETS.MACD} listURL={momentumIndex.urls.momIncrease10}
@@ -929,7 +929,7 @@ const DashboardPage: React.FC = () => {
             extra={<IndexDrop value={rsIndex} onChange={setRsIndex} />}
             minH={200}
           >
-            <TabView>
+            <TabView pt={{ root: { className: "sv-tabs" } }}>
               <TabPanel header="Outperformers">
                 <MarketDataTable
                   columns={COLUMN_PRESETS.RELATIVE_STRENGTH} listURL={rsIndex.urls.rsOutperformers}

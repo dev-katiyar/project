@@ -359,6 +359,54 @@ a:hover {
 .sv-page-title  { letter-spacing: -0.02em; }
 
 /* ======================================================================
+   TabView — pill-style variant (.sv-tabs)
+   Apply pt={{ root: { className: "sv-tabs" } }} on <TabView>
+   ====================================================================== */
+
+.sv-tabs.p-tabview .p-tabview-nav {
+  background: transparent;
+  border: none;
+  gap: 0.25rem;
+  padding-bottom: 0;
+}
+
+.sv-tabs.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 6px;
+  color: var(--sv-text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.35rem 0.85rem;
+  margin: 0;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.sv-tabs.p-tabview .p-tabview-nav li .p-tabview-nav-link:hover {
+  background: var(--sv-bg-card-hover);
+  border-color: var(--sv-accent);
+  color: var(--sv-text-primary);
+}
+
+.sv-tabs.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  background: var(--sv-accent-bg);
+  border-color: var(--sv-accent);
+  color: var(--sv-accent);
+  font-weight: 600;
+}
+
+/* Remove the default bottom-border ink bar */
+.sv-tabs.p-tabview .p-tabview-nav-btn,
+.sv-tabs.p-tabview .p-tabview-ink-bar { display: none; }
+
+.sv-tabs.p-tabview .p-tabview-panels {
+  background: transparent;
+  padding: 0.75rem 0 0;
+  border: none;
+}
+
+/* ======================================================================
    Shared UI atoms — used across multiple pages
    ====================================================================== */
 
