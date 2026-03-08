@@ -64,7 +64,9 @@ const LivePricesTable: React.FC<LivePricesTableProps> = ({
   scrollHeight,
 }) => {
   const [rows, setRows] = useState<Record<string, unknown>[]>([]);
-  const [symbolNameDict, setSymbolNameDict] = useState<Record<string, string>>({});
+  const [symbolNameDict, setSymbolNameDict] = useState<Record<string, string>>(
+    {},
+  );
   const [symbolOrder, setSymbolOrder] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
@@ -102,7 +104,9 @@ const LivePricesTable: React.FC<LivePricesTableProps> = ({
         }
 
         return api
-          .get<Record<string, unknown>[]>(technicalsURLPrefix + symbols.join(","))
+          .get<
+            Record<string, unknown>[]
+          >(technicalsURLPrefix + symbols.join(","))
           .then((techRes) => {
             if (cancelled) return;
             const data = techRes.data ?? [];
@@ -129,7 +133,7 @@ const LivePricesTable: React.FC<LivePricesTableProps> = ({
     return () => {
       cancelled = true;
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [symbolsURL, technicalsURLPrefix]);
 
   const handleChartClick = useCallback(
@@ -241,8 +245,8 @@ const LivePricesTable: React.FC<LivePricesTableProps> = ({
       size="small"
       scrollable
       scrollHeight={scrollHeight ?? "320px"}
-      sortField="priceChangePct"
-      sortOrder={-1}
+      // sortField="priceChangePct"
+      // sortOrder={-1}
       emptyMessage="No data available"
       rowHover
     >
@@ -255,7 +259,9 @@ const LivePricesTable: React.FC<LivePricesTableProps> = ({
             return (
               <i
                 className={`pi pi-chart-line cursor-pointer ${
-                  selectedSymbol === sym ? "sv-text-accent font-bold" : "sv-text-muted"
+                  selectedSymbol === sym
+                    ? "sv-text-accent font-bold"
+                    : "sv-text-muted"
                 }`}
                 onClick={() => handleChartClick(sym)}
               />
