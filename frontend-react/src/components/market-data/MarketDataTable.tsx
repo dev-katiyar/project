@@ -114,7 +114,12 @@ export const COLUMN_PRESETS = {
 const fmtCurrency = (v: number | null | undefined) =>
   v == null
     ? "—"
-    : v.toLocaleString("en-US", { style: "currency", currency: "USD" });
+    : v.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
 
 const fmtPercent = (v: number | null | undefined) =>
   v == null ? "—" : `${v.toFixed(2)}%`;
@@ -215,9 +220,7 @@ const MarketDataTable: React.FC<MarketDataTableProps> = ({
             onClick={() => onSymbolClick?.(symbol)}
           >
             {symbol}
-            {name && (
-              <span className="text-color-secondary">{name}</span>
-            )}
+            {name && <span className="text-color-secondary">{name}</span>}
           </span>
         );
       }
@@ -226,16 +229,17 @@ const MarketDataTable: React.FC<MarketDataTableProps> = ({
         return fmtCurrency(num);
 
       case "percentage":
-        return (
-          <span className={changeClass(num)}>{fmtPercent(num)}</span>
-        );
+        return <span className={changeClass(num)}>{fmtPercent(num)}</span>;
 
       case "change": {
         const pctField = col.changePercentField ?? "priceChangePct";
         const pct = row[pctField] as number | undefined;
+        const chgField = "priceChange";
+        let change = row[chgField] as number | undefined;
+        change = change ? parseFloat(change.toString()) : undefined;
         return (
-          <span className={changeClass(num)}>
-            {fmtCurrency(num)} ({fmtPercent(pct)})
+          <span className={changeClass(change)}>
+            {fmtCurrency(change)} ({fmtPercent(pct)})
           </span>
         );
       }
