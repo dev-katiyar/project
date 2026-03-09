@@ -3,7 +3,6 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import HighchartsMore from "highcharts/highcharts-more";
 import HighchartsSolidGauge from "highcharts/modules/solid-gauge";
-import HighchartsTreemapModule from "highcharts/modules/treemap";
 import { TabView, TabPanel } from "primereact/tabview";
 import { Skeleton } from "primereact/skeleton";
 import { Link } from "react-router-dom";
@@ -21,6 +20,7 @@ import IndexSelector, {
 } from "@/components/common/IndexSelector";
 import AssetLineChart from "@/components/common/AssetLineChart";
 import MarketSummaryWidget from "@/components/market-data/MarketSummaryWidget";
+import MarketMapChart from "@/components/market-data/MarketMapChart";
 import PortfolioSummaryTable, {
   type Portfolio,
 } from "@/components/portfolio/PortfolioSummaryTable";
@@ -38,7 +38,6 @@ function _initHcMod(mod: unknown) {
 }
 _initHcMod(HighchartsMore);
 _initHcMod(HighchartsSolidGauge);
-_initHcMod(HighchartsTreemapModule);
 
 /* ── Constants ────────────────────────────────────────────────────────────── */
 
@@ -74,13 +73,6 @@ interface WpPost {
   yoast_head_json?: {
     og_image?: Array<{ url: string }>;
   };
-}
-
-interface TreemapRow {
-  symbol: string;
-  priceChangePct: number;
-  sectorName: string;
-  marketCap?: number;
 }
 
 /* ── Chart theme ──────────────────────────────────────────────────────────── */
@@ -393,166 +385,6 @@ const GaugeChart: React.FC<{
   return <HighchartsReact highcharts={Highcharts} options={options} />;
 };
 
-/* ── Market Map (treemap) ────────────────────────────────────────────────── */
-
-const MarketMapChart: React.FC<{ index: IndexOption; ct: ChartTheme }> = ({
-  index,
-  ct,
-}) => {
-  const [rows, setRows] = useState<TreemapRow[] | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setRows(null);
-    api
-      .get<TreemapRow[]>(index.urls.treemap)
-      .then(({ data }) => {
-        if (!cancelled) setRows(Array.isArray(data) ? data : []);
-      })
-      .catch(() => {
-        if (!cancelled) setRows([]);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [index.urls.treemap]);
-
-  const options = useMemo((): Highcharts.Options => {
-    if (!rows?.length) return {};
-
-    // Compute min/max change for color scaling (same approach as Angular reference)
-    let minChange = -0.00001;
-    let maxChange = 0.00001;
-    for (const row of rows) {
-      if (row.priceChangePct < minChange) minChange = row.priceChangePct;
-      if (row.priceChangePct > maxChange) maxChange = row.priceChangePct;
-    }
-
-    // Angular reference color constants
-    const minRed = 255, maxRed = 100;
-    const minGreen = 230, maxGreen = 100;
-
-    const sectors = [...new Set(rows.map((d) => d.sectorName))];
-    const sectorPoints = sectors.map((s) => ({
-      id: s,
-      name: s,
-      color: "rgb(30,30,30)",
-      dataLabels: {
-        enabled: true,
-        borderRadius: 4,
-        backgroundColor: "rgba(252,255,197,0.85)",
-        borderWidth: 1,
-        borderColor: "#AAA",
-        style: { color: "#000", fontSize: "11px", fontWeight: "700", textOutline: "none" },
-        y: -6,
-      },
-    }));
-
-    const stockPoints = rows.map((d) => {
-      const pct = d.priceChangePct ?? 0;
-      let color = "rgb(80,80,80)";
-      if (pct < 0) {
-        const colNum = Math.round(minRed - (pct / minChange) * (minRed - maxRed));
-        color = `rgb(${colNum},0,0)`;
-      } else if (pct > 0) {
-        const colNum = Math.round(minGreen - (pct / maxChange) * (minGreen - maxGreen));
-        color = `rgb(0,${colNum},0)`;
-      }
-      return {
-        name: `${d.symbol}`,
-        value: Math.abs(d.marketCap ?? 1000),
-        color,
-        parent: d.sectorName,
-        custom: { pct },
-      };
-    });
-
-    return {
-      chart: { backgroundColor: ct.bg, height: 290, spacing: [2, 2, 2, 2] },
-      title: { text: undefined },
-      subtitle: { text: undefined },
-      series: [
-        {
-          type: "treemap" as any,
-          layoutAlgorithm: "squarified",
-          allowDrillToNode: true as any,
-          animationLimit: 1000,
-          dataLabels: {
-            enabled: true,
-            style: {
-              fontSize: "9px",
-              fontWeight: "600",
-              textOutline: "none",
-              color: "#fff",
-            },
-            formatter(this: any) {
-              const pt = this.point;
-              const pct = pt?.custom?.pct;
-              if (pct == null) return pt.name;
-              const sign = pct >= 0 ? "+" : "";
-              return `${pt.name}<br><span style="font-weight:400">${sign}${pct.toFixed(2)}%</span>`;
-            },
-          },
-          levels: [
-            {
-              level: 1,
-              dataLabels: { enabled: true },
-              borderWidth: 3,
-            },
-          ] as any,
-          data: [...sectorPoints, ...stockPoints],
-        },
-      ],
-      tooltip: {
-        backgroundColor: ct.tooltipBg,
-        borderColor: ct.tooltipBorder,
-        style: { color: ct.tooltipText },
-        formatter(this: any) {
-          const pt = this.point;
-          if (!pt?.parent) return `<b>${pt.name}</b>`;
-          const pct = pt.custom?.pct ?? 0;
-          const sign = pct >= 0 ? "+" : "";
-          const cap = pt.value;
-          const capStr = cap > 1e9
-            ? `${Math.floor(cap / 1e9).toLocaleString()}B`
-            : cap > 1e6
-            ? `${Math.floor(cap / 1e6).toLocaleString()}M`
-            : cap.toLocaleString();
-          return `<b>${pt.name}</b><br>Sector: ${pt.parent}<br>Change: ${sign}${pct.toFixed(2)}%<br>Market Cap: ${capStr}`;
-        },
-      },
-      credits: { enabled: false },
-      legend: { enabled: false },
-    };
-  }, [rows, ct]);
-
-  if (loading) return <Skeleton height="290px" />;
-  if (!rows || !rows.length)
-    return (
-      <div
-        style={{
-          height: 290,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "var(--sv-text-muted)",
-        }}
-      >
-        <i
-          className="pi pi-th-large"
-          style={{ fontSize: "2rem", opacity: 0.2, marginBottom: "0.5rem" }}
-        />
-        <span style={{ fontSize: "0.75rem" }}>Market map unavailable</span>
-      </div>
-    );
-  return <HighchartsReact highcharts={Highcharts} options={options} />;
-};
 
 /* ── Insights strip (horizontal scroll) ──────────────────────────────────── */
 
@@ -1158,7 +990,7 @@ const DashboardPage: React.FC = () => {
             extra={<IndexDrop value={mapIndex} onChange={setMapIndex} />}
             minH={280}
           >
-            <MarketMapChart index={mapIndex} ct={ct} />
+            <MarketMapChart dataUrl={mapIndex.urls.treemap} />
           </Panel>
         </div>
       </div>
