@@ -1,12 +1,8 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import Highcharts from "highcharts";
-import HighchartsReact from "highcharts-react-official";
-import HighchartsMore from "highcharts/highcharts-more";
+import React, { useState, useEffect, useCallback } from "react";
 import { TabView, TabPanel } from "primereact/tabview";
 import { Skeleton } from "primereact/skeleton";
 import { Link } from "react-router-dom";
 import api from "@/services/api";
-import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
 import MarketDataTable, {
   COLUMN_PRESETS,
 } from "@/components/market-data/MarketDataTable";
@@ -18,24 +14,12 @@ import IndexSelector, {
   type IndexOption,
 } from "@/components/common/IndexSelector";
 import AssetLineChart from "@/components/common/AssetLineChart";
+import GaugeChart from "@/components/common/GaugeChart";
 import MarketSummaryWidget from "@/components/market-data/MarketSummaryWidget";
 import MarketMapChart from "@/components/market-data/MarketMapChart";
 import PortfolioSummaryTable, {
   type Portfolio,
 } from "@/components/portfolio/PortfolioSummaryTable";
-
-/* ── Initialize Highcharts modules (ESM/CJS interop) ─────────────────────── */
-
-function _initHcMod(mod: unknown) {
-  const fn =
-    typeof (mod as { default?: unknown }).default === "function"
-      ? (mod as { default: (h: typeof Highcharts) => void }).default
-      : typeof mod === "function"
-        ? (mod as (h: typeof Highcharts) => void)
-        : null;
-  if (fn) fn(Highcharts);
-}
-_initHcMod(HighchartsMore);
 
 /* ── Constants ────────────────────────────────────────────────────────────── */
 
@@ -72,56 +56,6 @@ interface WpPost {
     og_image?: Array<{ url: string }>;
   };
 }
-
-/* ── Chart theme ──────────────────────────────────────────────────────────── */
-
-interface ChartTheme {
-  bg: string;
-  grid: string;
-  label: string;
-  tooltipBg: string;
-  tooltipBorder: string;
-  tooltipText: string;
-  gain: string;
-  loss: string;
-  accent: string;
-}
-
-const CHART_THEME: Record<ThemeName, ChartTheme> = {
-  dark: {
-    bg: "transparent",
-    grid: "#1c2840",
-    label: "#7a8da8",
-    tooltipBg: "#0d1220",
-    tooltipBorder: "#1c2840",
-    tooltipText: "#e8edf5",
-    gain: "#22c55e",
-    loss: "#ef4444",
-    accent: "#f5a623",
-  },
-  dim: {
-    bg: "transparent",
-    grid: "#283a5c",
-    label: "#7a92b8",
-    tooltipBg: "#162038",
-    tooltipBorder: "#283a5c",
-    tooltipText: "#d8e0f0",
-    gain: "#22c55e",
-    loss: "#ef4444",
-    accent: "#f5a623",
-  },
-  light: {
-    bg: "transparent",
-    grid: "#e2e8f0",
-    label: "#4a5e78",
-    tooltipBg: "#ffffff",
-    tooltipBorder: "#e2e8f0",
-    tooltipText: "#0d1425",
-    gain: "#16a34a",
-    loss: "#dc2626",
-    accent: "#2e5be6",
-  },
-};
 
 /* ── Helpers ──────────────────────────────────────────────────────────────── */
 
@@ -310,99 +244,6 @@ const SentimentBadge: React.FC<{
       </span>
     </div>
   );
-};
-
-/* ── Highcharts solid gauge ───────────────────────────────────────────────── */
-
-const GaugeChart: React.FC<{
-  value?: number;
-  title: string;
-  ct: ChartTheme;
-}> = ({ value, title, ct }) => {
-  const val = value ?? 0;
-  const zoneColor =
-    val >= 75
-      ? "#22c55e"
-      : val >= 55
-        ? "#86efac"
-        : val >= 45
-          ? "#f5a623"
-          : val >= 25
-            ? "#f97316"
-            : "#ef4444";
-  const options = useMemo(
-    (): Highcharts.Options => ({
-      chart: {
-        type: "gauge",
-        backgroundColor: ct.bg,
-        height: 200,
-        spacing: [0, 0, 0, 0],
-        style: { fontFamily: "inherit" },
-      },
-      title: { text: undefined },
-      pane: {
-        center: ["50%", "80%"],
-        size: "140%",
-        startAngle: -90,
-        endAngle: 90,
-        background: [
-          {
-            backgroundColor: "transparent",
-            innerRadius: "60%",
-            outerRadius: "100%",
-            shape: "arc",
-            borderColor: "transparent",
-          },
-        ],
-      },
-      yAxis: {
-        min: 0,
-        max: 100,
-        lineWidth: 0,
-        tickWidth: 0,
-        minorTickInterval: undefined,
-        labels: { y: 16, style: { fontSize: "0.62rem", color: ct.label } },
-        plotBands: [
-          { from: 0,  to: 25,  color: "#ef4444aa", innerRadius: "60%", outerRadius: "100%" },
-          { from: 25, to: 45,  color: "#f97316aa", innerRadius: "60%", outerRadius: "100%" },
-          { from: 45, to: 55,  color: "#f5a623aa", innerRadius: "60%", outerRadius: "100%" },
-          { from: 55, to: 75,  color: "#86efacaa", innerRadius: "60%", outerRadius: "100%" },
-          { from: 75, to: 100, color: "#22c55eaa", innerRadius: "60%", outerRadius: "100%" },
-        ],
-      },
-      plotOptions: {
-        gauge: {
-          dataLabels: { enabled: false },
-          dial: {
-            radius: "80%",
-            backgroundColor: zoneColor,
-            borderWidth: 0,
-            baseWidth: 6,
-            topWidth: 1,
-            baseLength: "0%",
-            rearLength: "10%",
-          },
-          pivot: {
-            radius: 4,
-            backgroundColor: zoneColor,
-          },
-        },
-      },
-      series: [
-        {
-          type: "gauge" as any,
-          name: title,
-          data: [val],
-        },
-      ],
-      tooltip: { enabled: false },
-      credits: { enabled: false },
-      legend: { enabled: false },
-    }),
-    [val, ct, title],
-  );
-
-  return <HighchartsReact highcharts={Highcharts} options={options} />;
 };
 
 /* ── Insights strip (horizontal scroll) ──────────────────────────────────── */
@@ -754,9 +595,6 @@ const IndexDrop: React.FC<{
 /* ══════════════════════════════════════════════════════════════════════════ */
 
 const DashboardPage: React.FC = () => {
-  const { theme } = useTheme();
-  const ct = CHART_THEME[theme] ?? CHART_THEME.dim;
-
   /* ── Index selectors ── */
   const [highlightsIndex, setHighlightsIndex] = useState<IndexOption>(
     INDEX_OPTIONS[0],
@@ -1139,7 +977,6 @@ const DashboardPage: React.FC = () => {
               <GaugeChart
                 value={fearGreed?.fear_greed}
                 title="Fear / Greed"
-                ct={ct}
               />
             )}
             {!loadingFG && fearGreed && (
@@ -1168,7 +1005,6 @@ const DashboardPage: React.FC = () => {
               <GaugeChart
                 value={fearGreed?.technical}
                 title="Technical"
-                ct={ct}
               />
             )}
             {!loadingFG && fearGreed && (
