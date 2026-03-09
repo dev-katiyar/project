@@ -56,20 +56,14 @@ const NameBody: React.FC<{ row: Portfolio }> = ({ row }) => (
 );
 
 const UsdBody: React.FC<{ value: number }> = ({ value }) => (
-  <div className="text-right" style={{ color: "var(--sv-text-primary)" }}>
-    {fmtUSD(value)}
-  </div>
+  <span style={{ color: "var(--sv-text-primary)" }}>{fmtUSD(value)}</span>
 );
 
 const PnlBody: React.FC<{ pnl: number; pct: number }> = ({ pnl, pct }) => (
-  <div className="text-right">
-    <div className="font-semibold" style={{ color: gainColor(pnl) }}>
-      {fmtUSD(pnl)}
-    </div>
-    <div style={{ fontSize: "0.78rem", color: gainColor(pct) }}>
-      {fmtPct(pct)}
-    </div>
-  </div>
+  <span style={{ color: gainColor(pnl) }}>
+    {fmtUSD(pnl)}{" "}
+    <span style={{ fontSize: "0.78rem", color: gainColor(pct) }}>({fmtPct(pct)})</span>
+  </span>
 );
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -131,43 +125,43 @@ const PortfolioSummaryTable: React.FC<Props> = ({
         <Column
           field="startingCash"
           header="Starting Cash"
+          align="right"
           body={(r: Portfolio) => <UsdBody value={r.startingCash} />}
-          headerStyle={{ textAlign: "right" }}
           style={{ minWidth: "130px" }}
         />
         <Column
           header="P&L (Inception)"
+          align="right"
           body={(r: Portfolio) => <PnlBody pnl={r.pnl} pct={r.pnlPercent} />}
-          headerStyle={{ textAlign: "right" }}
           style={{ minWidth: "150px" }}
         />
         <Column
           header="Today's P&L"
+          align="right"
           body={(r: Portfolio) => (
             <PnlBody pnl={r.dailyPnl} pct={r.dailyPnlPercentage} />
           )}
-          headerStyle={{ textAlign: "right" }}
           style={{ minWidth: "140px" }}
         />
         <Column
           field="portfolioValue"
           header="Market Value"
+          align="right"
           body={(r: Portfolio) => <UsdBody value={r.portfolioValue} />}
-          headerStyle={{ textAlign: "right" }}
           style={{ minWidth: "140px" }}
         />
         <Column
           field="dividend"
           header="Dividends"
+          align="right"
           body={(r: Portfolio) => <UsdBody value={r.dividend} />}
-          headerStyle={{ textAlign: "right" }}
           style={{ minWidth: "120px" }}
         />
         <Column
           field="currentCash"
           header="Cash"
+          align="right"
           body={(r: Portfolio) => <UsdBody value={r.currentCash} />}
-          headerStyle={{ textAlign: "right" }}
           style={{ minWidth: "120px" }}
         />
       </DataTable>
@@ -177,7 +171,7 @@ const PortfolioSummaryTable: React.FC<Props> = ({
           style={{ fontSize: "0.75rem", color: "var(--sv-text-muted)" }}
         >
           <i className="pi pi-clock" style={{ fontSize: "0.7rem" }} />
-          <span>Updated: {updatedAt}</span>
+          <span>Updated: {updatedAt.split(".")[0]}</span>
         </div>
       )}
     </>
