@@ -385,7 +385,6 @@ const GaugeChart: React.FC<{
   return <HighchartsReact highcharts={Highcharts} options={options} />;
 };
 
-
 /* ── Insights strip (horizontal scroll) ──────────────────────────────────── */
 
 const InsightsStrip: React.FC = () => {
@@ -579,7 +578,7 @@ const NewsTable: React.FC = () => {
 
   useEffect(() => {
     api
-      .get<NewsItem[]>("/news/rss")
+      .get<NewsItem[]>("/rss/news")
       .then(({ data }) => setNews(Array.isArray(data) ? data.slice(0, 18) : []))
       .catch(() => setNews([]))
       .finally(() => setLoading(false));
