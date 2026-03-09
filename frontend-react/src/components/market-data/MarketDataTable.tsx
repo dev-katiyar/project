@@ -250,8 +250,10 @@ const MarketDataTable: React.FC<MarketDataTableProps> = ({
       case "decimal":
         return fmtDecimal(num);
 
-      case "integer":
-        return fmtInteger(num);
+      case "integer": {
+        const intVal = num ?? (raw != null ? parseFloat(String(raw)) : null);
+        return fmtInteger(isNaN(intVal as number) ? null : intVal);
+      }
 
       case "range": {
         const lo = num ?? 0;
