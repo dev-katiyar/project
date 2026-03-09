@@ -420,7 +420,7 @@ const InsightsStrip: React.FC = () => {
     return (
       <div style={{ display: "flex", gap: "0.75rem" }}>
         {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} style={{ flexShrink: 0, width: 200 }}>
+          <div key={i} style={{ flex: "1 1 0", minWidth: 160 }}>
             <Skeleton height="100px" borderRadius="10px" />
           </div>
         ))}
@@ -461,8 +461,8 @@ const InsightsStrip: React.FC = () => {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              flexShrink: 0,
-              width: 210,
+              flex: "1 1 0",
+              minWidth: 160,
               display: "flex",
               flexDirection: "column",
               background: "var(--sv-bg-surface)",
@@ -487,16 +487,23 @@ const InsightsStrip: React.FC = () => {
             {imgUrl ? (
               <div
                 style={{
-                  height: 80,
-                  overflow: "hidden",
-                  flexShrink: 0,
                   position: "relative",
+                  width: "100%",
+                  paddingTop: "52%",
+                  flexShrink: 0,
+                  overflow: "hidden",
                 }}
               >
                 <img
                   src={imgUrl}
                   alt=""
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
                 />
                 <div
                   style={{
