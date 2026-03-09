@@ -61,7 +61,7 @@ interface FearGreedData {
 interface NewsItem {
   title: string;
   link: string;
-  pubDate: string;
+  published: string;
   source?: string;
 }
 
@@ -662,7 +662,7 @@ const NewsTable: React.FC = () => {
               target="_blank"
               rel="noopener noreferrer"
               style={{
-                fontSize: "0.75rem",
+                fontSize: "0.9rem",
                 fontWeight: 600,
                 color: "var(--sv-text-primary)",
                 textDecoration: "none",
@@ -684,7 +684,7 @@ const NewsTable: React.FC = () => {
             </a>
             <div
               style={{
-                fontSize: "0.6rem",
+                fontSize: "0.75rem",
                 color: "var(--sv-text-muted)",
                 marginTop: "0.2rem",
                 display: "flex",
@@ -694,7 +694,7 @@ const NewsTable: React.FC = () => {
               {item.source && (
                 <span style={{ fontWeight: 600 }}>{item.source}</span>
               )}
-              {item.pubDate && <span>{fmtDateTime(item.pubDate)}</span>}
+              {item.published && <span>{fmtDateTime(item.published)}</span>}
             </div>
           </div>
           <a
@@ -705,7 +705,11 @@ const NewsTable: React.FC = () => {
           >
             <i
               className="pi pi-external-link"
-              style={{ fontSize: "0.6rem", color: "var(--sv-text-muted)" }}
+              style={{
+                fontSize: "0.9rem",
+                color: "var(--sv-text-muted)",
+                paddingRight: 4,
+              }}
             />
           </a>
         </div>
