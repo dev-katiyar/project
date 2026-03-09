@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import api from "@/services/api";
 import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
 import MarketDataTable, { COLUMN_PRESETS } from "@/components/market-data/MarketDataTable";
-import LivePricesTable from "@/components/market-data/LivePricesTable";
+import LivePricesTable, { type ChartSelection } from "@/components/market-data/LivePricesTable";
 import IndexSelector, {
   INDEX_OPTIONS,
   type IndexOption,
@@ -587,7 +587,7 @@ const DashboardPage: React.FC = () => {
   const [rsIndex,         setRsIndex]         = useState<IndexOption>(INDEX_OPTIONS[0]);
 
   /* ── Selected symbol for chart ── */
-  const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
+  const [selectedSymbol, setSelectedSymbol] = useState<ChartSelection | null>(null);
 
   /* ── Fear / Greed + Technical ── */
   const [fearGreed, setFearGreed] = useState<FearGreedData | null>(null);
@@ -619,7 +619,7 @@ const DashboardPage: React.FC = () => {
       .finally(() => setLoadingUser(false));
   }, []);
 
-  const handleChartClick = useCallback((sym: string) => setSelectedSymbol(sym), []);
+  const handleChartClick = useCallback((sel: ChartSelection) => setSelectedSymbol(sel), []);
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
@@ -693,10 +693,10 @@ const DashboardPage: React.FC = () => {
         {/* 2. Price Chart */}
         <div className="col-12 lg:col-5 p-1">
           <Panel
-            title={selectedSymbol ? `${selectedSymbol} — Price History` : "Price Chart"}
+            title={selectedSymbol ? `${selectedSymbol.name} — Price History` : "Price Chart"}
             minH={300}
           >
-            <AssetLineChart symbols={[selectedSymbol]} />
+            <AssetLineChart symbols={[selectedSymbol?.symbol ?? null]} />
           </Panel>
         </div>
 

@@ -40,6 +40,11 @@ const changeClass = (v: number | null | undefined) =>
 
 /* ── Props ───────────────────────────────────────────────── */
 
+export interface ChartSelection {
+  symbol: string;
+  name: string;
+}
+
 export interface LivePricesTableProps {
   columns: readonly ColumnConfig[];
   /** API endpoint that returns [{symbol, name, ...}] — symbols dict is loaded first */
@@ -48,7 +53,7 @@ export interface LivePricesTableProps {
   technicalsURLPrefix?: string;
   showChartIcon?: boolean;
   onSymbolClick?: (symbol: string) => void;
-  onChartClick?: (symbol: string) => void;
+  onChartClick?: (selection: ChartSelection) => void;
   scrollHeight?: string;
 }
 
@@ -119,7 +124,7 @@ const LivePricesTable: React.FC<LivePricesTableProps> = ({
             if (data.length > 0 && !selectedSymbol) {
               const first = data[0]["symbol"] as string;
               setSelectedSymbol(first);
-              onChartClick?.(first);
+              onChartClick?.({ symbol: first, name: dict[first] ?? first });
             }
           });
       })
@@ -139,9 +144,9 @@ const LivePricesTable: React.FC<LivePricesTableProps> = ({
   const handleChartClick = useCallback(
     (symbol: string) => {
       setSelectedSymbol(symbol);
-      onChartClick?.(symbol);
+      onChartClick?.({ symbol, name: symbolNameDict[symbol] ?? symbol });
     },
-    [onChartClick],
+    [onChartClick, symbolNameDict],
   );
 
   /* ── Cell renderers ────────────────────────────────────── */
