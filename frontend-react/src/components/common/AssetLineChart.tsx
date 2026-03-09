@@ -223,6 +223,7 @@ const AssetLineChart: React.FC<AssetLineChartProps> = ({
       },
       legend: { enabled: validSymbols.length > 1 },
       credits: { enabled: false },
+      accessibility: { enabled: false },
     }),
     [seriesData, ct, validSymbols, height, filled],
   );

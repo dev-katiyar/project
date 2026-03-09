@@ -211,6 +211,7 @@ const MarketMapChart: React.FC<MarketMapChartProps> = ({
         },
       },
       credits: { enabled: false },
+      accessibility: { enabled: false },
       legend: { enabled: false },
     };
   }, [rows, ct, height]);

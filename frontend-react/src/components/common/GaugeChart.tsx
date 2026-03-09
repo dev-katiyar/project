@@ -181,6 +181,7 @@ const GaugeChart: React.FC<GaugeChartProps> = ({
       ],
       tooltip: { enabled: false },
       credits: { enabled: false },
+      accessibility: { enabled: false },
       legend: { enabled: false },
     }),
     [val, ct, title, zoneColor, startLabel, endLabel],
