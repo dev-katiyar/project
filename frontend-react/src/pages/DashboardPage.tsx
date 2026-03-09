@@ -617,7 +617,9 @@ const DashboardPage: React.FC = () => {
 
   /* ── Portfolios ── */
   const [svPortfolios, setSvPortfolios] = useState<Portfolio[]>([]);
+  const [svUpdatedAt, setSvUpdatedAt] = useState<string | null>(null);
   const [userPortfolios, setUserPortfolios] = useState<Portfolio[]>([]);
+  const [userUpdatedAt, setUserUpdatedAt] = useState<string | null>(null);
   const [loadingSV, setLoadingSV] = useState(true);
   const [loadingUser, setLoadingUser] = useState(true);
 
@@ -632,14 +634,20 @@ const DashboardPage: React.FC = () => {
 
   useEffect(() => {
     api
-      .get<Portfolio[]>("/modelportfolio/read/summary/riapro/3")
-      .then(({ data }) => setSvPortfolios(Array.isArray(data) ? data : []))
+      .get<{ port_summ: Portfolio[]; updated_at: string }>("/modelportfolio/read/summary/riapro/3")
+      .then(({ data }) => {
+        setSvPortfolios(Array.isArray(data.port_summ) ? data.port_summ : []);
+        setSvUpdatedAt(data.updated_at ?? null);
+      })
       .catch(() => setSvPortfolios([]))
       .finally(() => setLoadingSV(false));
 
     api
-      .get<Portfolio[]>("/modelportfolio/read/summary/user/3")
-      .then(({ data }) => setUserPortfolios(Array.isArray(data) ? data : []))
+      .get<{ port_summ: Portfolio[]; updated_at: string }>("/modelportfolio/read/summary/user/3")
+      .then(({ data }) => {
+        setUserPortfolios(Array.isArray(data.port_summ) ? data.port_summ : []);
+        setUserUpdatedAt(data.updated_at ?? null);
+      })
       .catch(() => setUserPortfolios([]))
       .finally(() => setLoadingUser(false));
   }, []);
@@ -1042,6 +1050,7 @@ const DashboardPage: React.FC = () => {
             <PortfolioSummaryTable
               portfolios={svPortfolios}
               loading={loadingSV}
+              updatedAt={svUpdatedAt}
             />
           </Panel>
         </div>
@@ -1057,6 +1066,7 @@ const DashboardPage: React.FC = () => {
             <PortfolioSummaryTable
               portfolios={userPortfolios}
               loading={loadingUser}
+              updatedAt={userUpdatedAt}
             />
           </Panel>
         </div>

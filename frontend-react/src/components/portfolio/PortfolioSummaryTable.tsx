@@ -24,6 +24,7 @@ interface Props {
   loading?: boolean;
   selected?: Portfolio | null;
   onSelect?: (p: Portfolio) => void;
+  updatedAt?: string | null;
 }
 
 // ─── Formatters ───────────────────────────────────────────────────────────────
@@ -78,6 +79,7 @@ const PortfolioSummaryTable: React.FC<Props> = ({
   loading = false,
   selected,
   onSelect,
+  updatedAt,
 }) => {
   if (loading) {
     return (
@@ -107,67 +109,78 @@ const PortfolioSummaryTable: React.FC<Props> = ({
   }
 
   return (
-    <DataTable
-      value={portfolios}
-      size="small"
-      stripedRows
-      rowHover
-      dataKey="portfolioid"
-      selectionMode="single"
-      selection={selected ?? null}
-      onSelectionChange={(e) => onSelect?.(e.value as Portfolio)}
-      style={{ cursor: "pointer" }}
-      scrollable
-    >
-      <Column
-        field="name"
-        header="Portfolio"
-        body={(r: Portfolio) => <NameBody row={r} />}
-        style={{ minWidth: "200px" }}
-      />
-      <Column
-        field="startingCash"
-        header="Starting Cash"
-        body={(r: Portfolio) => <UsdBody value={r.startingCash} />}
-        headerStyle={{ textAlign: "right" }}
-        style={{ minWidth: "130px" }}
-      />
-      <Column
-        header="P&L (Inception)"
-        body={(r: Portfolio) => <PnlBody pnl={r.pnl} pct={r.pnlPercent} />}
-        headerStyle={{ textAlign: "right" }}
-        style={{ minWidth: "150px" }}
-      />
-      <Column
-        header="Today's P&L"
-        body={(r: Portfolio) => (
-          <PnlBody pnl={r.dailyPnl} pct={r.dailyPnlPercentage} />
-        )}
-        headerStyle={{ textAlign: "right" }}
-        style={{ minWidth: "140px" }}
-      />
-      <Column
-        field="portfolioValue"
-        header="Market Value"
-        body={(r: Portfolio) => <UsdBody value={r.portfolioValue} />}
-        headerStyle={{ textAlign: "right" }}
-        style={{ minWidth: "140px" }}
-      />
-      <Column
-        field="dividend"
-        header="Dividends"
-        body={(r: Portfolio) => <UsdBody value={r.dividend} />}
-        headerStyle={{ textAlign: "right" }}
-        style={{ minWidth: "120px" }}
-      />
-      <Column
-        field="currentCash"
-        header="Cash"
-        body={(r: Portfolio) => <UsdBody value={r.currentCash} />}
-        headerStyle={{ textAlign: "right" }}
-        style={{ minWidth: "120px" }}
-      />
-    </DataTable>
+    <>
+      <DataTable
+        value={portfolios}
+        size="small"
+        stripedRows
+        rowHover
+        dataKey="portfolioid"
+        selectionMode="single"
+        selection={selected ?? null}
+        onSelectionChange={(e) => onSelect?.(e.value as Portfolio)}
+        style={{ cursor: "pointer" }}
+        scrollable
+      >
+        <Column
+          field="name"
+          header="Portfolio"
+          body={(r: Portfolio) => <NameBody row={r} />}
+          style={{ minWidth: "200px" }}
+        />
+        <Column
+          field="startingCash"
+          header="Starting Cash"
+          body={(r: Portfolio) => <UsdBody value={r.startingCash} />}
+          headerStyle={{ textAlign: "right" }}
+          style={{ minWidth: "130px" }}
+        />
+        <Column
+          header="P&L (Inception)"
+          body={(r: Portfolio) => <PnlBody pnl={r.pnl} pct={r.pnlPercent} />}
+          headerStyle={{ textAlign: "right" }}
+          style={{ minWidth: "150px" }}
+        />
+        <Column
+          header="Today's P&L"
+          body={(r: Portfolio) => (
+            <PnlBody pnl={r.dailyPnl} pct={r.dailyPnlPercentage} />
+          )}
+          headerStyle={{ textAlign: "right" }}
+          style={{ minWidth: "140px" }}
+        />
+        <Column
+          field="portfolioValue"
+          header="Market Value"
+          body={(r: Portfolio) => <UsdBody value={r.portfolioValue} />}
+          headerStyle={{ textAlign: "right" }}
+          style={{ minWidth: "140px" }}
+        />
+        <Column
+          field="dividend"
+          header="Dividends"
+          body={(r: Portfolio) => <UsdBody value={r.dividend} />}
+          headerStyle={{ textAlign: "right" }}
+          style={{ minWidth: "120px" }}
+        />
+        <Column
+          field="currentCash"
+          header="Cash"
+          body={(r: Portfolio) => <UsdBody value={r.currentCash} />}
+          headerStyle={{ textAlign: "right" }}
+          style={{ minWidth: "120px" }}
+        />
+      </DataTable>
+      {updatedAt && (
+        <div
+          className="flex align-items-center gap-1 px-2 pt-1"
+          style={{ fontSize: "0.75rem", color: "var(--sv-text-muted)" }}
+        >
+          <i className="pi pi-clock" style={{ fontSize: "0.7rem" }} />
+          <span>Updated: {updatedAt}</span>
+        </div>
+      )}
+    </>
   );
 };
 
