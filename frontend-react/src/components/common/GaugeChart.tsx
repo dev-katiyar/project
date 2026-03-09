@@ -26,7 +26,7 @@ interface ChartTheme {
 
 const CHART_THEME: Record<ThemeName, ChartTheme> = {
   dark: { bg: "transparent", label: "#7a8da8" },
-  dim:  { bg: "transparent", label: "#7a92b8" },
+  dim: { bg: "transparent", label: "#7a92b8" },
   light: { bg: "transparent", label: "#4a5e78" },
 };
 
@@ -35,9 +35,16 @@ const CHART_THEME: Record<ThemeName, ChartTheme> = {
 interface GaugeChartProps {
   value?: number;
   title: string;
+  startLabel?: string;
+  endLabel?: string;
 }
 
-const GaugeChart: React.FC<GaugeChartProps> = ({ value, title }) => {
+const GaugeChart: React.FC<GaugeChartProps> = ({
+  value,
+  title,
+  startLabel,
+  endLabel,
+}) => {
   const { theme } = useTheme();
   const ct = CHART_THEME[theme] ?? CHART_THEME.dim;
   const val = value ?? 0;
@@ -84,13 +91,52 @@ const GaugeChart: React.FC<GaugeChartProps> = ({ value, title }) => {
         lineWidth: 0,
         tickWidth: 0,
         minorTickInterval: undefined,
-        labels: { y: 16, style: { fontSize: "0.62rem", color: ct.label } },
+        tickPositions: [0, 100],
+        labels: {
+          y: 16,
+          style: { fontSize: "0.9rem", color: ct.label },
+          formatter() {
+            if (this.value === 0) return startLabel ?? "0";
+            if (this.value === 100) return endLabel ?? "100";
+            return "";
+          },
+        },
         plotBands: [
-          { from: 0,  to: 25,  color: "#ef4444aa", innerRadius: "60%", outerRadius: "100%" },
-          { from: 25, to: 45,  color: "#f97316aa", innerRadius: "60%", outerRadius: "100%" },
-          { from: 45, to: 55,  color: "#f5a623aa", innerRadius: "60%", outerRadius: "100%" },
-          { from: 55, to: 75,  color: "#86efacaa", innerRadius: "60%", outerRadius: "100%" },
-          { from: 75, to: 100, color: "#22c55eaa", innerRadius: "60%", outerRadius: "100%" },
+          {
+            from: 0,
+            to: 25,
+            color: "#ef4444aa",
+            innerRadius: "60%",
+            outerRadius: "100%",
+          },
+          {
+            from: 25,
+            to: 45,
+            color: "#f97316aa",
+            innerRadius: "60%",
+            outerRadius: "100%",
+          },
+          {
+            from: 45,
+            to: 55,
+            color: "#f5a623aa",
+            innerRadius: "60%",
+            outerRadius: "100%",
+          },
+          {
+            from: 55,
+            to: 75,
+            color: "#86efacaa",
+            innerRadius: "60%",
+            outerRadius: "100%",
+          },
+          {
+            from: 75,
+            to: 100,
+            color: "#22c55eaa",
+            innerRadius: "60%",
+            outerRadius: "100%",
+          },
         ],
       },
       plotOptions: {
@@ -122,7 +168,7 @@ const GaugeChart: React.FC<GaugeChartProps> = ({ value, title }) => {
       credits: { enabled: false },
       legend: { enabled: false },
     }),
-    [val, ct, title, zoneColor],
+    [val, ct, title, zoneColor, startLabel, endLabel],
   );
 
   return <HighchartsReact highcharts={Highcharts} options={options} />;

@@ -977,12 +977,14 @@ const DashboardPage: React.FC = () => {
               <GaugeChart
                 value={fearGreed?.fear_greed}
                 title="Fear / Greed"
+                startLabel="Fear"
+                endLabel="Greed"
               />
             )}
             {!loadingFG && fearGreed && (
               <p
                 style={{
-                  fontSize: "0.62rem",
+                  fontSize: "0.8rem",
                   color: "var(--sv-text-muted)",
                   margin: "0.25rem 0 0",
                   textAlign: "center",
@@ -1005,12 +1007,14 @@ const DashboardPage: React.FC = () => {
               <GaugeChart
                 value={fearGreed?.technical}
                 title="Technical"
+                startLabel="Strong Sell"
+                endLabel="Strong Buy"
               />
             )}
             {!loadingFG && fearGreed && (
               <p
                 style={{
-                  fontSize: "0.62rem",
+                  fontSize: "0.8rem",
                   color: "var(--sv-text-muted)",
                   margin: "0.25rem 0 0",
                   textAlign: "center",
