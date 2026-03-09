@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Skeleton } from "primereact/skeleton";
@@ -217,6 +217,14 @@ const LivePricesTable: React.FC<LivePricesTableProps> = ({
   // suppress unused warning for symbolOrder (used only for sort, stored in state)
   void symbolOrder;
 
+  // Include selectedSymbol in row data so DataTable re-renders cells when selection changes.
+  // Without this, PrimeReact's internal row memoization skips re-rendering when only
+  // external state changes but the value array reference stays the same.
+  const displayRows = useMemo(
+    () => rows.map((r) => ({ ...r, _selectedSymbol: selectedSymbol })),
+    [rows, selectedSymbol],
+  );
+
   const skeletonRows = Array.from({ length: 5 }, (_, i) => ({ _id: i }));
   const skeletonBody = () => <Skeleton height="1rem" />;
 
@@ -240,7 +248,7 @@ const LivePricesTable: React.FC<LivePricesTableProps> = ({
 
   return (
     <DataTable
-      value={rows}
+      value={displayRows}
       loading={loading}
       size="small"
       scrollable
