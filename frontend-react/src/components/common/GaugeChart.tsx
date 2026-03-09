@@ -141,7 +141,22 @@ const GaugeChart: React.FC<GaugeChartProps> = ({
       },
       plotOptions: {
         gauge: {
-          dataLabels: { enabled: false },
+          dataLabels: {
+            enabled: true,
+            y: 28,
+            borderWidth: 0,
+            backgroundColor: "none",
+            shadow: false,
+            style: {
+              fontSize: "1.6rem",
+              fontWeight: "800",
+              color: zoneColor,
+              textOutline: "none",
+            },
+            formatter() {
+              return Math.round(val).toString();
+            },
+          },
           dial: {
             radius: "80%",
             backgroundColor: zoneColor,
