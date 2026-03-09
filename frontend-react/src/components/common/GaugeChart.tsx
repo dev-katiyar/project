@@ -187,7 +187,13 @@ const GaugeChart: React.FC<GaugeChartProps> = ({
     [val, ct, title, zoneColor, startLabel, endLabel],
   );
 
-  return <HighchartsReact highcharts={Highcharts} options={options} />;
+  return (
+    <HighchartsReact
+      highcharts={Highcharts}
+      options={options}
+      containerProps={{ style: { width: "100%" } }}
+    />
+  );
 };
 
 export default GaugeChart;
