@@ -51,14 +51,14 @@ const GaugeChart: React.FC<GaugeChartProps> = ({
 
   const zoneColor =
     val >= 75
-      ? "#22c55e"
+      ? "#ef4444"
       : val >= 55
-        ? "#86efac"
+        ? "#f97316"
         : val >= 45
           ? "#f5a623"
           : val >= 25
-            ? "#f97316"
-            : "#ef4444";
+            ? "#86efac"
+            : "#22c55e";
 
   const options = useMemo(
     (): Highcharts.Options => ({
@@ -105,14 +105,14 @@ const GaugeChart: React.FC<GaugeChartProps> = ({
           {
             from: 0,
             to: 25,
-            color: "#ef4444aa",
+            color: "#22c55eaa",
             innerRadius: "60%",
             outerRadius: "100%",
           },
           {
             from: 25,
             to: 45,
-            color: "#f97316aa",
+            color: "#86efacaa",
             innerRadius: "60%",
             outerRadius: "100%",
           },
@@ -126,14 +126,14 @@ const GaugeChart: React.FC<GaugeChartProps> = ({
           {
             from: 55,
             to: 75,
-            color: "#86efacaa",
+            color: "#f97316aa",
             innerRadius: "60%",
             outerRadius: "100%",
           },
           {
             from: 75,
             to: 100,
-            color: "#22c55eaa",
+            color: "#ef4444aa",
             innerRadius: "60%",
             outerRadius: "100%",
           },

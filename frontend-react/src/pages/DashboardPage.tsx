@@ -1007,8 +1007,8 @@ const DashboardPage: React.FC = () => {
               <GaugeChart
                 value={fearGreed?.technical}
                 title="Technical"
-                startLabel="Strong Sell"
-                endLabel="Strong Buy"
+                startLabel="Strong Buy"
+                endLabel="Strong Sell"
               />
             )}
             {!loadingFG && fearGreed && (
