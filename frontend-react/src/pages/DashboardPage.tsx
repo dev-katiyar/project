@@ -424,35 +424,63 @@ const MarketMapChart: React.FC<{ index: IndexOption; ct: ChartTheme }> = ({
 
   const options = useMemo((): Highcharts.Options => {
     if (!rows?.length) return {};
+
+    // Compute min/max change for color scaling (same approach as Angular reference)
+    let minChange = -0.00001;
+    let maxChange = 0.00001;
+    for (const row of rows) {
+      if (row.priceChangePct < minChange) minChange = row.priceChangePct;
+      if (row.priceChangePct > maxChange) maxChange = row.priceChangePct;
+    }
+
+    // Angular reference color constants
+    const minRed = 255, maxRed = 100;
+    const minGreen = 230, maxGreen = 100;
+
     const sectors = [...new Set(rows.map((d) => d.sectorName))];
     const sectorPoints = sectors.map((s) => ({
       id: s,
       name: s,
-      color: ct.grid,
+      color: "rgb(30,30,30)",
+      dataLabels: {
+        enabled: true,
+        borderRadius: 4,
+        backgroundColor: "rgba(252,255,197,0.85)",
+        borderWidth: 1,
+        borderColor: "#AAA",
+        style: { color: "#000", fontSize: "11px", fontWeight: "700", textOutline: "none" },
+        y: -6,
+      },
     }));
-    const stockPoints = rows.map((d) => ({
-      name: d.symbol,
-      value: Math.abs(d.marketCap ?? 1000),
-      colorValue: d.priceChangePct ?? 0,
-      parent: d.sectorName,
-      custom: { pct: d.priceChangePct },
-    }));
+
+    const stockPoints = rows.map((d) => {
+      const pct = d.priceChangePct ?? 0;
+      let color = "rgb(80,80,80)";
+      if (pct < 0) {
+        const colNum = Math.round(minRed - (pct / minChange) * (minRed - maxRed));
+        color = `rgb(${colNum},0,0)`;
+      } else if (pct > 0) {
+        const colNum = Math.round(minGreen - (pct / maxChange) * (minGreen - maxGreen));
+        color = `rgb(0,${colNum},0)`;
+      }
+      return {
+        name: `${d.symbol}`,
+        value: Math.abs(d.marketCap ?? 1000),
+        color,
+        parent: d.sectorName,
+        custom: { pct },
+      };
+    });
+
     return {
       chart: { backgroundColor: ct.bg, height: 290, spacing: [2, 2, 2, 2] },
       title: { text: undefined },
-      colorAxis: {
-        min: -5,
-        max: 5,
-        stops: [
-          [0, ct.loss],
-          [0.5, ct.grid],
-          [1, ct.gain],
-        ],
-      },
+      subtitle: { text: undefined },
       series: [
         {
           type: "treemap" as any,
           layoutAlgorithm: "squarified",
+          allowDrillToNode: true as any,
           animationLimit: 1000,
           dataLabels: {
             enabled: true,
@@ -465,19 +493,18 @@ const MarketMapChart: React.FC<{ index: IndexOption; ct: ChartTheme }> = ({
             formatter(this: any) {
               const pt = this.point;
               const pct = pt?.custom?.pct;
-              return pct != null
-                ? `${pt.name}<br><span style="font-weight:400">${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%</span>`
-                : pt.name;
+              if (pct == null) return pt.name;
+              const sign = pct >= 0 ? "+" : "";
+              return `${pt.name}<br><span style="font-weight:400">${sign}${pct.toFixed(2)}%</span>`;
             },
           },
           levels: [
             {
               level: 1,
-              dataLabels: { enabled: false },
-              borderWidth: 2,
-              borderColor: ct.bg,
+              dataLabels: { enabled: true },
+              borderWidth: 3,
             },
-          ],
+          ] as any,
           data: [...sectorPoints, ...stockPoints],
         },
       ],
@@ -487,9 +514,16 @@ const MarketMapChart: React.FC<{ index: IndexOption; ct: ChartTheme }> = ({
         style: { color: ct.tooltipText },
         formatter(this: any) {
           const pt = this.point;
-          if (!pt?.parent) return false;
+          if (!pt?.parent) return `<b>${pt.name}</b>`;
           const pct = pt.custom?.pct ?? 0;
-          return `<b>${pt.name}</b><br>Sector: ${pt.parent}<br>Change: ${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%`;
+          const sign = pct >= 0 ? "+" : "";
+          const cap = pt.value;
+          const capStr = cap > 1e9
+            ? `${Math.floor(cap / 1e9).toLocaleString()}B`
+            : cap > 1e6
+            ? `${Math.floor(cap / 1e6).toLocaleString()}M`
+            : cap.toLocaleString();
+          return `<b>${pt.name}</b><br>Sector: ${pt.parent}<br>Change: ${sign}${pct.toFixed(2)}%<br>Market Cap: ${capStr}`;
         },
       },
       credits: { enabled: false },
