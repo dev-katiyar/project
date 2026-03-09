@@ -226,7 +226,7 @@ const Panel: React.FC<{
         <span
           style={{
             fontWeight: 700,
-            fontSize: "1rem",
+            fontSize: "1.2rem",
             color: "var(--sv-text-primary)",
             letterSpacing: "0.01em",
           }}
@@ -926,7 +926,7 @@ const DashboardPage: React.FC = () => {
   return (
     <>
       {/* ════ Page Header ════ */}
-      <div style={{ marginBottom: "1.25rem" }}>
+      {/* <div style={{ marginBottom: "1.25rem" }}>
         <div
           style={{
             display: "flex",
@@ -935,8 +935,8 @@ const DashboardPage: React.FC = () => {
             flexWrap: "wrap",
             gap: "0.75rem",
           }}
-        >
-          <div>
+        > */}
+      {/* <div>
             <h1 className="text-2xl font-bold mt-0 mb-1 sv-page-title">
               Market Overview
             </h1>
@@ -950,9 +950,9 @@ const DashboardPage: React.FC = () => {
               />
               {today}
             </p>
-          </div>
-          {/* Sentiment quick badges */}
-          {!loadingFG && fearGreed && (
+          </div> */}
+      {/* Sentiment quick badges */}
+      {/* {!loadingFG && fearGreed && (
             <div
               style={{
                 display: "flex",
@@ -978,10 +978,10 @@ const DashboardPage: React.FC = () => {
               <Skeleton width="96px" height="64px" borderRadius="8px" />
               <Skeleton width="96px" height="64px" borderRadius="8px" />
             </div>
-          )}
-        </div>
-        {/* Accent underline */}
-        <div
+          )} */}
+      {/* </div> */}
+      {/* Accent underline */}
+      {/* <div
           style={{
             height: 3,
             marginTop: "0.75rem",
@@ -989,8 +989,8 @@ const DashboardPage: React.FC = () => {
             background: "var(--sv-accent-gradient)",
             borderRadius: 2,
           }}
-        />
-      </div>
+        /> */}
+      {/* </div> */}
 
       {/* ════ Row 1: Asset Classes | Price Chart | Market Sentiment ════ */}
       <div className="grid mb-2">
