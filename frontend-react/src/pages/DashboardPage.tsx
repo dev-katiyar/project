@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import HighchartsMore from "highcharts/highcharts-more";
-import HighchartsSolidGauge from "highcharts/modules/solid-gauge";
 import { TabView, TabPanel } from "primereact/tabview";
 import { Skeleton } from "primereact/skeleton";
 import { Link } from "react-router-dom";
@@ -37,7 +36,6 @@ function _initHcMod(mod: unknown) {
   if (fn) fn(Highcharts);
 }
 _initHcMod(HighchartsMore);
-_initHcMod(HighchartsSolidGauge);
 
 /* ── Constants ────────────────────────────────────────────────────────────── */
 
@@ -322,10 +320,20 @@ const GaugeChart: React.FC<{
   ct: ChartTheme;
 }> = ({ value, title, ct }) => {
   const val = value ?? 0;
+  const zoneColor =
+    val >= 75
+      ? "#22c55e"
+      : val >= 55
+        ? "#86efac"
+        : val >= 45
+          ? "#f5a623"
+          : val >= 25
+            ? "#f97316"
+            : "#ef4444";
   const options = useMemo(
     (): Highcharts.Options => ({
       chart: {
-        type: "solidgauge",
+        type: "gauge",
         backgroundColor: ct.bg,
         height: 200,
         spacing: [0, 0, 0, 0],
@@ -339,7 +347,7 @@ const GaugeChart: React.FC<{
         endAngle: 90,
         background: [
           {
-            backgroundColor: ct.grid,
+            backgroundColor: "transparent",
             innerRadius: "60%",
             outerRadius: "100%",
             shape: "arc",
@@ -350,31 +358,43 @@ const GaugeChart: React.FC<{
       yAxis: {
         min: 0,
         max: 100,
-        stops: [
-          [0.1, "#ef4444"],
-          [0.5, "#f5a623"],
-          [0.9, "#22c55e"],
-        ],
         lineWidth: 0,
         tickWidth: 0,
         minorTickInterval: undefined,
-        tickAmount: 2,
-        labels: { y: 20, style: { fontSize: "0.68rem", color: ct.label } },
+        labels: { y: 16, style: { fontSize: "0.62rem", color: ct.label } },
+        plotBands: [
+          { from: 0,  to: 25,  color: "#ef4444aa", innerRadius: "60%", outerRadius: "100%" },
+          { from: 25, to: 45,  color: "#f97316aa", innerRadius: "60%", outerRadius: "100%" },
+          { from: 45, to: 55,  color: "#f5a623aa", innerRadius: "60%", outerRadius: "100%" },
+          { from: 55, to: 75,  color: "#86efacaa", innerRadius: "60%", outerRadius: "100%" },
+          { from: 75, to: 100, color: "#22c55eaa", innerRadius: "60%", outerRadius: "100%" },
+        ],
       },
       plotOptions: {
-        solidgauge: {
-          innerRadius: "60%",
-          dataLabels: {
-            y: -10,
+        gauge: {
+          dataLabels: { enabled: false },
+          dial: {
+            radius: "80%",
+            backgroundColor: zoneColor,
             borderWidth: 0,
-            useHTML: true,
-            formatter(this: any) {
-              return `<div style="text-align:center;line-height:1.2"><span style="font-size:1.5rem;font-weight:800;color:${ct.tooltipText}">${Math.round(this.y ?? 0)}</span><br><span style="font-size:0.6rem;color:${ct.label};letter-spacing:0.04em">${title}</span></div>`;
-            },
+            baseWidth: 6,
+            topWidth: 1,
+            baseLength: "0%",
+            rearLength: "10%",
+          },
+          pivot: {
+            radius: 4,
+            backgroundColor: zoneColor,
           },
         },
       },
-      series: [{ type: "solidgauge" as any, name: title, data: [val] }],
+      series: [
+        {
+          type: "gauge" as any,
+          name: title,
+          data: [val],
+        },
+      ],
       tooltip: { enabled: false },
       credits: { enabled: false },
       legend: { enabled: false },
