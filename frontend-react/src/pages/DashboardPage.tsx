@@ -16,6 +16,7 @@ import IndexSelector, {
   type IndexOption,
 } from "@/components/common/IndexSelector";
 import AssetLineChart from "@/components/common/AssetLineChart";
+import MarketSummaryWidget from "@/components/market-data/MarketSummaryWidget";
 import PortfolioSummaryTable, {
   type Portfolio,
 } from "@/components/portfolio/PortfolioSummaryTable";
@@ -201,6 +202,7 @@ const Panel: React.FC<{
     <div style={{
       flex: 1, minHeight: minH,
       overflow: "hidden",
+      display: "flex", flexDirection: "column",
       padding: noPad && title ? "0 1rem 0.875rem" : undefined,
     }}>
       {children}
@@ -233,41 +235,6 @@ const SentimentBadge: React.FC<{ label: string; value: number; getMeta: (v: numb
     );
   };
 
-/* ── Sentiment card (Row 1, Market Sentiment panel) ──────────────────────── */
-
-const SentimentMeter: React.FC<{ label: string; value: number; color: string; sentiment: string }> =
-  ({ label, value, color, sentiment }) => (
-    <div style={{
-      background: "var(--sv-bg-surface)", borderRadius: 10, padding: "0.875rem 1rem",
-      border: "1px solid var(--sv-border)",
-    }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.625rem" }}>
-        <span style={{ fontSize: "0.72rem", fontWeight: 600, color: "var(--sv-text-secondary)" }}>{label}</span>
-        <span style={{ fontSize: "0.58rem", fontWeight: 700, padding: "0.15rem 0.45rem", borderRadius: 4, background: `${color}18`, color, border: `1px solid ${color}30` }}>
-          {sentiment}
-        </span>
-      </div>
-      <div style={{ display: "flex", alignItems: "baseline", gap: "0.375rem", marginBottom: "0.75rem" }}>
-        <span style={{ fontSize: "2rem", fontWeight: 800, color, lineHeight: 1 }}>
-          {Math.round(value)}
-        </span>
-        <span style={{ fontSize: "0.65rem", color: "var(--sv-text-muted)" }}>/100</span>
-      </div>
-      {/* Progress bar */}
-      <div style={{ position: "relative", height: 8, borderRadius: 4, background: "var(--sv-border)", overflow: "hidden" }}>
-        <div style={{
-          position: "absolute", left: 0, top: 0, height: "100%", borderRadius: 4,
-          width: `${Math.min(100, Math.max(0, value))}%`,
-          background: `linear-gradient(to right, #ef4444 0%, #f5a623 40%, #22c55e 100%)`,
-          transition: "width 0.6s ease",
-        }} />
-      </div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.3rem" }}>
-        <span style={{ fontSize: "0.55rem", color: "#ef4444" }}>Fear</span>
-        <span style={{ fontSize: "0.55rem", color: "#22c55e" }}>Greed</span>
-      </div>
-    </div>
-  );
 
 /* ── Highcharts solid gauge ───────────────────────────────────────────────── */
 
@@ -700,38 +667,10 @@ const DashboardPage: React.FC = () => {
           </Panel>
         </div>
 
-        {/* 3. Market Sentiment */}
+        {/* 3. Market Summary */}
         <div className="col-12 lg:col-3 p-1">
-          <Panel title="Market Sentiment" minH={300}>
-            {loadingFG ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                <Skeleton height="130px" borderRadius="10px" />
-                <Skeleton height="130px" borderRadius="10px" />
-              </div>
-            ) : fearGreed ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                <SentimentMeter
-                  label="Fear / Greed Index"
-                  value={fearGreed.fear_greed}
-                  color={getSentimentMeta(fearGreed.fear_greed).color}
-                  sentiment={getSentimentMeta(fearGreed.fear_greed).label}
-                />
-                <SentimentMeter
-                  label="Technical Indicator"
-                  value={fearGreed.technical}
-                  color={getTechMeta(fearGreed.technical).color}
-                  sentiment={getTechMeta(fearGreed.technical).label}
-                />
-                <p style={{ fontSize: "0.62rem", color: "var(--sv-text-muted)", margin: 0, lineHeight: 1.6 }}>
-                  Composite sentiment derived from market breadth, price momentum, and technical indicator signals.
-                </p>
-              </div>
-            ) : (
-              <div style={{ padding: "2rem 0", textAlign: "center", color: "var(--sv-text-muted)" }}>
-                <i className="pi pi-exclamation-circle" style={{ fontSize: "1.5rem", display: "block", marginBottom: "0.5rem", opacity: 0.3 }} />
-                <span style={{ fontSize: "0.75rem" }}>Sentiment data unavailable</span>
-              </div>
-            )}
+          <Panel title="Market Summary" minH={300}>
+            <MarketSummaryWidget />
           </Panel>
         </div>
       </div>
