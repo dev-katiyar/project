@@ -387,8 +387,10 @@ const RealTimeCommentaryPage: React.FC = () => {
                       post={post}
                       placeholderIcon="pi-bolt"
                       overlayLabel="Pro Commentary"
-                      overlayPosition="top"
+                      overlayPosition="bottom"
+                      metaTag="Commentary"
                       showFreshBadge
+                      excerptMaxLen={180}
                     />
                   </div>
                 ))}

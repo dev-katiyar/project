@@ -302,6 +302,7 @@ const NewsletterPage: React.FC = () => {
                       overlayLabel={getIssueLabel(post.date)}
                       overlayPosition="bottom"
                       metaTag="Newsletter"
+                      showFreshBadge
                       excerptMaxLen={180}
                     />
                   </div>
