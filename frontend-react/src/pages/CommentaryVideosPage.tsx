@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Skeleton } from "primereact/skeleton";
+import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
 import axios from "axios";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -512,94 +513,6 @@ const ChannelCard: React.FC = () => (
   </SidebarCard>
 );
 
-// ─── PaginationBar ────────────────────────────────────────────────────────────
-
-const PaginationBar: React.FC<{
-  prevToken?: string;
-  nextToken?: string;
-  loading: boolean;
-  onPrev: () => void;
-  onNext: () => void;
-  pageNum: number;
-}> = ({ prevToken, nextToken, loading, onPrev, onNext, pageNum }) => (
-  <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "0.75rem",
-      marginTop: "1.25rem",
-      padding: "0.6rem 1rem",
-      background: "var(--sv-bg-card)",
-      border: "1px solid var(--sv-border)",
-      borderRadius: 10,
-      boxShadow: "var(--sv-shadow-sm)",
-    }}
-  >
-    <button
-      onClick={onPrev}
-      disabled={!prevToken || loading}
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: "0.35rem",
-        padding: "0.45rem 0.9rem",
-        borderRadius: 7,
-        border: "1px solid var(--sv-border)",
-        background: !prevToken || loading ? "var(--sv-bg-surface)" : "var(--sv-bg-card)",
-        color: !prevToken || loading ? "var(--sv-text-muted)" : "var(--sv-text-primary)",
-        fontSize: "0.78rem",
-        fontWeight: 600,
-        cursor: !prevToken || loading ? "not-allowed" : "pointer",
-        transition: "background 0.15s, border-color 0.15s",
-        opacity: !prevToken || loading ? 0.5 : 1,
-      }}
-    >
-      <i className="pi pi-angle-left" style={{ fontSize: "0.8rem" }} />
-      Prev
-    </button>
-
-    <span
-      style={{
-        fontSize: "0.72rem",
-        color: "var(--sv-text-muted)",
-        fontWeight: 500,
-        padding: "0.3rem 0.6rem",
-        background: "var(--sv-accent-bg)",
-        borderRadius: 6,
-        border: "1px solid color-mix(in srgb, var(--sv-accent) 20%, transparent)",
-        color: "var(--sv-accent)",
-        fontWeight: 700,
-        letterSpacing: "0.03em",
-      }}
-    >
-      Page {pageNum}
-    </span>
-
-    <button
-      onClick={onNext}
-      disabled={!nextToken || loading}
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: "0.35rem",
-        padding: "0.45rem 0.9rem",
-        borderRadius: 7,
-        border: "1px solid var(--sv-border)",
-        background: !nextToken || loading ? "var(--sv-bg-surface)" : "var(--sv-bg-card)",
-        color: !nextToken || loading ? "var(--sv-text-muted)" : "var(--sv-text-primary)",
-        fontSize: "0.78rem",
-        fontWeight: 600,
-        cursor: !nextToken || loading ? "not-allowed" : "pointer",
-        transition: "background 0.15s, border-color 0.15s",
-        opacity: !nextToken || loading ? 0.5 : 1,
-      }}
-    >
-      Next
-      <i className="pi pi-angle-right" style={{ fontSize: "0.8rem" }} />
-    </button>
-  </div>
-);
 
 // ─── CommentaryVideosPage ─────────────────────────────────────────────────────
 
@@ -645,17 +558,17 @@ const CommentaryVideosPage: React.FC = () => {
     fetchVideos(undefined);
   }, [fetchVideos]);
 
-  const handleNext = () => {
-    setCurrentPageToken(nextPageToken);
-    setPageNum((p) => p + 1);
-    fetchVideos(nextPageToken);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handlePrev = () => {
-    setCurrentPageToken(prevPageToken);
-    setPageNum((p) => Math.max(1, p - 1));
-    fetchVideos(prevPageToken);
+  const handlePageChange = (e: PaginatorPageChangeEvent) => {
+    const newPage = e.page + 1;
+    if (newPage > pageNum) {
+      setCurrentPageToken(nextPageToken);
+      setPageNum(newPage);
+      fetchVideos(nextPageToken);
+    } else {
+      setCurrentPageToken(prevPageToken);
+      setPageNum(newPage);
+      fetchVideos(prevPageToken);
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -795,14 +708,26 @@ const CommentaryVideosPage: React.FC = () => {
                 ))}
               </div>
 
-              <PaginationBar
-                prevToken={prevPageToken}
-                nextToken={nextPageToken}
-                loading={loading}
-                onPrev={handlePrev}
-                onNext={handleNext}
-                pageNum={pageNum}
-              />
+              <div
+                style={{
+                  marginTop: "1.25rem",
+                  display: "flex",
+                  justifyContent: "center",
+                  background: "var(--sv-bg-card)",
+                  border: "1px solid var(--sv-border)",
+                  borderRadius: 10,
+                  padding: "0.5rem",
+                  boxShadow: "var(--sv-shadow-sm)",
+                }}
+              >
+                <Paginator
+                  first={(pageNum - 1) * PAGE_SIZE}
+                  rows={PAGE_SIZE}
+                  totalRecords={nextPageToken ? Math.max(pageNum + 4, 5) * PAGE_SIZE : pageNum * PAGE_SIZE}
+                  onPageChange={handlePageChange}
+                  template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+                />
+              </div>
             </>
           )}
         </div>
