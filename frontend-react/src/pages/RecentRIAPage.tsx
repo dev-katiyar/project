@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Skeleton } from "primereact/skeleton";
 import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
-import { useSearchParams } from "react-router-dom";
 import api from "@/services/api";
 import PostCard, { CardSkeleton, getIssueLabel, stripHtml, type WpPost } from "@/components/common/PostCard";
 
@@ -10,7 +9,6 @@ import PostCard, { CardSkeleton, getIssueLabel, stripHtml, type WpPost } from "@
 const CATEGORY_ID = 256; // WpPostCategories.Investing
 const PAGE_SIZE = 6;
 const POPULAR_LIMIT = 6;
-const ARCHIVE_MONTHS = 12;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -138,88 +136,9 @@ const PopularPostItem: React.FC<{ post: WpPost; rank: number }> = ({ post, rank 
   );
 };
 
-// ─── ArchiveMonthItem ─────────────────────────────────────────────────────────
-
-const ArchiveMonthItem: React.FC<{
-  date: Date;
-  idx: number;
-  active: boolean;
-  onClick: () => void;
-}> = ({ date, idx, active, onClick }) => {
-  const [hovered, setHovered] = useState(false);
-  const label = date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-
-  return (
-    <div
-      onClick={onClick}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0.4rem 0.5rem",
-        borderRadius: 6,
-        cursor: "pointer",
-        background: active
-          ? "color-mix(in srgb, var(--sv-accent) 10%, transparent)"
-          : hovered
-          ? "var(--sv-bg-surface)"
-          : "transparent",
-        border: active
-          ? "1px solid color-mix(in srgb, var(--sv-accent) 30%, transparent)"
-          : "1px solid transparent",
-        transition: "background 0.15s, border-color 0.15s",
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <i
-          className={active ? "pi pi-folder-open" : "pi pi-folder"}
-          style={{ color: "var(--sv-accent)", fontSize: "0.72rem" }}
-        />
-        <span
-          style={{
-            fontSize: "0.77rem",
-            color: active ? "var(--sv-accent)" : "var(--sv-text-secondary)",
-            fontWeight: active ? 700 : 500,
-          }}
-        >
-          {label}
-        </span>
-      </div>
-      <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
-        {idx === 0 && !active && (
-          <span
-            style={{
-              fontSize: "0.52rem",
-              fontWeight: 700,
-              padding: "0.15rem 0.35rem",
-              borderRadius: 3,
-              background: "var(--sv-success-bg)",
-              color: "var(--sv-success)",
-              letterSpacing: "0.05em",
-              textTransform: "uppercase",
-            }}
-          >
-            Latest
-          </span>
-        )}
-        {active && (
-          <i className="pi pi-check" style={{ fontSize: "0.6rem", color: "var(--sv-accent)" }} />
-        )}
-      </div>
-    </div>
-  );
-};
-
 // ─── RecentRIAPage ────────────────────────────────────────────────────────────
 
 const RecentRIAPage: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const activeYear = searchParams.get("year") ? parseInt(searchParams.get("year")!, 10) : null;
-  const activeMonth = searchParams.get("month") ? parseInt(searchParams.get("month")!, 10) : null;
-
   const [posts, setPosts] = useState<WpPost[]>([]);
   const [totalPosts, setTotalPosts] = useState(0);
   const [pageFirst, setPageFirst] = useState(0);
@@ -227,49 +146,22 @@ const RecentRIAPage: React.FC = () => {
   const [popularPosts, setPopularPosts] = useState<WpPost[]>([]);
   const [loadingPopular, setLoadingPopular] = useState(true);
 
-  const archiveMonths = useMemo<Date[]>(() => {
-    const now = new Date();
-    return Array.from(
-      { length: ARCHIVE_MONTHS },
-      (_, i) => new Date(now.getFullYear(), now.getMonth() - i),
-    );
+  const loadPosts = useCallback(async (offset: number) => {
+    setLoadingPosts(true);
+    try {
+      const { data, headers } = await api.get("/wp-json/wp/v2/posts", {
+        params: { categories: CATEGORY_ID, per_page: PAGE_SIZE, offset },
+      });
+      setPosts(Array.isArray(data) ? data : []);
+      const total = parseInt(headers["x-wp-total"] ?? "0", 10);
+      setTotalPosts(isNaN(total) ? 0 : total);
+    } catch {
+      setPosts([]);
+      setTotalPosts(0);
+    } finally {
+      setLoadingPosts(false);
+    }
   }, []);
-
-  const buildDateRange = useCallback((year: number, month: number) => {
-    const after = new Date(year, month, 1, 0, 0, 0).toISOString();
-    const before = new Date(year, month + 1, 0, 23, 59, 59).toISOString();
-    return { after, before };
-  }, []);
-
-  const loadPosts = useCallback(
-    async (offset: number, year: number | null, month: number | null) => {
-      setLoadingPosts(true);
-      try {
-        const params: Record<string, string | number> = {
-          categories: CATEGORY_ID,
-          per_page: PAGE_SIZE,
-          offset,
-        };
-
-        if (year !== null && month !== null) {
-          const { after, before } = buildDateRange(year, month);
-          params.after = after;
-          params.before = before;
-        }
-
-        const { data, headers } = await api.get("/wp-json/wp/v2/posts", { params });
-        setPosts(Array.isArray(data) ? data : []);
-        const total = parseInt(headers["x-wp-total"] ?? "0", 10);
-        setTotalPosts(isNaN(total) ? 0 : total);
-      } catch {
-        setPosts([]);
-        setTotalPosts(0);
-      } finally {
-        setLoadingPosts(false);
-      }
-    },
-    [buildDateRange],
-  );
 
   const loadPopularPosts = useCallback(async () => {
     setLoadingPopular(true);
@@ -286,9 +178,8 @@ const RecentRIAPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setPageFirst(0);
-    loadPosts(0, activeYear, activeMonth);
-  }, [activeYear, activeMonth, loadPosts]);
+    loadPosts(0);
+  }, [loadPosts]);
 
   useEffect(() => {
     loadPopularPosts();
@@ -296,27 +187,9 @@ const RecentRIAPage: React.FC = () => {
 
   const handlePageChange = (e: PaginatorPageChangeEvent) => {
     setPageFirst(e.first);
-    loadPosts(e.first, activeYear, activeMonth);
+    loadPosts(e.first);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  const handleArchiveClick = (date: Date) => {
-    const y = date.getFullYear();
-    const m = date.getMonth();
-    if (activeYear === y && activeMonth === m) {
-      setSearchParams({});
-    } else {
-      setSearchParams({ year: String(y), month: String(m) });
-    }
-  };
-
-  const handleClearFilter = () => setSearchParams({});
-
-  const activeFilterLabel = useMemo(() => {
-    if (activeYear === null || activeMonth === null) return null;
-    const d = new Date(activeYear, activeMonth);
-    return d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-  }, [activeYear, activeMonth]);
 
   return (
     <>
@@ -358,54 +231,6 @@ const RecentRIAPage: React.FC = () => {
         />
       </div>
 
-      {/* ── Active month filter banner ── */}
-      {activeFilterLabel && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "0.55rem 0.9rem",
-            marginBottom: "1rem",
-            background: "color-mix(in srgb, var(--sv-accent) 8%, var(--sv-bg-card))",
-            border: "1px solid color-mix(in srgb, var(--sv-accent) 28%, transparent)",
-            borderRadius: 8,
-            boxShadow: "var(--sv-shadow-sm)",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <i
-              className="pi pi-filter-fill"
-              style={{ color: "var(--sv-accent)", fontSize: "0.78rem" }}
-            />
-            <span style={{ fontSize: "0.78rem", color: "var(--sv-text-primary)", fontWeight: 600 }}>
-              Filtered by:{" "}
-              <span style={{ color: "var(--sv-accent)" }}>{activeFilterLabel}</span>
-            </span>
-          </div>
-          <button
-            onClick={handleClearFilter}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.3rem",
-              padding: "0.25rem 0.6rem",
-              borderRadius: 5,
-              border: "1px solid color-mix(in srgb, var(--sv-accent) 30%, transparent)",
-              background: "transparent",
-              color: "var(--sv-accent)",
-              fontSize: "0.7rem",
-              fontWeight: 700,
-              cursor: "pointer",
-              letterSpacing: "0.02em",
-            }}
-          >
-            <i className="pi pi-times" style={{ fontSize: "0.6rem" }} />
-            Clear
-          </button>
-        </div>
-      )}
-
       {/* ── Two-column layout ── */}
       <div className="grid">
         {/* ── Main posts column ── */}
@@ -445,32 +270,14 @@ const RecentRIAPage: React.FC = () => {
               />
               <p
                 style={{
-                  margin: "0 0 0.25rem",
+                  margin: 0,
                   color: "var(--sv-text-primary)",
                   fontWeight: 600,
                   fontSize: "0.95rem",
                 }}
               >
-                No articles found{activeFilterLabel ? ` for ${activeFilterLabel}` : ""}.
+                No articles found.
               </p>
-              {activeFilterLabel && (
-                <button
-                  onClick={handleClearFilter}
-                  style={{
-                    marginTop: "0.5rem",
-                    padding: "0.45rem 1.1rem",
-                    borderRadius: 7,
-                    border: "1px solid var(--sv-accent)",
-                    background: "var(--sv-accent-bg)",
-                    color: "var(--sv-accent)",
-                    fontSize: "0.78rem",
-                    fontWeight: 700,
-                    cursor: "pointer",
-                  }}
-                >
-                  View all articles
-                </button>
-              )}
             </div>
           )}
 
@@ -552,50 +359,6 @@ const RecentRIAPage: React.FC = () => {
                   <PopularPostItem key={post.id} post={post} rank={i + 1} />
                 ))}
               </div>
-            )}
-          </SidebarCard>
-
-          {/* Monthly Archive */}
-          <SidebarCard title="Monthly Archive" icon="pi-calendar">
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.1rem" }}>
-              {archiveMonths.map((date, i) => {
-                const isActive =
-                  activeYear === date.getFullYear() && activeMonth === date.getMonth();
-                return (
-                  <ArchiveMonthItem
-                    key={i}
-                    date={date}
-                    idx={i}
-                    active={isActive}
-                    onClick={() => handleArchiveClick(date)}
-                  />
-                );
-              })}
-            </div>
-            {activeFilterLabel && (
-              <button
-                onClick={handleClearFilter}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "0.35rem",
-                  width: "100%",
-                  marginTop: "0.625rem",
-                  padding: "0.4rem 0",
-                  borderRadius: 6,
-                  border: "1px solid var(--sv-border)",
-                  background: "var(--sv-bg-surface)",
-                  color: "var(--sv-text-muted)",
-                  fontSize: "0.7rem",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  letterSpacing: "0.02em",
-                }}
-              >
-                <i className="pi pi-times" style={{ fontSize: "0.6rem" }} />
-                Show all months
-              </button>
             )}
           </SidebarCard>
 
