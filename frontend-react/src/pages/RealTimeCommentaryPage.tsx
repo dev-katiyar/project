@@ -5,6 +5,16 @@ import { useSearchParams } from "react-router-dom";
 import api from "@/services/api";
 import PostCard, { CardSkeleton, formatDate, stripHtml, type WpPost } from "@/components/common/PostCard";
 
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface PopularPost {
+  id: number;
+  title: string;
+  date: string;
+  link: string;
+  meta?: { views?: number };
+}
+
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const CATEGORY_ID = 902; // WpPostCategories.ProCommentary
@@ -57,9 +67,9 @@ const SidebarCard: React.FC<{ title: string; icon: string; children: React.React
 
 // ─── PopularPostItem ──────────────────────────────────────────────────────────
 
-const PopularPostItem: React.FC<{ post: WpPost; rank: number }> = ({ post, rank }) => {
+const PopularPostItem: React.FC<{ post: PopularPost; rank: number }> = ({ post, rank }) => {
   const [hovered, setHovered] = useState(false);
-  const title = stripHtml(post.title.rendered);
+  const title = typeof post.title === "string" ? post.title : stripHtml((post.title as any)?.rendered ?? "");
 
   return (
     <a
@@ -140,7 +150,7 @@ const RealTimeCommentaryPage: React.FC = () => {
   const [totalPosts, setTotalPosts] = useState(0);
   const [pageFirst, setPageFirst] = useState(0);
   const [loadingPosts, setLoadingPosts] = useState(true);
-  const [popularPosts, setPopularPosts] = useState<WpPost[]>([]);
+  const [popularPosts, setPopularPosts] = useState<PopularPost[]>([]);
   const [loadingPopular, setLoadingPopular] = useState(true);
 
   const buildDateRange = useCallback((year: number, month: number) => {
@@ -238,10 +248,8 @@ const RealTimeCommentaryPage: React.FC = () => {
           >
             <i className="pi pi-bolt" style={{ color: "var(--sv-accent)", fontSize: "1.15rem" }} />
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
-              <h1 className="text-2xl font-bold m-0 sv-page-title">Real-Time Commentary</h1>
-            </div>
+          <div>
+            <h1 className="text-2xl font-bold m-0 sv-page-title">Real-Time Commentary</h1>
             <p className="m-0 text-sm" style={{ color: "var(--sv-text-muted)", marginTop: "0.1rem" }}>
               Live pro market commentary — expert insights published throughout the trading day
             </p>
