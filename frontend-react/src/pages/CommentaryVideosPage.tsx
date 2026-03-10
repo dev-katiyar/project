@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Skeleton } from "primereact/skeleton";
 import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
 import axios from "axios";
+import AboutSidebarCard from "@/components/common/AboutSidebarCard";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -513,7 +514,6 @@ const ChannelCard: React.FC = () => (
   </SidebarCard>
 );
 
-
 // ─── CommentaryVideosPage ─────────────────────────────────────────────────────
 
 const CommentaryVideosPage: React.FC = () => {
@@ -734,38 +734,15 @@ const CommentaryVideosPage: React.FC = () => {
 
         {/* ── Sidebar ── */}
         <div className="col-12 lg:col-4 p-1">
-          {/* Channel info */}
           <ChannelCard />
-
-          {/* Investment topics */}
-          <SidebarCard title="Investment Topics" icon="pi-tag">
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
-              {[
-                "Market Analysis",
-                "Portfolio Strategy",
-                "Risk Management",
-                "Technical Analysis",
-                "Economic Outlook",
-                "Sector Rotation",
-                "Asset Allocation",
-              ].map((tag) => (
-                <span
-                  key={tag}
-                  style={{
-                    fontSize: "0.6rem",
-                    fontWeight: 600,
-                    padding: "0.2rem 0.5rem",
-                    borderRadius: 4,
-                    background: "var(--sv-bg-surface)",
-                    color: "var(--sv-text-muted)",
-                    border: "1px solid var(--sv-border)",
-                  }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </SidebarCard>
+          <AboutSidebarCard
+            cardTitle="Investment Topics"
+            cardIcon="pi-tag"
+            badgeIcon="pi-tag"
+            name="Topics Covered"
+            description="Expert commentary spanning a wide range of investment topics to help you navigate complex market environments."
+            tags={["Market Analysis", "Portfolio Strategy", "Risk Management", "Technical Analysis", "Economic Outlook", "Sector Rotation", "Asset Allocation"]}
+          />
         </div>
       </div>
     </>

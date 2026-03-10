@@ -3,7 +3,7 @@ import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
 import { useSearchParams } from "react-router-dom";
 import api from "@/services/api";
 import PostCard, { CardSkeleton, type WpPost } from "@/components/common/PostCard";
-import SidebarCard from "@/components/common/SidebarCard";
+import AboutSidebarCard from "@/components/common/AboutSidebarCard";
 import PopularPostsSidebarCard, { type PopularPost } from "@/components/common/PopularPostsSidebarCard";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -311,76 +311,14 @@ const RealTimeCommentaryPage: React.FC = () => {
           <PopularPostsSidebarCard loading={loadingPopular} posts={popularPosts} />
 
           {/* About Pro Commentary */}
-          <SidebarCard title="About Pro Commentary" icon="pi-bolt">
-            <div style={{ textAlign: "center", marginBottom: "1rem" }}>
-              <div
-                style={{
-                  width: 52,
-                  height: 52,
-                  borderRadius: "50%",
-                  background: "var(--sv-accent-bg)",
-                  border: "2px solid color-mix(in srgb, var(--sv-accent) 30%, transparent)",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                <i
-                  className="pi pi-bolt"
-                  style={{ color: "var(--sv-accent)", fontSize: "1.3rem" }}
-                />
-              </div>
-              <div
-                style={{
-                  fontWeight: 700,
-                  fontSize: "0.85rem",
-                  color: "var(--sv-text-primary)",
-                  marginBottom: "0.3rem",
-                }}
-              >
-                SimpleVisor Pro Commentary
-              </div>
-              <p
-                style={{
-                  fontSize: "0.72rem",
-                  color: "var(--sv-text-muted)",
-                  lineHeight: 1.6,
-                  margin: 0,
-                }}
-              >
-                Real-time market analysis delivered by our professional team throughout the trading
-                day. Actionable insights on macro trends, sector moves, and market-moving events as
-                they happen.
-              </p>
-            </div>
-            {/* Topics */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
-              {[
-                "Market Commentary",
-                "Real-Time Alerts",
-                "Technical Analysis",
-                "Macro Trends",
-                "Sector Rotation",
-                "Risk Management",
-              ].map((tag) => (
-                <span
-                  key={tag}
-                  style={{
-                    fontSize: "0.6rem",
-                    fontWeight: 600,
-                    padding: "0.2rem 0.5rem",
-                    borderRadius: 4,
-                    background: "var(--sv-bg-surface)",
-                    color: "var(--sv-text-muted)",
-                    border: "1px solid var(--sv-border)",
-                  }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </SidebarCard>
+          <AboutSidebarCard
+            cardTitle="About Pro Commentary"
+            cardIcon="pi-bolt"
+            badgeIcon="pi-bolt"
+            name="SimpleVisor Pro Commentary"
+            description="Real-time market analysis delivered by our professional team throughout the trading day. Actionable insights on macro trends, sector moves, and market-moving events as they happen."
+            tags={["Market Commentary", "Real-Time Alerts", "Technical Analysis", "Macro Trends", "Sector Rotation", "Risk Management"]}
+          />
 
         </div>
       </div>
