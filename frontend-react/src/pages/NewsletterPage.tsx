@@ -3,6 +3,7 @@ import { Skeleton } from "primereact/skeleton";
 import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
 import api from "@/services/api";
 import PostCard, { CardSkeleton, formatDate, getIssueLabel, stripHtml, type WpPost } from "@/components/common/PostCard";
+import AboutSidebarCard from "@/components/common/AboutSidebarCard";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -373,75 +374,14 @@ const NewsletterPage: React.FC = () => {
           </SidebarCard>
 
           {/* Newsletter info */}
-          <SidebarCard title="About Pro Newsletter" icon="pi-envelope">
-            <div style={{ textAlign: "center", marginBottom: "1rem" }}>
-              <div
-                style={{
-                  width: 52,
-                  height: 52,
-                  borderRadius: "50%",
-                  background: "var(--sv-accent-bg)",
-                  border: "2px solid color-mix(in srgb, var(--sv-accent) 30%, transparent)",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                <i
-                  className="pi pi-send"
-                  style={{ color: "var(--sv-accent)", fontSize: "1.3rem" }}
-                />
-              </div>
-              <div
-                style={{
-                  fontWeight: 700,
-                  fontSize: "0.85rem",
-                  color: "var(--sv-text-primary)",
-                  marginBottom: "0.3rem",
-                }}
-              >
-                SimpleVisor Pro Newsletter
-              </div>
-              <p
-                style={{
-                  fontSize: "0.72rem",
-                  color: "var(--sv-text-muted)",
-                  lineHeight: 1.6,
-                  margin: 0,
-                }}
-              >
-                Weekly in-depth market analysis, portfolio positioning, economic commentary, and
-                actionable insights tailored for retail investors.
-              </p>
-            </div>
-            {/* Topics */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
-              {[
-                "Market Outlook",
-                "Portfolio Strategy",
-                "Economic Data",
-                "Risk Management",
-                "Technical Analysis",
-                "Macro Trends",
-              ].map((tag) => (
-                <span
-                  key={tag}
-                  style={{
-                    fontSize: "0.6rem",
-                    fontWeight: 600,
-                    padding: "0.2rem 0.5rem",
-                    borderRadius: 4,
-                    background: "var(--sv-bg-surface)",
-                    color: "var(--sv-text-muted)",
-                    border: "1px solid var(--sv-border)",
-                  }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </SidebarCard>
+          <AboutSidebarCard
+            cardTitle="About Pro Newsletter"
+            cardIcon="pi-envelope"
+            badgeIcon="pi-send"
+            name="SimpleVisor Pro Newsletter"
+            description="Weekly in-depth market analysis, portfolio positioning, economic commentary, and actionable insights tailored for retail investors."
+            tags={["Market Outlook", "Portfolio Strategy", "Economic Data", "Risk Management", "Technical Analysis", "Macro Trends"]}
+          />
         </div>
       </div>
     </>

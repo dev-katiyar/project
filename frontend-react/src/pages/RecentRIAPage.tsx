@@ -3,6 +3,7 @@ import { Skeleton } from "primereact/skeleton";
 import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
 import api from "@/services/api";
 import PostCard, { CardSkeleton, getIssueLabel, stripHtml, type WpPost } from "@/components/common/PostCard";
+import AboutSidebarCard from "@/components/common/AboutSidebarCard";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -363,74 +364,14 @@ const RecentRIAPage: React.FC = () => {
           </SidebarCard>
 
           {/* About */}
-          <SidebarCard title="About Recent RIA" icon="pi-info-circle">
-            <div style={{ textAlign: "center", marginBottom: "1rem" }}>
-              <div
-                style={{
-                  width: 52,
-                  height: 52,
-                  borderRadius: "50%",
-                  background: "var(--sv-accent-bg)",
-                  border: "2px solid color-mix(in srgb, var(--sv-accent) 30%, transparent)",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                <i
-                  className="pi pi-chart-line"
-                  style={{ color: "var(--sv-accent)", fontSize: "1.3rem" }}
-                />
-              </div>
-              <div
-                style={{
-                  fontWeight: 700,
-                  fontSize: "0.85rem",
-                  color: "var(--sv-text-primary)",
-                  marginBottom: "0.3rem",
-                }}
-              >
-                Real Investment Advice
-              </div>
-              <p
-                style={{
-                  fontSize: "0.72rem",
-                  color: "var(--sv-text-muted)",
-                  lineHeight: 1.6,
-                  margin: 0,
-                }}
-              >
-                In-depth analysis on markets, investing strategies, and portfolio management.
-                Written by professional portfolio managers and analysts to help retail investors
-                navigate complex market environments.
-              </p>
-            </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
-              {[
-                "Portfolio Management",
-                "Market Analysis",
-                "Investing Strategy",
-                "Risk Management",
-                "Asset Allocation",
-              ].map((tag) => (
-                <span
-                  key={tag}
-                  style={{
-                    fontSize: "0.6rem",
-                    fontWeight: 600,
-                    padding: "0.2rem 0.5rem",
-                    borderRadius: 4,
-                    background: "var(--sv-bg-surface)",
-                    color: "var(--sv-text-muted)",
-                    border: "1px solid var(--sv-border)",
-                  }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </SidebarCard>
+          <AboutSidebarCard
+            cardTitle="About Recent RIA"
+            cardIcon="pi-info-circle"
+            badgeIcon="pi-chart-line"
+            name="Real Investment Advice"
+            description="In-depth analysis on markets, investing strategies, and portfolio management. Written by professional portfolio managers and analysts to help retail investors navigate complex market environments."
+            tags={["Portfolio Management", "Market Analysis", "Investing Strategy", "Risk Management", "Asset Allocation"]}
+          />
         </div>
       </div>
     </>
