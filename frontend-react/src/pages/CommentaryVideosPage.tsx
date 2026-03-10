@@ -92,7 +92,9 @@ function truncate(text: string, max: number): string {
 const FRESH_HOURS = 48;
 
 function isRecent(dateStr: string): boolean {
-  return Date.now() - new Date(dateStr).getTime() < FRESH_HOURS * 60 * 60 * 1000;
+  return (
+    Date.now() - new Date(dateStr).getTime() < FRESH_HOURS * 60 * 60 * 1000
+  );
 }
 
 function timeAgo(dateStr: string): string {
@@ -126,7 +128,12 @@ const VideoCardSkeleton: React.FC = () => (
       </div>
       <Skeleton width="95%" height="18px" borderRadius="4px" className="mb-1" />
       <Skeleton width="75%" height="18px" borderRadius="4px" className="mb-3" />
-      <Skeleton width="100%" height="13px" borderRadius="4px" className="mb-1" />
+      <Skeleton
+        width="100%"
+        height="13px"
+        borderRadius="4px"
+        className="mb-1"
+      />
       <Skeleton width="85%" height="13px" borderRadius="4px" />
     </div>
   </div>
@@ -165,10 +172,21 @@ const VideoCard: React.FC<{ item: YtItem }> = ({ item }) => {
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        style={{ position: "relative", display: "block", overflow: "hidden", flexShrink: 0 }}
+        style={{
+          position: "relative",
+          display: "block",
+          overflow: "hidden",
+          flexShrink: 0,
+        }}
       >
         {/* Aspect ratio wrapper */}
-        <div style={{ paddingBottom: "56.25%", position: "relative", background: "var(--sv-bg-surface)" }}>
+        <div
+          style={{
+            paddingBottom: "56.25%",
+            position: "relative",
+            background: "var(--sv-bg-surface)",
+          }}
+        >
           {!imgLoaded && (
             <div
               style={{
@@ -179,7 +197,14 @@ const VideoCard: React.FC<{ item: YtItem }> = ({ item }) => {
                 justifyContent: "center",
               }}
             >
-              <i className="pi pi-youtube" style={{ fontSize: "2.5rem", color: "var(--sv-text-muted)", opacity: 0.3 }} />
+              <i
+                className="pi pi-youtube"
+                style={{
+                  fontSize: "2.5rem",
+                  color: "var(--sv-text-muted)",
+                  opacity: 0.3,
+                }}
+              />
             </div>
           )}
           {thumb && (
@@ -205,7 +230,8 @@ const VideoCard: React.FC<{ item: YtItem }> = ({ item }) => {
             style={{
               position: "absolute",
               inset: 0,
-              background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%)",
+              background:
+                "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%)",
               opacity: hovered ? 1 : 0.6,
               transition: "opacity 0.2s",
             }}
@@ -295,9 +321,11 @@ const VideoCard: React.FC<{ item: YtItem }> = ({ item }) => {
               textTransform: "uppercase",
               padding: "0.18rem 0.5rem",
               borderRadius: 4,
-              background: "color-mix(in srgb, var(--sv-accent) 12%, transparent)",
+              background:
+                "color-mix(in srgb, var(--sv-accent) 12%, transparent)",
               color: "var(--sv-accent)",
-              border: "1px solid color-mix(in srgb, var(--sv-accent) 22%, transparent)",
+              border:
+                "1px solid color-mix(in srgb, var(--sv-accent) 22%, transparent)",
             }}
           >
             {snippet.videoOwnerChannelTitle || snippet.channelTitle}
@@ -311,9 +339,11 @@ const VideoCard: React.FC<{ item: YtItem }> = ({ item }) => {
                 textTransform: "uppercase",
                 padding: "0.14rem 0.4rem",
                 borderRadius: 3,
-                background: "color-mix(in srgb, var(--sv-success, #22c55e) 12%, transparent)",
+                background:
+                  "color-mix(in srgb, var(--sv-success, #22c55e) 12%, transparent)",
                 color: "var(--sv-success, #22c55e)",
-                border: "1px solid color-mix(in srgb, var(--sv-success, #22c55e) 25%, transparent)",
+                border:
+                  "1px solid color-mix(in srgb, var(--sv-success, #22c55e) 25%, transparent)",
               }}
             >
               New
@@ -324,7 +354,9 @@ const VideoCard: React.FC<{ item: YtItem }> = ({ item }) => {
             {formatDate(snippet.publishedAt)}
           </span>
           {recent && (
-            <span style={{ color: "var(--sv-text-muted)", fontSize: "0.62rem" }}>
+            <span
+              style={{ color: "var(--sv-text-muted)", fontSize: "0.62rem" }}
+            >
               · {timeAgo(snippet.publishedAt)}
             </span>
           )}
@@ -348,8 +380,12 @@ const VideoCard: React.FC<{ item: YtItem }> = ({ item }) => {
             overflow: "hidden",
             transition: "color 0.15s",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--sv-accent)")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--sv-text-primary)")}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.color = "var(--sv-accent)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.color = "var(--sv-text-primary)")
+          }
         >
           {snippet.title}
         </a>
@@ -431,10 +467,14 @@ const SidebarCard: React.FC<{
         display: "flex",
         alignItems: "center",
         gap: "0.5rem",
-        background: "color-mix(in srgb, var(--sv-accent) 6%, var(--sv-bg-card))",
+        background:
+          "color-mix(in srgb, var(--sv-accent) 6%, var(--sv-bg-card))",
       }}
     >
-      <i className={`pi ${icon}`} style={{ color: "var(--sv-accent)", fontSize: "0.875rem" }} />
+      <i
+        className={`pi ${icon}`}
+        style={{ color: "var(--sv-accent)", fontSize: "0.875rem" }}
+      />
       <span
         style={{
           fontWeight: 700,
@@ -453,64 +493,111 @@ const SidebarCard: React.FC<{
 
 // ─── ChannelCard ──────────────────────────────────────────────────────────────
 
+const CHANNELS = [
+  {
+    name: "Before The Bell",
+    description:
+      "Pre-market analysis and daily briefings to start your trading day informed.",
+    url: "https://www.youtube.com/@BeforeTheBell.",
+  },
+  {
+    name: "The Real Investment Show",
+    description:
+      "In-depth market commentary, portfolio strategies, and economic insights.",
+    url: "https://www.youtube.com/@TheRealInvestmentShow",
+  },
+];
+
 const ChannelCard: React.FC = () => (
-  <SidebarCard title="About This Channel" icon="pi-youtube">
-    <div style={{ textAlign: "center", marginBottom: "0.75rem" }}>
-      <div
-        style={{
-          width: 56,
-          height: 56,
-          borderRadius: "50%",
-          background: "var(--sv-accent-bg)",
-          border: "2px solid color-mix(in srgb, var(--sv-accent) 35%, transparent)",
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: "0.5rem",
-        }}
-      >
-        <i className="pi pi-video" style={{ color: "var(--sv-accent)", fontSize: "1.4rem" }} />
-      </div>
-      <div
-        style={{
-          fontWeight: 700,
-          fontSize: "0.85rem",
-          color: "var(--sv-text-primary)",
-          marginBottom: "0.2rem",
-        }}
-      >
-        Real Investment Advice
-      </div>
-      <div style={{ fontSize: "0.7rem", color: "var(--sv-text-muted)", lineHeight: 1.55 }}>
-        Expert market analysis, portfolio strategies, and weekly video commentary from the SimpleVisor pro team.
-      </div>
+  <SidebarCard title="Our YouTube Channels" icon="pi-youtube">
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
+      {CHANNELS.map((ch) => (
+        <div
+          key={ch.url}
+          style={{
+            borderRadius: 10,
+            border: "1px solid var(--sv-border)",
+            padding: "0.75rem",
+            background:
+              "color-mix(in srgb, var(--sv-accent) 4%, var(--sv-bg-card))",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.6rem",
+              marginBottom: "0.35rem",
+            }}
+          >
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                background: "var(--sv-accent-bg)",
+                border:
+                  "1.5px solid color-mix(in srgb, var(--sv-accent) 30%, transparent)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <i
+                className="pi pi-youtube"
+                style={{ color: "var(--sv-accent)", fontSize: "1rem" }}
+              />
+            </div>
+            <span
+              style={{
+                fontWeight: 700,
+                fontSize: "0.82rem",
+                color: "var(--sv-text-primary)",
+              }}
+            >
+              {ch.name}
+            </span>
+          </div>
+          <p
+            style={{
+              fontSize: "0.68rem",
+              color: "var(--sv-text-muted)",
+              lineHeight: 1.55,
+              margin: "0 0 0.6rem 0",
+            }}
+          >
+            {ch.description}
+          </p>
+          <a
+            href={ch.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.35rem",
+              width: "100%",
+              padding: "0.45rem 0",
+              borderRadius: 7,
+              background: "var(--sv-accent)",
+              color: "#fff",
+              fontWeight: 700,
+              fontSize: "0.7rem",
+              textDecoration: "none",
+              letterSpacing: "0.03em",
+              transition: "opacity 0.15s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+          >
+            <i className="pi pi-youtube" style={{ fontSize: "0.75rem" }} />
+            Subscribe
+          </a>
+        </div>
+      ))}
     </div>
-    <a
-      href="https://www.youtube.com/channel/UCTpR8UvrqZpbNAjnLXtNjkA"
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "0.4rem",
-        width: "100%",
-        padding: "0.55rem 0",
-        borderRadius: 8,
-        background: "var(--sv-accent)",
-        color: "#fff",
-        fontWeight: 700,
-        fontSize: "0.75rem",
-        textDecoration: "none",
-        letterSpacing: "0.03em",
-        transition: "opacity 0.15s",
-      }}
-      onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
-      onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-    >
-      <i className="pi pi-youtube" style={{ fontSize: "0.8rem" }} />
-      Subscribe on YouTube
-    </a>
   </SidebarCard>
 );
 
@@ -522,9 +609,10 @@ const CommentaryVideosPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [nextPageToken, setNextPageToken] = useState<string | undefined>();
   const [prevPageToken, setPrevPageToken] = useState<string | undefined>();
-  const [currentPageToken, setCurrentPageToken] = useState<string | undefined>();
+  const [currentPageToken, setCurrentPageToken] = useState<
+    string | undefined
+  >();
   const [pageNum, setPageNum] = useState(1);
-
 
   const fetchVideos = useCallback(async (pageToken?: string) => {
     setLoading(true);
@@ -576,7 +664,14 @@ const CommentaryVideosPage: React.FC = () => {
     <>
       {/* ── Page header ── */}
       <div className="mb-4">
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.25rem" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.75rem",
+            marginBottom: "0.25rem",
+          }}
+        >
           <div
             style={{
               width: 42,
@@ -586,16 +681,26 @@ const CommentaryVideosPage: React.FC = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              border: "1px solid color-mix(in srgb, var(--sv-accent) 25%, transparent)",
+              border:
+                "1px solid color-mix(in srgb, var(--sv-accent) 25%, transparent)",
               flexShrink: 0,
             }}
           >
-            <i className="pi pi-youtube" style={{ color: "var(--sv-accent)", fontSize: "1.15rem" }} />
+            <i
+              className="pi pi-youtube"
+              style={{ color: "var(--sv-accent)", fontSize: "1.15rem" }}
+            />
           </div>
           <div>
-            <h1 className="text-2xl font-bold m-0 sv-page-title">Video Commentary</h1>
-            <p className="m-0 text-sm" style={{ color: "var(--sv-text-muted)", marginTop: "0.1rem" }}>
-              Market analysis &amp; investment insights — weekly video commentary from Real Investment Advice
+            <h1 className="text-2xl font-bold m-0 sv-page-title">
+              Video Commentary
+            </h1>
+            <p
+              className="m-0 text-sm"
+              style={{ color: "var(--sv-text-muted)", marginTop: "0.1rem" }}
+            >
+              Market analysis &amp; investment insights — weekly video
+              commentary from Real Investment Advice
             </p>
           </div>
         </div>
@@ -614,12 +719,15 @@ const CommentaryVideosPage: React.FC = () => {
       <div className="grid">
         {/* ── Main video grid ── */}
         <div className="col-12 lg:col-8 p-1">
-
           {/* Loading skeletons */}
           {loading && (
             <div className="grid">
               {Array.from({ length: PAGE_SIZE }).map((_, i) => (
-                <div key={i} className="col-12 md:col-4 p-2" style={{ display: "flex" }}>
+                <div
+                  key={i}
+                  className="col-12 md:col-4 p-2"
+                  style={{ display: "flex" }}
+                >
                   <VideoCardSkeleton />
                 </div>
               ))}
@@ -647,7 +755,13 @@ const CommentaryVideosPage: React.FC = () => {
                   marginBottom: "0.75rem",
                 }}
               />
-              <p style={{ margin: "0 0 0.5rem", color: "var(--sv-text-primary)", fontWeight: 600 }}>
+              <p
+                style={{
+                  margin: "0 0 0.5rem",
+                  color: "var(--sv-text-primary)",
+                  fontWeight: 600,
+                }}
+              >
                 {error}
               </p>
               <button
@@ -664,7 +778,10 @@ const CommentaryVideosPage: React.FC = () => {
                   cursor: "pointer",
                 }}
               >
-                <i className="pi pi-refresh mr-2" style={{ fontSize: "0.7rem" }} />
+                <i
+                  className="pi pi-refresh mr-2"
+                  style={{ fontSize: "0.7rem" }}
+                />
                 Retry
               </button>
             </div>
@@ -691,7 +808,13 @@ const CommentaryVideosPage: React.FC = () => {
                   marginBottom: "0.75rem",
                 }}
               />
-              <p style={{ margin: 0, color: "var(--sv-text-muted)", fontSize: "0.9rem" }}>
+              <p
+                style={{
+                  margin: 0,
+                  color: "var(--sv-text-muted)",
+                  fontSize: "0.9rem",
+                }}
+              >
                 No videos found at this time.
               </p>
             </div>
@@ -702,7 +825,11 @@ const CommentaryVideosPage: React.FC = () => {
             <>
               <div className="grid">
                 {videos.map((item) => (
-                  <div key={item.id} className="col-12 md:col-4 p-2" style={{ display: "flex" }}>
+                  <div
+                    key={item.id}
+                    className="col-12 md:col-4 p-2"
+                    style={{ display: "flex" }}
+                  >
                     <VideoCard item={item} />
                   </div>
                 ))}
@@ -723,7 +850,11 @@ const CommentaryVideosPage: React.FC = () => {
                 <Paginator
                   first={(pageNum - 1) * PAGE_SIZE}
                   rows={PAGE_SIZE}
-                  totalRecords={nextPageToken ? Math.max(pageNum + 4, 5) * PAGE_SIZE : pageNum * PAGE_SIZE}
+                  totalRecords={
+                    nextPageToken
+                      ? Math.max(pageNum + 4, 5) * PAGE_SIZE
+                      : pageNum * PAGE_SIZE
+                  }
                   onPageChange={handlePageChange}
                   template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                 />
@@ -741,7 +872,15 @@ const CommentaryVideosPage: React.FC = () => {
             badgeIcon="pi-tag"
             name="Topics Covered"
             description="Expert commentary spanning a wide range of investment topics to help you navigate complex market environments."
-            tags={["Market Analysis", "Portfolio Strategy", "Risk Management", "Technical Analysis", "Economic Outlook", "Sector Rotation", "Asset Allocation"]}
+            tags={[
+              "Market Analysis",
+              "Portfolio Strategy",
+              "Risk Management",
+              "Technical Analysis",
+              "Economic Outlook",
+              "Sector Rotation",
+              "Asset Allocation",
+            ]}
           />
         </div>
       </div>
