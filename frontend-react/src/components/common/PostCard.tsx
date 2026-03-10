@@ -37,7 +37,9 @@ export interface PostCardProps {
 const FRESH_HOURS = 48;
 
 export function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, "").trim();
+  const stripped = html.replace(/<[^>]*>/g, "");
+  const doc = new DOMParser().parseFromString(stripped, "text/html");
+  return doc.documentElement.textContent?.trim() ?? "";
 }
 
 export function formatDate(dateStr: string): string {
