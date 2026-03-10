@@ -525,46 +525,6 @@ const NewsletterPage: React.FC = () => {
       <div className="grid">
         {/* ── Main content ── */}
         <div className="col-12 lg:col-8 p-1">
-          {/* Status bar */}
-          {!loadingPosts && posts.length > 0 && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: "0.875rem",
-                padding: "0.5rem 0.75rem",
-                background: "var(--sv-bg-card)",
-                border: "1px solid var(--sv-border)",
-                borderRadius: 8,
-                boxShadow: "var(--sv-shadow-sm)",
-              }}
-            >
-              <span style={{ fontSize: "0.73rem", color: "var(--sv-text-muted)" }}>
-                <i
-                  className="pi pi-file-edit mr-2"
-                  style={{ fontSize: "0.68rem", color: "var(--sv-accent)" }}
-                />
-                <strong style={{ color: "var(--sv-text-primary)" }}>{totalPosts}</strong> issues found
-              </span>
-              <span
-                style={{
-                  fontSize: "0.58rem",
-                  fontWeight: 700,
-                  padding: "0.2rem 0.55rem",
-                  borderRadius: 4,
-                  background: "var(--sv-accent-bg)",
-                  color: "var(--sv-accent)",
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  border: "1px solid color-mix(in srgb, var(--sv-accent) 22%, transparent)",
-                }}
-              >
-                Pro Newsletter
-              </span>
-            </div>
-          )}
-
           {/* Loading state */}
           {loadingPosts && (
             <div className="grid">
@@ -654,6 +614,40 @@ const NewsletterPage: React.FC = () => {
 
         {/* ── Sidebar ── */}
         <div className="col-12 lg:col-4 p-1">
+          {/* Popular posts */}
+          <SidebarCard title="Popular Posts" icon="pi-star">
+            {loadingPopular ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                    <Skeleton width="22px" height="22px" borderRadius="50%" />
+                    <div style={{ flex: 1 }}>
+                      <Skeleton width="100%" height="12px" borderRadius="4px" className="mb-1" />
+                      <Skeleton width="60%" height="12px" borderRadius="4px" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : popularPosts.length === 0 ? (
+              <p
+                style={{
+                  fontSize: "0.75rem",
+                  color: "var(--sv-text-muted)",
+                  textAlign: "center",
+                  margin: 0,
+                }}
+              >
+                No popular posts available.
+              </p>
+            ) : (
+              <div>
+                {popularPosts.map((post, i) => (
+                  <PopularPostItem key={post.id} post={post} rank={i + 1} />
+                ))}
+              </div>
+            )}
+          </SidebarCard>
+
           {/* Newsletter info */}
           <SidebarCard title="About Pro Newsletter" icon="pi-envelope">
             <div style={{ textAlign: "center", marginBottom: "1rem" }}>
@@ -723,40 +717,6 @@ const NewsletterPage: React.FC = () => {
                 </span>
               ))}
             </div>
-          </SidebarCard>
-
-          {/* Popular posts */}
-          <SidebarCard title="Popular Posts" icon="pi-star">
-            {loadingPopular ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                    <Skeleton width="22px" height="22px" borderRadius="50%" />
-                    <div style={{ flex: 1 }}>
-                      <Skeleton width="100%" height="12px" borderRadius="4px" className="mb-1" />
-                      <Skeleton width="60%" height="12px" borderRadius="4px" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : popularPosts.length === 0 ? (
-              <p
-                style={{
-                  fontSize: "0.75rem",
-                  color: "var(--sv-text-muted)",
-                  textAlign: "center",
-                  margin: 0,
-                }}
-              >
-                No popular posts available.
-              </p>
-            ) : (
-              <div>
-                {popularPosts.map((post, i) => (
-                  <PopularPostItem key={post.id} post={post} rank={i + 1} />
-                ))}
-              </div>
-            )}
           </SidebarCard>
         </div>
       </div>
