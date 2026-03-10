@@ -87,6 +87,20 @@ function truncate(text: string, max: number): string {
   return text.length > max ? text.slice(0, max) + "…" : text;
 }
 
+const FRESH_HOURS = 48;
+
+function isRecent(dateStr: string): boolean {
+  return Date.now() - new Date(dateStr).getTime() < FRESH_HOURS * 60 * 60 * 1000;
+}
+
+function timeAgo(dateStr: string): string {
+  const diffMs = Date.now() - new Date(dateStr).getTime();
+  const diffH = Math.floor(diffMs / (1000 * 60 * 60));
+  if (diffH < 1) return `${Math.floor(diffMs / (1000 * 60))}m ago`;
+  if (diffH < 24) return `${diffH}h ago`;
+  return `${Math.floor(diffH / 24)}d ago`;
+}
+
 // ─── VideoCardSkeleton ────────────────────────────────────────────────────────
 
 const VideoCardSkeleton: React.FC = () => (
@@ -125,6 +139,7 @@ const VideoCard: React.FC<{ item: YtItem }> = ({ item }) => {
   const thumb = getBestThumbnail(snippet.thumbnails);
   const [hovered, setHovered] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
+  const recent = isRecent(snippet.publishedAt);
 
   return (
     <div
@@ -285,10 +300,32 @@ const VideoCard: React.FC<{ item: YtItem }> = ({ item }) => {
           >
             {snippet.videoOwnerChannelTitle || snippet.channelTitle}
           </span>
+          {recent && (
+            <span
+              style={{
+                fontSize: "0.55rem",
+                fontWeight: 700,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                padding: "0.14rem 0.4rem",
+                borderRadius: 3,
+                background: "color-mix(in srgb, var(--sv-success, #22c55e) 12%, transparent)",
+                color: "var(--sv-success, #22c55e)",
+                border: "1px solid color-mix(in srgb, var(--sv-success, #22c55e) 25%, transparent)",
+              }}
+            >
+              New
+            </span>
+          )}
           <span style={{ color: "var(--sv-text-muted)", fontSize: "0.67rem" }}>
             <i className="pi pi-calendar mr-1" style={{ fontSize: "0.6rem" }} />
             {formatDate(snippet.publishedAt)}
           </span>
+          {recent && (
+            <span style={{ color: "var(--sv-text-muted)", fontSize: "0.62rem" }}>
+              · {timeAgo(snippet.publishedAt)}
+            </span>
+          )}
         </div>
 
         {/* Title */}
