@@ -98,6 +98,8 @@ const VideoCardSkeleton: React.FC = () => (
       overflow: "hidden",
       display: "flex",
       flexDirection: "column",
+      height: "100%",
+      width: "100%",
     }}
   >
     <Skeleton width="100%" height="180px" borderRadius="0" />
@@ -133,6 +135,7 @@ const VideoCard: React.FC<{ item: YtItem }> = ({ item }) => {
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
+        height: "100%",
         transition: "box-shadow 0.2s, border-color 0.2s, transform 0.2s",
         boxShadow: hovered ? "var(--sv-shadow-md)" : "var(--sv-shadow-sm)",
         transform: hovered ? "translateY(-2px)" : "translateY(0)",
@@ -666,7 +669,7 @@ const CommentaryVideosPage: React.FC = () => {
           {loading && (
             <div className="grid">
               {Array.from({ length: PAGE_SIZE }).map((_, i) => (
-                <div key={i} className="col-12 md:col-4 p-2">
+                <div key={i} className="col-12 md:col-4 p-2" style={{ display: "flex" }}>
                   <VideoCardSkeleton />
                 </div>
               ))}
@@ -749,7 +752,7 @@ const CommentaryVideosPage: React.FC = () => {
             <>
               <div className="grid">
                 {videos.map((item) => (
-                  <div key={item.id} className="col-12 md:col-4 p-2">
+                  <div key={item.id} className="col-12 md:col-4 p-2" style={{ display: "flex" }}>
                     <VideoCard item={item} />
                   </div>
                 ))}
