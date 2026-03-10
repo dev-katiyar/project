@@ -364,19 +364,49 @@ const RecentRIAPage: React.FC = () => {
 
           {/* About */}
           <SidebarCard title="About Recent RIA" icon="pi-info-circle">
-            <p
-              style={{
-                fontSize: "0.72rem",
-                color: "var(--sv-text-muted)",
-                lineHeight: 1.6,
-                margin: 0,
-              }}
-            >
-              Real Investment Advice (RIA) delivers in-depth analysis on markets, investing
-              strategies, and portfolio management. Written by professional portfolio managers
-              and analysts to help retail investors navigate complex market environments.
-            </p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", marginTop: "0.75rem" }}>
+            <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+              <div
+                style={{
+                  width: 52,
+                  height: 52,
+                  borderRadius: "50%",
+                  background: "var(--sv-accent-bg)",
+                  border: "2px solid color-mix(in srgb, var(--sv-accent) 30%, transparent)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                <i
+                  className="pi pi-chart-line"
+                  style={{ color: "var(--sv-accent)", fontSize: "1.3rem" }}
+                />
+              </div>
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: "0.85rem",
+                  color: "var(--sv-text-primary)",
+                  marginBottom: "0.3rem",
+                }}
+              >
+                Real Investment Advice
+              </div>
+              <p
+                style={{
+                  fontSize: "0.72rem",
+                  color: "var(--sv-text-muted)",
+                  lineHeight: 1.6,
+                  margin: 0,
+                }}
+              >
+                In-depth analysis on markets, investing strategies, and portfolio management.
+                Written by professional portfolio managers and analysts to help retail investors
+                navigate complex market environments.
+              </p>
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
               {[
                 "Portfolio Management",
                 "Market Analysis",
