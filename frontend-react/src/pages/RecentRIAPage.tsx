@@ -1,141 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Skeleton } from "primereact/skeleton";
 import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
 import api from "@/services/api";
-import PostCard, { CardSkeleton, getIssueLabel, stripHtml, type WpPost } from "@/components/common/PostCard";
+import PostCard, { CardSkeleton, getIssueLabel, type WpPost } from "@/components/common/PostCard";
 import AboutSidebarCard from "@/components/common/AboutSidebarCard";
+import PopularPostsSidebarCard from "@/components/common/PopularPostsSidebarCard";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const CATEGORY_ID = 256; // WpPostCategories.Investing
 const PAGE_SIZE = 6;
 const POPULAR_LIMIT = 6;
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function getImageUrl(post: WpPost): string | undefined {
-  const og = post.yoast_head_json?.og_image;
-  return og && og.length > 0 ? og[0].url : undefined;
-}
-
-// ─── SidebarCard ──────────────────────────────────────────────────────────────
-
-const SidebarCard: React.FC<{ title: string; icon: string; children: React.ReactNode }> = ({
-  title,
-  icon,
-  children,
-}) => (
-  <div
-    style={{
-      background: "var(--sv-bg-card)",
-      border: "1px solid var(--sv-border)",
-      borderRadius: 12,
-      marginBottom: "1rem",
-      boxShadow: "var(--sv-shadow-sm)",
-      overflow: "hidden",
-    }}
-  >
-    <div
-      style={{
-        padding: "0.7rem 1rem",
-        borderBottom: "1px solid var(--sv-border)",
-        display: "flex",
-        alignItems: "center",
-        gap: "0.5rem",
-        background: "color-mix(in srgb, var(--sv-accent) 6%, var(--sv-bg-card))",
-      }}
-    >
-      <i className={`pi ${icon}`} style={{ color: "var(--sv-accent)", fontSize: "0.875rem" }} />
-      <span
-        style={{
-          fontWeight: 700,
-          fontSize: "0.75rem",
-          color: "var(--sv-text-primary)",
-          letterSpacing: "0.05em",
-          textTransform: "uppercase",
-        }}
-      >
-        {title}
-      </span>
-    </div>
-    <div style={{ padding: "0.875rem" }}>{children}</div>
-  </div>
-);
-
-// ─── PopularPostItem ──────────────────────────────────────────────────────────
-
-const PopularPostItem: React.FC<{ post: WpPost; rank: number }> = ({ post, rank }) => {
-  const title = stripHtml(post.title.rendered);
-  const imageUrl = getImageUrl(post);
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <a
-      href={post.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{
-        display: "flex",
-        gap: "0.625rem",
-        alignItems: "flex-start",
-        padding: "0.5rem 0.375rem",
-        borderRadius: 8,
-        textDecoration: "none",
-        marginBottom: "0.125rem",
-        background: hovered ? "var(--sv-bg-surface)" : "transparent",
-        transition: "background 0.15s",
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <span
-        style={{
-          flexShrink: 0,
-          width: 22,
-          height: 22,
-          borderRadius: "50%",
-          background:
-            rank <= 3
-              ? "var(--sv-accent)"
-              : "color-mix(in srgb, var(--sv-accent) 15%, var(--sv-bg-surface))",
-          color: rank <= 3 ? "#fff" : "var(--sv-accent)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "0.6rem",
-          fontWeight: 800,
-          marginTop: 2,
-        }}
-      >
-        {rank}
-      </span>
-      {imageUrl && (
-        <img
-          src={imageUrl}
-          alt={title}
-          style={{ width: 46, height: 38, objectFit: "cover", borderRadius: 6, flexShrink: 0 }}
-        />
-      )}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div
-          style={{
-            fontSize: "0.75rem",
-            fontWeight: 600,
-            color: hovered ? "var(--sv-accent)" : "var(--sv-text-primary)",
-            lineHeight: 1.45,
-            transition: "color 0.15s",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
-          {title}
-        </div>
-      </div>
-    </a>
-  );
-};
 
 // ─── RecentRIAPage ────────────────────────────────────────────────────────────
 
@@ -330,38 +204,7 @@ const RecentRIAPage: React.FC = () => {
         {/* ── Sidebar ── */}
         <div className="col-12 lg:col-4 p-1">
           {/* Popular Posts */}
-          <SidebarCard title="Popular Posts" icon="pi-fire">
-            {loadingPopular ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                    <Skeleton width="22px" height="22px" borderRadius="50%" />
-                    <div style={{ flex: 1 }}>
-                      <Skeleton width="100%" height="12px" borderRadius="4px" className="mb-1" />
-                      <Skeleton width="60%" height="12px" borderRadius="4px" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : popularPosts.length === 0 ? (
-              <p
-                style={{
-                  fontSize: "0.75rem",
-                  color: "var(--sv-text-muted)",
-                  textAlign: "center",
-                  margin: 0,
-                }}
-              >
-                No popular posts available.
-              </p>
-            ) : (
-              <div>
-                {popularPosts.map((post, i) => (
-                  <PopularPostItem key={post.id} post={post} rank={i + 1} />
-                ))}
-              </div>
-            )}
-          </SidebarCard>
+          <PopularPostsSidebarCard loading={loadingPopular} posts={popularPosts} icon="pi-fire" />
 
           {/* About */}
           <AboutSidebarCard
