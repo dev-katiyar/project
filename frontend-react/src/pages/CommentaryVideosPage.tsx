@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Skeleton } from "primereact/skeleton";
 import axios from "axios";
 
@@ -6,7 +6,6 @@ import axios from "axios";
 
 const PLAYLIST_ID = "PLVT8LcWPeAuhi47sn298HrsWYwmg8MV7d"; // RiaPro
 const PAGE_SIZE = 6;
-const ARCHIVE_MONTHS = 5;
 const YT_API_BASE = "https://www.googleapis.com/youtube/v3/playlistItems";
 const GAPI_KEY = import.meta.env.VITE_GAPI_KEY as string;
 
@@ -385,7 +384,7 @@ const SidebarCard: React.FC<{
   >
     <div
       style={{
-        padding: "0.75rem 1rem",
+        padding: "0.7rem 1rem",
         borderBottom: "1px solid var(--sv-border)",
         display: "flex",
         alignItems: "center",
@@ -397,9 +396,9 @@ const SidebarCard: React.FC<{
       <span
         style={{
           fontWeight: 700,
-          fontSize: "0.78rem",
+          fontSize: "0.75rem",
           color: "var(--sv-text-primary)",
-          letterSpacing: "0.04em",
+          letterSpacing: "0.05em",
           textTransform: "uppercase",
         }}
       >
@@ -472,53 +471,6 @@ const ChannelCard: React.FC = () => (
     </a>
   </SidebarCard>
 );
-
-// ─── ArchiveMonthItem ─────────────────────────────────────────────────────────
-
-const ArchiveMonthItem: React.FC<{ date: Date; idx: number }> = ({ date, idx }) => {
-  const [hovered, setHovered] = useState(false);
-  const label = date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0.4rem 0.5rem",
-        borderRadius: 6,
-        cursor: "pointer",
-        background: hovered ? "var(--sv-bg-surface)" : "transparent",
-        transition: "background 0.15s",
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <i className="pi pi-folder-open" style={{ color: "var(--sv-accent)", fontSize: "0.72rem" }} />
-        <span style={{ fontSize: "0.77rem", color: "var(--sv-text-secondary)", fontWeight: 500 }}>
-          {label}
-        </span>
-      </div>
-      {idx === 0 && (
-        <span
-          style={{
-            fontSize: "0.55rem",
-            fontWeight: 700,
-            padding: "0.15rem 0.35rem",
-            borderRadius: 3,
-            background: "var(--sv-success-bg)",
-            color: "var(--sv-success)",
-            letterSpacing: "0.05em",
-            textTransform: "uppercase",
-          }}
-        >
-          Latest
-        </span>
-      )}
-    </div>
-  );
-};
 
 // ─── PaginationBar ────────────────────────────────────────────────────────────
 
@@ -620,12 +572,6 @@ const CommentaryVideosPage: React.FC = () => {
   const [currentPageToken, setCurrentPageToken] = useState<string | undefined>();
   const [pageNum, setPageNum] = useState(1);
 
-  const archiveMonths = useMemo<Date[]>(() => {
-    const now = new Date();
-    return Array.from({ length: ARCHIVE_MONTHS }, (_, i) =>
-      new Date(now.getFullYear(), now.getMonth() - i),
-    );
-  }, []);
 
   const fetchVideos = useCallback(async (pageToken?: string) => {
     setLoading(true);
@@ -680,9 +626,9 @@ const CommentaryVideosPage: React.FC = () => {
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.25rem" }}>
           <div
             style={{
-              width: 38,
-              height: 38,
-              borderRadius: 10,
+              width: 42,
+              height: 42,
+              borderRadius: 11,
               background: "var(--sv-accent-bg)",
               display: "flex",
               alignItems: "center",
@@ -691,7 +637,7 @@ const CommentaryVideosPage: React.FC = () => {
               flexShrink: 0,
             }}
           >
-            <i className="pi pi-youtube" style={{ color: "var(--sv-accent)", fontSize: "1.1rem" }} />
+            <i className="pi pi-youtube" style={{ color: "var(--sv-accent)", fontSize: "1.15rem" }} />
           </div>
           <div>
             <h1 className="text-2xl font-bold m-0 sv-page-title">Video Commentary</h1>
@@ -716,52 +662,11 @@ const CommentaryVideosPage: React.FC = () => {
         {/* ── Main video grid ── */}
         <div className="col-12 lg:col-8 p-1">
 
-          {/* Status bar */}
-          {!loading && !error && videos.length > 0 && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: "0.875rem",
-                padding: "0.5rem 0.75rem",
-                background: "var(--sv-bg-card)",
-                border: "1px solid var(--sv-border)",
-                borderRadius: 8,
-                boxShadow: "var(--sv-shadow-sm)",
-              }}
-            >
-              <span style={{ fontSize: "0.73rem", color: "var(--sv-text-muted)" }}>
-                <i className="pi pi-video mr-2" style={{ fontSize: "0.68rem", color: "var(--sv-accent)" }} />
-                Showing{" "}
-                <strong style={{ color: "var(--sv-text-primary)" }}>{videos.length}</strong> videos
-                {pageNum > 1 && (
-                  <> — page <strong style={{ color: "var(--sv-text-primary)" }}>{pageNum}</strong></>
-                )}
-              </span>
-              <span
-                style={{
-                  fontSize: "0.6rem",
-                  fontWeight: 700,
-                  padding: "0.2rem 0.55rem",
-                  borderRadius: 4,
-                  background: "var(--sv-accent-bg)",
-                  color: "var(--sv-accent)",
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  border: "1px solid color-mix(in srgb, var(--sv-accent) 22%, transparent)",
-                }}
-              >
-                RIA Pro
-              </span>
-            </div>
-          )}
-
           {/* Loading skeletons */}
           {loading && (
             <div className="grid">
               {Array.from({ length: PAGE_SIZE }).map((_, i) => (
-                <div key={i} className="col-12 md:col-6 p-2">
+                <div key={i} className="col-12 md:col-4 p-2">
                   <VideoCardSkeleton />
                 </div>
               ))}
@@ -844,7 +749,7 @@ const CommentaryVideosPage: React.FC = () => {
             <>
               <div className="grid">
                 {videos.map((item) => (
-                  <div key={item.id} className="col-12 md:col-6 p-2">
+                  <div key={item.id} className="col-12 md:col-4 p-2">
                     <VideoCard item={item} />
                   </div>
                 ))}
@@ -867,9 +772,9 @@ const CommentaryVideosPage: React.FC = () => {
           {/* Channel info */}
           <ChannelCard />
 
-          {/* Tips card */}
+          {/* Investment topics */}
           <SidebarCard title="Investment Topics" icon="pi-tag">
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.375rem" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
               {[
                 "Market Analysis",
                 "Portfolio Strategy",
@@ -884,44 +789,17 @@ const CommentaryVideosPage: React.FC = () => {
                   style={{
                     fontSize: "0.6rem",
                     fontWeight: 600,
-                    padding: "0.22rem 0.55rem",
+                    padding: "0.2rem 0.5rem",
                     borderRadius: 4,
                     background: "var(--sv-bg-surface)",
                     color: "var(--sv-text-muted)",
                     border: "1px solid var(--sv-border)",
-                    letterSpacing: "0.03em",
-                    cursor: "default",
                   }}
                 >
                   {tag}
                 </span>
               ))}
             </div>
-          </SidebarCard>
-
-          {/* Newsletter Archives */}
-          <SidebarCard title="Newsletter Archives" icon="pi-calendar">
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.125rem" }}>
-              {archiveMonths.map((date, i) => (
-                <ArchiveMonthItem key={i} date={date} idx={i} />
-              ))}
-            </div>
-          </SidebarCard>
-
-          {/* About */}
-          <SidebarCard title="About Video Commentary" icon="pi-info-circle">
-            <p
-              style={{
-                fontSize: "0.77rem",
-                color: "var(--sv-text-secondary)",
-                lineHeight: 1.7,
-                margin: 0,
-              }}
-            >
-              Weekly video commentary from the Real Investment Advice team covering macro trends,
-              market internals, and portfolio positioning — designed to help retail investors make
-              better-informed decisions.
-            </p>
           </SidebarCard>
         </div>
       </div>
