@@ -1,142 +1,16 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { Skeleton } from "primereact/skeleton";
 import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
 import { useSearchParams } from "react-router-dom";
 import api from "@/services/api";
-import PostCard, { CardSkeleton, formatDate, stripHtml, type WpPost } from "@/components/common/PostCard";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-interface PopularPost {
-  id: number;
-  title: string;
-  date: string;
-  link: string;
-  meta?: { views?: number };
-}
+import PostCard, { CardSkeleton, type WpPost } from "@/components/common/PostCard";
+import SidebarCard from "@/components/common/SidebarCard";
+import PopularPostsSidebarCard, { type PopularPost } from "@/components/common/PopularPostsSidebarCard";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const CATEGORY_ID = 902; // WpPostCategories.ProCommentary
 const PAGE_SIZE = 6;
 const POPULAR_LIMIT = 6;
-
-// ─── SidebarCard ──────────────────────────────────────────────────────────────
-
-const SidebarCard: React.FC<{ title: string; icon: string; children: React.ReactNode }> = ({
-  title,
-  icon,
-  children,
-}) => (
-  <div
-    style={{
-      background: "var(--sv-bg-card)",
-      border: "1px solid var(--sv-border)",
-      borderRadius: 12,
-      marginBottom: "1rem",
-      boxShadow: "var(--sv-shadow-sm)",
-      overflow: "hidden",
-    }}
-  >
-    <div
-      style={{
-        padding: "0.7rem 1rem",
-        borderBottom: "1px solid var(--sv-border)",
-        display: "flex",
-        alignItems: "center",
-        gap: "0.5rem",
-        background: "color-mix(in srgb, var(--sv-accent) 6%, var(--sv-bg-card))",
-      }}
-    >
-      <i className={`pi ${icon}`} style={{ color: "var(--sv-accent)", fontSize: "0.875rem" }} />
-      <span
-        style={{
-          fontWeight: 700,
-          fontSize: "0.75rem",
-          color: "var(--sv-text-primary)",
-          letterSpacing: "0.05em",
-          textTransform: "uppercase",
-        }}
-      >
-        {title}
-      </span>
-    </div>
-    <div style={{ padding: "0.875rem" }}>{children}</div>
-  </div>
-);
-
-// ─── PopularPostItem ──────────────────────────────────────────────────────────
-
-const PopularPostItem: React.FC<{ post: PopularPost; rank: number }> = ({ post, rank }) => {
-  const [hovered, setHovered] = useState(false);
-  const title = typeof post.title === "string" ? post.title : stripHtml((post.title as any)?.rendered ?? "");
-
-  return (
-    <a
-      href={post.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{
-        display: "flex",
-        alignItems: "flex-start",
-        gap: "0.65rem",
-        padding: "0.5rem 0.4rem",
-        borderRadius: 7,
-        textDecoration: "none",
-        background: hovered ? "var(--sv-bg-surface)" : "transparent",
-        transition: "background 0.15s",
-        marginBottom: "0.25rem",
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      {/* Rank bubble */}
-      <span
-        style={{
-          flexShrink: 0,
-          width: 22,
-          height: 22,
-          borderRadius: "50%",
-          background:
-            rank <= 3
-              ? "var(--sv-accent)"
-              : "color-mix(in srgb, var(--sv-accent) 15%, var(--sv-bg-surface))",
-          color: rank <= 3 ? "#fff" : "var(--sv-accent)",
-          fontSize: "0.6rem",
-          fontWeight: 800,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: 1,
-        }}
-      >
-        {rank}
-      </span>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div
-          style={{
-            fontSize: "0.75rem",
-            fontWeight: 600,
-            color: hovered ? "var(--sv-accent)" : "var(--sv-text-primary)",
-            lineHeight: 1.45,
-            transition: "color 0.15s",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
-          {title}
-        </div>
-        {post.date && (
-          <div style={{ fontSize: "0.62rem", color: "var(--sv-text-muted)", marginTop: "0.2rem" }}>
-            {formatDate(post.date)}
-          </div>
-        )}
-      </div>
-    </a>
-  );
-};
 
 // ─── RealTimeCommentaryPage ───────────────────────────────────────────────────
 
@@ -434,38 +308,7 @@ const RealTimeCommentaryPage: React.FC = () => {
         {/* ── Sidebar ── */}
         <div className="col-12 lg:col-4 p-1">
           {/* Popular posts */}
-          <SidebarCard title="Popular Posts" icon="pi-star">
-            {loadingPopular ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                    <Skeleton width="22px" height="22px" borderRadius="50%" />
-                    <div style={{ flex: 1 }}>
-                      <Skeleton width="100%" height="12px" borderRadius="4px" className="mb-1" />
-                      <Skeleton width="60%" height="12px" borderRadius="4px" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : popularPosts.length === 0 ? (
-              <p
-                style={{
-                  fontSize: "0.75rem",
-                  color: "var(--sv-text-muted)",
-                  textAlign: "center",
-                  margin: 0,
-                }}
-              >
-                No popular posts available.
-              </p>
-            ) : (
-              <div>
-                {popularPosts.map((post, i) => (
-                  <PopularPostItem key={post.id} post={post} rank={i + 1} />
-                ))}
-              </div>
-            )}
-          </SidebarCard>
+          <PopularPostsSidebarCard loading={loadingPopular} posts={popularPosts} />
 
           {/* About Pro Commentary */}
           <SidebarCard title="About Pro Commentary" icon="pi-bolt">
