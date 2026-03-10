@@ -9,7 +9,6 @@ import api from "@/services/api";
 const CATEGORY_ID = 902; // WpPostCategories.ProCommentary
 const PAGE_SIZE = 6;
 const POPULAR_LIMIT = 6;
-const ARCHIVE_MONTHS = 12;
 const FRESH_HOURS = 48; // posts within this window get a "New" badge
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -57,15 +56,6 @@ function getAuthor(post: WpPost): string {
 function getImageUrl(post: WpPost): string | undefined {
   const og = post.yoast_head_json?.og_image;
   return og && og.length > 0 ? og[0].url : undefined;
-}
-
-function getInitials(name: string): string {
-  return name
-    .split(" ")
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
 }
 
 function isRecent(dateStr: string): boolean {
@@ -132,367 +122,175 @@ const LiveDot: React.FC = () => (
   </span>
 );
 
+// ─── CardSkeleton ─────────────────────────────────────────────────────────────
+
+const CardSkeleton: React.FC = () => (
+  <div
+    style={{
+      background: "var(--sv-bg-card)",
+      border: "1px solid var(--sv-border)",
+      borderRadius: 14,
+      overflow: "hidden",
+      display: "flex",
+      flexDirection: "column",
+    }}
+  >
+    <Skeleton width="100%" height="110px" borderRadius="0" />
+    <div style={{ padding: "0.875rem" }}>
+      <Skeleton width="80px" height="14px" borderRadius="4px" className="mb-2" />
+      <Skeleton width="100%" height="14px" borderRadius="4px" className="mb-1" />
+      <Skeleton width="70%" height="14px" borderRadius="4px" className="mb-2" />
+      <Skeleton width="100%" height="11px" borderRadius="4px" className="mb-1" />
+      <Skeleton width="85%" height="11px" borderRadius="4px" />
+    </div>
+  </div>
+);
+
 // ─── PostCard ─────────────────────────────────────────────────────────────────
 
-const PostCard: React.FC<{ post: WpPost; featured?: boolean }> = ({ post, featured = false }) => {
+const PostCard: React.FC<{ post: WpPost }> = ({ post }) => {
+  const title = stripHtml(post.title.rendered);
   const author = getAuthor(post);
   const imageUrl = getImageUrl(post);
-  const excerpt = getExcerpt(post.excerpt.rendered, featured ? 280 : 200);
-  const title = stripHtml(post.title.rendered);
   const recent = isRecent(post.date);
+  const [imgLoaded, setImgLoaded] = useState(false);
   const [hovered, setHovered] = useState(false);
 
-  if (featured) {
-    // Featured (first) post — full-width card with large image
-    return (
-      <div
-        style={{
-          background: "var(--sv-bg-card)",
-          border: `1px solid ${hovered ? "var(--sv-accent)" : "var(--sv-border)"}`,
-          borderRadius: 14,
-          overflow: "hidden",
-          marginBottom: "0.875rem",
-          boxShadow: hovered ? "var(--sv-shadow-md)" : "var(--sv-shadow-sm)",
-          transition: "box-shadow 0.2s, border-color 0.2s",
-        }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-      >
-        {/* Hero image */}
-        <a
-          href={post.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ display: "block", position: "relative", overflow: "hidden" }}
-        >
-          <div
-            style={{
-              paddingBottom: "42%",
-              position: "relative",
-              background: "var(--sv-bg-surface)",
-            }}
-          >
-            {imageUrl ? (
-              <img
-                src={imageUrl}
-                alt={title}
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  transition: "transform 0.35s",
-                  transform: hovered ? "scale(1.04)" : "scale(1)",
-                }}
-              />
-            ) : (
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <i
-                  className="pi pi-bolt"
-                  style={{ fontSize: "3rem", color: "var(--sv-text-muted)", opacity: 0.2 }}
-                />
-              </div>
-            )}
-            {/* Gradient */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background:
-                  "linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 55%)",
-              }}
-            />
-            {/* Badges overlay */}
-            <div
-              style={{
-                position: "absolute",
-                top: 10,
-                left: 12,
-                display: "flex",
-                gap: "0.4rem",
-                alignItems: "center",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: "0.55rem",
-                  fontWeight: 800,
-                  letterSpacing: "0.09em",
-                  textTransform: "uppercase",
-                  padding: "0.2rem 0.55rem",
-                  borderRadius: 4,
-                  background: "var(--sv-accent)",
-                  color: "#fff",
-                }}
-              >
-                Pro Commentary
-              </span>
-              {recent && <LiveDot />}
-            </div>
-          </div>
-        </a>
-
-        {/* Content */}
-        <div style={{ padding: "1rem 1.25rem 1.1rem" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              marginBottom: "0.5rem",
-              flexWrap: "wrap",
-            }}
-          >
-            <span style={{ color: "var(--sv-text-muted)", fontSize: "0.67rem" }}>
-              <i className="pi pi-calendar mr-1" style={{ fontSize: "0.6rem" }} />
-              {formatDate(post.date)}
-            </span>
-            {recent && (
-              <span style={{ color: "var(--sv-text-muted)", fontSize: "0.65rem" }}>
-                · {timeAgo(post.date)}
-              </span>
-            )}
-          </div>
-
-          <a
-            href={post.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: "var(--sv-text-primary)",
-              fontWeight: 700,
-              fontSize: "1.15rem",
-              lineHeight: 1.38,
-              textDecoration: "none",
-              marginBottom: "0.5rem",
-              display: "block",
-              transition: "color 0.15s",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--sv-accent)")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--sv-text-primary)")}
-          >
-            {title}
-          </a>
-
-          <p
-            style={{
-              color: "var(--sv-text-secondary)",
-              fontSize: "0.82rem",
-              lineHeight: 1.68,
-              margin: "0 0 0.85rem",
-              display: "-webkit-box",
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
-            {excerpt}
-          </p>
-
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              paddingTop: "0.7rem",
-              borderTop: "1px solid var(--sv-border)",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-              <div
-                style={{
-                  width: 26,
-                  height: 26,
-                  borderRadius: "50%",
-                  background: "var(--sv-accent-bg)",
-                  border: "1px solid color-mix(in srgb, var(--sv-accent) 30%, transparent)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "var(--sv-accent)",
-                  fontSize: "0.52rem",
-                  fontWeight: 800,
-                  flexShrink: 0,
-                }}
-              >
-                {getInitials(author)}
-              </div>
-              <span style={{ fontSize: "0.72rem", color: "var(--sv-text-muted)", fontWeight: 500 }}>
-                {author}
-              </span>
-            </div>
-            <a
-              href={post.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.3rem",
-                padding: "0.4rem 0.85rem",
-                borderRadius: 7,
-                background: "var(--sv-accent)",
-                color: "#fff",
-                fontSize: "0.72rem",
-                fontWeight: 700,
-                textDecoration: "none",
-                letterSpacing: "0.02em",
-                transition: "opacity 0.15s",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-            >
-              Read Analysis
-              <i className="pi pi-arrow-right" style={{ fontSize: "0.6rem" }} />
-            </a>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Standard compact card — side image layout
   return (
     <div
       style={{
-        display: "flex",
-        gap: 0,
         background: "var(--sv-bg-card)",
         border: `1px solid ${hovered ? "var(--sv-accent)" : "var(--sv-border)"}`,
-        borderRadius: 12,
+        borderRadius: 14,
         overflow: "hidden",
-        marginBottom: "0.75rem",
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        transition: "border-color 0.2s, box-shadow 0.2s, transform 0.2s",
         boxShadow: hovered ? "var(--sv-shadow-md)" : "var(--sv-shadow-sm)",
-        transition: "box-shadow 0.2s, border-color 0.2s",
+        transform: hovered ? "translateY(-2px)" : "translateY(0)",
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Featured image */}
+      {/* Thumbnail */}
       <a
         href={post.link}
         target="_blank"
         rel="noopener noreferrer"
-        style={{
-          flexShrink: 0,
-          width: 170,
-          minHeight: 150,
-          overflow: "hidden",
-          display: "block",
-          background: "var(--sv-bg-surface)",
-          position: "relative",
-        }}
+        style={{ display: "block", flexShrink: 0 }}
       >
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={title}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-              transition: "transform 0.3s",
-              transform: hovered ? "scale(1.06)" : "scale(1)",
-              position: "absolute",
-              inset: 0,
-            }}
-          />
-        ) : (
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              minHeight: 150,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <i
-              className="pi pi-bolt"
-              style={{ fontSize: "2rem", color: "var(--sv-text-muted)", opacity: 0.3 }}
-            />
-          </div>
-        )}
-        {/* Accent bottom bar */}
         <div
           style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 3,
-            background: "var(--sv-accent-gradient)",
-          }}
-        />
-      </a>
-
-      {/* Content */}
-      <div
-        style={{
-          flex: 1,
-          padding: "0.8rem 1rem",
-          display: "flex",
-          flexDirection: "column",
-          minWidth: 0,
-        }}
-      >
-        {/* Badge + date */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.4rem",
-            marginBottom: "0.4rem",
-            flexWrap: "wrap",
+            position: "relative",
+            width: "100%",
+            paddingBottom: "55%",
+            background: "var(--sv-bg-surface)",
+            overflow: "hidden",
           }}
         >
-          <span
+          {!imgLoaded && (
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <i
+                className="pi pi-bolt"
+                style={{ fontSize: "1.5rem", color: "var(--sv-accent)", opacity: 0.3 }}
+              />
+            </div>
+          )}
+          {imageUrl && (
+            <img
+              src={imageUrl}
+              alt={title}
+              onLoad={() => setImgLoaded(true)}
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                opacity: imgLoaded ? 1 : 0,
+                transition: "opacity 0.3s, transform 0.35s",
+                transform: hovered ? "scale(1.05)" : "scale(1)",
+              }}
+            />
+          )}
+          {/* Badges overlay */}
+          <div
             style={{
-              fontSize: "0.55rem",
-              fontWeight: 700,
-              letterSpacing: "0.09em",
-              textTransform: "uppercase",
-              padding: "0.18rem 0.5rem",
-              borderRadius: 4,
-              background: "var(--sv-accent-bg)",
-              color: "var(--sv-accent)",
-              border: "1px solid color-mix(in srgb, var(--sv-accent) 25%, transparent)",
+              position: "absolute",
+              top: 7,
+              left: 7,
+              display: "flex",
+              gap: "0.4rem",
+              alignItems: "center",
             }}
           >
-            Pro Commentary
-          </span>
-          {recent && (
             <span
               style={{
                 fontSize: "0.52rem",
                 fontWeight: 800,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
                 padding: "0.15rem 0.4rem",
+                borderRadius: 4,
+                background: "rgba(0,0,0,0.6)",
+                color: "rgba(255,255,255,0.95)",
+                backdropFilter: "blur(4px)",
+              }}
+            >
+              Pro Commentary
+            </span>
+            {recent && <LiveDot />}
+          </div>
+        </div>
+      </a>
+
+      {/* Content */}
+      <div style={{ padding: "0.875rem", flex: 1, display: "flex", flexDirection: "column" }}>
+        {/* Meta */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.6rem",
+            marginBottom: "0.45rem",
+            flexWrap: "wrap",
+          }}
+        >
+          {recent && (
+            <span
+              style={{
+                fontSize: "0.55rem",
+                fontWeight: 700,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                padding: "0.14rem 0.4rem",
                 borderRadius: 3,
                 background: "color-mix(in srgb, var(--sv-success, #22c55e) 12%, transparent)",
                 color: "var(--sv-success, #22c55e)",
                 border: "1px solid color-mix(in srgb, var(--sv-success, #22c55e) 25%, transparent)",
-                letterSpacing: "0.07em",
-                textTransform: "uppercase",
               }}
             >
               New
             </span>
           )}
-          <span style={{ color: "var(--sv-text-muted)", fontSize: "0.64rem" }}>
-            <i className="pi pi-calendar mr-1" style={{ fontSize: "0.58rem" }} />
+          <span style={{ color: "var(--sv-text-muted)", fontSize: "0.62rem" }}>
+            <i className="pi pi-calendar mr-1" style={{ fontSize: "0.55rem" }} />
             {formatDate(post.date)}
           </span>
+          {recent && (
+            <span style={{ color: "var(--sv-text-muted)", fontSize: "0.62rem" }}>
+              · {timeAgo(post.date)}
+            </span>
+          )}
         </div>
 
         {/* Title */}
@@ -501,13 +299,16 @@ const PostCard: React.FC<{ post: WpPost; featured?: boolean }> = ({ post, featur
           target="_blank"
           rel="noopener noreferrer"
           style={{
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
             color: "var(--sv-text-primary)",
             fontWeight: 700,
-            fontSize: "0.92rem",
-            lineHeight: 1.42,
+            fontSize: "0.85rem",
+            lineHeight: 1.4,
             textDecoration: "none",
             marginBottom: "0.4rem",
-            display: "block",
             transition: "color 0.15s",
           }}
           onMouseEnter={(e) => (e.currentTarget.style.color = "var(--sv-accent)")}
@@ -520,17 +321,16 @@ const PostCard: React.FC<{ post: WpPost; featured?: boolean }> = ({ post, featur
         <p
           style={{
             color: "var(--sv-text-secondary)",
-            fontSize: "0.76rem",
-            lineHeight: 1.65,
-            margin: 0,
-            flexGrow: 1,
+            fontSize: "0.72rem",
+            lineHeight: 1.6,
+            margin: "0 0 auto 0",
             display: "-webkit-box",
-            WebkitLineClamp: 2,
+            WebkitLineClamp: 3,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
           }}
         >
-          {excerpt}
+          {getExcerpt(post.excerpt.rendered)}
         </p>
 
         {/* Footer */}
@@ -539,46 +339,27 @@ const PostCard: React.FC<{ post: WpPost; featured?: boolean }> = ({ post, featur
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginTop: "0.65rem",
+            marginTop: "0.75rem",
             paddingTop: "0.55rem",
             borderTop: "1px solid var(--sv-border)",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
-            <div
-              style={{
-                width: 22,
-                height: 22,
-                borderRadius: "50%",
-                background: "var(--sv-accent-bg)",
-                border: "1px solid color-mix(in srgb, var(--sv-accent) 28%, transparent)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "var(--sv-accent)",
-                fontSize: "0.48rem",
-                fontWeight: 800,
-                flexShrink: 0,
-              }}
-            >
-              {getInitials(author)}
-            </div>
-            <span style={{ fontSize: "0.68rem", color: "var(--sv-text-muted)", fontWeight: 500 }}>
-              {author}
-            </span>
-          </div>
+          <span style={{ fontSize: "0.62rem", color: "var(--sv-text-muted)" }}>
+            <i className="pi pi-user mr-1" style={{ fontSize: "0.55rem" }} />
+            {author}
+          </span>
           <a
             href={post.link}
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              fontSize: "0.68rem",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.3rem",
+              fontSize: "0.65rem",
               fontWeight: 700,
               color: "var(--sv-accent)",
               textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.22rem",
               letterSpacing: "0.02em",
             }}
           >
@@ -586,57 +367,6 @@ const PostCard: React.FC<{ post: WpPost; featured?: boolean }> = ({ post, featur
             <i className="pi pi-arrow-right" style={{ fontSize: "0.55rem" }} />
           </a>
         </div>
-      </div>
-    </div>
-  );
-};
-
-// ─── PostCardSkeleton ─────────────────────────────────────────────────────────
-
-const PostCardSkeleton: React.FC<{ featured?: boolean }> = ({ featured = false }) => {
-  if (featured) {
-    return (
-      <div
-        style={{
-          background: "var(--sv-bg-card)",
-          border: "1px solid var(--sv-border)",
-          borderRadius: 14,
-          overflow: "hidden",
-          marginBottom: "0.875rem",
-        }}
-      >
-        <Skeleton width="100%" height="240px" borderRadius="0" />
-        <div style={{ padding: "1rem 1.25rem" }}>
-          <Skeleton width="150px" height="16px" borderRadius="4px" className="mb-2" />
-          <Skeleton width="95%" height="22px" borderRadius="4px" className="mb-1" />
-          <Skeleton width="80%" height="22px" borderRadius="4px" className="mb-3" />
-          <Skeleton width="100%" height="13px" borderRadius="4px" className="mb-1" />
-          <Skeleton width="88%" height="13px" borderRadius="4px" />
-        </div>
-      </div>
-    );
-  }
-  return (
-    <div
-      style={{
-        display: "flex",
-        background: "var(--sv-bg-card)",
-        border: "1px solid var(--sv-border)",
-        borderRadius: 12,
-        overflow: "hidden",
-        marginBottom: "0.75rem",
-      }}
-    >
-      <Skeleton width="170px" height="150px" borderRadius="0" />
-      <div style={{ flex: 1, padding: "0.8rem 1rem" }}>
-        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.45rem" }}>
-          <Skeleton width="100px" height="16px" borderRadius="4px" />
-          <Skeleton width="80px" height="16px" borderRadius="4px" />
-        </div>
-        <Skeleton width="95%" height="18px" borderRadius="4px" className="mb-1" />
-        <Skeleton width="72%" height="18px" borderRadius="4px" className="mb-2" />
-        <Skeleton width="100%" height="12px" borderRadius="4px" className="mb-1" />
-        <Skeleton width="80%" height="12px" borderRadius="4px" />
       </div>
     </div>
   );
@@ -661,7 +391,7 @@ const SidebarCard: React.FC<{ title: string; icon: string; children: React.React
   >
     <div
       style={{
-        padding: "0.75rem 1rem",
+        padding: "0.7rem 1rem",
         borderBottom: "1px solid var(--sv-border)",
         display: "flex",
         alignItems: "center",
@@ -673,25 +403,24 @@ const SidebarCard: React.FC<{ title: string; icon: string; children: React.React
       <span
         style={{
           fontWeight: 700,
-          fontSize: "0.78rem",
+          fontSize: "0.75rem",
           color: "var(--sv-text-primary)",
-          letterSpacing: "0.04em",
+          letterSpacing: "0.05em",
           textTransform: "uppercase",
         }}
       >
         {title}
       </span>
     </div>
-    <div style={{ padding: "0.75rem" }}>{children}</div>
+    <div style={{ padding: "0.875rem" }}>{children}</div>
   </div>
 );
 
 // ─── PopularPostItem ──────────────────────────────────────────────────────────
 
 const PopularPostItem: React.FC<{ post: WpPost; rank: number }> = ({ post, rank }) => {
-  const title = stripHtml(post.title.rendered);
-  const imageUrl = getImageUrl(post);
   const [hovered, setHovered] = useState(false);
+  const title = stripHtml(post.title.rendered);
 
   return (
     <a
@@ -700,133 +429,63 @@ const PopularPostItem: React.FC<{ post: WpPost; rank: number }> = ({ post, rank 
       rel="noopener noreferrer"
       style={{
         display: "flex",
-        gap: "0.6rem",
         alignItems: "flex-start",
-        padding: "0.5rem 0.375rem",
-        borderRadius: 8,
+        gap: "0.65rem",
+        padding: "0.5rem 0.4rem",
+        borderRadius: 7,
         textDecoration: "none",
-        marginBottom: "0.1rem",
         background: hovered ? "var(--sv-bg-surface)" : "transparent",
         transition: "background 0.15s",
+        marginBottom: "0.25rem",
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
+      {/* Rank bubble */}
       <span
         style={{
           flexShrink: 0,
-          width: 20,
-          height: 20,
+          width: 22,
+          height: 22,
           borderRadius: "50%",
-          background: rank <= 3 ? "var(--sv-accent-bg)" : "var(--sv-bg-surface)",
-          color: rank <= 3 ? "var(--sv-accent)" : "var(--sv-text-muted)",
+          background:
+            rank <= 3
+              ? "var(--sv-accent)"
+              : "color-mix(in srgb, var(--sv-accent) 15%, var(--sv-bg-surface))",
+          color: rank <= 3 ? "#fff" : "var(--sv-accent)",
+          fontSize: "0.6rem",
+          fontWeight: 800,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: "0.55rem",
-          fontWeight: 800,
-          border: `1px solid ${rank <= 3 ? "color-mix(in srgb, var(--sv-accent) 30%, transparent)" : "var(--sv-border)"}`,
-          marginTop: 2,
+          marginTop: 1,
         }}
       >
         {rank}
       </span>
-      {imageUrl && (
-        <img
-          src={imageUrl}
-          alt={title}
-          style={{ width: 46, height: 38, objectFit: "cover", borderRadius: 6, flexShrink: 0 }}
-        />
-      )}
-      <span
-        style={{
-          fontSize: "0.73rem",
-          color: "var(--sv-text-primary)",
-          lineHeight: 1.45,
-          fontWeight: 500,
-          display: "-webkit-box",
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: "vertical",
-          overflow: "hidden",
-        }}
-      >
-        {title}
-      </span>
-    </a>
-  );
-};
-
-// ─── ArchiveMonthItem ─────────────────────────────────────────────────────────
-
-const ArchiveMonthItem: React.FC<{
-  date: Date;
-  idx: number;
-  active: boolean;
-  onClick: () => void;
-}> = ({ date, idx, active, onClick }) => {
-  const [hovered, setHovered] = useState(false);
-  const label = date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-
-  return (
-    <div
-      onClick={onClick}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0.4rem 0.5rem",
-        borderRadius: 6,
-        cursor: "pointer",
-        background: active
-          ? "color-mix(in srgb, var(--sv-accent) 10%, transparent)"
-          : hovered
-          ? "var(--sv-bg-surface)"
-          : "transparent",
-        border: active
-          ? "1px solid color-mix(in srgb, var(--sv-accent) 30%, transparent)"
-          : "1px solid transparent",
-        transition: "background 0.15s, border-color 0.15s",
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <i
-          className={active ? "pi pi-folder-open" : "pi pi-folder"}
-          style={{ color: "var(--sv-accent)", fontSize: "0.72rem" }}
-        />
-        <span
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div
           style={{
-            fontSize: "0.77rem",
-            color: active ? "var(--sv-accent)" : "var(--sv-text-secondary)",
-            fontWeight: active ? 700 : 500,
+            fontSize: "0.75rem",
+            fontWeight: 600,
+            color: hovered ? "var(--sv-accent)" : "var(--sv-text-primary)",
+            lineHeight: 1.45,
+            transition: "color 0.15s",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}
         >
-          {label}
-        </span>
-      </div>
-      <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
-        {idx === 0 && !active && (
-          <span
-            style={{
-              fontSize: "0.52rem",
-              fontWeight: 700,
-              padding: "0.15rem 0.35rem",
-              borderRadius: 3,
-              background: "var(--sv-success-bg)",
-              color: "var(--sv-success)",
-              letterSpacing: "0.05em",
-              textTransform: "uppercase",
-            }}
-          >
-            Latest
-          </span>
-        )}
-        {active && (
-          <i className="pi pi-check" style={{ fontSize: "0.6rem", color: "var(--sv-accent)" }} />
+          {title}
+        </div>
+        {post.date && (
+          <div style={{ fontSize: "0.62rem", color: "var(--sv-text-muted)", marginTop: "0.2rem" }}>
+            {formatDate(post.date)}
+          </div>
         )}
       </div>
-    </div>
+    </a>
   );
 };
 
@@ -844,14 +503,6 @@ const RealTimeCommentaryPage: React.FC = () => {
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [popularPosts, setPopularPosts] = useState<WpPost[]>([]);
   const [loadingPopular, setLoadingPopular] = useState(true);
-
-  const archiveMonths = useMemo<Date[]>(() => {
-    const now = new Date();
-    return Array.from(
-      { length: ARCHIVE_MONTHS },
-      (_, i) => new Date(now.getFullYear(), now.getMonth() - i),
-    );
-  }, []);
 
   const buildDateRange = useCallback((year: number, month: number) => {
     const after = new Date(year, month, 1, 0, 0, 0).toISOString();
@@ -916,16 +567,6 @@ const RealTimeCommentaryPage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleArchiveClick = (date: Date) => {
-    const y = date.getFullYear();
-    const m = date.getMonth();
-    if (activeYear === y && activeMonth === m) {
-      setSearchParams({});
-    } else {
-      setSearchParams({ year: String(y), month: String(m) });
-    }
-  };
-
   const handleClearFilter = () => setSearchParams({});
 
   const activeFilterLabel = useMemo(() => {
@@ -936,18 +577,17 @@ const RealTimeCommentaryPage: React.FC = () => {
     });
   }, [activeYear, activeMonth]);
 
-  // Separate featured post from the rest
-  const [featuredPost, ...restPosts] = posts;
-
   return (
     <>
       {/* ── Page header ── */}
       <div className="mb-4">
-        <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "0.25rem" }}>
+        <div
+          style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "0.25rem" }}
+        >
           <div
             style={{
-              width: 40,
-              height: 40,
+              width: 42,
+              height: 42,
               borderRadius: 11,
               background: "var(--sv-accent-bg)",
               display: "flex",
@@ -1029,69 +669,26 @@ const RealTimeCommentaryPage: React.FC = () => {
 
       {/* ── Two-column layout ── */}
       <div className="grid">
-        {/* ── Main posts column ── */}
+        {/* ── Main content ── */}
         <div className="col-12 lg:col-8 p-1">
-
-          {/* Post count bar */}
-          {!loadingPosts && totalPosts > 0 && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: "0.875rem",
-                padding: "0.5rem 0.75rem",
-                background: "var(--sv-bg-card)",
-                border: "1px solid var(--sv-border)",
-                borderRadius: 8,
-                boxShadow: "var(--sv-shadow-sm)",
-              }}
-            >
-              <span style={{ fontSize: "0.75rem", color: "var(--sv-text-muted)" }}>
-                <i
-                  className="pi pi-list mr-2"
-                  style={{ fontSize: "0.7rem", color: "var(--sv-accent)" }}
-                />
-                Showing{" "}
-                <strong style={{ color: "var(--sv-text-primary)" }}>
-                  {pageFirst + 1}–{Math.min(pageFirst + PAGE_SIZE, totalPosts)}
-                </strong>{" "}
-                of{" "}
-                <strong style={{ color: "var(--sv-text-primary)" }}>{totalPosts}</strong>{" "}
-                articles
-              </span>
-              <span
-                style={{
-                  fontSize: "0.6rem",
-                  fontWeight: 700,
-                  padding: "0.2rem 0.55rem",
-                  borderRadius: 4,
-                  background: "var(--sv-accent-bg)",
-                  color: "var(--sv-accent)",
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  border: "1px solid color-mix(in srgb, var(--sv-accent) 22%, transparent)",
-                }}
-              >
-                Pro Commentary
-              </span>
+          {/* Loading state */}
+          {loadingPosts && (
+            <div className="grid">
+              {Array.from({ length: PAGE_SIZE }).map((_, i) => (
+                <div key={i} className="col-12 md:col-4 p-2">
+                  <CardSkeleton />
+                </div>
+              ))}
             </div>
           )}
 
-          {/* Loading skeletons */}
-          {loadingPosts ? (
-            <>
-              <PostCardSkeleton featured />
-              {Array.from({ length: PAGE_SIZE - 1 }).map((_, i) => (
-                <PostCardSkeleton key={i} />
-              ))}
-            </>
-          ) : posts.length === 0 ? (
+          {/* Empty state */}
+          {!loadingPosts && posts.length === 0 && (
             <div
               style={{
                 background: "var(--sv-bg-card)",
                 border: "1px solid var(--sv-border)",
-                borderRadius: 12,
+                borderRadius: 14,
                 padding: "4rem 1rem",
                 textAlign: "center",
                 boxShadow: "var(--sv-shadow-sm)",
@@ -1100,28 +697,28 @@ const RealTimeCommentaryPage: React.FC = () => {
               <i
                 className="pi pi-inbox"
                 style={{
-                  fontSize: "2.5rem",
-                  color: "var(--sv-text-muted)",
-                  opacity: 0.4,
+                  fontSize: "3rem",
+                  color: "var(--sv-accent)",
+                  opacity: 0.25,
                   display: "block",
-                  marginBottom: "0.75rem",
+                  marginBottom: "0.875rem",
                 }}
               />
               <p
                 style={{
-                  margin: "0 0 0.5rem",
-                  color: "var(--sv-text-muted)",
-                  fontSize: "0.9rem",
+                  margin: "0 0 0.25rem",
+                  color: "var(--sv-text-primary)",
                   fontWeight: 600,
+                  fontSize: "0.95rem",
                 }}
               >
-                No articles found{activeFilterLabel ? ` for ${activeFilterLabel}` : ""}.
+                No articles found{activeFilterLabel ? ` for ${activeFilterLabel}` : ""}
               </p>
-              {activeFilterLabel && (
+              {activeFilterLabel ? (
                 <button
                   onClick={handleClearFilter}
                   style={{
-                    marginTop: "0.5rem",
+                    marginTop: "0.75rem",
                     padding: "0.45rem 1.1rem",
                     borderRadius: 7,
                     border: "1px solid var(--sv-accent)",
@@ -1134,27 +731,37 @@ const RealTimeCommentaryPage: React.FC = () => {
                 >
                   View all articles
                 </button>
+              ) : (
+                <p style={{ margin: 0, color: "var(--sv-text-muted)", fontSize: "0.8rem" }}>
+                  No commentary available at this time.
+                </p>
               )}
             </div>
-          ) : (
+          )}
+
+          {/* Posts grid */}
+          {!loadingPosts && posts.length > 0 && (
             <>
-              {/* Featured first post */}
-              {featuredPost && <PostCard post={featuredPost} featured />}
+              <div className="grid">
+                {posts.map((post) => (
+                  <div key={post.id} className="col-12 md:col-4 p-2">
+                    <PostCard post={post} />
+                  </div>
+                ))}
+              </div>
 
-              {/* Rest of posts */}
-              {restPosts.map((post) => (
-                <PostCard key={post.id} post={post} />
-              ))}
-
+              {/* Paginator */}
               {totalPosts > PAGE_SIZE && (
                 <div
                   style={{
+                    marginTop: "1.25rem",
+                    display: "flex",
+                    justifyContent: "center",
                     background: "var(--sv-bg-card)",
                     border: "1px solid var(--sv-border)",
                     borderRadius: 10,
-                    padding: "0.25rem",
+                    padding: "0.5rem",
                     boxShadow: "var(--sv-shadow-sm)",
-                    marginTop: "0.5rem",
                   }}
                 >
                   <Paginator
@@ -1163,7 +770,6 @@ const RealTimeCommentaryPage: React.FC = () => {
                     totalRecords={totalPosts}
                     onPageChange={handlePageChange}
                     template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-                    style={{ background: "transparent" }}
                   />
                 </div>
               )}
@@ -1173,21 +779,85 @@ const RealTimeCommentaryPage: React.FC = () => {
 
         {/* ── Sidebar ── */}
         <div className="col-12 lg:col-4 p-1">
+          {/* Popular posts */}
+          <SidebarCard title="Popular Posts" icon="pi-star">
+            {loadingPopular ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                    <Skeleton width="22px" height="22px" borderRadius="50%" />
+                    <div style={{ flex: 1 }}>
+                      <Skeleton width="100%" height="12px" borderRadius="4px" className="mb-1" />
+                      <Skeleton width="60%" height="12px" borderRadius="4px" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : popularPosts.length === 0 ? (
+              <p
+                style={{
+                  fontSize: "0.75rem",
+                  color: "var(--sv-text-muted)",
+                  textAlign: "center",
+                  margin: 0,
+                }}
+              >
+                No popular posts available.
+              </p>
+            ) : (
+              <div>
+                {popularPosts.map((post, i) => (
+                  <PopularPostItem key={post.id} post={post} rank={i + 1} />
+                ))}
+              </div>
+            )}
+          </SidebarCard>
 
           {/* About Pro Commentary */}
           <SidebarCard title="About Pro Commentary" icon="pi-bolt">
-            <p
-              style={{
-                fontSize: "0.77rem",
-                color: "var(--sv-text-secondary)",
-                lineHeight: 1.7,
-                margin: "0 0 0.75rem",
-              }}
-            >
-              Real-time market analysis delivered by our professional team throughout the trading
-              day. Get actionable insights on macro trends, sector moves, and market-moving events
-              as they happen.
-            </p>
+            <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+              <div
+                style={{
+                  width: 52,
+                  height: 52,
+                  borderRadius: "50%",
+                  background: "var(--sv-accent-bg)",
+                  border: "2px solid color-mix(in srgb, var(--sv-accent) 30%, transparent)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                <i
+                  className="pi pi-bolt"
+                  style={{ color: "var(--sv-accent)", fontSize: "1.3rem" }}
+                />
+              </div>
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: "0.85rem",
+                  color: "var(--sv-text-primary)",
+                  marginBottom: "0.3rem",
+                }}
+              >
+                SimpleVisor Pro Commentary
+              </div>
+              <p
+                style={{
+                  fontSize: "0.72rem",
+                  color: "var(--sv-text-muted)",
+                  lineHeight: 1.6,
+                  margin: 0,
+                }}
+              >
+                Real-time market analysis delivered by our professional team throughout the trading
+                day. Actionable insights on macro trends, sector moves, and market-moving events as
+                they happen.
+              </p>
+            </div>
+            {/* Topics */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
               {[
                 "Market Commentary",
@@ -1200,14 +870,13 @@ const RealTimeCommentaryPage: React.FC = () => {
                 <span
                   key={tag}
                   style={{
-                    fontSize: "0.57rem",
+                    fontSize: "0.6rem",
                     fontWeight: 600,
                     padding: "0.2rem 0.5rem",
                     borderRadius: 4,
                     background: "var(--sv-bg-surface)",
                     color: "var(--sv-text-muted)",
                     border: "1px solid var(--sv-border)",
-                    letterSpacing: "0.03em",
                   }}
                 >
                   {tag}
@@ -1216,75 +885,6 @@ const RealTimeCommentaryPage: React.FC = () => {
             </div>
           </SidebarCard>
 
-          {/* Popular Posts */}
-          <SidebarCard title="Popular Posts" icon="pi-fire">
-            {loadingPopular ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <div
-                  key={i}
-                  style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem", padding: "0.5rem 0.375rem" }}
-                >
-                  <Skeleton width="20px" height="20px" borderRadius="50%" />
-                  <Skeleton width="46px" height="38px" borderRadius="6px" />
-                  <div style={{ flex: 1 }}>
-                    <Skeleton width="100%" height="12px" borderRadius="4px" style={{ marginBottom: "0.3rem" }} />
-                    <Skeleton width="75%" height="12px" borderRadius="4px" />
-                  </div>
-                </div>
-              ))
-            ) : popularPosts.length === 0 ? (
-              <p style={{ color: "var(--sv-text-muted)", fontSize: "0.78rem", margin: 0 }}>
-                No popular posts available.
-              </p>
-            ) : (
-              popularPosts.map((post, i) => (
-                <PopularPostItem key={post.id} post={post} rank={i + 1} />
-              ))
-            )}
-          </SidebarCard>
-
-          {/* Monthly Archive */}
-          <SidebarCard title="Monthly Archive" icon="pi-calendar">
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.1rem" }}>
-              {archiveMonths.map((date, i) => {
-                const isActive =
-                  activeYear === date.getFullYear() && activeMonth === date.getMonth();
-                return (
-                  <ArchiveMonthItem
-                    key={i}
-                    date={date}
-                    idx={i}
-                    active={isActive}
-                    onClick={() => handleArchiveClick(date)}
-                  />
-                );
-              })}
-            </div>
-            {activeFilterLabel && (
-              <button
-                onClick={handleClearFilter}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "0.35rem",
-                  width: "100%",
-                  marginTop: "0.625rem",
-                  padding: "0.4rem 0",
-                  borderRadius: 6,
-                  border: "1px solid var(--sv-border)",
-                  background: "var(--sv-bg-surface)",
-                  color: "var(--sv-text-muted)",
-                  fontSize: "0.7rem",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                }}
-              >
-                <i className="pi pi-times" style={{ fontSize: "0.6rem" }} />
-                Show all months
-              </button>
-            )}
-          </SidebarCard>
         </div>
       </div>
     </>
