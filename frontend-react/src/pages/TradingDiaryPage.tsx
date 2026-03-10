@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Skeleton } from "primereact/skeleton";
 import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
 import api from "@/services/api";
@@ -15,7 +15,6 @@ import AboutSidebarCard from "@/components/common/AboutSidebarCard";
 const CATEGORY_ID = 12338; // WpPostCategories.ProTrading
 const PAGE_SIZE = 6;
 const POPULAR_LIMIT = 6;
-const ARCHIVE_MONTHS = 5;
 
 // ─── SidebarCard ──────────────────────────────────────────────────────────────
 
@@ -146,53 +145,6 @@ const PopularPostItem: React.FC<{ post: WpPost; rank: number }> = ({ post, rank 
   );
 };
 
-// ─── ArchiveMonthItem ─────────────────────────────────────────────────────────
-
-const ArchiveMonthItem: React.FC<{ date: Date; idx: number }> = ({ date, idx }) => {
-  const [hovered, setHovered] = useState(false);
-  const label = date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0.4rem 0.5rem",
-        borderRadius: 6,
-        cursor: "pointer",
-        background: hovered ? "var(--sv-bg-surface)" : "transparent",
-        transition: "background 0.15s",
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <i className="pi pi-folder-open" style={{ color: "var(--sv-accent)", fontSize: "0.72rem" }} />
-        <span style={{ fontSize: "0.77rem", color: "var(--sv-text-secondary)", fontWeight: 500 }}>
-          {label}
-        </span>
-      </div>
-      {idx === 0 && (
-        <span
-          style={{
-            fontSize: "0.55rem",
-            fontWeight: 700,
-            padding: "0.15rem 0.35rem",
-            borderRadius: 3,
-            background: "var(--sv-success-bg)",
-            color: "var(--sv-success)",
-            letterSpacing: "0.05em",
-            textTransform: "uppercase",
-          }}
-        >
-          Latest
-        </span>
-      )}
-    </div>
-  );
-};
-
 // ─── TradingDiaryPage ─────────────────────────────────────────────────────────
 
 const TradingDiaryPage: React.FC = () => {
@@ -202,13 +154,6 @@ const TradingDiaryPage: React.FC = () => {
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [popularPosts, setPopularPosts] = useState<WpPost[]>([]);
   const [loadingPopular, setLoadingPopular] = useState(true);
-
-  const archiveMonths = useMemo<Date[]>(() => {
-    const now = new Date();
-    return Array.from({ length: ARCHIVE_MONTHS }, (_, i) =>
-      new Date(now.getFullYear(), now.getMonth() - i),
-    );
-  }, []);
 
   const loadPosts = useCallback(async (offset: number) => {
     setLoadingPosts(true);
@@ -427,15 +372,6 @@ const TradingDiaryPage: React.FC = () => {
                 ))}
               </div>
             )}
-          </SidebarCard>
-
-          {/* Newsletter Archives */}
-          <SidebarCard title="Archives" icon="pi-calendar">
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.125rem" }}>
-              {archiveMonths.map((date, i) => (
-                <ArchiveMonthItem key={i} date={date} idx={i} />
-              ))}
-            </div>
           </SidebarCard>
 
           {/* About */}
