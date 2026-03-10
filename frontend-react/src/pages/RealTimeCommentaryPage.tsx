@@ -75,52 +75,6 @@ function timeAgo(dateStr: string): string {
   return `${diffD}d ago`;
 }
 
-// ─── LiveDot ──────────────────────────────────────────────────────────────────
-
-const LiveDot: React.FC = () => (
-  <span
-    style={{
-      display: "inline-flex",
-      alignItems: "center",
-      gap: "0.35rem",
-      padding: "0.18rem 0.55rem",
-      borderRadius: 20,
-      background: "color-mix(in srgb, var(--sv-success, #22c55e) 12%, transparent)",
-      border: "1px solid color-mix(in srgb, var(--sv-success, #22c55e) 30%, transparent)",
-    }}
-  >
-    <span
-      style={{
-        width: 6,
-        height: 6,
-        borderRadius: "50%",
-        background: "var(--sv-success, #22c55e)",
-        boxShadow: "0 0 0 3px color-mix(in srgb, var(--sv-success, #22c55e) 25%, transparent)",
-        animation: "sv-pulse 1.8s infinite",
-        display: "inline-block",
-        flexShrink: 0,
-      }}
-    />
-    <span
-      style={{
-        fontSize: "0.58rem",
-        fontWeight: 800,
-        letterSpacing: "0.08em",
-        color: "var(--sv-success, #22c55e)",
-        textTransform: "uppercase",
-      }}
-    >
-      Live
-    </span>
-    <style>{`
-      @keyframes sv-pulse {
-        0%   { box-shadow: 0 0 0 0   color-mix(in srgb, var(--sv-success, #22c55e) 50%, transparent); }
-        70%  { box-shadow: 0 0 0 7px color-mix(in srgb, var(--sv-success, #22c55e) 0%,  transparent); }
-        100% { box-shadow: 0 0 0 0   color-mix(in srgb, var(--sv-success, #22c55e) 0%,  transparent); }
-      }
-    `}</style>
-  </span>
-);
 
 // ─── CardSkeleton ─────────────────────────────────────────────────────────────
 
@@ -248,7 +202,6 @@ const PostCard: React.FC<{ post: WpPost }> = ({ post }) => {
             >
               Pro Commentary
             </span>
-            {recent && <LiveDot />}
           </div>
         </div>
       </a>
@@ -602,7 +555,6 @@ const RealTimeCommentaryPage: React.FC = () => {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
               <h1 className="text-2xl font-bold m-0 sv-page-title">Real-Time Commentary</h1>
-              <LiveDot />
             </div>
             <p className="m-0 text-sm" style={{ color: "var(--sv-text-muted)", marginTop: "0.1rem" }}>
               Live pro market commentary — expert insights published throughout the trading day
