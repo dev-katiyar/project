@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { Dropdown } from "primereact/dropdown";
+import SymbolHistoricalChart from "@/components/common/SymbolHistoricalChart";
 import { Skeleton } from "primereact/skeleton";
 import api from "@/services/api";
 import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
@@ -795,12 +796,10 @@ const MajorMarketsPage: React.FC = () => {
     null,
   );
   const [performanceData, setPerformanceData] = useState<PerformanceItem[]>([]);
-  const [historicalData, setHistoricalData] = useState<any[]>([]);
   const [technicals, setTechnicals] = useState<TechnicalsData | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState("1year");
 
   const [loadingSymbols, setLoadingSymbols] = useState(false);
-  const [loadingChart, setLoadingChart] = useState(false);
   const [loadingTechnicals, setLoadingTechnicals] = useState(false);
 
   /* ── Load all symbols for a category ─────────────────────────────────── */
@@ -809,7 +808,6 @@ const MajorMarketsPage: React.FC = () => {
     setSymbolProfiles([]);
     setSelectedSymbol(null);
     setPerformanceData([]);
-    setHistoricalData([]);
     setTechnicals(null);
     try {
       const { data: symbolList } = await api.get<string[]>(
@@ -853,23 +851,6 @@ const MajorMarketsPage: React.FC = () => {
     }
   }, []);
 
-  /* ── Load historical price series ────────────────────────────────────── */
-  const loadHistorical = useCallback(async (symbol: string) => {
-    setLoadingChart(true);
-    setHistoricalData([]);
-    try {
-      const { data } = await api.post("/symbol/historical", {
-        symbols: symbol,
-        period: "1year",
-      });
-      setHistoricalData(Array.isArray(data) ? data : []);
-    } catch {
-      setHistoricalData([]);
-    } finally {
-      setLoadingChart(false);
-    }
-  }, []);
-
   /* ── Effects ──────────────────────────────────────────────────────────── */
   useEffect(() => {
     loadSymbols(CATEGORIES[0].id);
@@ -878,9 +859,8 @@ const MajorMarketsPage: React.FC = () => {
   useEffect(() => {
     if (selectedSymbol?.symbol) {
       loadTechnicals(selectedSymbol.symbol);
-      loadHistorical(selectedSymbol.symbol);
     }
-  }, [selectedSymbol, loadTechnicals, loadHistorical]);
+  }, [selectedSymbol, loadTechnicals]);
 
   /* ── Category switch ──────────────────────────────────────────────────── */
   const handleCategoryChange = useCallback(
@@ -955,94 +935,6 @@ const MajorMarketsPage: React.FC = () => {
     };
   }, [performanceData, selectedPeriod, ct]);
 
-  /* ── Historical area chart ────────────────────────────────────────────── */
-  const historicalChartOptions = useMemo((): Highcharts.Options => {
-    let seriesData: [number, number][] = [];
-    if (historicalData.length > 0) {
-      const first = historicalData[0];
-      if (Array.isArray(first)) {
-        seriesData = historicalData;
-      } else if (first.date != null && first.close != null) {
-        seriesData = historicalData.map((d: any) => [
-          new Date(d.date).getTime(),
-          parseFloat(d.close),
-        ]);
-      } else if (first.timestamp != null && first.close != null) {
-        seriesData = historicalData.map((d: any) => [
-          d.timestamp * 1000,
-          parseFloat(d.close),
-        ]);
-      } else if (first.t != null && first.c != null) {
-        seriesData = historicalData.map((d: any) => [
-          d.t * 1000,
-          parseFloat(d.c),
-        ]);
-      } else if (first.date != null) {
-        const valueKey = Object.keys(first).find((k) => k !== "date");
-        if (valueKey) {
-          seriesData = historicalData.map((d: any) => [
-            new Date(d.date).getTime(),
-            parseFloat(d[valueKey]),
-          ]);
-        }
-      }
-    }
-
-    return {
-      chart: {
-        type: "area",
-        backgroundColor: "transparent",
-        height: 250,
-        spacing: [4, 4, 12, 4],
-        style: { fontFamily: "inherit" },
-        animation: { duration: 400 },
-      },
-      title: { text: undefined },
-      xAxis: {
-        type: "datetime",
-        labels: { style: { color: ct.label, fontSize: "9px" } },
-        lineColor: ct.grid,
-        tickColor: ct.grid,
-      },
-      yAxis: {
-        title: { text: undefined },
-        labels: {
-          style: { color: ct.label, fontSize: "9px" },
-          formatter() {
-            return fmtPrice(this.value);
-          },
-        },
-        gridLineColor: ct.grid,
-      },
-      series: [
-        {
-          type: "area",
-          name:
-            selectedSymbol?.alternate_name || selectedSymbol?.symbol || "Price",
-          data: seriesData,
-          color: ct.accent,
-          fillColor: {
-            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-            stops: [
-              [0, `${ct.accent}50`],
-              [1, `${ct.accent}00`],
-            ],
-          },
-          lineWidth: 2,
-          marker: { enabled: false },
-        },
-      ],
-      tooltip: {
-        backgroundColor: ct.tooltipBg,
-        borderColor: ct.tooltipBorder,
-        style: { color: ct.tooltipText },
-        xDateFormat: "%b %d, %Y",
-        valueDecimals: 2,
-      },
-      legend: { enabled: false },
-      credits: { enabled: false },
-    };
-  }, [historicalData, ct, selectedSymbol]);
 
   /* ── Render ───────────────────────────────────────────────────────────── */
   return (
@@ -1262,21 +1154,10 @@ const MajorMarketsPage: React.FC = () => {
         {/* Historical line chart */}
         <div className="col-12 md:col-7 p-1">
           <Panel title="Historical Performance" height={320}>
-            {loadingChart ? (
-              <Skeleton height="240px" />
-            ) : historicalData.length > 0 ? (
-              <HighchartsReact
-                highcharts={Highcharts}
-                options={historicalChartOptions}
-              />
-            ) : (
-              <ChartEmpty
-                icon="pi-chart-line"
-                text={
-                  loadingSymbols ? "Loading…" : "Historical data unavailable"
-                }
-              />
-            )}
+            <SymbolHistoricalChart
+              symbols={[selectedSymbol?.symbol ?? null]}
+              height={215}
+            />
           </Panel>
         </div>
 
