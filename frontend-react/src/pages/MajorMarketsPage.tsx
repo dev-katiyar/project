@@ -293,8 +293,8 @@ const TechnicalRatingCard: React.FC<{
         style={{
           display: "inline-flex",
           alignItems: "center",
-          background: ratingBg(data.rating),
-          border: `1px solid ${ratingColor(data.rating)}30`,
+          background: ratingBg(data.rating != null ? String(data.rating) : undefined),
+          border: `1px solid ${ratingColor(data.rating != null ? String(data.rating) : undefined)}30`,
           borderRadius: 8,
           padding: "0.35rem 0.875rem",
           marginBottom: "1rem",
@@ -304,7 +304,7 @@ const TechnicalRatingCard: React.FC<{
           style={{
             fontSize: "1rem",
             fontWeight: 700,
-            color: ratingColor(data.rating),
+            color: ratingColor(data.rating != null ? String(data.rating) : undefined),
           }}
         >
           {data.rating || "—"}
@@ -332,7 +332,7 @@ const TechnicalRatingCard: React.FC<{
             style={{
               fontSize: "0.75rem",
               fontWeight: 600,
-              color: ratingColor(row.val),
+              color: ratingColor(row.val != null ? String(row.val) : undefined),
             }}
           >
             {row.val || "—"}
