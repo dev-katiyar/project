@@ -858,8 +858,9 @@ const MajorMarketsPage: React.FC = () => {
     setLoadingChart(true);
     setHistoricalData([]);
     try {
-      const { data } = await api.get("/symbol/historical", {
-        params: { tickers: symbol },
+      const { data } = await api.post("/symbol/historical", {
+        symbols: symbol,
+        period: "1year",
       });
       setHistoricalData(Array.isArray(data) ? data : []);
     } catch {
