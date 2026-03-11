@@ -977,6 +977,14 @@ const MajorMarketsPage: React.FC = () => {
           d.t * 1000,
           parseFloat(d.c),
         ]);
+      } else if (first.date != null) {
+        const valueKey = Object.keys(first).find((k) => k !== "date");
+        if (valueKey) {
+          seriesData = historicalData.map((d: any) => [
+            new Date(d.date).getTime(),
+            parseFloat(d[valueKey]),
+          ]);
+        }
       }
     }
 
