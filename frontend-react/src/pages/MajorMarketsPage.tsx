@@ -1052,9 +1052,13 @@ const MajorMarketsPage: React.FC = () => {
       {/* ── Technical analysis row ── */}
       <div className="grid">
         <div className="col-12 sm:col-6 lg:col-3 p-1">
-          <Panel title="Technical Rating" height={230}>
+          <Panel title="Technical Rating" height={255}>
             <TechnicalRatingGaugeChart
-              value={technicals?.rating}
+              value={
+                technicals?.rating != null
+                  ? parseInt(technicals.rating)
+                  : undefined
+              }
               loading={loadingTechnicals}
             />
           </Panel>

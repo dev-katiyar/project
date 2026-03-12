@@ -75,12 +75,18 @@ interface TechnicalRatingGaugeChartProps {
   /** Text label e.g. "Strong Buy" from the API */
   rating?: string;
   loading?: boolean;
+  /** Label shown at the min (left) end of the arc */
+  minLabel?: string;
+  /** Label shown at the max (right) end of the arc */
+  maxLabel?: string;
 }
 
 const TechnicalRatingGaugeChart: React.FC<TechnicalRatingGaugeChartProps> = ({
   value,
   rating,
   loading,
+  minLabel = "Very Weak",
+  maxLabel = "Very Strong",
 }) => {
   const { theme } = useTheme();
   const ct = CHART_THEME[theme] ?? CHART_THEME.dim;
@@ -125,8 +131,8 @@ const TechnicalRatingGaugeChart: React.FC<TechnicalRatingGaugeChartProps> = ({
           y: 16,
           style: { fontSize: "0.78rem", color: ct.label },
           formatter() {
-            if (this.value === 0) return "Sell";
-            if (this.value === 10) return "Buy";
+            if (this.value === 0) return minLabel;
+            if (this.value === 10) return maxLabel;
             return "";
           },
         },
@@ -134,21 +140,7 @@ const TechnicalRatingGaugeChart: React.FC<TechnicalRatingGaugeChartProps> = ({
       },
       plotOptions: {
         gauge: {
-          dataLabels: {
-            enabled: true,
-            useHTML: true,
-            y: 18,
-            borderWidth: 0,
-            backgroundColor: "none",
-            shadow: false,
-            formatter() {
-              const labelLine = label
-                ? `<div style="font-size:1.05rem;font-weight:800;color:${color};line-height:1">${label}</div>`
-                : "";
-              const valueLine = `<div style="font-size:0.72rem;color:${ct.label};margin-top:3px">${val.toFixed(1)} / 10</div>`;
-              return `<div style="text-align:center;line-height:1.2">${labelLine}${valueLine}</div>`;
-            },
-          },
+          dataLabels: { enabled: false },
           dial: {
             radius: "80%",
             backgroundColor: color,
@@ -176,7 +168,7 @@ const TechnicalRatingGaugeChart: React.FC<TechnicalRatingGaugeChartProps> = ({
       accessibility: { enabled: false },
       legend: { enabled: false },
     }),
-    [val, label, color, ct],
+    [val, color, ct, minLabel, maxLabel],
   );
 
   if (loading) {
@@ -192,11 +184,21 @@ const TechnicalRatingGaugeChart: React.FC<TechnicalRatingGaugeChartProps> = ({
   }
 
   return (
-    <HighchartsReact
-      highcharts={Highcharts}
-      options={options}
-      containerProps={{ style: { width: "100%" } }}
-    />
+    <div style={{ textAlign: "center" }}>
+      <HighchartsReact
+        highcharts={Highcharts}
+        options={options}
+        containerProps={{ style: { width: "100%" } }}
+      />
+      {label && (
+        <div style={{ fontSize: "1.05rem", fontWeight: 800, color, lineHeight: 1 }}>
+          {label}
+        </div>
+      )}
+      <div style={{ fontSize: "0.72rem", color: ct.label, marginTop: 3 }}>
+        {val.toFixed(1)} / 10
+      </div>
+    </div>
   );
 };
 
