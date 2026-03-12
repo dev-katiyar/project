@@ -31,18 +31,26 @@ const CHART_THEME: Record<ThemeName, ChartTheme> = {
   light: { bg: "transparent", label: "#4a5e78" },
 };
 
-/* ── Gradient arc: 20 bands, red (hue 0) → green (hue 120) ──────────────── */
+/* ── Single gradient arc band: red (left) → green (right) ───────────────── */
 
-const GRADIENT_BANDS: Highcharts.YAxisPlotBandsOptions[] = Array.from(
-  { length: 20 },
-  (_, i) => ({
-    from: (i / 20) * 10,
-    to: ((i + 1) / 20) * 10,
-    color: `hsla(${Math.round((i / 19) * 120)}, 75%, 50%, 0.85)`,
+const GRADIENT_BANDS: Highcharts.YAxisPlotBandsOptions[] = [
+  {
+    from: 0,
+    to: 10,
+    color: {
+      linearGradient: { x1: 0, y1: 0, x2: 1, y2: 0 },
+      stops: [
+        [0, "hsl(0, 75%, 50%)"],
+        [0.25, "hsl(30, 75%, 50%)"],
+        [0.5, "hsl(60, 75%, 50%)"],
+        [0.75, "hsl(90, 75%, 50%)"],
+        [1, "hsl(120, 75%, 50%)"],
+      ],
+    } as unknown as string,
     innerRadius: "60%",
     outerRadius: "100%",
-  }),
-);
+  },
+];
 
 /* ── Helpers ─────────────────────────────────────────────────────────────── */
 
