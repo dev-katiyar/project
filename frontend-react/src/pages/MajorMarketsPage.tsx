@@ -130,20 +130,6 @@ interface TechnicalsData {
 
 /* ── Formatters ───────────────────────────────────────────────────────────── */
 
-const fmtPct = (v: any): string => {
-  const n = parseFloat(v);
-  return isNaN(n) ? "—" : `${n >= 0 ? "+" : ""}${n.toFixed(2)}%`;
-};
-
-const fmtPrice = (v: any): string => {
-  const n = parseFloat(v);
-  return isNaN(n)
-    ? "—"
-    : n.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
-};
 
 /* ── Reusable Panel card ──────────────────────────────────────────────────── */
 
@@ -617,127 +603,8 @@ const MajorMarketsPage: React.FC = () => {
           )}
         </div>
 
-        {/* Quick price badge */}
-        {selectedSymbol && !loadingSymbols && (
-          <div
-            style={{
-              marginLeft: "auto",
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-            }}
-          >
-            {selectedSymbol.price != null && (
-              <div style={{ textAlign: "right" }}>
-                <div
-                  style={{
-                    fontSize: "1.1rem",
-                    fontWeight: 700,
-                    color: "var(--sv-text-primary)",
-                    lineHeight: 1,
-                  }}
-                >
-                  {fmtPrice(selectedSymbol.price)}
-                </div>
-                <div
-                  style={{
-                    fontSize: "0.65rem",
-                    color: "var(--sv-text-muted)",
-                    marginTop: "0.1rem",
-                    letterSpacing: "0.04em",
-                  }}
-                >
-                  {selectedSymbol.symbol}
-                </div>
-              </div>
-            )}
-            {(selectedSymbol.change_pct ?? selectedSymbol.change) != null &&
-              (() => {
-                const chg = selectedSymbol.change_pct ?? selectedSymbol.change!;
-                return (
-                  <div
-                    style={{
-                      padding: "0.3rem 0.75rem",
-                      borderRadius: 8,
-                      background:
-                        chg >= 0
-                          ? "rgba(34,197,94,0.12)"
-                          : "rgba(239,68,68,0.12)",
-                      color: chg >= 0 ? "var(--sv-gain)" : "var(--sv-loss)",
-                      fontSize: "0.875rem",
-                      fontWeight: 700,
-                    }}
-                  >
-                    {fmtPct(chg)}
-                  </div>
-                );
-              })()}
-          </div>
-        )}
       </div>
 
-      {/* ── Market ticker strip ── */}
-      {!loadingSymbols && symbolProfiles.length > 0 && (
-        <div
-          style={{
-            display: "flex",
-            gap: "0.4rem",
-            overflowX: "auto",
-            padding: "0.25rem 0 0.75rem",
-            scrollbarWidth: "thin",
-          }}
-        >
-          {symbolProfiles.map((sym) => {
-            const perf = performanceData.find((p) => p.symbol === sym.symbol);
-            const val = perf
-              ? ((perf as any)[selectedPeriod] as number | null)
-              : null;
-            const isSelected = selectedSymbol?.symbol === sym.symbol;
-            return (
-              <button
-                key={sym.symbol}
-                onClick={() => setSelectedSymbol(sym)}
-                style={{
-                  flexShrink: 0,
-                  padding: "0.45rem 0.875rem",
-                  borderRadius: 8,
-                  border: `1px solid ${isSelected ? "var(--sv-accent)" : "var(--sv-border)"}`,
-                  background: isSelected
-                    ? "var(--sv-accent-bg)"
-                    : "var(--sv-bg-card)",
-                  cursor: "pointer",
-                  textAlign: "left",
-                  transition: "all 0.15s",
-                  boxShadow: isSelected ? "var(--sv-shadow-glow)" : "none",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "0.72rem",
-                    fontWeight: 600,
-                    color: "var(--sv-text-primary)",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {sym.alternate_name || sym.symbol}
-                </div>
-                {val != null && (
-                  <div
-                    style={{
-                      fontSize: "0.68rem",
-                      fontWeight: 700,
-                      marginTop: "0.1rem",
-                      color: val >= 0 ? "var(--sv-gain)" : "var(--sv-loss)",
-                    }}
-                  >
-                    {fmtPct(val)}
-                  </div>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      )}
 
       {/* ── Charts row ── */}
       <div className="grid mb-3">
