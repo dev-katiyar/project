@@ -117,7 +117,7 @@ const TechnicalSynopsisCard: React.FC<TechnicalSynopsisCardProps> = ({
 
   /* ── Render ───────────────────────────────────────────────────────────── */
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", height: "100%", overflowY: "auto" }}>
       {/* ── Synopsis ── */}
       {loadingSynopsis ? (
         <div style={{ marginTop: "0.25rem" }}>
