@@ -5,7 +5,9 @@ import { Dropdown } from "primereact/dropdown";
 import SymbolHistoricalChart from "@/components/common/SymbolHistoricalChart";
 import TechnicalRatingGaugeChart from "@/components/common/TechnicalRatingGaugeChart";
 import TechnicalStrengthBars from "@/components/common/TechnicalStrengthBars";
-import TechnicalSynopsisCard, { type SymbolProfile } from "@/components/common/TechnicalSynopsisCard";
+import TechnicalSynopsisCard, {
+  type SymbolProfile,
+} from "@/components/common/TechnicalSynopsisCard";
 import { Skeleton } from "primereact/skeleton";
 import api from "@/services/api";
 import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
@@ -77,7 +79,6 @@ const CHART_THEME: Record<ThemeName, ChartTheme> = {
 };
 
 /* ── Types ────────────────────────────────────────────────────────────────── */
-
 
 interface PerformanceItem {
   symbol: string;
@@ -329,7 +330,6 @@ const MovingAveragesCard: React.FC<{
     </div>
   );
 };
-
 
 /* ── RSI card ─────────────────────────────────────────────────────────────── */
 
@@ -941,7 +941,7 @@ const MajorMarketsPage: React.FC = () => {
           </Panel>
         </div>
         <div className="col-12 sm:col-6 lg:col-3 p-1">
-          <Panel title="Trend Strength" height={230}>
+          <Panel title="Technical Strength" height={230}>
             <TechnicalStrengthBars
               data={technicals}
               loading={loadingTechnicals}
@@ -949,7 +949,7 @@ const MajorMarketsPage: React.FC = () => {
           </Panel>
         </div>
         <div className="col-12 sm:col-6 lg:col-3 p-1">
-          <Panel title="Symbol Profile" height={230}>
+          <Panel title="Technical Synopsis" height={230}>
             <TechnicalSynopsisCard
               symbol={selectedSymbol?.symbol ?? null}
               profile={selectedSymbol}

@@ -33,7 +33,10 @@ const fmtPrice = (v: any): string => {
   const n = parseFloat(v);
   return isNaN(n)
     ? "—"
-    : n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    : n.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
 };
 
 const fmtPct = (v: any): string => {
@@ -104,119 +107,17 @@ const TechnicalSynopsisCard: React.FC<TechnicalSynopsisCardProps> = ({
   const chg = profile.change_pct ?? profile.change;
   const isGain = chg != null && chg >= 0;
 
-  const currentSituationHtml =
-    synopsis?.current_situation
-      ? sanitizeSynopsisHtml(synopsis.current_situation)
-      : null;
+  const currentSituationHtml = synopsis?.current_situation
+    ? sanitizeSynopsisHtml(synopsis.current_situation)
+    : null;
 
-  const synopsisHtml =
-    synopsis?.synopsis ? sanitizeSynopsisHtml(synopsis.synopsis) : null;
+  const synopsisHtml = synopsis?.synopsis
+    ? sanitizeSynopsisHtml(synopsis.synopsis)
+    : null;
 
   /* ── Render ───────────────────────────────────────────────────────────── */
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-      {/* ── Profile header ── */}
-      <div>
-        <div
-          style={{
-            fontSize: "0.7rem",
-            color: "var(--sv-text-muted)",
-            letterSpacing: "0.05em",
-            marginBottom: "0.15rem",
-          }}
-        >
-          {profile.symbol}
-        </div>
-        <div
-          style={{
-            fontSize: "0.9rem",
-            fontWeight: 700,
-            color: "var(--sv-text-primary)",
-            lineHeight: 1.3,
-            marginBottom: "0.5rem",
-          }}
-        >
-          {profile.alternate_name || profile.symbol}
-        </div>
-
-        {profile.price != null && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "baseline",
-              gap: "0.5rem",
-              marginBottom: "0.5rem",
-            }}
-          >
-            <span
-              style={{
-                fontSize: "1.3rem",
-                fontWeight: 700,
-                color: "var(--sv-text-primary)",
-              }}
-            >
-              {fmtPrice(profile.price)}
-            </span>
-            {chg != null && (
-              <span
-                style={{
-                  fontSize: "0.8rem",
-                  fontWeight: 600,
-                  color: isGain ? "var(--sv-gain)" : "var(--sv-loss)",
-                }}
-              >
-                {fmtPct(chg)}
-              </span>
-            )}
-          </div>
-        )}
-
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
-          {profile.sector && (
-            <span
-              style={{
-                fontSize: "0.68rem",
-                color: "var(--sv-text-muted)",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.2rem",
-              }}
-            >
-              <i className="pi pi-tag" style={{ fontSize: "0.6rem" }} />
-              {profile.sector}
-            </span>
-          )}
-          {profile.exchange && (
-            <span
-              style={{
-                fontSize: "0.68rem",
-                color: "var(--sv-text-muted)",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.2rem",
-              }}
-            >
-              <i className="pi pi-building" style={{ fontSize: "0.6rem" }} />
-              {profile.exchange}
-            </span>
-          )}
-          {profile.country && (
-            <span
-              style={{
-                fontSize: "0.68rem",
-                color: "var(--sv-text-muted)",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.2rem",
-              }}
-            >
-              <i className="pi pi-map-marker" style={{ fontSize: "0.6rem" }} />
-              {profile.country}
-            </span>
-          )}
-        </div>
-      </div>
-
       {/* ── Synopsis ── */}
       {loadingSynopsis ? (
         <div style={{ marginTop: "0.25rem" }}>
@@ -251,7 +152,10 @@ const TechnicalSynopsisCard: React.FC<TechnicalSynopsisCardProps> = ({
             />
           )}
           {!currentSituationHtml && !synopsisHtml && symbol && (
-            <p className="sv-text-muted" style={{ fontSize: "0.72rem", margin: 0 }}>
+            <p
+              className="sv-text-muted"
+              style={{ fontSize: "0.72rem", margin: 0 }}
+            >
               No synopsis available
             </p>
           )}
