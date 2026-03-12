@@ -737,4 +737,8 @@ a:hover {
   transition: border-color 0.2s;
   font-family: inherit;
 }
+
+/* ── Synopsis text inline colour helpers ───────────────────────────────── */
+.sv-synopsis-text .sv-synopsis-up   { color: var(--sv-gain); font-weight: 600; }
+.sv-synopsis-text .sv-synopsis-down { color: var(--sv-loss); font-weight: 600; }
 .sv-card-field:focus { border-color: var(--sv-accent); }

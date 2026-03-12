@@ -4,6 +4,8 @@ import HighchartsReact from "highcharts-react-official";
 import { Dropdown } from "primereact/dropdown";
 import SymbolHistoricalChart from "@/components/common/SymbolHistoricalChart";
 import TechnicalRatingGaugeChart from "@/components/common/TechnicalRatingGaugeChart";
+import TechnicalStrengthBars from "@/components/common/TechnicalStrengthBars";
+import TechnicalSynopsisCard, { type SymbolProfile } from "@/components/common/TechnicalSynopsisCard";
 import { Skeleton } from "primereact/skeleton";
 import api from "@/services/api";
 import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
@@ -76,17 +78,6 @@ const CHART_THEME: Record<ThemeName, ChartTheme> = {
 
 /* ── Types ────────────────────────────────────────────────────────────────── */
 
-interface SymbolProfile {
-  symbol: string;
-  alternate_name: string;
-  price?: number;
-  change?: number;
-  change_pct?: number;
-  description?: string;
-  country?: string;
-  exchange?: string;
-  sector?: string;
-}
 
 interface PerformanceItem {
   symbol: string;
@@ -113,6 +104,10 @@ interface TechnicalsData {
   osc_buy?: number;
   osc_sell?: number;
   osc_neutral?: number;
+  short_trend?: number;
+  inter_trend?: number;
+  long_trend?: number;
+  macd_trend?: number;
   rsi?: number;
   rsi_14?: number;
   macd?: number;
@@ -335,124 +330,6 @@ const MovingAveragesCard: React.FC<{
   );
 };
 
-/* ── Symbol Profile card ──────────────────────────────────────────────────── */
-
-const SymbolProfileCard: React.FC<{
-  profile: SymbolProfile | null;
-  loading: boolean;
-}> = ({ profile, loading }) => {
-  if (loading)
-    return (
-      <div>
-        <Skeleton height="1rem" width="40%" className="mb-1" />
-        <Skeleton height="1.4rem" width="70%" className="mb-2" />
-        <Skeleton height="2rem" width="55%" className="mb-2" />
-        <Skeleton height="1rem" className="mb-1" />
-        <Skeleton height="1rem" />
-      </div>
-    );
-  if (!profile)
-    return (
-      <p className="sv-text-muted" style={{ fontSize: "0.8rem" }}>
-        No profile
-      </p>
-    );
-
-  const chg = profile.change_pct ?? profile.change;
-  const isGain = chg != null && chg >= 0;
-
-  return (
-    <div>
-      <div
-        style={{
-          fontSize: "0.7rem",
-          color: "var(--sv-text-muted)",
-          marginBottom: "0.15rem",
-          letterSpacing: "0.05em",
-        }}
-      >
-        {profile.symbol}
-      </div>
-      <div
-        style={{
-          fontSize: "0.9rem",
-          fontWeight: 700,
-          color: "var(--sv-text-primary)",
-          lineHeight: 1.3,
-          marginBottom: "0.75rem",
-        }}
-      >
-        {profile.alternate_name || profile.symbol}
-      </div>
-
-      {profile.price != null && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "baseline",
-            gap: "0.625rem",
-            marginBottom: "0.75rem",
-          }}
-        >
-          <span
-            style={{
-              fontSize: "1.4rem",
-              fontWeight: 700,
-              color: "var(--sv-text-primary)",
-            }}
-          >
-            {fmtPrice(profile.price)}
-          </span>
-          {chg != null && (
-            <span
-              style={{
-                fontSize: "0.825rem",
-                fontWeight: 600,
-                color: isGain ? "var(--sv-gain)" : "var(--sv-loss)",
-              }}
-            >
-              {fmtPct(chg)}
-            </span>
-          )}
-        </div>
-      )}
-
-      {profile.sector && (
-        <div
-          style={{
-            fontSize: "0.72rem",
-            color: "var(--sv-text-muted)",
-            marginBottom: "0.25rem",
-          }}
-        >
-          <i className="pi pi-tag mr-1" style={{ fontSize: "0.65rem" }} />
-          {profile.sector}
-        </div>
-      )}
-      {profile.exchange && (
-        <div
-          style={{
-            fontSize: "0.72rem",
-            color: "var(--sv-text-muted)",
-            marginBottom: "0.25rem",
-          }}
-        >
-          <i className="pi pi-building mr-1" style={{ fontSize: "0.65rem" }} />
-          {profile.exchange}
-        </div>
-      )}
-      {profile.country && (
-        <div style={{ fontSize: "0.72rem", color: "var(--sv-text-muted)" }}>
-          <i
-            className="pi pi-map-marker mr-1"
-            style={{ fontSize: "0.65rem" }}
-          />
-          {profile.country}
-        </div>
-      )}
-    </div>
-  );
-};
 
 /* ── RSI card ─────────────────────────────────────────────────────────────── */
 
@@ -1064,13 +941,17 @@ const MajorMarketsPage: React.FC = () => {
           </Panel>
         </div>
         <div className="col-12 sm:col-6 lg:col-3 p-1">
-          <Panel title="Moving Averages" height={230}>
-            <MovingAveragesCard data={technicals} loading={loadingTechnicals} />
+          <Panel title="Trend Strength" height={230}>
+            <TechnicalStrengthBars
+              data={technicals}
+              loading={loadingTechnicals}
+            />
           </Panel>
         </div>
         <div className="col-12 sm:col-6 lg:col-3 p-1">
           <Panel title="Symbol Profile" height={230}>
-            <SymbolProfileCard
+            <TechnicalSynopsisCard
+              symbol={selectedSymbol?.symbol ?? null}
               profile={selectedSymbol}
               loading={loadingSymbols}
             />
