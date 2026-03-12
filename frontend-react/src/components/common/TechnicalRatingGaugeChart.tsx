@@ -59,6 +59,14 @@ function accentColor(v: number): string {
   return `hsl(${hue}, 82%, 44%)`;
 }
 
+function getRatingText(v: number): string {
+  if (v >= 8) return "Very Strong";
+  if (v >= 6) return "Strong";
+  if (v >= 4) return "Neutral";
+  if (v >= 2) return "Weak";
+  return "Very Weak";
+}
+
 /* ── Component ───────────────────────────────────────────────────────────── */
 
 interface TechnicalRatingGaugeChartProps {
@@ -79,7 +87,7 @@ const TechnicalRatingGaugeChart: React.FC<TechnicalRatingGaugeChartProps> = ({
 
   const val = Math.min(Math.max(value ?? 5, 0), 10);
   const color = accentColor(val);
-  const label = rating ?? "";
+  const label = rating ?? (value != null ? getRatingText(val) : "");
 
   const options = useMemo(
     (): Highcharts.Options => ({

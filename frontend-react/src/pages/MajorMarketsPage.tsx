@@ -1055,7 +1055,6 @@ const MajorMarketsPage: React.FC = () => {
           <Panel title="Technical Rating" height={230}>
             <TechnicalRatingGaugeChart
               value={technicals?.rating}
-              rating={technicals?.rating}
               loading={loadingTechnicals}
             />
           </Panel>
