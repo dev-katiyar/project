@@ -3,6 +3,7 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { Dropdown } from "primereact/dropdown";
 import SymbolHistoricalChart from "@/components/common/SymbolHistoricalChart";
+import TechnicalRatingGaugeChart from "@/components/common/TechnicalRatingGaugeChart";
 import { Skeleton } from "primereact/skeleton";
 import api from "@/services/api";
 import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
@@ -147,26 +148,6 @@ const fmtPrice = (v: any): string => {
       });
 };
 
-const ratingColor = (r?: string) => {
-  if (!r) return "var(--sv-text-muted)";
-  const s = r.toLowerCase();
-  if (s.includes("strong buy")) return "#22c55e";
-  if (s.includes("buy")) return "#4ade80";
-  if (s.includes("strong sell")) return "#ef4444";
-  if (s.includes("sell")) return "#f87171";
-  return "#f5a623";
-};
-
-const ratingBg = (r?: string) => {
-  if (!r) return "transparent";
-  const s = r.toLowerCase();
-  if (s.includes("strong buy")) return "rgba(34,197,94,0.14)";
-  if (s.includes("buy")) return "rgba(74,222,128,0.12)";
-  if (s.includes("strong sell")) return "rgba(239,68,68,0.14)";
-  if (s.includes("sell")) return "rgba(248,113,113,0.12)";
-  return "rgba(245,166,35,0.12)";
-};
-
 /* ── Reusable Panel card ──────────────────────────────────────────────────── */
 
 const Panel: React.FC<{
@@ -259,140 +240,6 @@ const PeriodButtons: React.FC<{
     ))}
   </div>
 );
-
-/* ── Technical Rating card ────────────────────────────────────────────────── */
-
-const TechnicalRatingCard: React.FC<{
-  data: TechnicalsData | null;
-  loading: boolean;
-}> = ({ data, loading }) => {
-  if (loading)
-    return (
-      <>
-        {[1, 2, 3].map((i) => (
-          <Skeleton key={i} height="1.5rem" className="mb-2" />
-        ))}
-      </>
-    );
-  if (!data)
-    return (
-      <p className="sv-text-muted" style={{ fontSize: "0.8rem" }}>
-        No data available
-      </p>
-    );
-
-  const buy = data.buy_count ?? 0;
-  const sell = data.sell_count ?? 0;
-  const neut = data.neutral_count ?? 0;
-  const total = buy + sell + neut;
-  const buyPct = total > 0 ? (buy / total) * 100 : 0;
-  const sellPct = total > 0 ? (sell / total) * 100 : 0;
-
-  return (
-    <div>
-      <div
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          background: ratingBg(data.rating != null ? String(data.rating) : undefined),
-          border: `1px solid ${ratingColor(data.rating != null ? String(data.rating) : undefined)}30`,
-          borderRadius: 8,
-          padding: "0.35rem 0.875rem",
-          marginBottom: "1rem",
-        }}
-      >
-        <span
-          style={{
-            fontSize: "1rem",
-            fontWeight: 700,
-            color: ratingColor(data.rating != null ? String(data.rating) : undefined),
-          }}
-        >
-          {data.rating || "—"}
-        </span>
-      </div>
-
-      {[
-        { label: "Moving Averages", val: data.ma_rating },
-        { label: "Oscillators", val: data.oscillators_rating },
-      ].map((row) => (
-        <div
-          key={row.label}
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "0.5rem",
-          }}
-        >
-          <span
-            style={{ fontSize: "0.75rem", color: "var(--sv-text-secondary)" }}
-          >
-            {row.label}
-          </span>
-          <span
-            style={{
-              fontSize: "0.75rem",
-              fontWeight: 600,
-              color: ratingColor(row.val != null ? String(row.val) : undefined),
-            }}
-          >
-            {row.val || "—"}
-          </span>
-        </div>
-      ))}
-
-      {total > 0 && (
-        <div style={{ marginTop: "0.75rem" }}>
-          <div
-            style={{
-              display: "flex",
-              height: 6,
-              borderRadius: 4,
-              overflow: "hidden",
-              gap: 2,
-              marginBottom: "0.4rem",
-            }}
-          >
-            {buyPct > 0 && (
-              <div
-                style={{ flex: buyPct, background: "#22c55e", borderRadius: 4 }}
-              />
-            )}
-            {100 - buyPct - sellPct > 0 && (
-              <div
-                style={{
-                  flex: 100 - buyPct - sellPct,
-                  background: "#f5a623",
-                  borderRadius: 4,
-                }}
-              />
-            )}
-            {sellPct > 0 && (
-              <div
-                style={{
-                  flex: sellPct,
-                  background: "#ef4444",
-                  borderRadius: 4,
-                }}
-              />
-            )}
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ fontSize: "0.65rem", color: "#22c55e" }}>
-              Buy {buy}
-            </span>
-            <span style={{ fontSize: "0.65rem", color: "#f5a623" }}>
-              Neutral {neut}
-            </span>
-            <span style={{ fontSize: "0.65rem", color: "#ef4444" }}>
-              Sell {sell}
-            </span>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
 
 /* ── Moving Averages card ─────────────────────────────────────────────────── */
 
@@ -935,7 +782,6 @@ const MajorMarketsPage: React.FC = () => {
     };
   }, [performanceData, selectedPeriod, ct]);
 
-
   /* ── Render ───────────────────────────────────────────────────────────── */
   return (
     <>
@@ -1023,10 +869,16 @@ const MajorMarketsPage: React.FC = () => {
               style={{ minWidth: "160px", fontSize: "0.75rem" }}
               pt={{
                 root: { style: { fontSize: "0.75rem" } },
-                input: { style: { fontSize: "0.75rem", padding: "0.25rem 0.5rem" } },
+                input: {
+                  style: { fontSize: "0.75rem", padding: "0.25rem 0.5rem" },
+                },
                 trigger: { style: { width: "1.75rem" } },
-                item: { style: { fontSize: "0.75rem", padding: "0.25rem 0.5rem" } },
-                filterInput: { style: { fontSize: "0.75rem", padding: "0.25rem 0.5rem" } },
+                item: {
+                  style: { fontSize: "0.75rem", padding: "0.25rem 0.5rem" },
+                },
+                filterInput: {
+                  style: { fontSize: "0.75rem", padding: "0.25rem 0.5rem" },
+                },
               }}
               placeholder="Select…"
               filter
@@ -1201,8 +1053,9 @@ const MajorMarketsPage: React.FC = () => {
       <div className="grid">
         <div className="col-12 sm:col-6 lg:col-3 p-1">
           <Panel title="Technical Rating" height={230}>
-            <TechnicalRatingCard
-              data={technicals}
+            <TechnicalRatingGaugeChart
+              value={technicals?.rating}
+              rating={technicals?.rating}
               loading={loadingTechnicals}
             />
           </Panel>
