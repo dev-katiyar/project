@@ -795,7 +795,7 @@ const MajorMarketsPage: React.FC = () => {
           </Panel>
         </div>
         <div className="col-12 sm:col-6 lg:col-3 p-1">
-          <Panel title="Technical Strength" height={230}>
+          <Panel title="Technical Strength" height={255}>
             <TechnicalStrengthBars
               data={technicals}
               loading={loadingTechnicals}
@@ -803,7 +803,7 @@ const MajorMarketsPage: React.FC = () => {
           </Panel>
         </div>
         <div className="col-12 sm:col-6 lg:col-3 p-1">
-          <Panel title="Technical Synopsis" height={230}>
+          <Panel title="Technical Synopsis" height={255}>
             <TechnicalSynopsisCard
               symbol={selectedSymbol?.symbol ?? null}
               profile={selectedSymbol}
@@ -812,7 +812,7 @@ const MajorMarketsPage: React.FC = () => {
           </Panel>
         </div>
         <div className="col-12 sm:col-6 lg:col-3 p-1">
-          <Panel title="RSI Indicator" height={230}>
+          <Panel title="RSI Indicator" height={255}>
             <RsiCard data={technicals} loading={loadingTechnicals} />
           </Panel>
         </div>
