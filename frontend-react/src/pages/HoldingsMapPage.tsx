@@ -558,30 +558,34 @@ const HoldingsMapPage: React.FC = () => {
             <button
               key={cat.id}
               onClick={() => handleCatChange(cat)}
+              onMouseEnter={(e) => {
+                if (selectedCat?.id !== cat.id) {
+                  (e.currentTarget as HTMLButtonElement).style.background = "var(--sv-bg-card-hover)";
+                  (e.currentTarget as HTMLButtonElement).style.color = "var(--sv-text-primary)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (selectedCat?.id !== cat.id) {
+                  (e.currentTarget as HTMLButtonElement).style.background = "var(--sv-bg-surface)";
+                  (e.currentTarget as HTMLButtonElement).style.color = "var(--sv-text-secondary)";
+                }
+              }}
               style={{
-                padding: "6px 14px",
-                borderRadius: 20,
-                border: "1px solid",
-                fontSize: 13,
-                fontWeight: 600,
+                padding: "0.3rem 0.875rem",
+                borderRadius: 6,
+                border: "none",
                 cursor: "pointer",
-                transition: "all 0.2s",
-                borderColor:
-                  selectedCat?.id === cat.id
-                    ? "#3b82f6"
-                    : "var(--surface-border)",
-                background:
-                  selectedCat?.id === cat.id
-                    ? "linear-gradient(135deg,#2563eb,#7c3aed)"
-                    : "var(--surface-card)",
+                fontSize: "0.8rem",
+                fontWeight: selectedCat?.id === cat.id ? 700 : 500,
                 color:
                   selectedCat?.id === cat.id
-                    ? "#fff"
-                    : "var(--text-color-secondary)",
-                boxShadow:
+                    ? "var(--sv-text-inverse)"
+                    : "var(--sv-text-secondary)",
+                background:
                   selectedCat?.id === cat.id
-                    ? "0 2px 12px rgba(59,130,246,0.35)"
-                    : "none",
+                    ? "var(--sv-accent)"
+                    : "var(--sv-bg-surface)",
+                transition: "all 0.15s ease",
               }}
             >
               {cat.name}
