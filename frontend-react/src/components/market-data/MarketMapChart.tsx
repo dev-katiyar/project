@@ -58,16 +58,26 @@ const CHART_THEME: Record<ThemeName, ChartTheme> = {
 
 /* ── Color helpers (matches Angular reference approach) ──────────────────── */
 
-const MIN_RED = 255, MAX_RED = 100;
-const MIN_GREEN = 230, MAX_GREEN = 100;
+const MIN_RED = 255,
+  MAX_RED = 100;
+const MIN_GREEN = 230,
+  MAX_GREEN = 100;
 
-function computeColor(pct: number, minChange: number, maxChange: number): string {
+function computeColor(
+  pct: number,
+  minChange: number,
+  maxChange: number,
+): string {
   if (pct < 0) {
-    const colNum = Math.round(MIN_RED - (pct / minChange) * (MIN_RED - MAX_RED));
+    const colNum = Math.round(
+      MIN_RED - (pct / minChange) * (MIN_RED - MAX_RED),
+    );
     return `rgb(${colNum},0,0)`;
   }
   if (pct > 0) {
-    const colNum = Math.round(MIN_GREEN - (pct / maxChange) * (MIN_GREEN - MAX_GREEN));
+    const colNum = Math.round(
+      MIN_GREEN - (pct / maxChange) * (MIN_GREEN - MAX_GREEN),
+    );
     return `rgb(0,${colNum},0)`;
   }
   return "rgb(80,80,80)";
@@ -159,9 +169,39 @@ const MarketMapChart: React.FC<MarketMapChartProps> = ({
       },
       title: { text: undefined },
       subtitle: { text: undefined },
+      navigation: {
+        breadcrumbs: {
+          showFullPath: false,
+          format: "← Back",
+          buttonTheme: {
+            fill: "rgba(255,255,255,0.07)",
+            padding: 3,
+            marginBottom: 5,
+            r: 5,
+            stroke: "rgba(255,255,255,0.18)",
+            "stroke-width": 1,
+            style: {
+              color: ct.tooltipText,
+              fontSize: "11px",
+              fontWeight: "600",
+              cursor: "pointer",
+              letterSpacing: "0.02em",
+            },
+            states: {
+              hover: {
+                fill: "rgba(255,255,255,0.15)",
+                style: { color: "#ffffff" },
+              },
+            },
+          },
+          separator: { text: " ", style: { display: "none" } },
+          // position: { y: -14 },
+        },
+      },
       series: [
         {
           type: "treemap" as any,
+          name: "Back",
           layoutAlgorithm: "squarified",
           allowDrillToNode: true as any,
           animationLimit: 1000,
