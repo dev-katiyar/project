@@ -126,20 +126,27 @@ function buildTreemapColors(
 }
 
 function getBoxColor(value: number, minVal: number, maxVal: number): string {
-  if (value === 0) return "rgb(60,60,80)";
+  // Neutral colour for zero / flat
+  const nR = 60,
+    nG = 60,
+    nB = 80;
+  if (value === 0) return `rgb(${nR},${nG},${nB})`;
+
   if (value < 0) {
-    // Deep red (strong loss) → muted red (weak loss)
-    const ratio = Math.min(value / minVal, 1);
-    const r = Math.round(180 + ratio * 55); // 235 → 180
-    const g = Math.round(30 * (1 - ratio));
-    const b = Math.round(30 * (1 - ratio));
+    // Scale 0 → 1 based on how close the value is to the worst loss
+    const ratio = Math.min(Math.abs(value) / Math.abs(minVal), 1);
+    const r = Math.round(nR + ratio * (225 - nR)); // neutral → deep red
+    const g = Math.round(nG * (1 - ratio));
+    const b = Math.round(nB * (1 - ratio));
     return `rgb(${r},${g},${b})`;
   }
-  // Deep green (strong gain) → muted green (weak gain)
+
+  // Scale 0 → 1 based on how close the value is to the best gain
   const ratio = Math.min(value / maxVal, 1);
-  const g = Math.round(150 + ratio * 55); // 205 → 150
-  const r = Math.round(20 * (1 - ratio));
-  return `rgb(${r},${g},40)`;
+  const r = Math.round(nR * (1 - ratio));
+  const g = Math.round(nG + ratio * (210 - nG)); // neutral → deep green
+  const b = Math.round(nB * (1 - ratio));
+  return `rgb(${r},${g},${b})`;
 }
 
 /* ── Formatters ──────────────────────────────────────────────────────────── */
@@ -364,10 +371,12 @@ function computeStats(cfg: ChartDataConfig): MapStats {
     sectorSums[s].count++;
   }
 
-  const sectorAvgs = Object.entries(sectorSums).map(([name, { total, count }]) => ({
-    name,
-    avg: total / count,
-  }));
+  const sectorAvgs = Object.entries(sectorSums).map(
+    ([name, { total, count }]) => ({
+      name,
+      avg: total / count,
+    }),
+  );
   sectorAvgs.sort((a, b) => b.avg - a.avg);
 
   return {
@@ -446,7 +455,11 @@ const HoldingsMapPage: React.FC = () => {
         } else if (sub.id === "Nasdaq100") {
           endpoint = "/symbol/nasdaqtreemap";
         } else if (
-          ["sv_portfolios", "sv_portfolios_thematic", "user_portfolios"].includes(cat.id)
+          [
+            "sv_portfolios",
+            "sv_portfolios_thematic",
+            "user_portfolios",
+          ].includes(cat.id)
         ) {
           endpoint = `/modelportfolio/holdingmap/${sub.id}`;
           sizeColumn = "marketValue";
@@ -458,7 +471,9 @@ const HoldingsMapPage: React.FC = () => {
         }
 
         const res = await api.get<RawHoldingRow[]>(endpoint);
-        const rawData: RawHoldingRow[] = Array.isArray(res.data) ? res.data : [];
+        const rawData: RawHoldingRow[] = Array.isArray(res.data)
+          ? res.data
+          : [];
 
         const cfg: ChartDataConfig = {
           rawData,
@@ -493,9 +508,7 @@ const HoldingsMapPage: React.FC = () => {
     setSelectedSub(firstSub);
   };
 
-  const chartOptions = chartData
-    ? buildChartOptions(chartData, ct)
-    : null;
+  const chartOptions = chartData ? buildChartOptions(chartData, ct) : null;
 
   const avgColor =
     stats && stats.avgChange >= 0 ? "var(--green-400)" : "var(--red-400)";
@@ -521,11 +534,18 @@ const HoldingsMapPage: React.FC = () => {
         />
         <div className="flex align-items-center justify-content-between flex-wrap gap-2">
           <div>
-            <h2 className="m-0 text-xl font-bold" style={{ color: "var(--text-color)" }}>
+            <h2
+              className="m-0 text-xl font-bold"
+              style={{ color: "var(--text-color)" }}
+            >
               Holdings Map
             </h2>
-            <p className="m-0 mt-1 text-sm" style={{ color: "var(--text-color-secondary)" }}>
-              Visualize market exposure by sector · size = market cap · color = daily change
+            <p
+              className="m-0 mt-1 text-sm"
+              style={{ color: "var(--text-color-secondary)" }}
+            >
+              Visualize market exposure by sector · size = market cap · color =
+              daily change
             </p>
           </div>
           <div className="flex align-items-center gap-2">
@@ -537,7 +557,10 @@ const HoldingsMapPage: React.FC = () => {
                 border: "1px solid rgba(34,197,94,0.25)",
               }}
             >
-              <i className="pi pi-circle-fill" style={{ fontSize: "0.45rem" }} />
+              <i
+                className="pi pi-circle-fill"
+                style={{ fontSize: "0.45rem" }}
+              />
               Live
             </span>
           </div>
@@ -560,14 +583,18 @@ const HoldingsMapPage: React.FC = () => {
               onClick={() => handleCatChange(cat)}
               onMouseEnter={(e) => {
                 if (selectedCat?.id !== cat.id) {
-                  (e.currentTarget as HTMLButtonElement).style.background = "var(--sv-bg-card-hover)";
-                  (e.currentTarget as HTMLButtonElement).style.color = "var(--sv-text-primary)";
+                  (e.currentTarget as HTMLButtonElement).style.background =
+                    "var(--sv-bg-card-hover)";
+                  (e.currentTarget as HTMLButtonElement).style.color =
+                    "var(--sv-text-primary)";
                 }
               }}
               onMouseLeave={(e) => {
                 if (selectedCat?.id !== cat.id) {
-                  (e.currentTarget as HTMLButtonElement).style.background = "var(--sv-bg-surface)";
-                  (e.currentTarget as HTMLButtonElement).style.color = "var(--sv-text-secondary)";
+                  (e.currentTarget as HTMLButtonElement).style.background =
+                    "var(--sv-bg-surface)";
+                  (e.currentTarget as HTMLButtonElement).style.color =
+                    "var(--sv-text-secondary)";
                 }
               }}
               style={{
@@ -597,7 +624,10 @@ const HoldingsMapPage: React.FC = () => {
         {selectedCat && selectedCat.children?.length > 0 && (
           <div className="flex align-items-center gap-2">
             {selectedCat.item && (
-              <span className="text-xs font-semibold" style={{ color: "var(--text-color-secondary)" }}>
+              <span
+                className="text-xs font-semibold"
+                style={{ color: "var(--text-color-secondary)" }}
+              >
                 {selectedCat.item}:
               </span>
             )}
@@ -617,7 +647,9 @@ const HoldingsMapPage: React.FC = () => {
         {/* Spacer + refresh */}
         <div className="flex-1" />
         <button
-          onClick={() => selectedCat && selectedSub && fetchData(selectedCat, selectedSub)}
+          onClick={() =>
+            selectedCat && selectedSub && fetchData(selectedCat, selectedSub)
+          }
           disabled={loading}
           title="Refresh"
           style={{
@@ -630,7 +662,9 @@ const HoldingsMapPage: React.FC = () => {
             opacity: loading ? 0.5 : 1,
           }}
         >
-          <i className={`pi ${loading ? "pi-spin pi-spinner" : "pi-refresh"}`} />
+          <i
+            className={`pi ${loading ? "pi-spin pi-spinner" : "pi-refresh"}`}
+          />
         </button>
       </div>
 
@@ -645,8 +679,12 @@ const HoldingsMapPage: React.FC = () => {
           }}
         >
           <div className="flex align-items-center gap-2">
-            <span style={{ color: "var(--text-color-secondary)" }}>Avg Change:</span>
-            <span style={{ color: avgColor, fontWeight: 700 }}>{fmtPct(stats.avgChange)}</span>
+            <span style={{ color: "var(--text-color-secondary)" }}>
+              Avg Change:
+            </span>
+            <span style={{ color: avgColor, fontWeight: 700 }}>
+              {fmtPct(stats.avgChange)}
+            </span>
           </div>
           <div className="flex align-items-center gap-2">
             <Tag
@@ -683,14 +721,24 @@ const HoldingsMapPage: React.FC = () => {
             )}
           </div>
           <div className="flex align-items-center gap-2 ml-2">
-            <i className="pi pi-arrow-up" style={{ color: "#22c55e", fontSize: 10 }} />
+            <i
+              className="pi pi-arrow-up"
+              style={{ color: "#22c55e", fontSize: 10 }}
+            />
             <span style={{ color: "var(--text-color-secondary)" }}>Best:</span>
-            <span style={{ color: "var(--text-color)", fontWeight: 600 }}>{stats.bestSector}</span>
+            <span style={{ color: "var(--text-color)", fontWeight: 600 }}>
+              {stats.bestSector}
+            </span>
           </div>
           <div className="flex align-items-center gap-2">
-            <i className="pi pi-arrow-down" style={{ color: "#ef4444", fontSize: 10 }} />
+            <i
+              className="pi pi-arrow-down"
+              style={{ color: "#ef4444", fontSize: 10 }}
+            />
             <span style={{ color: "var(--text-color-secondary)" }}>Worst:</span>
-            <span style={{ color: "var(--text-color)", fontWeight: 600 }}>{stats.worstSector}</span>
+            <span style={{ color: "var(--text-color)", fontWeight: 600 }}>
+              {stats.worstSector}
+            </span>
           </div>
         </div>
       )}
@@ -703,10 +751,17 @@ const HoldingsMapPage: React.FC = () => {
             style={{ height: 400 }}
           >
             <div className="text-center">
-              <i className="pi pi-exclamation-triangle text-4xl mb-3" style={{ color: "#f59e0b" }} />
+              <i
+                className="pi pi-exclamation-triangle text-4xl mb-3"
+                style={{ color: "#f59e0b" }}
+              />
               <p style={{ color: "var(--text-color-secondary)" }}>{error}</p>
               <button
-                onClick={() => selectedCat && selectedSub && fetchData(selectedCat, selectedSub)}
+                onClick={() =>
+                  selectedCat &&
+                  selectedSub &&
+                  fetchData(selectedCat, selectedSub)
+                }
                 style={{
                   marginTop: 12,
                   padding: "8px 20px",
@@ -756,8 +811,13 @@ const HoldingsMapPage: React.FC = () => {
             style={{ height: 400 }}
           >
             <div className="text-center">
-              <i className="pi pi-map text-6xl mb-3" style={{ color: "var(--surface-border)" }} />
-              <p style={{ color: "var(--text-color-secondary)" }}>Select a category to view the holdings map</p>
+              <i
+                className="pi pi-map text-6xl mb-3"
+                style={{ color: "var(--surface-border)" }}
+              />
+              <p style={{ color: "var(--text-color-secondary)" }}>
+                Select a category to view the holdings map
+              </p>
             </div>
           </div>
         )}
