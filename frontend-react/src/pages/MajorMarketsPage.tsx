@@ -583,20 +583,9 @@ const MajorMarketsPage: React.FC = () => {
               options={symbolProfiles}
               optionLabel="alternate_name"
               onChange={(e) => setSelectedSymbol(e.value)}
-              style={{ minWidth: "160px", fontSize: "0.75rem" }}
-              pt={{
-                root: { style: { fontSize: "0.75rem" } },
-                input: {
-                  style: { fontSize: "0.75rem", padding: "0.25rem 0.5rem" },
-                },
-                trigger: { style: { width: "1.75rem" } },
-                item: {
-                  style: { fontSize: "0.75rem", padding: "0.25rem 0.5rem" },
-                },
-                filterInput: {
-                  style: { fontSize: "0.75rem", padding: "0.25rem 0.5rem" },
-                },
-              }}
+              className="sv-dropdown-sm"
+              panelClassName="sv-dropdown-sm-panel"
+              style={{ minWidth: "160px" }}
               placeholder="Select…"
               filter
             />

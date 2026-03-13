@@ -607,7 +607,9 @@ const HoldingsMapPage: React.FC = () => {
               onChange={(e) => setSelectedSub(e.value)}
               optionLabel="name"
               placeholder="Select..."
-              style={{ minWidth: 200, fontSize: 13 }}
+              className="sv-dropdown-sm"
+              panelClassName="sv-dropdown-sm-panel"
+              style={{ minWidth: 200 }}
             />
           </div>
         )}
