@@ -170,7 +170,7 @@ const TransactionsTab: React.FC<Props> = ({ transactions }) => {
               {(r.qty ?? 0).toLocaleString("en-US", { maximumFractionDigits: 4 })}
             </div>
           )}
-          headerStyle={{ textAlign: "right" }}
+          pt={{ headerContent: { className: "justify-content-end" } }}
           sortable
           style={{ minWidth: "80px" }}
         />
@@ -180,7 +180,7 @@ const TransactionsTab: React.FC<Props> = ({ transactions }) => {
           body={(r: Transaction) => (
             <div className="text-right font-semibold text-sm">{fmtUSDFull(r.price ?? 0)}</div>
           )}
-          headerStyle={{ textAlign: "right" }}
+          pt={{ headerContent: { className: "justify-content-end" } }}
           sortable
           style={{ minWidth: "100px" }}
         />
@@ -193,7 +193,7 @@ const TransactionsTab: React.FC<Props> = ({ transactions }) => {
               {fmtUSDFull((r.qty ?? 0) * (r.price ?? 0))}
             </div>
           )}
-          headerStyle={{ textAlign: "right" }}
+          pt={{ headerContent: { className: "justify-content-end" } }}
           style={{ minWidth: "120px" }}
         />
         {sorted.some((t) => t.fees) && (
@@ -205,7 +205,7 @@ const TransactionsTab: React.FC<Props> = ({ transactions }) => {
                 {r.fees ? fmtUSDFull(r.fees) : "—"}
               </div>
             )}
-            headerStyle={{ textAlign: "right" }}
+            pt={{ headerContent: { className: "justify-content-end" } }}
             style={{ minWidth: "80px" }}
           />
         )}
