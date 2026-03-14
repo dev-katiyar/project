@@ -3,7 +3,8 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Tag } from "primereact/tag";
 import { ProgressBar } from "primereact/progressbar";
-import { type Position, fmtUSD, fmtUSDFull, fmtPct, gainColor } from "@/components/portfolio/PortfolioDetailPanel";
+import { InputText } from "primereact/inputtext";
+import { type Position, fmtUSD, fmtUSDFull, fmtPct } from "@/components/portfolio/PortfolioDetailPanel";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -15,31 +16,26 @@ interface Props {
   onRefresh: () => void;
 }
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+const gainClass = (val: number | undefined) =>
+  (val ?? 0) >= 0 ? "sv-text-gain" : "sv-text-loss";
+
 // ─── Cell renderers ───────────────────────────────────────────────────────────
 
 const SymbolCell: React.FC<{ row: Position }> = ({ row }) => (
   <div>
-    <div style={{ fontWeight: 700, color: "var(--sv-accent)", fontSize: "0.9rem" }}>
-      {row.symbol}
-    </div>
+    <div className="font-bold sv-text-accent text-sm">{row.symbol}</div>
     {row.name && (
       <div
-        style={{
-          fontSize: "0.72rem",
-          color: "var(--sv-text-muted)",
-          maxWidth: "180px",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}
+        className="text-xs sv-text-muted overflow-hidden white-space-nowrap"
+        style={{ maxWidth: "180px", textOverflow: "ellipsis" }}
       >
         {row.name}
       </div>
     )}
     {row.sector && (
-      <div style={{ fontSize: "0.68rem", color: "var(--sv-text-muted)", marginTop: "0.1rem" }}>
-        {row.sector}
-      </div>
+      <div className="text-xs sv-text-muted mt-1">{row.sector}</div>
     )}
   </div>
 );
@@ -48,17 +44,15 @@ const TypeCell: React.FC<{ row: Position }> = ({ row }) => (
   <Tag
     value={row.type ?? row.side}
     severity={row.type === "Long" ? "success" : "danger"}
-    style={{ fontSize: "0.7rem", padding: "0.15rem 0.5rem" }}
+    className="text-xs"
   />
 );
 
 const PriceCell: React.FC<{ row: Position }> = ({ row }) => (
   <div className="text-right">
-    <div style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--sv-text-primary)" }}>
-      {fmtUSDFull(row.currentPrice ?? 0)}
-    </div>
+    <div className="font-semibold text-sm">{fmtUSDFull(row.currentPrice ?? 0)}</div>
     {row.changePct !== undefined && (
-      <div style={{ fontSize: "0.72rem", color: gainColor(row.changePct) }}>
+      <div className={`text-xs ${gainClass(row.changePct)}`}>
         {fmtPct(row.changePct)}
       </div>
     )}
@@ -67,18 +61,16 @@ const PriceCell: React.FC<{ row: Position }> = ({ row }) => (
 
 const ValueCell: React.FC<{ row: Position }> = ({ row }) => (
   <div className="text-right">
-    <div style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--sv-text-primary)" }}>
-      {fmtUSD(row.currentValue)}
-    </div>
+    <div className="font-semibold text-sm">{fmtUSD(row.currentValue)}</div>
     {(row.percentageShare ?? 0) > 0 && (
-      <div style={{ marginTop: "0.2rem" }}>
+      <div className="mt-1">
         <ProgressBar
           value={Math.min(100, row.percentageShare ?? 0)}
           showValue={false}
           style={{ height: "4px", borderRadius: "2px" }}
           color="var(--sv-accent)"
         />
-        <div style={{ fontSize: "0.68rem", color: "var(--sv-text-muted)", textAlign: "right" }}>
+        <div className="text-xs sv-text-muted text-right">
           {(row.percentageShare ?? 0).toFixed(1)}%
         </div>
       </div>
@@ -88,17 +80,11 @@ const ValueCell: React.FC<{ row: Position }> = ({ row }) => (
 
 const PnlCell: React.FC<{ row: Position }> = ({ row }) => (
   <div className="text-right">
-    <div
-      style={{
-        fontWeight: 700,
-        fontSize: "0.85rem",
-        color: gainColor(row.pnl),
-      }}
-    >
+    <div className={`font-bold text-sm ${gainClass(row.pnl)}`}>
       {fmtUSD(row.pnl)}
     </div>
     {row.pnlPercent !== undefined && (
-      <div style={{ fontSize: "0.72rem", color: gainColor(row.pnlPercent) }}>
+      <div className={`text-xs ${gainClass(row.pnlPercent)}`}>
         {fmtPct(row.pnlPercent)}
       </div>
     )}
@@ -116,28 +102,24 @@ const SummaryBar: React.FC<{ positions: Position[]; currentCash: number }> = ({
 
   return (
     <div
-      className="flex gap-3 flex-wrap"
+      className="flex gap-3 flex-wrap align-items-center text-sm"
       style={{
         padding: "0.6rem 1rem",
         background: "var(--sv-bg-surface)",
         borderTop: "1px solid var(--sv-border)",
-        fontSize: "0.8rem",
       }}
     >
-      <span style={{ color: "var(--sv-text-muted)" }}>
+      <span className="sv-text-muted">
         {positions.length} position{positions.length !== 1 ? "s" : ""}
       </span>
-      <span style={{ color: "var(--sv-text-muted)" }}>
-        Invested:{" "}
-        <strong style={{ color: "var(--sv-text-primary)" }}>{fmtUSD(totalValue)}</strong>
+      <span className="sv-text-muted">
+        Invested: <strong>{fmtUSD(totalValue)}</strong>
       </span>
-      <span style={{ color: "var(--sv-text-muted)" }}>
-        Total P&L:{" "}
-        <strong style={{ color: gainColor(totalPnl) }}>{fmtUSD(totalPnl)}</strong>
+      <span className="sv-text-muted">
+        Total P&L: <strong className={gainClass(totalPnl)}>{fmtUSD(totalPnl)}</strong>
       </span>
-      <span style={{ color: "var(--sv-text-muted)" }}>
-        Cash:{" "}
-        <strong style={{ color: "var(--sv-text-primary)" }}>{fmtUSD(currentCash)}</strong>
+      <span className="sv-text-muted">
+        Cash: <strong>{fmtUSD(currentCash)}</strong>
       </span>
     </div>
   );
@@ -150,12 +132,9 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
 
   if (!positions || positions.length === 0) {
     return (
-      <div
-        className="flex flex-column align-items-center justify-content-center gap-3"
-        style={{ padding: "4rem 1rem", color: "var(--sv-text-muted)" }}
-      >
+      <div className="flex flex-column align-items-center justify-content-center gap-3 sv-text-muted p-6">
         <i className="pi pi-inbox" style={{ fontSize: "2.5rem" }} />
-        <div style={{ fontSize: "0.9rem" }}>No open positions</div>
+        <div className="text-sm">No open positions</div>
       </div>
     );
   }
@@ -163,31 +142,16 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
   return (
     <div>
       {/* Search bar */}
-      <div
-        style={{
-          padding: "0.75rem 1rem",
-          borderBottom: "1px solid var(--sv-border)",
-        }}
-      >
-        <span className="p-input-icon-left" style={{ width: "280px" }}>
-          <i className="pi pi-search" style={{ color: "var(--sv-text-muted)" }} />
-          <input
-            className="p-inputtext p-component"
+      <div className="py-2 px-3" style={{ borderBottom: "1px solid var(--sv-border)" }}>
+        <div className="relative" style={{ display: "inline-block" }}>
+          <i className="pi pi-search sv-input-icon-left" />
+          <InputText
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
             placeholder="Search symbol, name, sector…"
-            style={{
-              paddingLeft: "2.2rem",
-              width: "100%",
-              background: "var(--sv-bg-surface)",
-              border: "1px solid var(--sv-border)",
-              borderRadius: "8px",
-              color: "var(--sv-text-primary)",
-              fontSize: "0.82rem",
-              padding: "0.45rem 0.75rem 0.45rem 2.2rem",
-            }}
+            className="sv-search-input"
           />
-        </span>
+        </div>
       </div>
 
       <DataTable
@@ -221,7 +185,7 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
           field="qty"
           header="Qty"
           body={(r: Position) => (
-            <div className="text-right" style={{ fontSize: "0.85rem", color: "var(--sv-text-primary)" }}>
+            <div className="text-right text-sm">
               {(r.qty ?? 0).toLocaleString("en-US", { maximumFractionDigits: 4 })}
             </div>
           )}
@@ -233,7 +197,7 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
           field="avgCost"
           header="Avg Cost"
           body={(r: Position) => (
-            <div className="text-right" style={{ fontSize: "0.85rem", color: "var(--sv-text-secondary)" }}>
+            <div className="text-right text-sm" style={{ color: "var(--sv-text-secondary)" }}>
               {fmtUSDFull(r.avgCost ?? 0)}
             </div>
           )}
@@ -271,13 +235,11 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
             header="Div Yield"
             body={(r: Position) =>
               r.dividendYield ? (
-                <div className="text-right" style={{ fontSize: "0.82rem", color: "var(--sv-success)" }}>
+                <div className="text-right text-sm sv-text-gain">
                   {(r.dividendYield * 100).toFixed(2)}%
                 </div>
               ) : (
-                <div className="text-right" style={{ color: "var(--sv-text-muted)", fontSize: "0.82rem" }}>
-                  —
-                </div>
+                <div className="text-right text-sm sv-text-muted">—</div>
               )
             }
             headerStyle={{ textAlign: "right" }}
