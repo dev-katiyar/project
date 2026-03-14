@@ -136,8 +136,8 @@ export const gainColor = (v: number) =>
   v > 0
     ? "var(--sv-gain)"
     : v < 0
-    ? "var(--sv-loss)"
-    : "var(--sv-text-secondary)";
+      ? "var(--sv-loss)"
+      : "var(--sv-text-secondary)";
 
 // ─── Header metric card ───────────────────────────────────────────────────────
 
@@ -149,33 +149,25 @@ const MetricCard: React.FC<{
   icon?: string;
 }> = ({ label, value, sub, color, icon }) => (
   <div
+    className="border-round-xl flex-1"
     style={{
       background: "var(--sv-bg-surface)",
       border: "1px solid var(--sv-border)",
-      borderRadius: "10px",
       padding: "0.75rem 1rem",
       minWidth: "130px",
       flex: "1 1 130px",
     }}
   >
     <div
-      style={{
-        fontSize: "0.68rem",
-        color: "var(--sv-text-muted)",
-        textTransform: "uppercase",
-        letterSpacing: "0.05em",
-        marginBottom: "0.3rem",
-        display: "flex",
-        alignItems: "center",
-        gap: "0.25rem",
-      }}
+      className="flex align-items-center gap-1 mb-1 sv-info-label"
+      style={{ fontSize: "0.68rem" }}
     >
       {icon && <i className={`pi ${icon}`} style={{ fontSize: "0.65rem" }} />}
       {label}
     </div>
     <div
+      className="font-bold"
       style={{
-        fontWeight: 700,
         fontSize: "1rem",
         color: color ?? "var(--sv-text-primary)",
         lineHeight: 1.2,
@@ -185,11 +177,8 @@ const MetricCard: React.FC<{
     </div>
     {sub && (
       <div
-        style={{
-          fontSize: "0.75rem",
-          color: color ?? "var(--sv-text-muted)",
-          marginTop: "0.15rem",
-        }}
+        className="text-sm mt-1"
+        style={{ color: color ?? "var(--sv-text-muted)" }}
       >
         {sub}
       </div>
@@ -200,7 +189,7 @@ const MetricCard: React.FC<{
 // ─── Loading skeleton ──────────────────────────────────────────────────────────
 
 const DetailSkeleton: React.FC = () => (
-  <div style={{ padding: "1.5rem" }}>
+  <div className="p-4">
     <div className="flex gap-2 mb-4 flex-wrap">
       {[1, 2, 3, 4, 5, 6].map((i) => (
         <Skeleton key={i} height="5rem" width="140px" borderRadius="10px" />
@@ -230,7 +219,9 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
     setLoading(true);
     setError("");
     try {
-      const res = await api.get(`/modelportfolio/read/${portfolio.portfolioid}`);
+      const res = await api.get(
+        `/modelportfolio/read/${portfolio.portfolioid}`,
+      );
       const d: PortfolioDetailData = res.data;
       // Enrich positions with basicDetails
       const basic = d.basicDetails ?? {};
@@ -286,48 +277,35 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
 
   return (
     <div
+      className="border-round-xl overflow-hidden mb-4"
       style={{
         background: "var(--sv-bg-card)",
         border: "1px solid var(--sv-border)",
         borderTop: "3px solid var(--sv-accent)",
-        borderRadius: "12px",
-        overflow: "hidden",
         boxShadow: "var(--sv-shadow-md)",
-        marginBottom: "1.5rem",
       }}
     >
       <Toast ref={toast} />
 
       {/* ── Panel Header ── */}
       <div
+        className="px-3 py-3"
         style={{
-          padding: "1rem 1.25rem",
           borderBottom: "1px solid var(--sv-border)",
           background: "var(--sv-bg-surface)",
         }}
       >
         <div className="flex align-items-center justify-content-between gap-2 mb-3 flex-wrap">
           <div className="flex align-items-center gap-2 flex-wrap">
-            <div
-              style={{
-                width: "2.2rem",
-                height: "2.2rem",
-                borderRadius: "10px",
-                background: "color-mix(in srgb, var(--sv-accent) 15%, transparent)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <i
-                className="pi pi-briefcase"
-                style={{ color: "var(--sv-accent)", fontSize: "1rem" }}
-              />
+            {/* Icon badge */}
+            <div className="sv-icon-badge flex align-items-center justify-content-center border-round-xl flex-shrink-0">
+              <i className="pi pi-briefcase" style={{ fontSize: "1rem" }} />
             </div>
+
             <div>
               <div
+                className="font-bold"
                 style={{
-                  fontWeight: 800,
                   fontSize: "1.1rem",
                   color: "var(--sv-text-primary)",
                   lineHeight: 1.1,
@@ -335,25 +313,29 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
               >
                 {portfolio.name}
               </div>
-              <div style={{ fontSize: "0.72rem", color: "var(--sv-text-muted)", marginTop: "0.1rem" }}>
+              <div
+                className="sv-text-muted mt-1"
+                style={{ fontSize: "0.72rem" }}
+              >
                 Portfolio Details
               </div>
             </div>
+
+            {/* Portfolio type pill */}
             <span
+              className="sv-info-label font-bold"
               style={{
                 fontSize: "0.7rem",
-                fontWeight: 700,
                 color: "var(--sv-accent)",
                 background: "var(--sv-accent-bg)",
                 padding: "0.2rem 0.6rem",
                 borderRadius: "999px",
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
               }}
             >
               {portfolio.portfolio_type ?? "portfolio"}
             </span>
           </div>
+
           <Button
             icon="pi pi-times"
             text
@@ -362,7 +344,7 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
             onClick={onClose}
             tooltip="Close detail view"
             tooltipOptions={{ position: "left" }}
-            style={{ color: "var(--sv-text-muted)" }}
+            className="sv-text-muted"
           />
         </div>
 
@@ -370,7 +352,12 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
         {loading ? (
           <div className="flex gap-2 flex-wrap">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Skeleton key={i} height="4.5rem" width="140px" borderRadius="10px" />
+              <Skeleton
+                key={i}
+                height="4.5rem"
+                width="140px"
+                borderRadius="10px"
+              />
             ))}
           </div>
         ) : details ? (
@@ -415,16 +402,18 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
 
       {/* ── Error state ── */}
       {error && !loading && (
-        <div
-          style={{
-            padding: "2rem",
-            textAlign: "center",
-            color: "var(--sv-loss)",
-          }}
-        >
-          <i className="pi pi-exclamation-triangle" style={{ fontSize: "2rem" }} />
-          <p style={{ marginTop: "0.5rem" }}>{error}</p>
-          <Button label="Retry" icon="pi pi-refresh" size="small" onClick={loadDetail} />
+        <div className="flex flex-column align-items-center justify-content-center gap-2 p-5 text-center sv-text-loss">
+          <i
+            className="pi pi-exclamation-triangle"
+            style={{ fontSize: "2rem" }}
+          />
+          <p className="m-0">{error}</p>
+          <Button
+            label="Retry"
+            icon="pi pi-refresh"
+            size="small"
+            onClick={loadDetail}
+          />
         </div>
       )}
 
@@ -435,7 +424,7 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
         <TabView
           activeIndex={activeTabIndex}
           onTabChange={handleTabChange}
-          style={{ border: "none" }}
+          pt={{ root: { className: "sv-tabs" } }}
         >
           <TabPanel header="Summary">
             <SummaryTab details={data.portfolioDetails} />
