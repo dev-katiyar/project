@@ -51,8 +51,8 @@ const gainColor = (v: number) =>
   v > 0
     ? "var(--sv-gain)"
     : v < 0
-    ? "var(--sv-loss)"
-    : "var(--sv-text-secondary)";
+      ? "var(--sv-loss)"
+      : "var(--sv-text-secondary)";
 
 const defaultSection = (): SectionState => ({
   portfolios: [],
@@ -131,14 +131,16 @@ const SectionCard: React.FC<SectionCardProps> = ({
                 background: `color-mix(in srgb, ${accentColor} 15%, transparent)`,
               }}
             >
-              <i className={`pi ${icon}`} style={{ color: accentColor, fontSize: "0.9rem" }} />
+              <i
+                className={`pi ${icon}`}
+                style={{ color: accentColor, fontSize: "0.9rem" }}
+              />
             </div>
             <h3
               className="m-0"
               style={{
                 fontSize: "0.95rem",
                 fontWeight: 700,
-                color: "var(--sv-text-primary)",
                 letterSpacing: "-0.01em",
               }}
             >
@@ -168,19 +170,16 @@ const SectionCard: React.FC<SectionCardProps> = ({
                 className="flex gap-3 flex-wrap"
                 style={{ fontSize: "0.8rem" }}
               >
-                <span style={{ color: "var(--sv-text-muted)" }}>
-                  Value:{" "}
-                  <strong style={{ color: "var(--sv-text-primary)" }}>
-                    {fmtCompact(metrics.totalValue)}
-                  </strong>
+                <span className="sv-text-muted">
+                  Value: <strong>{fmtCompact(metrics.totalValue)}</strong>
                 </span>
-                <span style={{ color: "var(--sv-text-muted)" }}>
+                <span className="sv-text-muted">
                   P&amp;L:{" "}
                   <strong style={{ color: gainColor(metrics.totalPnl) }}>
                     {fmtCompact(metrics.totalPnl)}
                   </strong>
                 </span>
-                <span style={{ color: "var(--sv-text-muted)" }}>
+                <span className="sv-text-muted">
                   Today:{" "}
                   <strong style={{ color: gainColor(metrics.totalDailyPnl) }}>
                     {fmtCompact(metrics.totalDailyPnl)}
@@ -208,23 +207,21 @@ const SectionCard: React.FC<SectionCardProps> = ({
         {/* Timestamp hint */}
         {!loading && updatedAt && (
           <div
-            style={{
-              marginTop: "0.4rem",
-              fontSize: "0.72rem",
-              color: "var(--sv-text-muted)",
-            }}
+            className="sv-text-muted"
+            style={{ marginTop: "0.4rem", fontSize: "0.72rem" }}
           >
             <i
               className="pi pi-clock"
               style={{ fontSize: "0.65rem", marginRight: "0.25rem" }}
             />
-            As of {fmtTimestamp(updatedAt)} — click a row to view portfolio details
+            As of {fmtTimestamp(updatedAt)} — click a row to view portfolio
+            details
           </div>
         )}
       </div>
 
       {/* ── Table area ── */}
-      <div style={{ overflowX: "auto" }}>
+      <div className="overflow-x-auto">
         {error ? (
           <div className="p-3">
             <Message severity="error" text={error} />
@@ -258,7 +255,14 @@ const PortfoliosCombinedPage: React.FC = () => {
 
   useEffect(() => {
     if (selected) {
-      setTimeout(() => detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+      setTimeout(
+        () =>
+          detailRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          }),
+        50,
+      );
     }
   }, [selected]);
 
@@ -304,9 +308,7 @@ const PortfoliosCombinedPage: React.FC = () => {
   // ─── Row selection ──────────────────────────────────────────────────────────
 
   const handleSelect = (p: Portfolio) => {
-    setSelected((prev) =>
-      prev?.portfolioid === p.portfolioid ? null : p,
-    );
+    setSelected((prev) => (prev?.portfolioid === p.portfolioid ? null : p));
   };
 
   // ─── Create portfolio ───────────────────────────────────────────────────────
@@ -374,11 +376,7 @@ const PortfoliosCombinedPage: React.FC = () => {
         <div>
           <h1
             className="m-0 sv-page-title"
-            style={{
-              fontSize: "1.6rem",
-              fontWeight: 800,
-              color: "var(--sv-text-primary)",
-            }}
+            style={{ fontSize: "1.6rem", fontWeight: 800 }}
           >
             <i
               className="pi pi-chart-line mr-2"
@@ -386,10 +384,7 @@ const PortfoliosCombinedPage: React.FC = () => {
             />
             Portfolio Dashboard
           </h1>
-          <p
-            className="m-0 mt-1"
-            style={{ color: "var(--sv-text-muted)", fontSize: "0.85rem" }}
-          >
+          <p className="m-0 mt-1 sv-text-muted" style={{ fontSize: "0.85rem" }}>
             Track and manage all your investment portfolios in one place
           </p>
         </div>
