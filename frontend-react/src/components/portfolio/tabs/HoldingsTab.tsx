@@ -251,7 +251,7 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
           body={(r: Position) =>
             r.dividendYield ? (
               <div className="text-right text-sm sv-text-gain">
-                {r.dividendYield!.toFixed(2)}%
+                {(r.dividendYield! * 100).toFixed(2)}%
               </div>
             ) : (
               <div className="text-right text-sm sv-text-muted">—</div>
