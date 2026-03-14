@@ -368,7 +368,7 @@ const PortfoliosCombinedPage: React.FC = () => {
   // ─── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <div className="sv-section">
+    <div>
       <Toast ref={toast} />
 
       {/* ── Page header ── */}

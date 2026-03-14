@@ -78,7 +78,10 @@ function stripTradeAlertPrefix(title: string): string {
   return title.replace(/^Portfolio Trade Alert\s*[–—-]\s*/i, "").trim();
 }
 
-async function fetchCategoryPost(categoryId: number, count = 1): Promise<WpPost[]> {
+async function fetchCategoryPost(
+  categoryId: number,
+  count = 1,
+): Promise<WpPost[]> {
   const { data } = await api.get("/wp-json/wp/v2/posts", {
     params: { categories: categoryId, per_page: count, offset: 0 },
   });
@@ -134,14 +137,18 @@ const SectionHeader: React.FC<{
           height: 30,
           borderRadius: 8,
           background: "var(--sv-accent-bg)",
-          border: "1px solid color-mix(in srgb, var(--sv-accent) 25%, transparent)",
+          border:
+            "1px solid color-mix(in srgb, var(--sv-accent) 25%, transparent)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
         }}
       >
-        <i className={`pi ${icon}`} style={{ color: "var(--sv-accent)", fontSize: "0.8rem" }} />
+        <i
+          className={`pi ${icon}`}
+          style={{ color: "var(--sv-accent)", fontSize: "0.8rem" }}
+        />
       </span>
       <span
         style={{
@@ -169,7 +176,8 @@ const SectionHeader: React.FC<{
           letterSpacing: "0.04em",
           padding: "0.25rem 0.65rem",
           borderRadius: 6,
-          border: "1px solid color-mix(in srgb, var(--sv-accent) 25%, transparent)",
+          border:
+            "1px solid color-mix(in srgb, var(--sv-accent) 25%, transparent)",
           background: "var(--sv-accent-bg)",
           transition: "opacity 0.15s",
         }}
@@ -204,7 +212,11 @@ interface HeroCardProps {
   badgeIcon: string;
 }
 
-const HeroArticleCard: React.FC<HeroCardProps> = ({ post, badge, badgeIcon }) => {
+const HeroArticleCard: React.FC<HeroCardProps> = ({
+  post,
+  badge,
+  badgeIcon,
+}) => {
   const title = stripHtml(post.title.rendered);
   const author = getAuthor(post);
   const imageUrl = getImageUrl(post);
@@ -256,7 +268,11 @@ const HeroArticleCard: React.FC<HeroCardProps> = ({ post, badge, badgeIcon }) =>
             >
               <i
                 className={`pi ${badgeIcon}`}
-                style={{ fontSize: "2.5rem", color: "var(--sv-accent)", opacity: 0.15 }}
+                style={{
+                  fontSize: "2.5rem",
+                  color: "var(--sv-accent)",
+                  opacity: 0.15,
+                }}
               />
             </div>
           )}
@@ -282,7 +298,8 @@ const HeroArticleCard: React.FC<HeroCardProps> = ({ post, badge, badgeIcon }) =>
             style={{
               position: "absolute",
               inset: 0,
-              background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%)",
+              background:
+                "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%)",
             }}
           />
           {/* Badge overlaid on image */}
@@ -353,8 +370,12 @@ const HeroArticleCard: React.FC<HeroCardProps> = ({ post, badge, badgeIcon }) =>
             marginBottom: "0.55rem",
             transition: "color 0.15s",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--sv-accent)")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--sv-text-primary)")}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.color = "var(--sv-accent)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.color = "var(--sv-text-primary)")
+          }
         >
           {title}
         </a>
@@ -395,7 +416,10 @@ const HeroArticleCard: React.FC<HeroCardProps> = ({ post, badge, badgeIcon }) =>
               gap: "0.3rem",
             }}
           >
-            <i className="pi pi-user" style={{ fontSize: "0.58rem", color: "var(--sv-accent)" }} />
+            <i
+              className="pi pi-user"
+              style={{ fontSize: "0.58rem", color: "var(--sv-accent)" }}
+            />
             {author}
           </span>
           <a
@@ -413,7 +437,8 @@ const HeroArticleCard: React.FC<HeroCardProps> = ({ post, badge, badgeIcon }) =>
               fontWeight: 700,
               fontSize: "0.68rem",
               textDecoration: "none",
-              border: "1px solid color-mix(in srgb, var(--sv-accent) 30%, transparent)",
+              border:
+                "1px solid color-mix(in srgb, var(--sv-accent) 30%, transparent)",
               transition: "background 0.2s, color 0.2s",
               letterSpacing: "0.02em",
             }}
@@ -439,10 +464,20 @@ const HeroArticleSkeleton: React.FC = () => (
   >
     <Skeleton width="100%" height="200px" borderRadius="0" />
     <div style={{ padding: "1rem 1.1rem" }}>
-      <Skeleton width="60px" height="18px" borderRadius="4px" className="mb-3" />
+      <Skeleton
+        width="60px"
+        height="18px"
+        borderRadius="4px"
+        className="mb-3"
+      />
       <Skeleton width="95%" height="16px" borderRadius="4px" className="mb-1" />
       <Skeleton width="80%" height="16px" borderRadius="4px" className="mb-3" />
-      <Skeleton width="100%" height="12px" borderRadius="4px" className="mb-1" />
+      <Skeleton
+        width="100%"
+        height="12px"
+        borderRadius="4px"
+        className="mb-1"
+      />
       <Skeleton width="85%" height="12px" borderRadius="4px" className="mb-1" />
       <Skeleton width="70%" height="12px" borderRadius="4px" />
     </div>
@@ -584,8 +619,12 @@ const VideoCard: React.FC<{ video: VideoItem }> = ({ video }) => {
             textDecoration: "none",
             transition: "color 0.15s",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--sv-accent)")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--sv-text-primary)")}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.color = "var(--sv-accent)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.color = "var(--sv-text-primary)")
+          }
         >
           {video.title}
         </a>
@@ -640,7 +679,12 @@ const VideoCardSkeleton: React.FC = () => (
   >
     <Skeleton width="100%" height="140px" borderRadius="0" />
     <div style={{ padding: "0.7rem 0.85rem" }}>
-      <Skeleton width="100%" height="13px" borderRadius="4px" className="mb-1" />
+      <Skeleton
+        width="100%"
+        height="13px"
+        borderRadius="4px"
+        className="mb-1"
+      />
       <Skeleton width="70%" height="13px" borderRadius="4px" className="mb-2" />
       <Skeleton width="90px" height="16px" borderRadius="4px" />
     </div>
@@ -649,7 +693,10 @@ const VideoCardSkeleton: React.FC = () => (
 
 // ─── TradeAlertRow ────────────────────────────────────────────────────────────
 
-const TradeAlertRow: React.FC<{ post: WpPost; idx: number }> = ({ post, idx }) => {
+const TradeAlertRow: React.FC<{ post: WpPost; idx: number }> = ({
+  post,
+  idx,
+}) => {
   const [hovered, setHovered] = useState(false);
   const title = stripTradeAlertPrefix(stripHtml(post.title.rendered));
 
@@ -741,10 +788,22 @@ const TradeAlertRow: React.FC<{ post: WpPost; idx: number }> = ({ post, idx }) =
 };
 
 const TradeAlertSkeleton: React.FC = () => (
-  <div style={{ display: "flex", gap: "0.65rem", padding: "0.6rem 0.5rem", alignItems: "center" }}>
+  <div
+    style={{
+      display: "flex",
+      gap: "0.65rem",
+      padding: "0.6rem 0.5rem",
+      alignItems: "center",
+    }}
+  >
     <Skeleton width="22px" height="22px" borderRadius="50%" />
     <div style={{ flex: 1 }}>
-      <Skeleton width="100%" height="13px" borderRadius="4px" className="mb-1" />
+      <Skeleton
+        width="100%"
+        height="13px"
+        borderRadius="4px"
+        className="mb-1"
+      />
       <Skeleton width="60%" height="11px" borderRadius="4px" />
     </div>
   </div>
@@ -752,18 +811,18 @@ const TradeAlertSkeleton: React.FC = () => (
 
 // ─── Panel wrapper ────────────────────────────────────────────────────────────
 
-const Panel: React.FC<{ children: React.ReactNode; style?: React.CSSProperties }> = ({
-  children,
-  style,
-}) => (
+const Panel: React.FC<{
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+}> = ({ children, style }) => (
   <div
     style={{
       background: "var(--sv-bg-card)",
       border: "1px solid var(--sv-border)",
       borderRadius: 14,
       boxShadow: "var(--sv-shadow-sm)",
-      padding: "1.1rem 1.25rem",
-      height: "100%",
+      padding: "0.5rem 0.5rem",
+      // height: "100%",
       ...style,
     }}
   >
@@ -788,17 +847,21 @@ const LatestInsightsPage: React.FC = () => {
     setLoadingVideos(true);
 
     // Fetch all in parallel
-    const [nlResult, comResult, riaResult, alertResult, vidResult] = await Promise.allSettled([
-      fetchCategoryPost(CAT_NEWSLETTER, 1),
-      fetchCategoryPost(CAT_COMMENTARY, 1),
-      fetchCategoryPost(CAT_RECENT_RIA, 1),
-      fetchCategoryPost(CAT_TRADE_ALERTS, TRADE_ALERT_LIMIT),
-      fetchYouTubeVideos(),
-    ]);
+    const [nlResult, comResult, riaResult, alertResult, vidResult] =
+      await Promise.allSettled([
+        fetchCategoryPost(CAT_NEWSLETTER, 1),
+        fetchCategoryPost(CAT_COMMENTARY, 1),
+        fetchCategoryPost(CAT_RECENT_RIA, 1),
+        fetchCategoryPost(CAT_TRADE_ALERTS, TRADE_ALERT_LIMIT),
+        fetchYouTubeVideos(),
+      ]);
 
-    if (nlResult.status === "fulfilled") setNewsletter(nlResult.value[0] ?? null);
-    if (comResult.status === "fulfilled") setCommentary(comResult.value[0] ?? null);
-    if (riaResult.status === "fulfilled") setRecentRia(riaResult.value[0] ?? null);
+    if (nlResult.status === "fulfilled")
+      setNewsletter(nlResult.value[0] ?? null);
+    if (comResult.status === "fulfilled")
+      setCommentary(comResult.value[0] ?? null);
+    if (riaResult.status === "fulfilled")
+      setRecentRia(riaResult.value[0] ?? null);
     if (alertResult.status === "fulfilled") setTradeAlerts(alertResult.value);
 
     setLoadingArticles(false);
@@ -813,186 +876,146 @@ const LatestInsightsPage: React.FC = () => {
 
   return (
     <>
-      {/* ── Page header ── */}
-      <div className="mb-4">
-        <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "0.25rem" }}>
-          <div
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 12,
-              background: "var(--sv-accent-bg)",
-              border: "1px solid color-mix(in srgb, var(--sv-accent) 25%, transparent)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
-            <i className="pi pi-bolt" style={{ color: "var(--sv-accent)", fontSize: "1.25rem" }} />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold m-0 sv-page-title">Latest Insights</h1>
-            <p className="m-0 text-sm" style={{ color: "var(--sv-text-muted)", marginTop: "0.1rem" }}>
-              Your daily briefing — newsletter highlights, commentary, RIA updates, trade alerts &amp; videos
-            </p>
-          </div>
-        </div>
-        <div
-          style={{
-            height: 3,
-            marginTop: "0.875rem",
-            background: "var(--sv-accent-gradient)",
-            borderRadius: 2,
-            width: 80,
-          }}
-        />
-      </div>
-
       {/* ── Hero articles row ── */}
-      <div className="grid mb-2">
-        {/* Newsletter */}
-        <div className="col-12 md:col-4 p-2" style={{ display: "flex" }}>
-          <div style={{ width: "100%" }}>
-            <SectionHeader
-              icon="pi-envelope"
-              title="Newsletter"
-              morePath="/commentary/newsletter"
-            />
-            {loadingArticles ? (
-              <HeroArticleSkeleton />
-            ) : newsletter ? (
-              <HeroArticleCard post={newsletter} badge="Pro Newsletter" badgeIcon="pi-envelope" />
-            ) : (
-              <EmptyCard message="No newsletter available" />
-            )}
-          </div>
-        </div>
-
-        {/* Daily Commentary */}
-        <div className="col-12 md:col-4 p-2" style={{ display: "flex" }}>
-          <div style={{ width: "100%" }}>
-            <SectionHeader
-              icon="pi-comment"
-              title="Daily Commentary"
-              morePath="/commentary/real-time"
-            />
-            {loadingArticles ? (
-              <HeroArticleSkeleton />
-            ) : commentary ? (
-              <HeroArticleCard post={commentary} badge="Daily Commentary" badgeIcon="pi-comment" />
-            ) : (
-              <EmptyCard message="No commentary available" />
-            )}
-          </div>
-        </div>
-
-        {/* Latest from RIA Team */}
-        <div className="col-12 md:col-4 p-2" style={{ display: "flex" }}>
-          <div style={{ width: "100%" }}>
-            <SectionHeader
-              icon="pi-globe"
-              title="Latest from RIA"
-              morePath="/commentary/recent-ria"
-            />
-            {loadingArticles ? (
-              <HeroArticleSkeleton />
-            ) : recentRia ? (
-              <HeroArticleCard post={recentRia} badge="RIA Team" badgeIcon="pi-globe" />
-            ) : (
-              <EmptyCard message="No RIA content available" />
-            )}
-          </div>
-        </div>
-      </div>
-
-      <Divider />
-
-      {/* ── Videos + Trade Alerts row ── */}
       <div className="grid">
-        {/* Videos */}
-        <div className="col-12 lg:col-8 p-2">
-          <SectionHeader
-            icon="pi-youtube"
-            title="Latest Videos"
-            morePath="/commentary/videos"
-            moreLabel="All videos"
-          />
-          <div className="grid">
-            {loadingVideos
-              ? Array.from({ length: VIDEO_LIMIT }).map((_, i) => (
-                  <div key={i} className="col-12 sm:col-6 md:col-3 p-1">
-                    <VideoCardSkeleton />
-                  </div>
-                ))
-              : videos.length === 0
-              ? (
-                <div className="col-12">
-                  <EmptyCard message="No videos available" icon="pi-youtube" />
-                </div>
-              )
-              : videos.map((v) => (
-                  <div key={v.id} className="col-12 sm:col-6 md:col-3 p-1">
-                    <VideoCard video={v} />
-                  </div>
-                ))}
+        <div className="col-12">
+          <div className="grid mb-2">
+            {/* Newsletter */}
+            <div className="col-12 md:col-4 p-2" style={{ display: "flex" }}>
+              <div style={{ width: "100%" }}>
+                <SectionHeader
+                  icon="pi-envelope"
+                  title="Newsletter"
+                  morePath="/commentary/newsletter"
+                />
+                {loadingArticles ? (
+                  <HeroArticleSkeleton />
+                ) : newsletter ? (
+                  <HeroArticleCard
+                    post={newsletter}
+                    badge="Pro Newsletter"
+                    badgeIcon="pi-envelope"
+                  />
+                ) : (
+                  <EmptyCard message="No newsletter available" />
+                )}
+              </div>
+            </div>
+
+            {/* Daily Commentary */}
+            <div className="col-12 md:col-4 p-2" style={{ display: "flex" }}>
+              <div style={{ width: "100%" }}>
+                <SectionHeader
+                  icon="pi-comment"
+                  title="Daily Commentary"
+                  morePath="/commentary/real-time"
+                />
+                {loadingArticles ? (
+                  <HeroArticleSkeleton />
+                ) : commentary ? (
+                  <HeroArticleCard
+                    post={commentary}
+                    badge="Daily Commentary"
+                    badgeIcon="pi-comment"
+                  />
+                ) : (
+                  <EmptyCard message="No commentary available" />
+                )}
+              </div>
+            </div>
+
+            {/* Latest from RIA Team */}
+            <div className="col-12 md:col-4 p-2" style={{ display: "flex" }}>
+              <div style={{ width: "100%" }}>
+                <SectionHeader
+                  icon="pi-globe"
+                  title="Latest from RIA"
+                  morePath="/commentary/recent-ria"
+                />
+                {loadingArticles ? (
+                  <HeroArticleSkeleton />
+                ) : recentRia ? (
+                  <HeroArticleCard
+                    post={recentRia}
+                    badge="RIA Team"
+                    badgeIcon="pi-globe"
+                  />
+                ) : (
+                  <EmptyCard message="No RIA content available" />
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Trade Alerts */}
-        <div className="col-12 lg:col-4 p-2">
-          <SectionHeader
-            icon="pi-bell"
-            title="Trade Alerts"
-            morePath="/commentary/diary"
-            moreLabel="All alerts"
-          />
-          <Panel>
-            {loadingArticles ? (
-              Array.from({ length: TRADE_ALERT_LIMIT }).map((_, i) => (
-                <TradeAlertSkeleton key={i} />
-              ))
-            ) : tradeAlerts.length === 0 ? (
-              <p style={{ fontSize: "0.78rem", color: "var(--sv-text-muted)", margin: 0 }}>
-                No trade alerts available.
-              </p>
-            ) : (
-              <div>
-                {tradeAlerts.map((post, i) => (
-                  <TradeAlertRow key={post.id} post={post} idx={i} />
-                ))}
+        <div className="col-12">
+          {/* ── Videos + Trade Alerts row ── */}
+          <div className="grid mt-4">
+            {/* Videos */}
+            <div className="col-12 lg:col-9 p-2">
+              <SectionHeader
+                icon="pi-youtube"
+                title="Latest Videos"
+                morePath="/commentary/videos"
+                moreLabel="All videos"
+              />
+              <div className="grid">
+                {loadingVideos ? (
+                  Array.from({ length: VIDEO_LIMIT }).map((_, i) => (
+                    <div key={i} className="col-12 sm:col-6 md:col-3 p-1">
+                      <VideoCardSkeleton />
+                    </div>
+                  ))
+                ) : videos.length === 0 ? (
+                  <div className="col-12">
+                    <EmptyCard
+                      message="No videos available"
+                      icon="pi-youtube"
+                    />
+                  </div>
+                ) : (
+                  videos.map((v) => (
+                    <div key={v.id} className="col-12 sm:col-6 md:col-3 p-1">
+                      <VideoCard video={v} />
+                    </div>
+                  ))
+                )}
               </div>
-            )}
-            {!loadingArticles && tradeAlerts.length > 0 && (
-              <Link
-                to="/commentary/diary"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "0.4rem",
-                  marginTop: "0.875rem",
-                  padding: "0.5rem",
-                  borderRadius: 8,
-                  border: "1px dashed color-mix(in srgb, var(--sv-accent) 35%, transparent)",
-                  color: "var(--sv-accent)",
-                  fontSize: "0.7rem",
-                  fontWeight: 700,
-                  textDecoration: "none",
-                  letterSpacing: "0.04em",
-                  transition: "background 0.15s",
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.background =
-                    "color-mix(in srgb, var(--sv-accent) 6%, transparent)")
-                }
-                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-              >
-                <i className="pi pi-list" style={{ fontSize: "0.62rem" }} />
-                View all trade alerts
-              </Link>
-            )}
-          </Panel>
+            </div>
+
+            {/* Trade Alerts */}
+            <div className="col-12 lg:col-3 p-2">
+              <SectionHeader
+                icon="pi-bell"
+                title="Trade Alerts"
+                morePath="/commentary/diary"
+                moreLabel="All alerts"
+              />
+              <Panel>
+                {loadingArticles ? (
+                  Array.from({ length: TRADE_ALERT_LIMIT }).map((_, i) => (
+                    <TradeAlertSkeleton key={i} />
+                  ))
+                ) : tradeAlerts.length === 0 ? (
+                  <p
+                    style={{
+                      fontSize: "0.78rem",
+                      color: "var(--sv-text-muted)",
+                      margin: 0,
+                    }}
+                  >
+                    No trade alerts available.
+                  </p>
+                ) : (
+                  <div>
+                    {tradeAlerts.map((post, i) => (
+                      <TradeAlertRow key={post.id} post={post} idx={i} />
+                    ))}
+                  </div>
+                )}
+              </Panel>
+            </div>
+          </div>
         </div>
       </div>
     </>
@@ -1025,7 +1048,11 @@ const EmptyCard: React.FC<{ message: string; icon?: string }> = ({
         marginBottom: "0.5rem",
       }}
     />
-    <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--sv-text-muted)" }}>{message}</p>
+    <p
+      style={{ margin: 0, fontSize: "0.78rem", color: "var(--sv-text-muted)" }}
+    >
+      {message}
+    </p>
   </div>
 );
 
