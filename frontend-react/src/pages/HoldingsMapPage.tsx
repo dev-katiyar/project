@@ -156,28 +156,33 @@ function buildHighchartsData(
   const { rawData, nameColumn, valColumn, parentColumn, sizeColumn } = cfg;
   const { minVal, maxVal } = buildTreemapColors(rawData, valColumn);
 
-  const sectors = [...new Set(rawData.map((r) => String(r[parentColumn] ?? "Other")))];
+  const sectors = [
+    ...new Set(rawData.map((r) => String(r[parentColumn] ?? "Other"))),
+  ];
 
   // Sector parent nodes must come BEFORE their children for drill-down to work
-  const sectorPoints: Highcharts.PointOptionsObject[] = sectors.map((s) => ({
-    id: s,
-    name: s,
-    color: "rgb(30,30,30)",
-    dataLabels: {
-      enabled: true,
-      borderRadius: 4,
-      backgroundColor: "rgba(252,255,197,0.85)",
-      borderWidth: 1,
-      borderColor: "#AAA",
-      style: {
-        color: "#000",
-        fontSize: "11px",
-        fontWeight: "700",
-        textOutline: "none",
-      },
-      y: -6,
-    },
-  } as Highcharts.PointOptionsObject));
+  const sectorPoints: Highcharts.PointOptionsObject[] = sectors.map(
+    (s) =>
+      ({
+        id: s,
+        name: s,
+        color: "rgb(30,30,30)",
+        dataLabels: {
+          enabled: true,
+          borderRadius: 4,
+          backgroundColor: "rgba(252,255,197,0.85)",
+          borderWidth: 1,
+          borderColor: "#AAA",
+          style: {
+            color: "#000",
+            fontSize: "11px",
+            fontWeight: "700",
+            textOutline: "none",
+          },
+          y: -6,
+        },
+      }) as Highcharts.PointOptionsObject,
+  );
 
   const stockPoints: Highcharts.PointOptionsObject[] = rawData.map((row) => {
     const val = parseFloat(String(row[valColumn])) || 0;
@@ -388,7 +393,10 @@ const HoldingsMapPage: React.FC = () => {
     api
       .get<MapCategory[]>("/symbol/holding-maps-categories")
       .then((res) => {
-        const cats: MapCategory[] = res.data ?? [];
+        // removed market x-ray as it can become a stand alone page
+        const cats: MapCategory[] = (res.data ?? []).filter(
+          (c) => c.id !== "market_xray",
+        );
         setCategories(cats);
         if (cats.length > 0) {
           const first = cats[0];
