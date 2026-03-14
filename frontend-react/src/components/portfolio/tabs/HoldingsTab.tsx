@@ -184,7 +184,7 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
           header="Symbol / Name"
           body={(r: Position) => <SymbolCell row={r} />}
           sortable
-          style={{ minWidth: "180px" }}
+          style={{ minWidth: "180px", paddingLeft: "0.75rem" }}
         />
         <Column
           field="type"
@@ -245,24 +245,22 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
           sortable
           style={{ minWidth: "110px" }}
         />
-        {positions.some((p) => p.dividendYield) && (
-          <Column
-            field="dividendYield"
-            header="Div Yield"
-            body={(r: Position) =>
-              r.dividendYield ? (
-                <div className="text-right text-sm sv-text-gain">
-                  {(r.dividendYield * 100).toFixed(2)}%
-                </div>
-              ) : (
-                <div className="text-right text-sm sv-text-muted">—</div>
-              )
-            }
-            pt={{ headerContent: { className: "justify-content-end" } }}
-            sortable
-            style={{ minWidth: "100px" }}
-          />
-        )}
+        <Column
+          field="dividendYield"
+          header="Div Yield"
+          body={(r: Position) =>
+            r.dividendYield ? (
+              <div className="text-right text-sm sv-text-gain">
+                {r.dividendYield!.toFixed(2)}%
+              </div>
+            ) : (
+              <div className="text-right text-sm sv-text-muted">—</div>
+            )
+          }
+          pt={{ headerContent: { className: "justify-content-end" } }}
+          sortable
+          style={{ minWidth: "100px", paddingRight: "0.75rem" }}
+        />
       </DataTable>
 
       <SummaryBar positions={positions} currentCash={currentCash} />
