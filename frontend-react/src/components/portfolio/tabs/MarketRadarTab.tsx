@@ -102,28 +102,25 @@ const ScoreBadge: React.FC<{
   if (value == null) return <span className="sv-text-muted text-xs">—</span>;
   const { bg, text, border } = scoreColor(value, variant);
   return (
-    <div className="flex flex-column align-items-center gap-1">
-      <div
-        style={{
-          width: 32,
-          height: 32,
-          borderRadius: "50%",
-          background: bg,
-          border: `2px solid ${border}`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontWeight: 800,
-          fontSize: "0.85rem",
-          color: text,
-          flexShrink: 0,
-        }}
-      >
-        {value}
-      </div>
-      <div style={{ fontSize: "0.6rem", color: "var(--sv-text-muted)" }}>
-        / {max}
-      </div>
+    <div
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 2,
+        background: bg,
+        border: `2px solid ${border}`,
+        borderRadius: 12,
+        padding: "2px 8px",
+        color: text,
+        fontWeight: 800,
+        fontSize: "0.8rem",
+        flexShrink: 0,
+      }}
+    >
+      {value}
+      <span style={{ fontWeight: 400, opacity: 0.7, fontSize: "0.7rem" }}>
+        /{max}
+      </span>
     </div>
   );
 };
@@ -644,7 +641,7 @@ const MarketRadarTab: React.FC<Props> = ({ techAndFundamentals }) => {
                 </div>
                 {r.distance_to_stop != null && (
                   <div
-                    className="text-xs mt-1"
+                    className="text-xs"
                     style={{
                       color: isBreached
                         ? "var(--sv-loss)"

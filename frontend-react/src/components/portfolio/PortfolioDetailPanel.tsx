@@ -249,6 +249,34 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
         const b = basic[pos.symbol];
         return { ...pos, name: b?.name ?? pos.name };
       });
+      // Enrich techAndFundamentals with basicDetails
+      if (d.techAndFundamentals && !Array.isArray(d.techAndFundamentals)) {
+        const tf = d.techAndFundamentals as Record<string, Record<string, unknown>>;
+        Object.keys(tf).forEach((symbol) => {
+          const b = basic[symbol];
+          if (b) {
+            tf[symbol]['name'] = b.name;
+            tf[symbol]['sector'] = b.sector;
+            tf[symbol]['industry'] = b.industry;
+            tf[symbol]['currentPrice'] = b.currentPrice;
+            tf[symbol]['priceChange'] = b.priceChange;
+            tf[symbol]['changePct'] = b.changePct;
+          }
+        });
+      } else if (Array.isArray(d.techAndFundamentals)) {
+        (d.techAndFundamentals as Record<string, unknown>[]).forEach((obj) => {
+          const symbol = obj['symbol'] as string;
+          const b = basic[symbol];
+          if (b) {
+            obj['name'] = b.name;
+            obj['sector'] = b.sector;
+            obj['industry'] = b.industry;
+            obj['currentPrice'] = b.currentPrice;
+            obj['priceChange'] = b.priceChange;
+            obj['changePct'] = b.changePct;
+          }
+        });
+      }
       setData(d);
     } catch {
       setError("Failed to load portfolio details. Please try again.");
