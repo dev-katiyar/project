@@ -28,19 +28,22 @@ const fmtDate = (d: string | Date | undefined): string => {
 
 // ─── Cell renderers ───────────────────────────────────────────────────────────
 
-const SymbolCell: React.FC<{ row: Transaction }> = ({ row }) => (
-  <div>
-    <div className="sv-text-accent font-bold text-sm">{row.symbol}</div>
-    {row.name && (
-      <div
-        className="sv-text-muted text-xs white-space-nowrap overflow-hidden text-overflow-ellipsis"
-        style={{ maxWidth: "180px" }}
-      >
-        {row.name}
-      </div>
-    )}
-  </div>
-);
+const SymbolCell: React.FC<{ row: Transaction }> = ({ row }) => {
+  const label = row.companyname ?? row.name;
+  return (
+    <div>
+      <div className="sv-text-accent font-bold text-sm">{row.symbol}</div>
+      {label && (
+        <div
+          className="sv-text-muted text-xs white-space-nowrap overflow-hidden text-overflow-ellipsis"
+          style={{ maxWidth: "180px" }}
+        >
+          {label}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const SideCell: React.FC<{ row: Transaction }> = ({ row }) => (
   <Tag
@@ -130,7 +133,7 @@ const TransactionsTab: React.FC<Props> = ({ transactions }) => {
         rowHover
         dataKey="id"
         globalFilter={globalFilter}
-        globalFilterFields={["symbol", "name"]}
+        globalFilterFields={["symbol", "name", "companyname"]}
         scrollable
         scrollHeight="430px"
         paginator

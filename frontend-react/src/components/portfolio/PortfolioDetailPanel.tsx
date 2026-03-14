@@ -70,6 +70,7 @@ export interface Transaction {
   id: number;
   symbol: string;
   name?: string;
+  companyname?: string;
   qty: number;
   side: string;
   price: number;
