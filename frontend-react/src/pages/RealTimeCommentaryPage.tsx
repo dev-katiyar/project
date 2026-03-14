@@ -2,9 +2,14 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
 import { useSearchParams } from "react-router-dom";
 import api from "@/services/api";
-import PostCard, { CardSkeleton, type WpPost } from "@/components/common/PostCard";
+import PostCard, {
+  CardSkeleton,
+  type WpPost,
+} from "@/components/common/PostCard";
 import AboutSidebarCard from "@/components/common/AboutSidebarCard";
-import PopularPostsSidebarCard, { type PopularPost } from "@/components/common/PopularPostsSidebarCard";
+import PopularPostsSidebarCard, {
+  type PopularPost,
+} from "@/components/common/PopularPostsSidebarCard";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -17,8 +22,12 @@ const POPULAR_LIMIT = 6;
 const RealTimeCommentaryPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const activeYear = searchParams.get("year") ? parseInt(searchParams.get("year")!, 10) : null;
-  const activeMonth = searchParams.get("month") ? parseInt(searchParams.get("month")!, 10) : null;
+  const activeYear = searchParams.get("year")
+    ? parseInt(searchParams.get("year")!, 10)
+    : null;
+  const activeMonth = searchParams.get("month")
+    ? parseInt(searchParams.get("month")!, 10)
+    : null;
 
   const [posts, setPosts] = useState<WpPost[]>([]);
   const [totalPosts, setTotalPosts] = useState(0);
@@ -47,7 +56,9 @@ const RealTimeCommentaryPage: React.FC = () => {
           params.after = after;
           params.before = before;
         }
-        const { data, headers } = await api.get("/wp-json/wp/v2/posts", { params });
+        const { data, headers } = await api.get("/wp-json/wp/v2/posts", {
+          params,
+        });
         setPosts(Array.isArray(data) ? data : []);
         const total = parseInt(headers["x-wp-total"] ?? "0", 10);
         setTotalPosts(isNaN(total) ? 0 : total);
@@ -64,9 +75,12 @@ const RealTimeCommentaryPage: React.FC = () => {
   const loadPopularPosts = useCallback(async () => {
     setLoadingPopular(true);
     try {
-      const { data } = await api.get("/wp-json/wordpress-popular-posts/v1/popular-posts", {
-        params: { limit: POPULAR_LIMIT, offset: 0 },
-      });
+      const { data } = await api.get(
+        "/wp-json/wordpress-popular-posts/v1/popular-posts",
+        {
+          params: { limit: POPULAR_LIMIT, offset: 0 },
+        },
+      );
       setPopularPosts(Array.isArray(data) ? data : []);
     } catch {
       setPopularPosts([]);
@@ -103,7 +117,7 @@ const RealTimeCommentaryPage: React.FC = () => {
   return (
     <>
       {/* ── Page header ── */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <div
           style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "0.25rem" }}
         >
@@ -138,7 +152,7 @@ const RealTimeCommentaryPage: React.FC = () => {
             width: 80,
           }}
         />
-      </div>
+      </div> */}
 
       {/* ── Active month filter banner ── */}
       {activeFilterLabel && (
@@ -149,8 +163,10 @@ const RealTimeCommentaryPage: React.FC = () => {
             justifyContent: "space-between",
             padding: "0.55rem 0.9rem",
             marginBottom: "1rem",
-            background: "color-mix(in srgb, var(--sv-accent) 8%, var(--sv-bg-card))",
-            border: "1px solid color-mix(in srgb, var(--sv-accent) 28%, transparent)",
+            background:
+              "color-mix(in srgb, var(--sv-accent) 8%, var(--sv-bg-card))",
+            border:
+              "1px solid color-mix(in srgb, var(--sv-accent) 28%, transparent)",
             borderRadius: 8,
             boxShadow: "var(--sv-shadow-sm)",
           }}
@@ -160,9 +176,17 @@ const RealTimeCommentaryPage: React.FC = () => {
               className="pi pi-filter-fill"
               style={{ color: "var(--sv-accent)", fontSize: "0.78rem" }}
             />
-            <span style={{ fontSize: "0.78rem", color: "var(--sv-text-primary)", fontWeight: 600 }}>
+            <span
+              style={{
+                fontSize: "0.78rem",
+                color: "var(--sv-text-primary)",
+                fontWeight: 600,
+              }}
+            >
               Filtered by:{" "}
-              <span style={{ color: "var(--sv-accent)" }}>{activeFilterLabel}</span>
+              <span style={{ color: "var(--sv-accent)" }}>
+                {activeFilterLabel}
+              </span>
             </span>
           </div>
           <button
@@ -173,7 +197,8 @@ const RealTimeCommentaryPage: React.FC = () => {
               gap: "0.3rem",
               padding: "0.25rem 0.6rem",
               borderRadius: 5,
-              border: "1px solid color-mix(in srgb, var(--sv-accent) 30%, transparent)",
+              border:
+                "1px solid color-mix(in srgb, var(--sv-accent) 30%, transparent)",
               background: "transparent",
               color: "var(--sv-accent)",
               fontSize: "0.7rem",
@@ -232,7 +257,8 @@ const RealTimeCommentaryPage: React.FC = () => {
                   fontSize: "0.95rem",
                 }}
               >
-                No articles found{activeFilterLabel ? ` for ${activeFilterLabel}` : ""}
+                No articles found
+                {activeFilterLabel ? ` for ${activeFilterLabel}` : ""}
               </p>
               {activeFilterLabel ? (
                 <button
@@ -252,7 +278,13 @@ const RealTimeCommentaryPage: React.FC = () => {
                   View all articles
                 </button>
               ) : (
-                <p style={{ margin: 0, color: "var(--sv-text-muted)", fontSize: "0.8rem" }}>
+                <p
+                  style={{
+                    margin: 0,
+                    color: "var(--sv-text-muted)",
+                    fontSize: "0.8rem",
+                  }}
+                >
                   No commentary available at this time.
                 </p>
               )}
@@ -308,7 +340,10 @@ const RealTimeCommentaryPage: React.FC = () => {
         {/* ── Sidebar ── */}
         <div className="col-12 lg:col-4 p-1">
           {/* Popular posts */}
-          <PopularPostsSidebarCard loading={loadingPopular} posts={popularPosts} />
+          <PopularPostsSidebarCard
+            loading={loadingPopular}
+            posts={popularPosts}
+          />
 
           {/* About Pro Commentary */}
           <AboutSidebarCard
@@ -317,9 +352,15 @@ const RealTimeCommentaryPage: React.FC = () => {
             badgeIcon="pi-bolt"
             name="SimpleVisor Pro Commentary"
             description="Real-time market analysis delivered by our professional team throughout the trading day. Actionable insights on macro trends, sector moves, and market-moving events as they happen."
-            tags={["Market Commentary", "Real-Time Alerts", "Technical Analysis", "Macro Trends", "Sector Rotation", "Risk Management"]}
+            tags={[
+              "Market Commentary",
+              "Real-Time Alerts",
+              "Technical Analysis",
+              "Macro Trends",
+              "Sector Rotation",
+              "Risk Management",
+            ]}
           />
-
         </div>
       </div>
     </>

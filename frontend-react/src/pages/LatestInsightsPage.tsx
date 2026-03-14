@@ -876,6 +876,42 @@ const LatestInsightsPage: React.FC = () => {
 
   return (
     <>
+      {/* Page Header */}
+      {/* <div className="mb-4">
+        <div style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "0.25rem" }}>
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              background: "var(--sv-accent-bg)",
+              border: "1px solid color-mix(in srgb, var(--sv-accent) 25%, transparent)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <i className="pi pi-bolt" style={{ color: "var(--sv-accent)", fontSize: "1.25rem" }} />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold m-0 sv-page-title">Latest Insights</h1>
+            <p className="m-0 text-sm" style={{ color: "var(--sv-text-muted)", marginTop: "0.1rem" }}>
+              Your daily briefing — newsletter highlights, commentary, RIA updates, trade alerts &amp; videos
+            </p>
+          </div>
+        </div>
+        <div
+          style={{
+            height: 3,
+            marginTop: "0.875rem",
+            background: "var(--sv-accent-gradient)",
+            borderRadius: 2,
+            width: 80,
+          }}
+        />
+      </div> */}
+
       {/* ── Hero articles row ── */}
       <div className="grid">
         <div className="col-12">

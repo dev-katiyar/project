@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
 import api from "@/services/api";
-import PostCard, { CardSkeleton, getIssueLabel, type WpPost } from "@/components/common/PostCard";
+import PostCard, {
+  CardSkeleton,
+  getIssueLabel,
+  type WpPost,
+} from "@/components/common/PostCard";
 import AboutSidebarCard from "@/components/common/AboutSidebarCard";
 import PopularPostsSidebarCard from "@/components/common/PopularPostsSidebarCard";
 
@@ -41,9 +45,12 @@ const RecentRIAPage: React.FC = () => {
   const loadPopularPosts = useCallback(async () => {
     setLoadingPopular(true);
     try {
-      const { data } = await api.get("/wp-json/wordpress-popular-posts/v1/popular-posts", {
-        params: { limit: POPULAR_LIMIT, offset: 0 },
-      });
+      const { data } = await api.get(
+        "/wp-json/wordpress-popular-posts/v1/popular-posts",
+        {
+          params: { limit: POPULAR_LIMIT, offset: 0 },
+        },
+      );
       setPopularPosts(Array.isArray(data) ? data : []);
     } catch {
       setPopularPosts([]);
@@ -69,7 +76,7 @@ const RecentRIAPage: React.FC = () => {
   return (
     <>
       {/* ── Page header ── */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <div
           style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "0.25rem" }}
         >
@@ -104,7 +111,7 @@ const RecentRIAPage: React.FC = () => {
             width: 80,
           }}
         />
-      </div>
+      </div> */}
 
       {/* ── Two-column layout ── */}
       <div className="grid">
@@ -204,7 +211,11 @@ const RecentRIAPage: React.FC = () => {
         {/* ── Sidebar ── */}
         <div className="col-12 lg:col-4 p-1">
           {/* Popular Posts */}
-          <PopularPostsSidebarCard loading={loadingPopular} posts={popularPosts} icon="pi-fire" />
+          <PopularPostsSidebarCard
+            loading={loadingPopular}
+            posts={popularPosts}
+            icon="pi-fire"
+          />
 
           {/* About */}
           <AboutSidebarCard
@@ -213,7 +224,13 @@ const RecentRIAPage: React.FC = () => {
             badgeIcon="pi-chart-line"
             name="Real Investment Advice"
             description="In-depth analysis on markets, investing strategies, and portfolio management. Written by professional portfolio managers and analysts to help retail investors navigate complex market environments."
-            tags={["Portfolio Management", "Market Analysis", "Investing Strategy", "Risk Management", "Asset Allocation"]}
+            tags={[
+              "Portfolio Management",
+              "Market Analysis",
+              "Investing Strategy",
+              "Risk Management",
+              "Asset Allocation",
+            ]}
           />
         </div>
       </div>

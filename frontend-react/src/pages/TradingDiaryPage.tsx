@@ -1,9 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
 import api from "@/services/api";
-import PostCard, { CardSkeleton, type WpPost } from "@/components/common/PostCard";
+import PostCard, {
+  CardSkeleton,
+  type WpPost,
+} from "@/components/common/PostCard";
 import AboutSidebarCard from "@/components/common/AboutSidebarCard";
-import PopularPostsSidebarCard, { type PopularPost } from "@/components/common/PopularPostsSidebarCard";
+import PopularPostsSidebarCard, {
+  type PopularPost,
+} from "@/components/common/PopularPostsSidebarCard";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -41,9 +46,12 @@ const TradingDiaryPage: React.FC = () => {
   const loadPopularPosts = useCallback(async () => {
     setLoadingPopular(true);
     try {
-      const { data } = await api.get("/wp-json/wordpress-popular-posts/v1/popular-posts", {
-        params: { limit: POPULAR_LIMIT, offset: 0 },
-      });
+      const { data } = await api.get(
+        "/wp-json/wordpress-popular-posts/v1/popular-posts",
+        {
+          params: { limit: POPULAR_LIMIT, offset: 0 },
+        },
+      );
       setPopularPosts(Array.isArray(data) ? data : []);
     } catch {
       setPopularPosts([]);
@@ -69,7 +77,7 @@ const TradingDiaryPage: React.FC = () => {
   return (
     <>
       {/* ── Page header ── */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <div
           style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "0.25rem" }}
         >
@@ -104,7 +112,7 @@ const TradingDiaryPage: React.FC = () => {
             width: 80,
           }}
         />
-      </div>
+      </div> */}
 
       {/* ── Two-column layout ── */}
       <div className="grid">
@@ -153,7 +161,13 @@ const TradingDiaryPage: React.FC = () => {
               >
                 No posts found
               </p>
-              <p style={{ margin: 0, color: "var(--sv-text-muted)", fontSize: "0.8rem" }}>
+              <p
+                style={{
+                  margin: 0,
+                  color: "var(--sv-text-muted)",
+                  fontSize: "0.8rem",
+                }}
+              >
                 No trading diary entries available at this time.
               </p>
             </div>
@@ -206,7 +220,11 @@ const TradingDiaryPage: React.FC = () => {
         {/* ── Sidebar ── */}
         <div className="col-12 lg:col-4 p-1">
           {/* Popular posts */}
-          <PopularPostsSidebarCard loading={loadingPopular} posts={popularPosts} icon="pi-fire" />
+          <PopularPostsSidebarCard
+            loading={loadingPopular}
+            posts={popularPosts}
+            icon="pi-fire"
+          />
 
           {/* About */}
           <AboutSidebarCard
@@ -215,7 +233,13 @@ const TradingDiaryPage: React.FC = () => {
             badgeIcon="pi-chart-line"
             name="SimpleVisor Trading Diary"
             description="Professional commentary and trade analysis from the SimpleVisor pro team. Stay up to date with expert market observations and actionable insights for serious investors."
-            tags={["Technical Analysis", "Market Commentary", "Trade Ideas", "Risk Management", "Chart Patterns"]}
+            tags={[
+              "Technical Analysis",
+              "Market Commentary",
+              "Trade Ideas",
+              "Risk Management",
+              "Chart Patterns",
+            ]}
           />
         </div>
       </div>

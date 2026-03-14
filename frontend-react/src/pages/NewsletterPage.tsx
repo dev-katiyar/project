@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
 import api from "@/services/api";
-import PostCard, { CardSkeleton, getIssueLabel, type WpPost } from "@/components/common/PostCard";
+import PostCard, {
+  CardSkeleton,
+  getIssueLabel,
+  type WpPost,
+} from "@/components/common/PostCard";
 import AboutSidebarCard from "@/components/common/AboutSidebarCard";
-import PopularPostsSidebarCard, { type PopularPost } from "@/components/common/PopularPostsSidebarCard";
+import PopularPostsSidebarCard, {
+  type PopularPost,
+} from "@/components/common/PopularPostsSidebarCard";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -44,9 +50,12 @@ const NewsletterPage: React.FC = () => {
   const loadPopularPosts = useCallback(async () => {
     setLoadingPopular(true);
     try {
-      const { data } = await api.get("/wp-json/wordpress-popular-posts/v1/popular-posts", {
-        params: { limit: POPULAR_LIMIT, offset: 0 },
-      });
+      const { data } = await api.get(
+        "/wp-json/wordpress-popular-posts/v1/popular-posts",
+        {
+          params: { limit: POPULAR_LIMIT, offset: 0 },
+        },
+      );
       setPopularPosts(Array.isArray(data) ? data : []);
     } catch {
       setPopularPosts([]);
@@ -73,7 +82,7 @@ const NewsletterPage: React.FC = () => {
   return (
     <>
       {/* ── Page header ── */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <div
           style={{ display: "flex", alignItems: "center", gap: "0.875rem", marginBottom: "0.25rem" }}
         >
@@ -109,7 +118,7 @@ const NewsletterPage: React.FC = () => {
             width: 80,
           }}
         />
-      </div>
+      </div> */}
 
       {/* ── Two-column layout ── */}
       <div className="grid">
@@ -158,7 +167,13 @@ const NewsletterPage: React.FC = () => {
               >
                 No newsletters found
               </p>
-              <p style={{ margin: 0, color: "var(--sv-text-muted)", fontSize: "0.8rem" }}>
+              <p
+                style={{
+                  margin: 0,
+                  color: "var(--sv-text-muted)",
+                  fontSize: "0.8rem",
+                }}
+              >
                 No newsletter issues available at this time.
               </p>
             </div>
@@ -213,7 +228,10 @@ const NewsletterPage: React.FC = () => {
         {/* ── Sidebar ── */}
         <div className="col-12 lg:col-4 p-1">
           {/* Popular posts */}
-          <PopularPostsSidebarCard loading={loadingPopular} posts={popularPosts} />
+          <PopularPostsSidebarCard
+            loading={loadingPopular}
+            posts={popularPosts}
+          />
 
           {/* Newsletter info */}
           <AboutSidebarCard
@@ -222,7 +240,14 @@ const NewsletterPage: React.FC = () => {
             badgeIcon="pi-send"
             name="SimpleVisor Pro Newsletter"
             description="Weekly in-depth market analysis, portfolio positioning, economic commentary, and actionable insights tailored for retail investors."
-            tags={["Market Outlook", "Portfolio Strategy", "Economic Data", "Risk Management", "Technical Analysis", "Macro Trends"]}
+            tags={[
+              "Market Outlook",
+              "Portfolio Strategy",
+              "Economic Data",
+              "Risk Management",
+              "Technical Analysis",
+              "Macro Trends",
+            ]}
           />
         </div>
       </div>

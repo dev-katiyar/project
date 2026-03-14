@@ -663,7 +663,7 @@ const CommentaryVideosPage: React.FC = () => {
   return (
     <>
       {/* ── Page header ── */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <div
           style={{
             display: "flex",
@@ -713,7 +713,7 @@ const CommentaryVideosPage: React.FC = () => {
             width: 80,
           }}
         />
-      </div>
+      </div> */}
 
       {/* ── Two-column layout ── */}
       <div className="grid">
