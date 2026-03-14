@@ -2,7 +2,8 @@ import React, { useState, useMemo } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Tag } from "primereact/tag";
-import { type Transaction, fmtUSDFull, gainColor } from "@/components/portfolio/PortfolioDetailPanel";
+import { InputText } from "primereact/inputtext";
+import { type Transaction, fmtUSDFull } from "@/components/portfolio/PortfolioDetailPanel";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -29,19 +30,11 @@ const fmtDate = (d: string | Date | undefined): string => {
 
 const SymbolCell: React.FC<{ row: Transaction }> = ({ row }) => (
   <div>
-    <div style={{ fontWeight: 700, color: "var(--sv-accent)", fontSize: "0.88rem" }}>
-      {row.symbol}
-    </div>
+    <div className="sv-text-accent font-bold text-sm">{row.symbol}</div>
     {row.name && (
       <div
-        style={{
-          fontSize: "0.72rem",
-          color: "var(--sv-text-muted)",
-          maxWidth: "180px",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}
+        className="sv-text-muted text-xs white-space-nowrap overflow-hidden text-overflow-ellipsis"
+        style={{ maxWidth: "180px" }}
       >
         {row.name}
       </div>
@@ -53,7 +46,7 @@ const SideCell: React.FC<{ row: Transaction }> = ({ row }) => (
   <Tag
     value={row.side}
     severity={row.side?.toLowerCase() === "buy" ? "success" : "danger"}
-    style={{ fontSize: "0.7rem", padding: "0.15rem 0.5rem" }}
+    className="text-xs"
   />
 );
 
@@ -67,34 +60,22 @@ const TransactionStats: React.FC<{ transactions: Transaction[] }> = ({ transacti
 
   return (
     <div
-      className="flex gap-4 flex-wrap"
-      style={{
-        padding: "0.6rem 1rem",
-        background: "var(--sv-bg-surface)",
-        borderBottom: "1px solid var(--sv-border)",
-        fontSize: "0.8rem",
-      }}
+      className="flex gap-4 flex-wrap px-3 py-2 text-sm"
+      style={{ background: "var(--sv-bg-surface)", borderBottom: "1px solid var(--sv-border)" }}
     >
-      <span style={{ color: "var(--sv-text-muted)" }}>
-        Total:{" "}
-        <strong style={{ color: "var(--sv-text-primary)" }}>{transactions.length}</strong>
+      <span className="sv-text-muted">
+        Total: <strong className="text-color">{transactions.length}</strong>
       </span>
-      <span style={{ color: "var(--sv-text-muted)" }}>
-        Buys:{" "}
-        <strong style={{ color: "var(--sv-gain)" }}>{buys.length}</strong>
+      <span className="sv-text-muted">
+        Buys: <strong className="sv-text-gain">{buys.length}</strong>
         {totalBuyValue > 0 && (
-          <span style={{ color: "var(--sv-text-muted)", marginLeft: "0.25rem" }}>
-            ({fmtUSDFull(totalBuyValue)})
-          </span>
+          <span className="sv-text-muted ml-1">({fmtUSDFull(totalBuyValue)})</span>
         )}
       </span>
-      <span style={{ color: "var(--sv-text-muted)" }}>
-        Sells:{" "}
-        <strong style={{ color: "var(--sv-loss)" }}>{sells.length}</strong>
+      <span className="sv-text-muted">
+        Sells: <strong className="sv-text-loss">{sells.length}</strong>
         {totalSellValue > 0 && (
-          <span style={{ color: "var(--sv-text-muted)", marginLeft: "0.25rem" }}>
-            ({fmtUSDFull(totalSellValue)})
-          </span>
+          <span className="sv-text-muted ml-1">({fmtUSDFull(totalSellValue)})</span>
         )}
       </span>
     </div>
@@ -118,12 +99,9 @@ const TransactionsTab: React.FC<Props> = ({ transactions }) => {
 
   if (!sorted || sorted.length === 0) {
     return (
-      <div
-        className="flex flex-column align-items-center justify-content-center gap-3"
-        style={{ padding: "4rem 1rem", color: "var(--sv-text-muted)" }}
-      >
+      <div className="flex flex-column align-items-center justify-content-center gap-3 py-8 sv-text-muted">
         <i className="pi pi-list" style={{ fontSize: "2.5rem" }} />
-        <div style={{ fontSize: "0.9rem" }}>No transactions found</div>
+        <div className="text-sm">No transactions found</div>
       </div>
     );
   }
@@ -133,31 +111,16 @@ const TransactionsTab: React.FC<Props> = ({ transactions }) => {
       <TransactionStats transactions={sorted} />
 
       {/* Search */}
-      <div
-        style={{
-          padding: "0.6rem 1rem",
-          borderBottom: "1px solid var(--sv-border)",
-        }}
-      >
-        <span className="p-input-icon-left">
-          <i className="pi pi-search" style={{ color: "var(--sv-text-muted)" }} />
-          <input
-            className="p-inputtext p-component"
+      <div className="px-3 py-2" style={{ borderBottom: "1px solid var(--sv-border)" }}>
+        <div className="relative" style={{ display: "inline-block" }}>
+          <i className="pi pi-search sv-input-icon-left" />
+          <InputText
+            className="sv-search-input"
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
             placeholder="Search symbol…"
-            style={{
-              paddingLeft: "2.2rem",
-              width: "250px",
-              background: "var(--sv-bg-surface)",
-              border: "1px solid var(--sv-border)",
-              borderRadius: "8px",
-              color: "var(--sv-text-primary)",
-              fontSize: "0.82rem",
-              padding: "0.4rem 0.75rem 0.4rem 2.2rem",
-            }}
           />
-        </span>
+        </div>
       </div>
 
       <DataTable
@@ -181,9 +144,7 @@ const TransactionsTab: React.FC<Props> = ({ transactions }) => {
           field="date"
           header="Date"
           body={(r: Transaction) => (
-            <div style={{ fontSize: "0.82rem", color: "var(--sv-text-secondary)", whiteSpace: "nowrap" }}>
-              {fmtDate(r.date)}
-            </div>
+            <div className="text-sm text-color-secondary white-space-nowrap">{fmtDate(r.date)}</div>
           )}
           sortable
           style={{ minWidth: "120px" }}
@@ -205,7 +166,7 @@ const TransactionsTab: React.FC<Props> = ({ transactions }) => {
           field="qty"
           header="Qty"
           body={(r: Transaction) => (
-            <div className="text-right" style={{ fontSize: "0.85rem" }}>
+            <div className="text-right text-sm">
               {(r.qty ?? 0).toLocaleString("en-US", { maximumFractionDigits: 4 })}
             </div>
           )}
@@ -217,9 +178,7 @@ const TransactionsTab: React.FC<Props> = ({ transactions }) => {
           field="price"
           header="Price"
           body={(r: Transaction) => (
-            <div className="text-right" style={{ fontWeight: 600, fontSize: "0.85rem" }}>
-              {fmtUSDFull(r.price ?? 0)}
-            </div>
+            <div className="text-right font-semibold text-sm">{fmtUSDFull(r.price ?? 0)}</div>
           )}
           headerStyle={{ textAlign: "right" }}
           sortable
@@ -229,15 +188,7 @@ const TransactionsTab: React.FC<Props> = ({ transactions }) => {
           header="Total Value"
           body={(r: Transaction) => (
             <div
-              className="text-right"
-              style={{
-                fontWeight: 600,
-                fontSize: "0.85rem",
-                color:
-                  r.side?.toLowerCase() === "buy"
-                    ? "var(--sv-gain)"
-                    : "var(--sv-loss)",
-              }}
+              className={`text-right font-semibold text-sm ${r.side?.toLowerCase() === "buy" ? "sv-text-gain" : "sv-text-loss"}`}
             >
               {fmtUSDFull((r.qty ?? 0) * (r.price ?? 0))}
             </div>
@@ -250,7 +201,7 @@ const TransactionsTab: React.FC<Props> = ({ transactions }) => {
             field="fees"
             header="Fees"
             body={(r: Transaction) => (
-              <div className="text-right" style={{ fontSize: "0.82rem", color: "var(--sv-text-muted)" }}>
+              <div className="text-right text-xs sv-text-muted">
                 {r.fees ? fmtUSDFull(r.fees) : "—"}
               </div>
             )}
@@ -263,9 +214,7 @@ const TransactionsTab: React.FC<Props> = ({ transactions }) => {
             field="sector"
             header="Sector"
             body={(r: Transaction) => (
-              <div style={{ fontSize: "0.75rem", color: "var(--sv-text-muted)" }}>
-                {r.sector ?? "—"}
-              </div>
+              <div className="text-xs sv-text-muted">{r.sector ?? "—"}</div>
             )}
             style={{ minWidth: "120px" }}
           />
