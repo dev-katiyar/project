@@ -190,11 +190,6 @@ const MetricCard: React.FC<{
 
 const DetailSkeleton: React.FC = () => (
   <div className="p-4">
-    <div className="flex gap-2 mb-4 flex-wrap">
-      {[1, 2, 3, 4, 5, 6].map((i) => (
-        <Skeleton key={i} height="5rem" width="140px" borderRadius="10px" />
-      ))}
-    </div>
     <Skeleton height="2.5rem" className="mb-3" borderRadius="8px" />
     <Skeleton height="300px" borderRadius="8px" />
   </div>
@@ -455,19 +450,7 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
             />
           </TabPanel>
 
-          <TabPanel
-            header={
-              <span>
-                Closed Positions
-                {data.closedPositions.length > 0 && (
-                  <Badge
-                    value={data.closedPositions.length}
-                    style={{ marginLeft: "0.5rem", fontSize: "0.65rem" }}
-                  />
-                )}
-              </span>
-            }
-          >
+          <TabPanel header="Closed Positions">
             <ClosedPositionsTab positions={data.closedPositions} />
           </TabPanel>
 
