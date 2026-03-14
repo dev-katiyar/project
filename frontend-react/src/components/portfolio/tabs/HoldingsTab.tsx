@@ -4,7 +4,12 @@ import { Column } from "primereact/column";
 import { Tag } from "primereact/tag";
 import { ProgressBar } from "primereact/progressbar";
 import { InputText } from "primereact/inputtext";
-import { type Position, fmtUSD, fmtUSDFull, fmtPct } from "@/components/portfolio/PortfolioDetailPanel";
+import {
+  type Position,
+  fmtUSD,
+  fmtUSDFull,
+  fmtPct,
+} from "@/components/portfolio/PortfolioDetailPanel";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -50,7 +55,9 @@ const TypeCell: React.FC<{ row: Position }> = ({ row }) => (
 
 const PriceCell: React.FC<{ row: Position }> = ({ row }) => (
   <div className="text-right">
-    <div className="font-semibold text-sm">{fmtUSDFull(row.currentPrice ?? 0)}</div>
+    <div className="font-semibold text-sm">
+      {fmtUSDFull(row.currentPrice ?? 0)}
+    </div>
     {row.changePct !== undefined && (
       <div className={`text-xs ${gainClass(row.changePct)}`}>
         {fmtPct(row.changePct)}
@@ -116,7 +123,8 @@ const SummaryBar: React.FC<{ positions: Position[]; currentCash: number }> = ({
         Invested: <strong>{fmtUSD(totalValue)}</strong>
       </span>
       <span className="sv-text-muted">
-        Total P&L: <strong className={gainClass(totalPnl)}>{fmtUSD(totalPnl)}</strong>
+        Total P&L:{" "}
+        <strong className={gainClass(totalPnl)}>{fmtUSD(totalPnl)}</strong>
       </span>
       <span className="sv-text-muted">
         Cash: <strong>{fmtUSD(currentCash)}</strong>
@@ -142,7 +150,10 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
   return (
     <div>
       {/* Search bar */}
-      <div className="py-2 px-3" style={{ borderBottom: "1px solid var(--sv-border)" }}>
+      <div
+        className="py-2 px-3"
+        style={{ borderBottom: "1px solid var(--sv-border)" }}
+      >
         <div className="relative" style={{ display: "inline-block" }}>
           <i className="pi pi-search sv-input-icon-left" />
           <InputText
@@ -186,7 +197,9 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
           header="Qty"
           body={(r: Position) => (
             <div className="text-right text-sm">
-              {(r.qty ?? 0).toLocaleString("en-US", { maximumFractionDigits: 4 })}
+              {(r.qty ?? 0).toLocaleString("en-US", {
+                maximumFractionDigits: 4,
+              })}
             </div>
           )}
           pt={{ headerContent: { className: "justify-content-end" } }}
@@ -194,11 +207,14 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
           style={{ minWidth: "80px" }}
         />
         <Column
-          field="avgCost"
+          field="price"
           header="Avg Cost"
           body={(r: Position) => (
-            <div className="text-right text-sm" style={{ color: "var(--sv-text-secondary)" }}>
-              {fmtUSDFull(r.avgCost ?? 0)}
+            <div
+              className="text-right text-sm"
+              style={{ color: "var(--sv-text-secondary)" }}
+            >
+              {fmtUSDFull(r.price ?? 0)}
             </div>
           )}
           pt={{ headerContent: { className: "justify-content-end" } }}
