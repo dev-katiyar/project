@@ -32,8 +32,7 @@ const PieChart: React.FC<{
     chart: {
       type: "pie",
       backgroundColor: cc.bg,
-      height: 260,
-      margin: [10, 10, 10, 10],
+      height: 300,
       style: { fontFamily: "inherit" },
     },
     title: { text: "" },
@@ -42,11 +41,7 @@ const PieChart: React.FC<{
       style: { color: "#fff", fontSize: "0.8rem" },
       pointFormat: "<b>{point.name}</b>: {point.percentage:.1f}%",
     },
-    legend: {
-      enabled: true,
-      itemStyle: { color: cc.text, fontSize: "0.75rem", fontWeight: "normal" },
-      maxHeight: 80,
-    },
+    legend: { enabled: false },
     plotOptions: {
       pie: {
         allowPointSelect: true,
@@ -54,13 +49,17 @@ const PieChart: React.FC<{
         colors: PIE_COLORS,
         dataLabels: {
           enabled: true,
-          format: "{point.percentage:.0f}%",
-          style: { color: cc.text, fontSize: "0.7rem", fontWeight: "normal", textOutline: "none" },
-          distance: 12,
+          format: '<span style="font-size:0.68rem;color:{point.color}">{point.name}</span><br/>'
+                + '<span style="font-size:0.75rem;font-weight:700;color:{point.color}">{point.percentage:.1f}%</span>',
+          distance: 22,
+          connectorWidth: 1,
+          connectorColor: cc.text,
+          style: { textOutline: "none" },
+          filter: { property: "percentage", operator: ">", value: 3 },
         },
-        showInLegend: true,
+        showInLegend: false,
         borderWidth: 0,
-        innerSize: "40%",
+        innerSize: "52%",
       },
     },
     series: [{
@@ -88,10 +87,10 @@ const SummaryTab: React.FC<{ details: PortfolioDetails }> = ({ details }) => {
   const { composition_by_asset, composition_by_sector } = details;
 
   return (
-    <div className="grid m-0 p-3" style={{ gap: "1rem" }}>
+    <div className="grid p-3">
 
       {/* Asset allocation */}
-      <div className="col-12 md:col-6 p-0">
+      <div className="col-12 md:col-6">
         <Card>
           <div className="sv-info-label font-bold text-xs mb-2 flex align-items-center justify-content-center">
             <i className="pi pi-chart-pie mr-2" />
@@ -102,7 +101,7 @@ const SummaryTab: React.FC<{ details: PortfolioDetails }> = ({ details }) => {
       </div>
 
       {/* Sector allocation */}
-      <div className="col-12 md:col-6 p-0">
+      <div className="col-12 md:col-6">
         <Card>
           <div className="sv-info-label font-bold text-xs mb-2 flex align-items-center justify-content-center">
             <i className="pi pi-th-large mr-2" />
