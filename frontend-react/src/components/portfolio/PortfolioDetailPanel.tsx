@@ -55,6 +55,7 @@ export interface Position {
   side: string;
   type?: string;
   avgCost: number;
+  price: number;
   currentPrice?: number;
   priceChange?: number;
   changePct?: number;
