@@ -156,52 +156,44 @@ function buildHighchartsData(
   const { rawData, nameColumn, valColumn, parentColumn, sizeColumn } = cfg;
   const { minVal, maxVal } = buildTreemapColors(rawData, valColumn);
 
-  const sectorParents = new Set<string>();
-  const points: Highcharts.PointOptionsObject[] = [];
+  const sectors = [...new Set(rawData.map((r) => String(r[parentColumn] ?? "Other")))];
 
-  for (const row of rawData) {
+  // Sector parent nodes must come BEFORE their children for drill-down to work
+  const sectorPoints: Highcharts.PointOptionsObject[] = sectors.map((s) => ({
+    id: s,
+    name: s,
+    color: "rgb(30,30,30)",
+    dataLabels: {
+      enabled: true,
+      borderRadius: 4,
+      backgroundColor: "rgba(252,255,197,0.85)",
+      borderWidth: 1,
+      borderColor: "#AAA",
+      style: {
+        color: "#000",
+        fontSize: "11px",
+        fontWeight: "700",
+        textOutline: "none",
+      },
+      y: -6,
+    },
+  } as Highcharts.PointOptionsObject));
+
+  const stockPoints: Highcharts.PointOptionsObject[] = rawData.map((row) => {
     const val = parseFloat(String(row[valColumn])) || 0;
     const size = parseFloat(String(row[sizeColumn])) || 1;
     const sector = String(row[parentColumn] ?? "Other");
     const symbol = String(row[nameColumn] ?? "");
-
-    sectorParents.add(sector);
-
-    points.push({
+    return {
       name: symbol,
       parent: sector,
       value: size,
       color: computeColor(val, minVal, maxVal),
-      // @ts-expect-error: custom fields for tooltip/click
-      changePct: val,
-      rawSize: size,
       custom: { changePct: val, rawSize: size, sector },
-    } as Highcharts.PointOptionsObject);
-  }
+    } as Highcharts.PointOptionsObject;
+  });
 
-  for (const sector of sectorParents) {
-    points.push({
-      id: sector,
-      name: sector,
-      color: "rgb(30,30,30)",
-      dataLabels: {
-        enabled: true,
-        borderRadius: 4,
-        backgroundColor: "rgba(252,255,197,0.85)",
-        borderWidth: 1,
-        borderColor: "#AAA",
-        style: {
-          color: "#000",
-          fontSize: "11px",
-          fontWeight: "700",
-          textOutline: "none",
-        },
-        y: -6,
-      },
-    } as Highcharts.PointOptionsObject);
-  }
-
-  return points;
+  return [...sectorPoints, ...stockPoints];
 }
 
 /* ── Highcharts options builder ──────────────────────────────────────────── */
@@ -252,14 +244,15 @@ function buildChartOptions(
         separator: { text: " ", style: { display: "none" } },
       },
     },
-    plotOptions: {
-      treemap: {
+    series: [
+      {
+        type: "treemap" as const,
+        name: "Back",
         layoutAlgorithm: "squarified",
-        allowDrillToNode: true,
+        allowDrillToNode: true as any,
         animationLimit: 1000,
         borderWidth: 1,
         borderColor: "rgba(255,255,255,0.08)",
-        clip: false,
         dataLabels: {
           enabled: true,
           style: {
@@ -268,42 +261,23 @@ function buildChartOptions(
             textOutline: "none",
             color: "rgba(255,255,255,0.92)",
           },
-          formatter(this: Highcharts.PointLabelObject) {
-            const pt = this.point as Highcharts.Point & {
-              custom?: { changePct: number };
-            };
-            const pct = pt.custom?.changePct;
+          formatter(this: any) {
+            const pt = this.point;
+            const pct = pt?.custom?.changePct;
             if (pct !== undefined) {
-              return `${this.point.name}<br/><span style="font-size:10px;opacity:.85">${fmtPct(pct)}</span>`;
+              const sign = pct >= 0 ? "+" : "";
+              return `${pt.name}<br><span style="font-weight:400">${sign}${pct.toFixed(2)}%</span>`;
             }
-            return `<b>${this.point.name}</b>`;
+            return pt.name;
           },
-          useHTML: true,
         },
         levels: [
           {
             level: 1,
-            borderWidth: 2,
-            borderColor: "rgba(255,255,255,0.15)",
-            dataLabels: {
-              enabled: true,
-              style: { fontSize: "13px", fontWeight: "700" },
-            },
+            dataLabels: { enabled: true },
+            borderWidth: 3,
           },
-          {
-            level: 2,
-            dataLabels: {
-              enabled: true,
-              style: { fontSize: "11px" },
-            },
-          },
-        ],
-      },
-    },
-    series: [
-      {
-        type: "treemap",
-        name: "Back",
+        ] as any,
         data: points,
       } as Highcharts.SeriesTreemapOptions,
     ],
