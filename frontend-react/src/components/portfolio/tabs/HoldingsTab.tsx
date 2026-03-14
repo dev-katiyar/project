@@ -174,10 +174,13 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
         dataKey="symbol"
         globalFilter={globalFilter}
         globalFilterFields={["symbol", "name", "sector", "industry"]}
-        scrollable
-        scrollHeight="450px"
         sortField="percentageShare"
         sortOrder={-1}
+        paginator
+        rows={10}
+        rowsPerPageOptions={[10, 15, 25, 50]}
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+        currentPageReportTemplate="{first} to {last} of {totalRecords}"
         emptyMessage="No positions match your search"
       >
         <Column
