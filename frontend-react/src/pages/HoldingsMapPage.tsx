@@ -534,7 +534,7 @@ const HoldingsMapPage: React.FC = () => {
               daily change
             </p>
           </div>
-          <div className="flex align-items-center gap-2">
+          {/* <div className="flex align-items-center gap-2">
             <span
               className="flex align-items-center gap-1 text-xs px-2 py-1 border-round"
               style={{
@@ -549,7 +549,7 @@ const HoldingsMapPage: React.FC = () => {
               />
               Live
             </span>
-          </div>
+          </div> */}
         </div>
       </div>
 
