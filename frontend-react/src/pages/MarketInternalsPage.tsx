@@ -7,58 +7,141 @@ import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
 
 /* ── Period selector ──────────────────────────────────────────────────────── */
 
-type Period = "ytd" | "1month" | "3month" | "6month" | "1year" | "3year" | "All";
+type Period =
+  | "ytd"
+  | "1month"
+  | "3month"
+  | "6month"
+  | "1year"
+  | "3year"
+  | "All";
 
 const PERIODS: { label: string; value: Period }[] = [
   { label: "YTD", value: "ytd" },
-  { label: "1M",  value: "1month" },
-  { label: "3M",  value: "3month" },
-  { label: "6M",  value: "6month" },
-  { label: "1Y",  value: "1year" },
-  { label: "3Y",  value: "3year" },
+  { label: "1M", value: "1month" },
+  { label: "3M", value: "3month" },
+  { label: "6M", value: "6month" },
+  { label: "1Y", value: "1year" },
+  { label: "3Y", value: "3year" },
   { label: "Max", value: "All" },
 ];
 
 /* ── Chart theme ──────────────────────────────────────────────────────────── */
 
 interface ChartTheme {
-  grid: string; label: string; title: string;
-  tooltipBg: string; tooltipBorder: string; tooltipText: string;
-  gain: string; loss: string; accent: string; muted: string;
+  grid: string;
+  label: string;
+  title: string;
+  tooltipBg: string;
+  tooltipBorder: string;
+  tooltipText: string;
+  gain: string;
+  loss: string;
+  accent: string;
+  muted: string;
   blue: string;
 }
 
 const CHART_THEME: Record<ThemeName, ChartTheme> = {
   dark: {
-    grid: "#1c2840", label: "#7a8da8", title: "#e8edf5",
-    tooltipBg: "#0d1220", tooltipBorder: "#2a3a5c", tooltipText: "#e8edf5",
-    gain: "#22c55e", loss: "#ef4444", accent: "#f5a623", muted: "#64748b", blue: "#60a5fa",
+    grid: "#1c2840",
+    label: "#7a8da8",
+    title: "#e8edf5",
+    tooltipBg: "#0d1220",
+    tooltipBorder: "#2a3a5c",
+    tooltipText: "#e8edf5",
+    gain: "#22c55e",
+    loss: "#ef4444",
+    accent: "#f5a623",
+    muted: "#64748b",
+    blue: "#60a5fa",
   },
   dim: {
-    grid: "#283a5c", label: "#7a92b8", title: "#d8e0f0",
-    tooltipBg: "#162038", tooltipBorder: "#2e4472", tooltipText: "#d8e0f0",
-    gain: "#22c55e", loss: "#ef4444", accent: "#2e5be6", muted: "#64748b", blue: "#60a5fa",
+    grid: "#283a5c",
+    label: "#7a92b8",
+    title: "#d8e0f0",
+    tooltipBg: "#162038",
+    tooltipBorder: "#2e4472",
+    tooltipText: "#d8e0f0",
+    gain: "#22c55e",
+    loss: "#ef4444",
+    accent: "#2e5be6",
+    muted: "#64748b",
+    blue: "#60a5fa",
   },
   light: {
-    grid: "#e2e8f0", label: "#4a5e78", title: "#0d1425",
-    tooltipBg: "#ffffff", tooltipBorder: "#e2e8f0", tooltipText: "#0d1425",
-    gain: "#16a34a", loss: "#dc2626", accent: "#2e5be6", muted: "#94a3b8", blue: "#3b82f6",
+    grid: "#e2e8f0",
+    label: "#4a5e78",
+    title: "#0d1425",
+    tooltipBg: "#ffffff",
+    tooltipBorder: "#e2e8f0",
+    tooltipText: "#0d1425",
+    gain: "#16a34a",
+    loss: "#dc2626",
+    accent: "#2e5be6",
+    muted: "#94a3b8",
+    blue: "#3b82f6",
   },
 };
 
 /* ── Fear/Greed plot bands ────────────────────────────────────────────────── */
 
 const FEAR_GREED_BANDS: Highcharts.AxisPlotBandsOptions[] = [
-  { from: 0,  to: 25,  color: "rgba(239,68,68,0.07)",
-    label: { text: "Extreme Fear", align: "left", x: 6, style: { color: "rgba(239,68,68,0.55)", fontSize: "10px" } } },
-  { from: 25, to: 45,  color: "rgba(251,146,60,0.05)",
-    label: { text: "Fear",          align: "left", x: 6, style: { color: "rgba(251,146,60,0.55)", fontSize: "10px" } } },
-  { from: 45, to: 55,  color: "rgba(234,179,8,0.05)",
-    label: { text: "Neutral",       align: "left", x: 6, style: { color: "rgba(234,179,8,0.55)",  fontSize: "10px" } } },
-  { from: 55, to: 75,  color: "rgba(34,197,94,0.05)",
-    label: { text: "Greed",         align: "left", x: 6, style: { color: "rgba(34,197,94,0.55)", fontSize: "10px" } } },
-  { from: 75, to: 100, color: "rgba(22,163,74,0.07)",
-    label: { text: "Extreme Greed", align: "left", x: 6, style: { color: "rgba(22,163,74,0.55)", fontSize: "10px" } } },
+  {
+    from: 0,
+    to: 25,
+    color: "rgba(239,68,68,0.07)",
+    label: {
+      text: "Extreme Fear",
+      align: "left",
+      x: 6,
+      style: { color: "rgba(239,68,68,0.55)", fontSize: "10px" },
+    },
+  },
+  {
+    from: 25,
+    to: 45,
+    color: "rgba(251,146,60,0.05)",
+    label: {
+      text: "Fear",
+      align: "left",
+      x: 6,
+      style: { color: "rgba(251,146,60,0.55)", fontSize: "10px" },
+    },
+  },
+  {
+    from: 45,
+    to: 55,
+    color: "rgba(234,179,8,0.05)",
+    label: {
+      text: "Neutral",
+      align: "left",
+      x: 6,
+      style: { color: "rgba(234,179,8,0.55)", fontSize: "10px" },
+    },
+  },
+  {
+    from: 55,
+    to: 75,
+    color: "rgba(34,197,94,0.05)",
+    label: {
+      text: "Greed",
+      align: "left",
+      x: 6,
+      style: { color: "rgba(34,197,94,0.55)", fontSize: "10px" },
+    },
+  },
+  {
+    from: 75,
+    to: 100,
+    color: "rgba(22,163,74,0.07)",
+    label: {
+      text: "Extreme Greed",
+      align: "left",
+      x: 6,
+      style: { color: "rgba(22,163,74,0.55)", fontSize: "10px" },
+    },
+  },
 ];
 
 /* ── Data helpers ─────────────────────────────────────────────────────────── */
@@ -110,36 +193,52 @@ function buildChartOpts(
     yAxisText?: string;
     yAxisMin?: number;
     yAxisMax?: number;
-    dualAxis?: { left: string; right: string; leftMin?: number; leftMax?: number };
+    dualAxis?: {
+      left: string;
+      right: string;
+      leftMin?: number;
+      leftMax?: number;
+    };
     plotBands?: Highcharts.AxisPlotBandsOptions[];
   } = {},
 ): Highcharts.Options {
-  const yAxis: Highcharts.YAxisOptions | Highcharts.YAxisOptions[] = opts.dualAxis
-    ? [
-        {
-          title: { text: opts.dualAxis.left, style: { color: ct.label, fontSize: "11px" } },
+  const yAxis: Highcharts.YAxisOptions | Highcharts.YAxisOptions[] =
+    opts.dualAxis
+      ? [
+          {
+            title: {
+              text: opts.dualAxis.left,
+              style: { color: ct.label, fontSize: "11px" },
+            },
+            gridLineColor: ct.grid,
+            labels: { style: { color: ct.label, fontSize: "11px" } },
+            min: opts.dualAxis.leftMin,
+            max: opts.dualAxis.leftMax,
+            plotBands: opts.plotBands,
+          },
+          {
+            title: {
+              text: opts.dualAxis.right,
+              style: { color: ct.label, fontSize: "11px" },
+            },
+            opposite: true,
+            gridLineColor: "transparent",
+            labels: { style: { color: ct.label, fontSize: "11px" } },
+          },
+        ]
+      : {
+          title: {
+            text: opts.yAxisText ?? "",
+            style: { color: ct.label, fontSize: "11px" },
+          },
           gridLineColor: ct.grid,
           labels: { style: { color: ct.label, fontSize: "11px" } },
-          min: opts.dualAxis.leftMin,
-          max: opts.dualAxis.leftMax,
+          min: opts.yAxisMin,
+          max: opts.yAxisMax,
           plotBands: opts.plotBands,
-        },
-        {
-          title: { text: opts.dualAxis.right, style: { color: ct.label, fontSize: "11px" } },
-          opposite: true,
-          gridLineColor: "transparent",
-          labels: { style: { color: ct.label, fontSize: "11px" } },
-        },
-      ]
-    : {
-        title: { text: opts.yAxisText ?? "", style: { color: ct.label, fontSize: "11px" } },
-        gridLineColor: ct.grid,
-        labels: { style: { color: ct.label, fontSize: "11px" } },
-        min: opts.yAxisMin,
-        max: opts.yAxisMax,
-        plotBands: opts.plotBands,
-        endOnTick: false,
-      };
+          startOnTick: false,
+          endOnTick: false,
+        };
 
   return {
     chart: {
@@ -164,7 +263,10 @@ function buildChartOpts(
       gridLineColor: ct.grid,
       lineColor: ct.grid,
       tickColor: ct.grid,
-      labels: { style: { color: ct.label, fontSize: "10px" }, format: "{value:%b '%y}" },
+      labels: {
+        style: { color: ct.label, fontSize: "10px" },
+        format: "{value:%b '%y}",
+      },
     },
     yAxis,
     tooltip: {
@@ -281,7 +383,14 @@ function ChartCard({
           gap: "10px",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            minWidth: 0,
+          }}
+        >
           <div
             style={{
               width: 32,
@@ -387,14 +496,14 @@ function fgColor(v: number | null, ct: ChartTheme): string {
 
 function sentimentLabel(v: number | null): string {
   if (v === null) return "–";
-  if (v > 50)  return "Bullish";
+  if (v > 50) return "Bullish";
   if (v < -50) return "Bearish";
   return "Neutral";
 }
 
 function sentimentColor(v: number | null, ct: ChartTheme): string {
   if (v === null) return ct.muted;
-  if (v > 50)  return ct.gain;
+  if (v > 50) return ct.gain;
   if (v < -50) return ct.loss;
   return "#eab308";
 }
@@ -439,14 +548,26 @@ function KpiCard({ icon, label, value, sub, color }: KpiCardProps) {
       </div>
       <div>
         <div
-          style={{ fontSize: "11px", color: "var(--sv-text-secondary)", marginBottom: "3px" }}
+          style={{
+            fontSize: "11px",
+            color: "var(--sv-text-secondary)",
+            marginBottom: "3px",
+          }}
         >
           {label}
         </div>
-        <div style={{ fontSize: "21px", fontWeight: 700, color, lineHeight: 1 }}>
+        <div
+          style={{ fontSize: "21px", fontWeight: 700, color, lineHeight: 1 }}
+        >
           {value ?? <Skeleton width="60px" height="21px" />}
         </div>
-        <div style={{ fontSize: "11px", color: "var(--sv-text-muted)", marginTop: "3px" }}>
+        <div
+          style={{
+            fontSize: "11px",
+            color: "var(--sv-text-muted)",
+            marginTop: "3px",
+          }}
+        >
           {sub}
         </div>
       </div>
@@ -462,84 +583,120 @@ const MarketInternalsPage: React.FC = () => {
 
   /* Periods */
   const [sentimentPeriod, setSentimentPeriod] = useState<Period>("3year");
-  const [buySellPeriod,   setBuySellPeriod]   = useState<Period>("3year");
-  const [obosPeriod,      setObosPeriod]      = useState<Period>("3year");
-  const [movAvgPeriod,    setMovAvgPeriod]    = useState<Period>("3year");
-  const [fgPeriod,        setFgPeriod]        = useState<Period>("3year");
-  const [techPeriod,      setTechPeriod]      = useState<Period>("3year");
+  const [buySellPeriod, setBuySellPeriod] = useState<Period>("3year");
+  const [obosPeriod, setObosPeriod] = useState<Period>("3year");
+  const [movAvgPeriod, setMovAvgPeriod] = useState<Period>("3year");
+  const [fgPeriod, setFgPeriod] = useState<Period>("3year");
+  const [techPeriod, setTechPeriod] = useState<Period>("3year");
 
   /* Data */
   const [sentimentData, setSentimentData] = useState<any[]>([]);
-  const [buySellData,   setBuySellData]   = useState<any[]>([]);
-  const [obosData,      setObosData]      = useState<any[]>([]);
-  const [movAvgData,    setMovAvgData]    = useState<any[]>([]);
-  const [fgData,        setFgData]        = useState<any[]>([]);
-  const [techData,      setTechData]      = useState<any[]>([]);
+  const [buySellData, setBuySellData] = useState<any[]>([]);
+  const [obosData, setObosData] = useState<any[]>([]);
+  const [movAvgData, setMovAvgData] = useState<any[]>([]);
+  const [fgData, setFgData] = useState<any[]>([]);
+  const [techData, setTechData] = useState<any[]>([]);
 
   /* Loading */
   const [loadingSentiment, setLoadingSentiment] = useState(true);
-  const [loadingBuySell,   setLoadingBuySell]   = useState(true);
-  const [loadingObos,      setLoadingObos]      = useState(true);
-  const [loadingMovAvg,    setLoadingMovAvg]    = useState(true);
-  const [loadingFg,        setLoadingFg]        = useState(true);
-  const [loadingTech,      setLoadingTech]      = useState(true);
+  const [loadingBuySell, setLoadingBuySell] = useState(true);
+  const [loadingObos, setLoadingObos] = useState(true);
+  const [loadingMovAvg, setLoadingMovAvg] = useState(true);
+  const [loadingFg, setLoadingFg] = useState(true);
+  const [loadingTech, setLoadingTech] = useState(true);
 
   /* Fetch functions */
   const fetchSentiment = useCallback((p: Period) => {
     setLoadingSentiment(true);
-    api.get(`/symbol/technicalHistory/sentiment/${p}`)
-      .then((r) => { setSentimentData(r.data); setLoadingSentiment(false); })
+    api
+      .get(`/symbol/technicalHistory/sentiment/${p}`)
+      .then((r) => {
+        setSentimentData(r.data);
+        setLoadingSentiment(false);
+      })
       .catch(() => setLoadingSentiment(false));
   }, []);
 
   const fetchBuySell = useCallback((p: Period) => {
     setLoadingBuySell(true);
-    api.get(`/symbol/technicalHistory/buySellRatio/${p}`)
-      .then((r) => { setBuySellData(r.data); setLoadingBuySell(false); })
+    api
+      .get(`/symbol/technicalHistory/buySellRatio/${p}`)
+      .then((r) => {
+        setBuySellData(r.data);
+        setLoadingBuySell(false);
+      })
       .catch(() => setLoadingBuySell(false));
   }, []);
 
   const fetchObos = useCallback((p: Period) => {
     setLoadingObos(true);
-    api.get(`/symbol/technicalHistory/obos/${p}`)
-      .then((r) => { setObosData(r.data); setLoadingObos(false); })
+    api
+      .get(`/symbol/technicalHistory/obos/${p}`)
+      .then((r) => {
+        setObosData(r.data);
+        setLoadingObos(false);
+      })
       .catch(() => setLoadingObos(false));
   }, []);
 
   const fetchMovAvg = useCallback((p: Period) => {
     setLoadingMovAvg(true);
-    api.get(`/symbol/indtechnicalHistory/movAvg/${p}`)
-      .then((r) => { setMovAvgData(r.data); setLoadingMovAvg(false); })
+    api
+      .get(`/symbol/indtechnicalHistory/movAvg/${p}`)
+      .then((r) => {
+        setMovAvgData(r.data);
+        setLoadingMovAvg(false);
+      })
       .catch(() => setLoadingMovAvg(false));
   }, []);
 
   const fetchFg = useCallback((p: Period) => {
     setLoadingFg(true);
-    api.get(`/symbol/technicalHistory/fear_greed_price/${p}/SPY`)
-      .then((r) => { setFgData(r.data); setLoadingFg(false); })
+    api
+      .get(`/symbol/technicalHistory/fear_greed_price/${p}/SPY`)
+      .then((r) => {
+        setFgData(r.data);
+        setLoadingFg(false);
+      })
       .catch(() => setLoadingFg(false));
   }, []);
 
   const fetchTech = useCallback((p: Period) => {
     setLoadingTech(true);
-    api.get(`/symbol/technicalHistory/fear_greed_price/${p}/SPY`)
-      .then((r) => { setTechData(r.data); setLoadingTech(false); })
+    api
+      .get(`/symbol/technicalHistory/fear_greed_price/${p}/SPY`)
+      .then((r) => {
+        setTechData(r.data);
+        setLoadingTech(false);
+      })
       .catch(() => setLoadingTech(false));
   }, []);
 
   /* Effects */
-  useEffect(() => { fetchSentiment(sentimentPeriod); }, [fetchSentiment, sentimentPeriod]);
-  useEffect(() => { fetchBuySell(buySellPeriod);     }, [fetchBuySell, buySellPeriod]);
-  useEffect(() => { fetchObos(obosPeriod);            }, [fetchObos, obosPeriod]);
-  useEffect(() => { fetchMovAvg(movAvgPeriod);        }, [fetchMovAvg, movAvgPeriod]);
-  useEffect(() => { fetchFg(fgPeriod);                }, [fetchFg, fgPeriod]);
-  useEffect(() => { fetchTech(techPeriod);            }, [fetchTech, techPeriod]);
+  useEffect(() => {
+    fetchSentiment(sentimentPeriod);
+  }, [fetchSentiment, sentimentPeriod]);
+  useEffect(() => {
+    fetchBuySell(buySellPeriod);
+  }, [fetchBuySell, buySellPeriod]);
+  useEffect(() => {
+    fetchObos(obosPeriod);
+  }, [fetchObos, obosPeriod]);
+  useEffect(() => {
+    fetchMovAvg(movAvgPeriod);
+  }, [fetchMovAvg, movAvgPeriod]);
+  useEffect(() => {
+    fetchFg(fgPeriod);
+  }, [fetchFg, fgPeriod]);
+  useEffect(() => {
+    fetchTech(techPeriod);
+  }, [fetchTech, techPeriod]);
 
   /* Latest values for KPI strip */
-  const latestSentiment  = getLatest(sentimentData, "meter_score");
-  const latestFg         = getLatest(fgData, "fear_greed");
-  const latestAbove50    = getLatest(movAvgData, "movavg50");
-  const latestStrongBuy  = getLatest(buySellData, "StrongBuy");
+  const latestSentiment = getLatest(sentimentData, "meter_score");
+  const latestFg = getLatest(fgData, "fear_greed");
+  const latestAbove50 = getLatest(movAvgData, "movavg50");
+  const latestStrongBuy = getLatest(buySellData, "StrongBuy");
   const latestStrongSell = getLatest(buySellData, "StrongSell");
 
   const buySellBalance =
@@ -553,9 +710,11 @@ const MarketInternalsPage: React.FC = () => {
     if (!sentimentData.length) return null;
     return buildChartOpts(
       ct,
-      buildSeries(sentimentData, [
-        { name: "meter_score", color: ct.gain, legend: "Sentiment Score" },
-      ], "date"),
+      buildSeries(
+        sentimentData,
+        [{ name: "meter_score", color: ct.gain, legend: "Sentiment Score" }],
+        "date",
+      ),
       { yAxisText: "Sentiment Value", yAxisMin: -105, yAxisMax: 105 },
     );
   }, [sentimentData, ct]);
@@ -564,10 +723,14 @@ const MarketInternalsPage: React.FC = () => {
     if (!buySellData.length) return null;
     return buildChartOpts(
       ct,
-      buildSeries(buySellData, [
-        { name: "StrongBuy",  color: ct.gain, legend: "Strong Buy" },
-        { name: "StrongSell", color: ct.loss, legend: "Strong Sell" },
-      ], "date"),
+      buildSeries(
+        buySellData,
+        [
+          { name: "StrongBuy", color: ct.gain, legend: "Strong Buy" },
+          { name: "StrongSell", color: ct.loss, legend: "Strong Sell" },
+        ],
+        "date",
+      ),
       { yAxisText: "# Stocks" },
     );
   }, [buySellData, ct]);
@@ -576,10 +739,14 @@ const MarketInternalsPage: React.FC = () => {
     if (!obosData.length) return null;
     return buildChartOpts(
       ct,
-      buildSeries(obosData, [
-        { name: "Overbought", color: ct.loss, legend: "Overbought" },
-        { name: "Oversold",   color: ct.gain, legend: "Oversold" },
-      ], "date"),
+      buildSeries(
+        obosData,
+        [
+          { name: "Overbought", color: ct.loss, legend: "Overbought" },
+          { name: "Oversold", color: ct.gain, legend: "Oversold" },
+        ],
+        "date",
+      ),
       { yAxisText: "% of Stocks" },
     );
   }, [obosData, ct]);
@@ -588,12 +755,16 @@ const MarketInternalsPage: React.FC = () => {
     if (!movAvgData.length) return null;
     return buildChartOpts(
       ct,
-      buildSeries(movAvgData, [
-        { name: "movavg150", color: ct.loss,   legend: "150-Day SMA" },
-        { name: "movavg75",  color: ct.gain,   legend: "75-Day SMA" },
-        { name: "movavg50",  color: ct.accent, legend: "50-Day SMA" },
-      ], "rating_date"),
-      { yAxisText: "% of Stocks", yAxisMin: 0, yAxisMax: 100 },
+      buildSeries(
+        movAvgData,
+        [
+          { name: "movavg150", color: ct.loss, legend: "150-Day SMA" },
+          { name: "movavg75", color: ct.gain, legend: "75-Day SMA" },
+          { name: "movavg50", color: ct.accent, legend: "50-Day SMA" },
+        ],
+        "rating_date",
+      ),
+      { yAxisText: "% of Stocks", yAxisMin: 0, yAxisMax: 105 },
     );
   }, [movAvgData, ct]);
 
@@ -601,12 +772,26 @@ const MarketInternalsPage: React.FC = () => {
     if (!fgData.length) return null;
     return buildChartOpts(
       ct,
-      buildSeries(fgData, [
-        { name: "fear_greed", color: ct.accent, legend: "Fear/Greed", yAxis: 0 },
-        { name: "SPY",        color: ct.muted,  legend: "SPY Price",  yAxis: 1 },
-      ], "date"),
+      buildSeries(
+        fgData,
+        [
+          {
+            name: "fear_greed",
+            color: ct.accent,
+            legend: "Fear/Greed",
+            yAxis: 0,
+          },
+          { name: "SPY", color: ct.muted, legend: "SPY Price", yAxis: 1 },
+        ],
+        "date",
+      ),
       {
-        dualAxis: { left: "Fear/Greed (0–100)", right: "SPY", leftMin: 0, leftMax: 100 },
+        dualAxis: {
+          left: "Fear/Greed (0–100)",
+          right: "SPY",
+          leftMin: 0,
+          leftMax: 100,
+        },
         plotBands: FEAR_GREED_BANDS,
       },
     );
@@ -616,11 +801,27 @@ const MarketInternalsPage: React.FC = () => {
     if (!techData.length) return null;
     return buildChartOpts(
       ct,
-      buildSeries(techData, [
-        { name: "technical", color: ct.blue,   legend: "Technical Score", yAxis: 0 },
-        { name: "SPY",       color: ct.muted,  legend: "SPY Price",       yAxis: 1 },
-      ], "date"),
-      { dualAxis: { left: "Technical (0–100)", right: "SPY", leftMin: 0, leftMax: 100 } },
+      buildSeries(
+        techData,
+        [
+          {
+            name: "technical",
+            color: ct.blue,
+            legend: "Technical Score",
+            yAxis: 0,
+          },
+          { name: "SPY", color: ct.muted, legend: "SPY Price", yAxis: 1 },
+        ],
+        "date",
+      ),
+      {
+        dualAxis: {
+          left: "Technical (0–100)",
+          right: "SPY",
+          leftMin: 0,
+          leftMax: 100,
+        },
+      },
     );
   }, [techData, ct]);
 
@@ -645,16 +846,21 @@ const MarketInternalsPage: React.FC = () => {
       icon: "pi-chart-line",
       label: "Above 50-Day SMA",
       value: latestAbove50 !== null ? `${latestAbove50.toFixed(1)}%` : null,
-      sub: latestAbove50 !== null
-        ? latestAbove50 > 60 ? "Strong breadth"
-        : latestAbove50 > 40 ? "Mixed breadth"
-        : "Narrow market"
-        : "",
+      sub:
+        latestAbove50 !== null
+          ? latestAbove50 > 60
+            ? "Strong breadth"
+            : latestAbove50 > 40
+              ? "Mixed breadth"
+              : "Narrow market"
+          : "",
       color:
         latestAbove50 !== null
-          ? latestAbove50 > 60 ? ct.gain
-          : latestAbove50 > 40 ? "#eab308"
-          : ct.loss
+          ? latestAbove50 > 60
+            ? ct.gain
+            : latestAbove50 > 40
+              ? "#eab308"
+              : ct.loss
           : ct.muted,
     },
     {
@@ -668,13 +874,17 @@ const MarketInternalsPage: React.FC = () => {
           : null,
       sub:
         buySellBalance !== null
-          ? buySellBalance > 0 ? "Buyers dominating"
-          : buySellBalance < 0 ? "Sellers dominating"
-          : "Balanced"
+          ? buySellBalance > 0
+            ? "Buyers dominating"
+            : buySellBalance < 0
+              ? "Sellers dominating"
+              : "Balanced"
           : "",
       color:
         buySellBalance !== null
-          ? buySellBalance > 0 ? ct.gain : ct.loss
+          ? buySellBalance > 0
+            ? ct.gain
+            : ct.loss
           : ct.muted,
     },
   ];
@@ -742,7 +952,8 @@ const MarketInternalsPage: React.FC = () => {
                 paddingLeft: "48px",
               }}
             >
-              Breadth, sentiment & technical analysis across S&P 500 constituents
+              Breadth, sentiment & technical analysis across S&P 500
+              constituents
             </p>
           </div>
 
@@ -769,7 +980,13 @@ const MarketInternalsPage: React.FC = () => {
                 flexShrink: 0,
               }}
             />
-            <span style={{ fontSize: "12px", color: "var(--sv-text-secondary)", fontWeight: 500 }}>
+            <span
+              style={{
+                fontSize: "12px",
+                color: "var(--sv-text-secondary)",
+                fontWeight: 500,
+              }}
+            >
               Live Market Data
             </span>
           </div>
@@ -806,9 +1023,7 @@ const MarketInternalsPage: React.FC = () => {
         >
           Historical Charts
         </span>
-        <div
-          style={{ flex: 1, height: 1, background: "var(--sv-border)" }}
-        />
+        <div style={{ flex: 1, height: 1, background: "var(--sv-border)" }} />
       </div>
 
       {/* ── Charts grid ─────────────────────────────────────────────────── */}
@@ -843,7 +1058,10 @@ const MarketInternalsPage: React.FC = () => {
             badge={
               buySellBalance !== null
                 ? {
-                    text: buySellBalance > 0 ? `Buyers +${buySellBalance.toFixed(0)}` : `Sellers ${buySellBalance.toFixed(0)}`,
+                    text:
+                      buySellBalance > 0
+                        ? `Buyers +${buySellBalance.toFixed(0)}`
+                        : `Sellers ${buySellBalance.toFixed(0)}`,
                     color: buySellBalance > 0 ? ct.gain : ct.loss,
                   }
                 : undefined
@@ -897,7 +1115,10 @@ const MarketInternalsPage: React.FC = () => {
             description="Market emotion index: 0 = Extreme Fear, 100 = Extreme Greed — overlaid with SPY"
             badge={
               latestFg !== null
-                ? { text: `${fgLabel(latestFg)} · ${latestFg.toFixed(0)}`, color: fgColor(latestFg, ct) }
+                ? {
+                    text: `${fgLabel(latestFg)} · ${latestFg.toFixed(0)}`,
+                    color: fgColor(latestFg, ct),
+                  }
                 : undefined
             }
             period={fgPeriod}
