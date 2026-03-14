@@ -3,7 +3,6 @@ import api from "@/services/api";
 import { TabView, TabPanel } from "primereact/tabview";
 import { Button } from "primereact/button";
 import { Skeleton } from "primereact/skeleton";
-import { Badge } from "primereact/badge";
 import { Toast } from "primereact/toast";
 import { type Portfolio } from "@/components/portfolio/PortfolioSummaryTable";
 import SummaryTab from "@/components/portfolio/tabs/SummaryTab";
@@ -12,6 +11,7 @@ import TransactionsTab from "@/components/portfolio/tabs/TransactionsTab";
 import PerformanceTab from "@/components/portfolio/tabs/PerformanceTab";
 import ClosedPositionsTab from "@/components/portfolio/tabs/ClosedPositionsTab";
 import DividendsTab from "@/components/portfolio/tabs/DividendsTab";
+import MarketRadarTab from "@/components/portfolio/tabs/MarketRadarTab";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -110,7 +110,7 @@ export interface PortfolioDetailData {
   cash_transactions: CashTransaction[];
   closedPositions: ClosedPosition[];
   basicDetails: Record<string, BasicDetail>;
-  techAlerts: Record<string, unknown>;
+  techAndFundamentals: Record<string, unknown> | unknown[];
 }
 
 // ─── Formatters ───────────────────────────────────────────────────────────────
@@ -445,10 +445,18 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
             />
           </TabPanel>
 
+          <TabPanel header="Research">
+            <MarketRadarTab
+              techAndFundamentals={
+                data.techAndFundamentals as Record<string, unknown>
+              }
+            />
+          </TabPanel>
+
           <TabPanel header="Performance">
             <PerformanceTab
               portfolioId={portfolio.portfolioid}
-              active={activeTabIndex === 3}
+              active={activeTabIndex === 5}
             />
           </TabPanel>
 
