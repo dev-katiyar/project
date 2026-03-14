@@ -49,6 +49,7 @@ const RealTimeCommentaryPage = lazy(
 );
 const NewsletterPage = lazy(() => import("@/pages/NewsletterPage"));
 const LatestInsightsPage = lazy(() => import("@/pages/LatestInsightsPage"));
+const SectorPulsePage = lazy(() => import("@/pages/SectorPulsePage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -99,6 +100,7 @@ const router = createBrowserRouter([
       },
       { path: "holdingsmap", element: withProtection(<HoldingsMapPage />) },
       { path: "movers", element: withProtection(<MarketMoversPage />) },
+      { path: "sector-pulse", element: withProtection(<SectorPulsePage />) },
       { path: "overview-stock", element: withProtection(<StockSummaryPage />) },
       { path: "tvcharts", element: withProtection(<TvChartsPage />) },
       { path: "stock-analysis", element: withProtection(<NotFoundPage />) },
