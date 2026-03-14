@@ -189,7 +189,7 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
               {(r.qty ?? 0).toLocaleString("en-US", { maximumFractionDigits: 4 })}
             </div>
           )}
-          headerStyle={{ textAlign: "right" }}
+          pt={{ headerContent: { className: "justify-content-end" } }}
           sortable
           style={{ minWidth: "80px" }}
         />
@@ -201,7 +201,7 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
               {fmtUSDFull(r.avgCost ?? 0)}
             </div>
           )}
-          headerStyle={{ textAlign: "right" }}
+          pt={{ headerContent: { className: "justify-content-end" } }}
           sortable
           style={{ minWidth: "100px" }}
         />
@@ -209,7 +209,7 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
           field="currentPrice"
           header="Current Price"
           body={(r: Position) => <PriceCell row={r} />}
-          headerStyle={{ textAlign: "right" }}
+          pt={{ headerContent: { className: "justify-content-end" } }}
           sortable
           style={{ minWidth: "120px" }}
         />
@@ -217,7 +217,7 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
           field="currentValue"
           header="Market Value"
           body={(r: Position) => <ValueCell row={r} />}
-          headerStyle={{ textAlign: "right" }}
+          pt={{ headerContent: { className: "justify-content-end" } }}
           sortable
           style={{ minWidth: "150px" }}
         />
@@ -225,7 +225,7 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
           field="pnl"
           header="P&L"
           body={(r: Position) => <PnlCell row={r} />}
-          headerStyle={{ textAlign: "right" }}
+          pt={{ headerContent: { className: "justify-content-end" } }}
           sortable
           style={{ minWidth: "110px" }}
         />
@@ -242,7 +242,7 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
                 <div className="text-right text-sm sv-text-muted">—</div>
               )
             }
-            headerStyle={{ textAlign: "right" }}
+            pt={{ headerContent: { className: "justify-content-end" } }}
             sortable
             style={{ minWidth: "100px" }}
           />
