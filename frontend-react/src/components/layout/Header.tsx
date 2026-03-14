@@ -45,6 +45,7 @@ const NAV_ITEMS: MenuItem[] = [
       { label: "Major Markets", path: "/majormarkets" },
       { label: "Asset Classes", path: "/markets" },
       { label: "Holdings Map", path: "/holdingsmap" },
+      { label: "Sector Pulse", path: "/sector-pulse" },
       { label: "Sentiment", path: "/marketinternals" },
       { label: "Leaders & Laggers", path: "/movers" },
     ],
