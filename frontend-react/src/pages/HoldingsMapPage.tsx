@@ -502,7 +502,7 @@ const HoldingsMapPage: React.FC = () => {
   return (
     <div className="flex flex-column" style={{ minHeight: "100%" }}>
       {/* ── Page Header ─────────────────────────────────────────────── */}
-      <div
+      {/* <div
         className="px-4 pt-4 pb-3"
         style={{
           borderBottom: "1px solid var(--surface-border)",
@@ -517,9 +517,9 @@ const HoldingsMapPage: React.FC = () => {
             background: "linear-gradient(90deg,#3b82f6,#8b5cf6)",
             marginBottom: 10,
           }}
-        />
-        <div className="flex align-items-center justify-content-between flex-wrap gap-2">
-          <div>
+        /> */}
+      {/* <div className="flex align-items-center justify-content-between flex-wrap gap-2"> */}
+      {/* <div>
             <h2
               className="m-0 text-xl font-bold"
               style={{ color: "var(--text-color)" }}
@@ -533,8 +533,8 @@ const HoldingsMapPage: React.FC = () => {
               Visualize market exposure by sector · size = market cap · color =
               daily change
             </p>
-          </div>
-          {/* <div className="flex align-items-center gap-2">
+          </div> */}
+      {/* <div className="flex align-items-center gap-2">
             <span
               className="flex align-items-center gap-1 text-xs px-2 py-1 border-round"
               style={{
@@ -550,8 +550,8 @@ const HoldingsMapPage: React.FC = () => {
               Live
             </span>
           </div> */}
-        </div>
-      </div>
+      {/* </div> */}
+      {/* </div> */}
 
       {/* ── Controls ────────────────────────────────────────────────── */}
       <div
@@ -730,7 +730,7 @@ const HoldingsMapPage: React.FC = () => {
       )}
 
       {/* ── Chart Area ──────────────────────────────────────────────── */}
-      <div className="flex-1 px-3 pt-3 pb-2" style={{ minHeight: 0 }}>
+      <div className="flex-1 pt-3 pb-2" style={{ minHeight: 0 }}>
         {error && (
           <div
             className="flex align-items-center justify-content-center"

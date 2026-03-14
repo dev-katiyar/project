@@ -130,7 +130,6 @@ interface TechnicalsData {
 
 /* ── Formatters ───────────────────────────────────────────────────────────── */
 
-
 /* ── Reusable Panel card ──────────────────────────────────────────────────── */
 
 const Panel: React.FC<{
@@ -320,7 +319,6 @@ const MovingAveragesCard: React.FC<{
 
 /* ── RSI card ─────────────────────────────────────────────────────────────── */
 
-
 /* ── Chart empty state ────────────────────────────────────────────────────── */
 
 const ChartEmpty: React.FC<{ icon: string; text: string }> = ({
@@ -503,14 +501,14 @@ const MajorMarketsPage: React.FC = () => {
   return (
     <>
       {/* ── Header ── */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <h1 className="text-2xl font-bold mt-0 mb-1 sv-page-title">
           Major Markets
         </h1>
         <p className="mt-0 text-sm text-color-secondary">
           Indices, sectors and asset class performance at a glance
         </p>
-      </div>
+      </div> */}
 
       {/* ── Controls bar ── */}
       <div
@@ -591,9 +589,7 @@ const MajorMarketsPage: React.FC = () => {
             />
           )}
         </div>
-
       </div>
-
 
       {/* ── Charts row ── */}
       <div className="grid mb-3">

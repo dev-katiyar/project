@@ -510,14 +510,14 @@ const BroadMarketsPage: React.FC = () => {
 
   return (
     <div
-      style={{
-        padding: "1.5rem 2rem",
-        minHeight: "100vh",
-        background: "var(--sv-bg-body)",
-      }}
+    // style={{
+    //   padding: "1.5rem 2rem",
+    //   minHeight: "100vh",
+    //   background: "var(--sv-bg-body)",
+    // }}
     >
       {/* ── Page header ──────────────────────────────────────────────────── */}
-      <div
+      {/* <div
         style={{
           display: "flex",
           alignItems: "flex-end",
@@ -526,8 +526,8 @@ const BroadMarketsPage: React.FC = () => {
           paddingBottom: "1rem",
           borderBottom: "1px solid var(--sv-border)",
         }}
-      >
-        <div>
+      > */}
+      {/* <div>
           <div
             style={{
               display: "flex",
@@ -567,10 +567,10 @@ const BroadMarketsPage: React.FC = () => {
             Technical indicators across global asset classes · sortable &amp;
             filterable
           </p>
-        </div>
+        </div> */}
 
-        {/* Live indicator */}
-        <div
+      {/* Live indicator */}
+      {/* <div
           style={{
             display: "flex",
             alignItems: "center",
@@ -601,8 +601,8 @@ const BroadMarketsPage: React.FC = () => {
           >
             Live Data
           </span>
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
 
       {/* ── Legend strip ─────────────────────────────────────────────────── */}
       <div
@@ -657,6 +657,7 @@ const BroadMarketsPage: React.FC = () => {
           background: "var(--sv-bg-card)",
           border: "1px solid var(--sv-border)",
           overflow: "hidden",
+          padding: "0.75rem",
           boxShadow: "var(--sv-shadow-md)",
         }}
       >

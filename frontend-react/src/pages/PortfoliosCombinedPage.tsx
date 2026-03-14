@@ -371,25 +371,6 @@ const PortfoliosCombinedPage: React.FC = () => {
     <div>
       <Toast ref={toast} />
 
-      {/* ── Page header ── */}
-      <div className="flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
-        <div>
-          <h1
-            className="m-0 sv-page-title"
-            style={{ fontSize: "1.6rem", fontWeight: 800 }}
-          >
-            <i
-              className="pi pi-chart-line mr-2"
-              style={{ color: "var(--sv-accent)", fontSize: "1.3rem" }}
-            />
-            Portfolio Dashboard
-          </h1>
-          <p className="m-0 mt-1 sv-text-muted" style={{ fontSize: "0.85rem" }}>
-            Track and manage all your investment portfolios in one place
-          </p>
-        </div>
-      </div>
-
       {/* ── Selected portfolio detail panel ── */}
       {selected && (
         <div ref={detailRef}>

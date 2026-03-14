@@ -459,56 +459,19 @@ const SectorPulsePage: React.FC = () => {
 
   return (
     <div className="p-3" style={{ maxWidth: "1400px", margin: "0 auto" }}>
-      {/* ── Page Header ──────────────────────────────────────────────────── */}
+      {/* ── Header bar: legend + stats ───────────────────────────────────── */}
       <div
         className="flex align-items-center justify-content-between flex-wrap mb-3"
-        style={{ gap: "12px" }}
+        style={{ gap: "10px" }}
       >
-        <div>
-          <div className="flex align-items-center gap-2">
-            <h1
-              style={{
-                margin: 0,
-                fontSize: "1.6rem",
-                fontWeight: 800,
-                color: "var(--sv-text-primary)",
-              }}
-            >
-              Sector Pulse
-            </h1>
-            {/* <span
-              style={{
-                background: "var(--sv-gain)",
-                color: "#fff",
-                borderRadius: "999px",
-                padding: "2px 10px",
-                fontSize: "0.7rem",
-                fontWeight: 700,
-                letterSpacing: "0.08em",
-                animation: "pulse 2s infinite",
-              }}
-            >
-              LIVE
-            </span> */}
-          </div>
-          <p
-            style={{
-              margin: "4px 0 0",
-              fontSize: "0.875rem",
-              color: "var(--sv-text-secondary)",
-            }}
-          >
-            See which sectors and stocks are leading or lagging the market
-            today. Green = up, Red = down.
-          </p>
-        </div>
-
         {/* Legend */}
         <div
           className="flex align-items-center flex-wrap"
-          style={{ gap: "8px", fontSize: "0.72rem", fontWeight: 600 }}
+          style={{ gap: "6px", fontSize: "0.72rem", fontWeight: 600 }}
         >
-          <span style={{ color: "var(--sv-text-muted)" }}>Today's move:</span>
+          <span style={{ color: "var(--sv-text-muted)", marginRight: "2px" }}>
+            Today's move:
+          </span>
           {Object.values(HEAT_COLORS).map((c) => (
             <span
               key={c.label}
@@ -516,47 +479,47 @@ const SectorPulsePage: React.FC = () => {
                 background: c.bg,
                 color: c.text,
                 borderRadius: "6px",
-                padding: "3px 8px",
+                padding: "2px 8px",
               }}
             >
               {c.label}
             </span>
           ))}
         </div>
-      </div>
 
-      {/* ── Stats bar ────────────────────────────────────────────────────── */}
-      {!pageLoading && allTickers.length > 0 && (
-        <div className="flex flex-wrap mb-3" style={{ gap: "10px" }}>
-          <div className="sv-stat-pill sv-stat-gain">
-            <i className="pi pi-arrow-up" style={{ fontSize: "0.75rem" }} />
-            <span>
-              <b>{gainers}</b> Gaining
-            </span>
-          </div>
-          <div className="sv-stat-pill sv-stat-loss">
-            <i className="pi pi-arrow-down" style={{ fontSize: "0.75rem" }} />
-            <span>
-              <b>{losers}</b> Declining
-            </span>
-          </div>
-          <div className="sv-stat-pill sv-stat-neutral">
-            <i className="pi pi-minus" style={{ fontSize: "0.75rem" }} />
-            <span>
-              <b>{neutral}</b> Flat
-            </span>
-          </div>
-          {topSector && calcSectorAvg(topSector.tickers) != null && (
-            <div className="sv-stat-pill sv-stat-info">
-              <i className="pi pi-star" style={{ fontSize: "0.75rem" }} />
+        {/* Stats pills */}
+        {!pageLoading && allTickers.length > 0 && (
+          <div className="flex flex-wrap align-items-center" style={{ gap: "6px" }}>
+            <div className="sv-stat-pill sv-stat-gain">
+              <i className="pi pi-arrow-up" style={{ fontSize: "0.75rem" }} />
               <span>
-                Best sector: <b>{topSector.sector}</b> (
-                {fmtPct(calcSectorAvg(topSector.tickers) ?? undefined)})
+                <b>{gainers}</b> Gaining
               </span>
             </div>
-          )}
-        </div>
-      )}
+            <div className="sv-stat-pill sv-stat-loss">
+              <i className="pi pi-arrow-down" style={{ fontSize: "0.75rem" }} />
+              <span>
+                <b>{losers}</b> Declining
+              </span>
+            </div>
+            <div className="sv-stat-pill sv-stat-neutral">
+              <i className="pi pi-minus" style={{ fontSize: "0.75rem" }} />
+              <span>
+                <b>{neutral}</b> Flat
+              </span>
+            </div>
+            {topSector && calcSectorAvg(topSector.tickers) != null && (
+              <div className="sv-stat-pill sv-stat-info">
+                <i className="pi pi-star" style={{ fontSize: "0.75rem" }} />
+                <span>
+                  Best: <b>{topSector.sector}</b> (
+                  {fmtPct(calcSectorAvg(topSector.tickers) ?? undefined)})
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* ── Page skeleton ─────────────────────────────────────────────────── */}
       {pageLoading && (
