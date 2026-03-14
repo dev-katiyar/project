@@ -101,21 +101,17 @@ const SectionCard: React.FC<SectionCardProps> = ({
 
   return (
     <div
+      className="p-card mb-4 overflow-hidden"
       style={{
-        background: "var(--sv-bg-card)",
-        border: "1px solid var(--sv-border)",
-        borderLeft: `4px solid ${accentColor}`,
-        borderRadius: "12px",
-        overflow: "hidden",
         boxShadow: "var(--sv-shadow-md)",
-        marginBottom: "1.5rem",
+        borderLeft: `4px solid ${accentColor}`,
       }}
     >
       {/* ── Section header ── */}
       <div
+        className="px-3 py-2 border-bottom-1"
         style={{
-          padding: "0.875rem 1.25rem",
-          borderBottom: "1px solid var(--sv-border)",
+          borderBottomColor: "var(--sv-border)",
           background: "var(--sv-bg-surface)",
         }}
       >
@@ -123,38 +119,28 @@ const SectionCard: React.FC<SectionCardProps> = ({
           {/* Left: title + count badge */}
           <div className="flex align-items-center gap-2">
             <div
-              className="flex align-items-center justify-content-center"
+              className="flex align-items-center justify-content-center border-round-md flex-shrink-0"
               style={{
                 width: "2rem",
                 height: "2rem",
-                borderRadius: "8px",
                 background: `color-mix(in srgb, ${accentColor} 15%, transparent)`,
               }}
             >
               <i
-                className={`pi ${icon}`}
-                style={{ color: accentColor, fontSize: "0.9rem" }}
+                className={`pi ${icon} text-sm`}
+                style={{ color: accentColor }}
               />
             </div>
-            <h3
-              className="m-0"
-              style={{
-                fontSize: "0.95rem",
-                fontWeight: 700,
-                letterSpacing: "-0.01em",
-              }}
-            >
+            <h3 className="m-0 text-sm font-bold" style={{ letterSpacing: "-0.01em" }}>
               {title}
             </h3>
             {!loading && (
               <span
+                className="text-xs font-bold border-round-3xl"
                 style={{
                   background: accentColor,
                   color: "#fff",
-                  fontSize: "0.7rem",
-                  fontWeight: 700,
                   padding: "0.15rem 0.5rem",
-                  borderRadius: "999px",
                   lineHeight: 1.5,
                 }}
               >
@@ -166,10 +152,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
           {/* Right: aggregate metrics + create button */}
           <div className="flex align-items-center gap-3 flex-wrap">
             {!loading && portfolios.length > 0 && (
-              <div
-                className="flex gap-3 flex-wrap"
-                style={{ fontSize: "0.8rem" }}
-              >
+              <div className="flex gap-3 flex-wrap text-sm">
                 <span className="sv-text-muted">
                   Value: <strong>{fmtCompact(metrics.totalValue)}</strong>
                 </span>
@@ -194,11 +177,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
                 size="small"
                 text
                 onClick={onNewPortfolio}
-                style={{
-                  color: accentColor,
-                  padding: "0.3rem 0.6rem",
-                  fontSize: "0.8rem",
-                }}
+                style={{ color: accentColor }}
               />
             )}
           </div>
@@ -206,14 +185,8 @@ const SectionCard: React.FC<SectionCardProps> = ({
 
         {/* Timestamp hint */}
         {!loading && updatedAt && (
-          <div
-            className="sv-text-muted"
-            style={{ marginTop: "0.4rem", fontSize: "0.72rem" }}
-          >
-            <i
-              className="pi pi-clock"
-              style={{ fontSize: "0.65rem", marginRight: "0.25rem" }}
-            />
+          <div className="sv-text-muted mt-1 text-xs">
+            <i className="pi pi-clock mr-1 text-xs" />
             As of {fmtTimestamp(updatedAt)} — click a row to view portfolio
             details
           </div>
@@ -417,10 +390,7 @@ const PortfoliosCombinedPage: React.FC = () => {
       <Dialog
         header={
           <div className="flex align-items-center gap-2">
-            <i
-              className="pi pi-plus-circle"
-              style={{ color: "var(--sv-success)", fontSize: "1.1rem" }}
-            />
+            <i className="pi pi-plus-circle text-lg sv-text-gain" />
             <span>Create New Portfolio</span>
           </div>
         }
@@ -433,10 +403,7 @@ const PortfoliosCombinedPage: React.FC = () => {
       >
         <div className="flex flex-column gap-3 pt-2">
           <div className="flex flex-column gap-1">
-            <label
-              htmlFor="portfolio-name"
-              style={{ fontSize: "0.85rem", color: "var(--sv-text-secondary)" }}
-            >
+            <label htmlFor="portfolio-name" className="text-sm sv-text-muted">
               Portfolio Name
             </label>
             <InputText
@@ -453,10 +420,7 @@ const PortfoliosCombinedPage: React.FC = () => {
           </div>
 
           <div className="flex flex-column gap-1">
-            <label
-              htmlFor="starting-cash"
-              style={{ fontSize: "0.85rem", color: "var(--sv-text-secondary)" }}
-            >
+            <label htmlFor="starting-cash" className="text-sm sv-text-muted">
               Starting Cash (USD)
             </label>
             <InputNumber
@@ -473,7 +437,7 @@ const PortfoliosCombinedPage: React.FC = () => {
               minFractionDigits={0}
               maxFractionDigits={2}
               min={1}
-              style={{ width: "100%" }}
+              className="w-full"
               inputStyle={{ width: "100%" }}
             />
           </div>
