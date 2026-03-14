@@ -58,9 +58,10 @@ const PriceCell: React.FC<{ row: Position }> = ({ row }) => (
     <div className="font-semibold text-sm">
       {fmtUSDFull(row.currentPrice ?? 0)}
     </div>
-    {row.changePct !== undefined && (
+    {(row.changePct !== undefined || row.priceChange !== undefined) && (
       <div className={`text-xs ${gainClass(row.changePct)}`}>
-        {fmtPct(row.changePct)}
+        {row.priceChange !== undefined && fmtUSDFull(row.priceChange)}
+        {row.changePct !== undefined && ` (${fmtPct(row.changePct)})`}
       </div>
     )}
   </div>
@@ -90,9 +91,9 @@ const PnlCell: React.FC<{ row: Position }> = ({ row }) => (
     <div className={`font-bold text-sm ${gainClass(row.pnl)}`}>
       {fmtUSD(row.pnl)}
     </div>
-    {row.pnlPercent !== undefined && (
-      <div className={`text-xs ${gainClass(row.pnlPercent)}`}>
-        {fmtPct(row.pnlPercent)}
+    {row.pnlPercentage !== undefined && (
+      <div className={`text-xs ${gainClass(row.pnlPercentage)}`}>
+        {fmtPct(row.pnlPercentage)}
       </div>
     )}
   </div>

@@ -61,7 +61,7 @@ export interface Position {
   changePct?: number;
   currentValue: number;
   pnl: number;
-  pnlPercent?: number;
+  pnlPercentage?: number;
   percentageShare?: number;
   dividendYield?: number;
 }
