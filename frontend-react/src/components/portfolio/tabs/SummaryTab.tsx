@@ -1,15 +1,16 @@
 import React, { useMemo } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+import { Card } from "primereact/card";
 import { useTheme } from "@/contexts/ThemeContext";
 import { type PortfolioDetails, fmtUSD, fmtPct, gainColor } from "@/components/portfolio/PortfolioDetailPanel";
 
 // ─── Chart theme colors ────────────────────────────────────────────────────────
 
 const CHART_BG: Record<string, { bg: string; text: string; tooltip: string }> = {
-  dark: { bg: "transparent", text: "#7a8da8", tooltip: "#07090f" },
-  dim:  { bg: "transparent", text: "#7a92b8", tooltip: "#0f1729" },
-  light:{ bg: "transparent", text: "#4a5568", tooltip: "#ffffff" },
+  dark:  { bg: "transparent", text: "#7a8da8", tooltip: "#07090f" },
+  dim:   { bg: "transparent", text: "#7a92b8", tooltip: "#0f1729" },
+  light: { bg: "transparent", text: "#4a5568", tooltip: "#ffffff" },
 };
 
 const PIE_COLORS = [
@@ -18,25 +19,22 @@ const PIE_COLORS = [
   "#2dd4bf", "#facc15", "#c084fc", "#6ee7b7",
 ];
 
-// ─── Stat card (simple) ────────────────────────────────────────────────────────
+// ─── Stat row ─────────────────────────────────────────────────────────────────
 
 const StatRow: React.FC<{ label: string; value: string; pct?: string; color?: string }> = ({
   label, value, pct, color,
 }) => (
   <div
-    className="flex justify-content-between align-items-center"
-    style={{
-      padding: "0.5rem 0",
-      borderBottom: "1px solid var(--sv-border)",
-    }}
+    className="flex justify-content-between align-items-center py-2"
+    style={{ borderBottom: "1px solid var(--sv-border)" }}
   >
-    <span style={{ fontSize: "0.82rem", color: "var(--sv-text-muted)" }}>{label}</span>
+    <span className="text-sm sv-text-muted">{label}</span>
     <div className="text-right">
-      <span style={{ fontWeight: 600, color: color ?? "var(--sv-text-primary)", fontSize: "0.85rem" }}>
+      <span className="font-semibold text-sm" style={{ color: color ?? "var(--sv-text-primary)" }}>
         {value}
       </span>
       {pct && (
-        <span style={{ fontSize: "0.75rem", color: color ?? "var(--sv-text-muted)", marginLeft: "0.35rem" }}>
+        <span className="text-xs ml-1" style={{ color: color ?? "var(--sv-text-muted)" }}>
           ({pct})
         </span>
       )}
@@ -88,22 +86,17 @@ const PieChart: React.FC<{
         innerSize: "40%",
       },
     },
-    series: [
-      {
-        type: "pie",
-        name: title,
-        data: data.map((d) => ({ name: d.name, y: d.percentage })),
-      },
-    ],
+    series: [{
+      type: "pie",
+      name: title,
+      data: data.map((d) => ({ name: d.name, y: d.percentage })),
+    }],
     credits: { enabled: false },
   }), [data, cc, title]);
 
   if (!data || data.length === 0) {
     return (
-      <div
-        className="flex align-items-center justify-content-center"
-        style={{ height: "260px", color: "var(--sv-text-muted)", fontSize: "0.85rem" }}
-      >
+      <div className="flex align-items-center justify-content-center sv-text-muted text-sm" style={{ height: "260px" }}>
         No data available
       </div>
     );
@@ -129,146 +122,80 @@ const SummaryTab: React.FC<{ details: PortfolioDetails }> = ({ details }) => {
     composition_by_sector,
   } = details;
 
+  const deployedPct = startingCash > 0
+    ? Math.min(100, ((startingCash - currentCash) / startingCash) * 100)
+    : 0;
+
   return (
-    <div className="grid m-0" style={{ padding: "1rem", gap: "1rem" }}>
+    <div className="grid m-0 p-3" style={{ gap: "1rem" }}>
+
       {/* ── Left column: stats ── */}
       <div className="col-12 lg:col-4 p-0">
-        <div
-          style={{
-            background: "var(--sv-bg-surface)",
-            border: "1px solid var(--sv-border)",
-            borderRadius: "10px",
-            padding: "1rem",
-            height: "100%",
-          }}
-        >
-          <div
-            style={{
-              fontWeight: 700,
-              fontSize: "0.8rem",
-              color: "var(--sv-text-secondary)",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              marginBottom: "0.75rem",
-            }}
-          >
+        <Card className="h-full">
+          <div className="sv-info-label font-bold text-xs mb-3 flex align-items-center">
             <i className="pi pi-list mr-2" />
             Key Metrics
           </div>
 
-          <StatRow label="Portfolio Value" value={fmtUSD(portfolioValue)} />
-          <StatRow
-            label="Overall Return"
-            value={fmtUSD(pnl)}
-            pct={fmtPct(pnlPercent)}
-            color={gainColor(pnl)}
-          />
-          <StatRow
-            label="Today's Return"
-            value={fmtUSD(dailyPnl)}
-            pct={fmtPct(dailyPnlPercentage)}
-            color={gainColor(dailyPnl)}
-          />
-          <StatRow label="Total Dividends" value={fmtUSD(dividend)} />
-          {interest > 0 && <StatRow label="Interest" value={fmtUSD(interest)} />}
-          <StatRow label="Starting Cash" value={fmtUSD(startingCash)} />
-          <StatRow label="Available Cash" value={fmtUSD(currentCash)} />
+          <StatRow label="Portfolio Value"  value={fmtUSD(portfolioValue)} />
+          <StatRow label="Overall Return"   value={fmtUSD(pnl)}      pct={fmtPct(pnlPercent)}          color={gainColor(pnl)} />
+          <StatRow label="Today's Return"   value={fmtUSD(dailyPnl)} pct={fmtPct(dailyPnlPercentage)}  color={gainColor(dailyPnl)} />
+          <StatRow label="Total Dividends"  value={fmtUSD(dividend)} />
+          {interest > 0 && <StatRow label="Interest"       value={fmtUSD(interest)} />}
+          <StatRow label="Starting Cash"    value={fmtUSD(startingCash)} />
+          <StatRow label="Available Cash"   value={fmtUSD(currentCash)} />
 
           {/* Cash utilization bar */}
           {startingCash > 0 && (
-            <div style={{ marginTop: "1rem" }}>
-              <div
-                className="flex justify-content-between"
-                style={{ fontSize: "0.72rem", color: "var(--sv-text-muted)", marginBottom: "0.3rem" }}
-              >
+            <div className="mt-3">
+              <div className="flex justify-content-between text-xs sv-text-muted mb-1">
                 <span>Cash Utilization</span>
-                <span>
-                  {(((startingCash - currentCash) / startingCash) * 100).toFixed(0)}% deployed
-                </span>
+                <span>{deployedPct.toFixed(0)}% deployed</span>
               </div>
-              <div
-                style={{
-                  height: "6px",
-                  borderRadius: "999px",
-                  background: "var(--sv-border)",
-                  overflow: "hidden",
-                }}
-              >
+              <div className="border-round-xl overflow-hidden" style={{ height: "6px", background: "var(--sv-border)" }}>
                 <div
+                  className="border-round-xl h-full"
                   style={{
-                    height: "100%",
-                    borderRadius: "999px",
                     background: "var(--sv-accent)",
-                    width: `${Math.min(100, ((startingCash - currentCash) / startingCash) * 100)}%`,
+                    width: `${deployedPct}%`,
                     transition: "width 0.6s ease",
                   }}
                 />
               </div>
             </div>
           )}
-        </div>
+        </Card>
       </div>
 
       {/* ── Right column: pie charts ── */}
       <div className="col-12 lg:col-8 p-0">
         <div className="grid m-0" style={{ gap: "0.75rem" }}>
+
           {/* Asset allocation */}
           <div className="col-12 md:col-6 p-0">
-            <div
-              style={{
-                background: "var(--sv-bg-surface)",
-                border: "1px solid var(--sv-border)",
-                borderRadius: "10px",
-                padding: "0.75rem",
-              }}
-            >
-              <div
-                style={{
-                  fontWeight: 700,
-                  fontSize: "0.8rem",
-                  color: "var(--sv-text-secondary)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  marginBottom: "0.25rem",
-                  textAlign: "center",
-                }}
-              >
+            <Card>
+              <div className="sv-info-label font-bold text-xs mb-2 flex align-items-center justify-content-center">
                 <i className="pi pi-chart-pie mr-2" />
                 Asset Allocation
               </div>
               <PieChart title="Assets" data={composition_by_asset ?? []} />
-            </div>
+            </Card>
           </div>
 
           {/* Sector allocation */}
           <div className="col-12 md:col-6 p-0">
-            <div
-              style={{
-                background: "var(--sv-bg-surface)",
-                border: "1px solid var(--sv-border)",
-                borderRadius: "10px",
-                padding: "0.75rem",
-              }}
-            >
-              <div
-                style={{
-                  fontWeight: 700,
-                  fontSize: "0.8rem",
-                  color: "var(--sv-text-secondary)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  marginBottom: "0.25rem",
-                  textAlign: "center",
-                }}
-              >
+            <Card>
+              <div className="sv-info-label font-bold text-xs mb-2 flex align-items-center justify-content-center">
                 <i className="pi pi-th-large mr-2" />
                 Sector Allocation
               </div>
               <PieChart title="Sectors" data={composition_by_sector ?? []} />
-            </div>
+            </Card>
           </div>
+
         </div>
       </div>
+
     </div>
   );
 };
