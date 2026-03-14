@@ -58,13 +58,9 @@ interface ChartTheme {
   plotBg: string;
   border: string;
   label: string;
-  title: string;
   tooltipBg: string;
   tooltipBorder: string;
   tooltipText: string;
-  sectorLabelBg: string;
-  sectorLabelText: string;
-  sectorBorder: string;
 }
 
 const CHART_THEME: Record<ThemeName, ChartTheme> = {
@@ -73,43 +69,56 @@ const CHART_THEME: Record<ThemeName, ChartTheme> = {
     plotBg: "transparent",
     border: "#1e2d45",
     label: "#94a3b8",
-    title: "#e2e8f0",
     tooltipBg: "#0f172a",
     tooltipBorder: "#1e2d45",
     tooltipText: "#e2e8f0",
-    sectorLabelBg: "rgba(15,23,42,0.85)",
-    sectorLabelText: "#cbd5e1",
-    sectorBorder: "#334155",
   },
   dim: {
     bg: "transparent",
     plotBg: "transparent",
     border: "#1e3a5f",
     label: "#8eaac9",
-    title: "#dbe7f5",
     tooltipBg: "#0d2340",
     tooltipBorder: "#1e3a5f",
     tooltipText: "#dbe7f5",
-    sectorLabelBg: "rgba(13,35,64,0.85)",
-    sectorLabelText: "#bfd4ea",
-    sectorBorder: "#1e4d80",
   },
   light: {
     bg: "transparent",
     plotBg: "transparent",
     border: "#e2e8f0",
     label: "#475569",
-    title: "#0f172a",
     tooltipBg: "#ffffff",
     tooltipBorder: "#e2e8f0",
     tooltipText: "#0f172a",
-    sectorLabelBg: "rgba(255,255,255,0.9)",
-    sectorLabelText: "#334155",
-    sectorBorder: "#cbd5e1",
   },
 };
 
-/* ── Color helpers ───────────────────────────────────────────────────────── */
+/* ── Color helpers (matches MarketMapChart approach) ─────────────────────── */
+
+const MIN_RED = 255,
+  MAX_RED = 100;
+const MIN_GREEN = 230,
+  MAX_GREEN = 100;
+
+function computeColor(
+  pct: number,
+  minChange: number,
+  maxChange: number,
+): string {
+  if (pct < 0) {
+    const colNum = Math.round(
+      MIN_RED - (pct / minChange) * (MIN_RED - MAX_RED),
+    );
+    return `rgb(${colNum},0,0)`;
+  }
+  if (pct > 0) {
+    const colNum = Math.round(
+      MIN_GREEN - (pct / maxChange) * (MIN_GREEN - MAX_GREEN),
+    );
+    return `rgb(0,${colNum},0)`;
+  }
+  return "rgb(80,80,80)";
+}
 
 function buildTreemapColors(
   rawData: RawHoldingRow[],
@@ -123,30 +132,6 @@ function buildTreemapColors(
     if (v > max) max = v;
   }
   return { minVal: min, maxVal: max };
-}
-
-function getBoxColor(value: number, minVal: number, maxVal: number): string {
-  // Neutral colour for zero / flat
-  const nR = 60,
-    nG = 60,
-    nB = 80;
-  if (value === 0) return `rgb(${nR},${nG},${nB})`;
-
-  if (value < 0) {
-    // Scale 0 → 1 based on how close the value is to the worst loss
-    const ratio = Math.min(Math.abs(value) / Math.abs(minVal), 1);
-    const r = Math.round(nR + ratio * (225 - nR)); // neutral → deep red
-    const g = Math.round(nG * (1 - ratio));
-    const b = Math.round(nB * (1 - ratio));
-    return `rgb(${r},${g},${b})`;
-  }
-
-  // Scale 0 → 1 based on how close the value is to the best gain
-  const ratio = Math.min(value / maxVal, 1);
-  const r = Math.round(nR * (1 - ratio));
-  const g = Math.round(nG + ratio * (210 - nG)); // neutral → deep green
-  const b = Math.round(nB * (1 - ratio));
-  return `rgb(${r},${g},${b})`;
 }
 
 /* ── Formatters ──────────────────────────────────────────────────────────── */
@@ -167,7 +152,6 @@ function fmtPct(val: number): string {
 
 function buildHighchartsData(
   cfg: ChartDataConfig,
-  theme: ChartTheme,
 ): Highcharts.PointOptionsObject[] {
   const { rawData, nameColumn, valColumn, parentColumn, sizeColumn } = cfg;
   const { minVal, maxVal } = buildTreemapColors(rawData, valColumn);
@@ -187,7 +171,7 @@ function buildHighchartsData(
       name: symbol,
       parent: sector,
       value: size,
-      color: getBoxColor(val, minVal, maxVal),
+      color: computeColor(val, minVal, maxVal),
       // @ts-expect-error: custom fields for tooltip/click
       changePct: val,
       rawSize: size,
@@ -199,21 +183,20 @@ function buildHighchartsData(
     points.push({
       id: sector,
       name: sector,
-      color: "rgba(0,0,0,0.0)",
+      color: "rgb(30,30,30)",
       dataLabels: {
+        enabled: true,
+        borderRadius: 4,
+        backgroundColor: "rgba(252,255,197,0.85)",
+        borderWidth: 1,
+        borderColor: "#AAA",
         style: {
-          fontSize: "12px",
+          color: "#000",
+          fontSize: "11px",
           fontWeight: "700",
-          color: theme.sectorLabelText,
           textOutline: "none",
         },
-        backgroundColor: theme.sectorLabelBg,
-        borderRadius: 4,
-        borderWidth: 1,
-        borderColor: theme.sectorBorder,
-        padding: 4,
-        verticalAlign: "top",
-        y: 4,
+        y: -6,
       },
     } as Highcharts.PointOptionsObject);
   }
@@ -227,7 +210,7 @@ function buildChartOptions(
   cfg: ChartDataConfig,
   theme: ChartTheme,
 ): Highcharts.Options {
-  const points = buildHighchartsData(cfg, theme);
+  const points = buildHighchartsData(cfg);
   const { valColumn, sizeColumn } = cfg;
 
   return {
@@ -241,6 +224,34 @@ function buildChartOptions(
     title: { text: "" },
     subtitle: { text: "" },
     credits: { enabled: false },
+    navigation: {
+      breadcrumbs: {
+        showFullPath: false,
+        format: "← Back",
+        buttonTheme: {
+          fill: "rgba(255,255,255,0.07)",
+          padding: 3,
+          marginBottom: 5,
+          r: 5,
+          stroke: "rgba(255,255,255,0.18)",
+          "stroke-width": 1,
+          style: {
+            color: theme.tooltipText,
+            fontSize: "11px",
+            fontWeight: "600",
+            cursor: "pointer",
+            letterSpacing: "0.02em",
+          },
+          states: {
+            hover: {
+              fill: "rgba(255,255,255,0.15)",
+              style: { color: "#ffffff" },
+            },
+          },
+        },
+        separator: { text: " ", style: { display: "none" } },
+      },
+    },
     plotOptions: {
       treemap: {
         layoutAlgorithm: "squarified",
@@ -287,19 +298,12 @@ function buildChartOptions(
             },
           },
         ],
-        point: {
-          events: {
-            click() {
-              // symbol click handler (extended in page component)
-            },
-          },
-        },
       },
     },
     series: [
       {
         type: "treemap",
-        name: "Holdings",
+        name: "Back",
         data: points,
       } as Highcharts.SeriesTreemapOptions,
     ],
