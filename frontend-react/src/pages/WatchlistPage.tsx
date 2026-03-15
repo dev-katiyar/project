@@ -35,8 +35,10 @@ interface SymbolData {
   regularMarketPrice?: number;
   change?: number;
   regularMarketChange?: number;
+  priceChange?: number | string;
   changepct?: number;
   regularMarketChangePercent?: number;
+  priceChangePct?: number;
   volume?: number;
   regularMarketVolume?: number;
   marketcap?: number;
@@ -45,8 +47,12 @@ interface SymbolData {
   trailingPE?: number;
   week52high?: number;
   fiftyTwoWeekHigh?: number;
+  high52?: number;
+  week_high_52?: number;
   week52low?: number;
   fiftyTwoWeekLow?: number;
+  low52?: number;
+  week_low_52?: number;
   sector?: string;
 }
 
@@ -55,10 +61,16 @@ interface SymbolData {
 const getPrice = (d: SymbolData) =>
   d.price ?? d.currentPrice ?? d.regularMarketPrice ?? null;
 
-const getChange = (d: SymbolData) => d.change ?? d.regularMarketChange ?? null;
+const getChange = (d: SymbolData) => {
+  const v = d.change ?? d.regularMarketChange ?? d.priceChange ?? null;
+  if (v == null) return null;
+  const n = typeof v === "string" ? parseFloat(v) : v;
+  return isNaN(n) ? null : n;
+};
 
 const getRawPct = (d: SymbolData): number | null => {
-  const v = d.changepct ?? d.regularMarketChangePercent ?? null;
+  const v =
+    d.changepct ?? d.regularMarketChangePercent ?? d.priceChangePct ?? null;
   if (v == null) return null;
   // normalise: if raw value is a tiny decimal (e.g. 0.012), multiply to get %
   return Math.abs(v) < 1 ? v * 100 : v;
@@ -67,8 +79,10 @@ const getRawPct = (d: SymbolData): number | null => {
 const getVolume = (d: SymbolData) => d.volume ?? d.regularMarketVolume ?? null;
 const getMarketCap = (d: SymbolData) => d.marketcap ?? d.marketCap ?? null;
 const getPE = (d: SymbolData) => d.pe ?? d.trailingPE ?? null;
-const get52High = (d: SymbolData) => d.week52high ?? d.fiftyTwoWeekHigh ?? null;
-const get52Low = (d: SymbolData) => d.week52low ?? d.fiftyTwoWeekLow ?? null;
+const get52High = (d: SymbolData) =>
+  d.week52high ?? d.fiftyTwoWeekHigh ?? d.high52 ?? d.week_high_52 ?? null;
+const get52Low = (d: SymbolData) =>
+  d.week52low ?? d.fiftyTwoWeekLow ?? d.low52 ?? d.week_low_52 ?? null;
 const getName = (d: SymbolData) =>
   d.name ?? d.shortName ?? d.companyName ?? d.symbol;
 
@@ -822,10 +836,11 @@ const WatchlistPage: React.FC = () => {
     );
   };
 
-  const sectorBodyTemplate = (row: SymbolData) =>
-    row.sector ? (
+  const sectorBodyTemplate = (row: SymbolData) => {
+    const sector = row.sector && row.sector !== "N/A" ? row.sector : null;
+    return sector ? (
       <Tag
-        value={row.sector}
+        value={sector}
         style={{
           background: "var(--sv-bg-surface)",
           color: "var(--sv-text-muted)",
@@ -838,6 +853,7 @@ const WatchlistPage: React.FC = () => {
         —
       </span>
     );
+  };
 
   const actionsBodyTemplate = (row: SymbolData) => (
     <Button
@@ -1108,13 +1124,20 @@ const WatchlistPage: React.FC = () => {
                           <div className="flex align-items-center gap-2">
                             <i
                               className="pi pi-table"
-                              style={{ color: "var(--sv-accent)", fontSize: "0.9rem" }}
+                              style={{
+                                color: "var(--sv-accent)",
+                                fontSize: "0.9rem",
+                              }}
                             />
                             <span
                               className="text-xs font-semibold sv-text-muted"
-                              style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}
+                              style={{
+                                textTransform: "uppercase",
+                                letterSpacing: "0.05em",
+                              }}
                             >
-                              {symbolData.length} symbol{symbolData.length !== 1 ? "s" : ""}
+                              {symbolData.length} symbol
+                              {symbolData.length !== 1 ? "s" : ""}
                             </span>
                           </div>
                           <IconField iconPosition="left">
@@ -1138,8 +1161,8 @@ const WatchlistPage: React.FC = () => {
                           globalFilter={tickerFilter}
                           globalFilterFields={["symbol"]}
                           paginator
-                          rows={15}
-                          rowsPerPageOptions={[15, 25, 50]}
+                          rows={10}
+                          rowsPerPageOptions={[10, 15, 25, 50]}
                           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
                           emptyMessage="No symbols match your filter"
                           pt={{ wrapper: { style: { borderRadius: 0 } } }}
@@ -1163,37 +1186,61 @@ const WatchlistPage: React.FC = () => {
                             sortable
                             sortField="price"
                             style={{ minWidth: "95px" }}
-                            pt={{ headerContent: { className: "justify-content-end" } }}
+                            pt={{
+                              headerContent: {
+                                className: "justify-content-end",
+                              },
+                            }}
                           />
                           <Column
                             header="Change"
                             body={changeBodyTemplate}
                             style={{ minWidth: "90px" }}
-                            pt={{ headerContent: { className: "justify-content-end" } }}
+                            pt={{
+                              headerContent: {
+                                className: "justify-content-end",
+                              },
+                            }}
                           />
                           <Column
                             header="Change %"
                             body={changePctBodyTemplate}
                             style={{ minWidth: "100px" }}
-                            pt={{ headerContent: { className: "justify-content-end" } }}
+                            pt={{
+                              headerContent: {
+                                className: "justify-content-end",
+                              },
+                            }}
                           />
                           <Column
                             header="Volume"
                             body={volumeBodyTemplate}
                             style={{ minWidth: "90px" }}
-                            pt={{ headerContent: { className: "justify-content-end" } }}
+                            pt={{
+                              headerContent: {
+                                className: "justify-content-end",
+                              },
+                            }}
                           />
                           <Column
                             header="Mkt Cap"
                             body={capBodyTemplate}
                             style={{ minWidth: "105px" }}
-                            pt={{ headerContent: { className: "justify-content-end" } }}
+                            pt={{
+                              headerContent: {
+                                className: "justify-content-end",
+                              },
+                            }}
                           />
                           <Column
                             header="P/E"
                             body={peBodyTemplate}
                             style={{ minWidth: "70px" }}
-                            pt={{ headerContent: { className: "justify-content-end" } }}
+                            pt={{
+                              headerContent: {
+                                className: "justify-content-end",
+                              },
+                            }}
                           />
                           <Column
                             header="52W Range"
