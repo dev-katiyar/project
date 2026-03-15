@@ -54,6 +54,26 @@ interface SymbolData {
   low52?: number;
   week_low_52?: number;
   sector?: string;
+  // Performance
+  mtd?: number;
+  ytd?: number;
+  change1y?: number;
+  // SMAs
+  sma20?: number;
+  sma50?: number;
+  sma100?: number;
+  sma200?: number;
+  // Fundamental scores
+  mohanramScore?: number;
+  piotroskiScore?: number;
+  svRank?: number;
+  // Technical indicators
+  rsi?: number;
+  macd?: number;
+  macdSignal?: number;
+  macdHist?: number;
+  // Yield
+  dividendYield?: number;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -852,6 +872,249 @@ const WatchlistPage: React.FC = () => {
     );
   };
 
+  // ── MTD / YTD / 1Y change ──────────────────────────────────────────────────
+  const pctChangeTag = (val: number | null | undefined) => {
+    const v = val ?? null;
+    return (
+      <div className="text-right">
+        <Tag
+          value={v == null ? "—" : `${v >= 0 ? "+" : ""}${v.toFixed(2)}%`}
+          style={{
+            background:
+              v == null
+                ? "transparent"
+                : v > 0
+                  ? "var(--sv-success-bg)"
+                  : v < 0
+                    ? "var(--sv-danger-bg)"
+                    : "var(--sv-bg-surface)",
+            color:
+              v == null
+                ? "var(--sv-text-muted)"
+                : v > 0
+                  ? "var(--sv-gain)"
+                  : v < 0
+                    ? "var(--sv-loss)"
+                    : "var(--sv-text-muted)",
+            fontSize: "0.78rem",
+            fontWeight: 700,
+            border: "none",
+          }}
+        />
+      </div>
+    );
+  };
+
+  const mtdBodyTemplate = (row: SymbolData) => pctChangeTag(row.mtd);
+  const ytdBodyTemplate = (row: SymbolData) => pctChangeTag(row.ytd);
+  const change1yBodyTemplate = (row: SymbolData) => pctChangeTag(row.change1y);
+
+  // ── SMA Trend Analysis ─────────────────────────────────────────────────────
+  const smaTrendBodyTemplate = (row: SymbolData) => {
+    const price = getPrice(row);
+    const smas: { label: string; val: number | undefined }[] = [
+      { label: "20", val: row.sma20 },
+      { label: "50", val: row.sma50 },
+      { label: "100", val: row.sma100 },
+      { label: "200", val: row.sma200 },
+    ];
+    return (
+      <div className="flex gap-1 align-items-center flex-wrap">
+        {smas.map(({ label, val }) => {
+          const above =
+            price != null && val != null ? price > val : null;
+          return (
+            <span
+              key={label}
+              title={val != null ? `SMA${label}: ${val.toFixed(2)}` : `SMA${label}: N/A`}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "0.68rem",
+                fontWeight: 700,
+                padding: "1px 5px",
+                borderRadius: "4px",
+                background:
+                  above == null
+                    ? "var(--sv-bg-surface)"
+                    : above
+                      ? "var(--sv-success-bg)"
+                      : "var(--sv-danger-bg)",
+                color:
+                  above == null
+                    ? "var(--sv-text-muted)"
+                    : above
+                      ? "var(--sv-gain)"
+                      : "var(--sv-loss)",
+                border: `1px solid ${above == null ? "var(--sv-border)" : above ? "var(--sv-gain)" : "var(--sv-loss)"}`,
+                lineHeight: 1.6,
+                cursor: "default",
+              }}
+            >
+              {label}
+              {above != null && (
+                <i
+                  className={`pi pi-arrow-${above ? "up" : "down"} ml-1`}
+                  style={{ fontSize: "0.55rem" }}
+                />
+              )}
+            </span>
+          );
+        })}
+      </div>
+    );
+  };
+
+  // ── Scores ─────────────────────────────────────────────────────────────────
+  const scoreBodyTemplate = (
+    val: number | undefined,
+    max: number,
+    lowGood = false,
+  ) => {
+    const v = val ?? null;
+    const ratio = v != null ? v / max : null;
+    const color =
+      v == null
+        ? "var(--sv-text-muted)"
+        : lowGood
+          ? ratio! < 0.4
+            ? "var(--sv-gain)"
+            : ratio! > 0.7
+              ? "var(--sv-loss)"
+              : "var(--sv-warning)"
+          : ratio! >= 0.6
+            ? "var(--sv-gain)"
+            : ratio! >= 0.35
+              ? "var(--sv-warning)"
+              : "var(--sv-loss)";
+    return (
+      <div className="flex align-items-center gap-2">
+        <span style={{ fontSize: "0.85rem", fontWeight: 700, color, minWidth: "22px", textAlign: "right" }}>
+          {v != null ? v : "—"}
+        </span>
+        {v != null && (
+          <div
+            style={{
+              flex: 1,
+              height: "5px",
+              background: "var(--sv-border)",
+              borderRadius: "3px",
+              minWidth: "36px",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                width: `${(v / max) * 100}%`,
+                height: "100%",
+                background: color,
+                borderRadius: "3px",
+              }}
+            />
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const mohanramBodyTemplate = (row: SymbolData) =>
+    scoreBodyTemplate(row.mohanramScore, 8);
+  const piotroskiBodyTemplate = (row: SymbolData) =>
+    scoreBodyTemplate(row.piotroskiScore, 9);
+
+  const svRankBodyTemplate = (row: SymbolData) => {
+    const v = row.svRank ?? null;
+    return (
+      <div className="text-right">
+        {v != null ? (
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "0.8rem",
+              fontWeight: 700,
+              padding: "2px 8px",
+              borderRadius: "999px",
+              background: "var(--sv-accent-bg)",
+              color: "var(--sv-accent)",
+              border: "1px solid var(--sv-accent)",
+            }}
+          >
+            #{v}
+          </span>
+        ) : (
+          <span className="sv-text-muted" style={{ fontSize: "0.82rem" }}>—</span>
+        )}
+      </div>
+    );
+  };
+
+  // ── RSI ────────────────────────────────────────────────────────────────────
+  const rsiBodyTemplate = (row: SymbolData) => {
+    const v = row.rsi ?? null;
+    const color =
+      v == null
+        ? "var(--sv-text-muted)"
+        : v >= 70
+          ? "var(--sv-loss)"
+          : v <= 30
+            ? "var(--sv-gain)"
+            : "var(--sv-text-secondary)";
+    const label =
+      v == null ? "" : v >= 70 ? " OB" : v <= 30 ? " OS" : "";
+    return (
+      <div className="text-right">
+        <span style={{ fontSize: "0.85rem", fontWeight: 700, color }}>
+          {v != null ? `${v.toFixed(1)}${label}` : "—"}
+        </span>
+      </div>
+    );
+  };
+
+  // ── MACD ───────────────────────────────────────────────────────────────────
+  const macdBodyTemplate = (row: SymbolData) => {
+    const macd = row.macd ?? null;
+    const sig = row.macdSignal ?? null;
+    const hist = row.macdHist ?? null;
+    if (macd == null && hist == null) {
+      return <span className="sv-text-muted" style={{ fontSize: "0.82rem" }}>—</span>;
+    }
+    const bullish = hist != null ? hist > 0 : macd != null && sig != null ? macd > sig : null;
+    return (
+      <div className="flex align-items-center gap-1">
+        <Tag
+          value={bullish == null ? "—" : bullish ? "Bull" : "Bear"}
+          style={{
+            background: bullish == null ? "var(--sv-bg-surface)" : bullish ? "var(--sv-success-bg)" : "var(--sv-danger-bg)",
+            color: bullish == null ? "var(--sv-text-muted)" : bullish ? "var(--sv-gain)" : "var(--sv-loss)",
+            fontSize: "0.72rem",
+            fontWeight: 700,
+            border: "none",
+          }}
+        />
+        {hist != null && (
+          <span style={{ fontSize: "0.75rem", color: hist > 0 ? "var(--sv-gain)" : "var(--sv-loss)" }}>
+            {hist > 0 ? "+" : ""}{hist.toFixed(2)}
+          </span>
+        )}
+      </div>
+    );
+  };
+
+  // ── Yield ──────────────────────────────────────────────────────────────────
+  const yieldBodyTemplate = (row: SymbolData) => {
+    const v = row.dividendYield ?? null;
+    return (
+      <div className="text-right">
+        <span style={{ fontSize: "0.85rem", color: v != null && v > 0 ? "var(--sv-gain)" : "var(--sv-text-muted)" }}>
+          {v != null ? `${v.toFixed(2)}%` : "—"}
+        </span>
+      </div>
+    );
+  };
+
   const actionsBodyTemplate = (row: SymbolData) => (
     <Button
       icon="pi pi-times"
@@ -1248,6 +1511,78 @@ const WatchlistPage: React.FC = () => {
                             header="Sector"
                             body={sectorBodyTemplate}
                             style={{ minWidth: "130px" }}
+                          />
+                          <Column
+                            header="MTD"
+                            body={mtdBodyTemplate}
+                            sortable
+                            sortField="mtd"
+                            style={{ minWidth: "90px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
+                          />
+                          <Column
+                            header="YTD"
+                            body={ytdBodyTemplate}
+                            sortable
+                            sortField="ytd"
+                            style={{ minWidth: "90px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
+                          />
+                          <Column
+                            header="1Y Chg"
+                            body={change1yBodyTemplate}
+                            sortable
+                            sortField="change1y"
+                            style={{ minWidth: "90px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
+                          />
+                          <Column
+                            header="SMA Trend"
+                            body={smaTrendBodyTemplate}
+                            style={{ minWidth: "160px" }}
+                          />
+                          <Column
+                            header="Mohanram"
+                            body={mohanramBodyTemplate}
+                            sortable
+                            sortField="mohanramScore"
+                            style={{ minWidth: "110px" }}
+                          />
+                          <Column
+                            header="Piotroski"
+                            body={piotroskiBodyTemplate}
+                            sortable
+                            sortField="piotroskiScore"
+                            style={{ minWidth: "105px" }}
+                          />
+                          <Column
+                            header="SV Rank"
+                            body={svRankBodyTemplate}
+                            sortable
+                            sortField="svRank"
+                            style={{ minWidth: "85px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
+                          />
+                          <Column
+                            header="RSI"
+                            body={rsiBodyTemplate}
+                            sortable
+                            sortField="rsi"
+                            style={{ minWidth: "80px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
+                          />
+                          <Column
+                            header="MACD"
+                            body={macdBodyTemplate}
+                            style={{ minWidth: "110px" }}
+                          />
+                          <Column
+                            header="Yield"
+                            body={yieldBodyTemplate}
+                            sortable
+                            sortField="dividendYield"
+                            style={{ minWidth: "80px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
                           />
                           <Column
                             header=""
