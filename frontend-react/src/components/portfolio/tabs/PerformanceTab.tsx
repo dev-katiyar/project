@@ -119,7 +119,7 @@ const PerformanceTab: React.FC<Props> = ({
       />
 
       {/* Periodic Returns: column chart by frequency */}
-      <div className="flex align-items-center gap-2 mb-3">
+      <div className="flex align-items-center gap-2">
         <i
           className="pi pi-chart-bar"
           style={{ color: "var(--sv-accent)", fontSize: "1rem" }}
@@ -154,7 +154,7 @@ const PerformanceTab: React.FC<Props> = ({
       {!loading && !error && (
         <>
           {/* Frequency selector */}
-          <div className="flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+          <div className="flex align-items-center justify-content-between mb-1 flex-wrap gap-2">
             <div className="sv-info-label font-bold text-sm flex align-items-center"></div>
             <SelectButton
               value={frequency}
