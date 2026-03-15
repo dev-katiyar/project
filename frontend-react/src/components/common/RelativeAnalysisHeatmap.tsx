@@ -71,7 +71,11 @@ const RelativeAnalysisHeatmap: React.FC<Props> = ({
    * computed by the backend, so the chart can reference the correct score key.
    */
   const [pairMap, setPairMap] = useState<Record<string, PairEntry>>({});
-  const [chartDialog, setChartDialog] = useState<{ colSym: string; rowSym: string } | null>(null);
+  const [chartDialog, setChartDialog] = useState<{
+    colSym: string;
+    rowSym: string;
+    multiplier: 1 | -1;
+  } | null>(null);
 
   // ── Fetch & process ─────────────────────────────────────────────────────────
   useEffect(() => {
@@ -132,7 +136,9 @@ const RelativeAnalysisHeatmap: React.FC<Props> = ({
     if (rowSym === colSym) return;
     // Angular: pair key = colSym + '_' + rowSym
     const pair = pairMap[`${colSym}_${rowSym}`];
-    if (pair) setChartDialog({ colSym, rowSym });
+    if (!pair) return;
+    const multiplier: 1 | -1 = colSym === pair.sym1 ? 1 : -1;
+    setChartDialog({ colSym, rowSym, multiplier });
   };
 
   // ── Render ──────────────────────────────────────────────────────────────────
@@ -366,7 +372,7 @@ const RelativeAnalysisHeatmap: React.FC<Props> = ({
             data={rawData}
             symbol1={chartDialog.colSym}
             symbol2={chartDialog.rowSym}
-            multiplier={1}
+            multiplier={chartDialog.multiplier}
             cc={cc}
             height={480}
             scoreLabel="Rel. Score"
