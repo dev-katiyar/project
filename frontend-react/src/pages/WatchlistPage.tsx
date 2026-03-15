@@ -53,8 +53,7 @@ interface SymbolData {
 const getPrice = (d: SymbolData) =>
   d.price ?? d.currentPrice ?? d.regularMarketPrice ?? null;
 
-const getChange = (d: SymbolData) =>
-  d.change ?? d.regularMarketChange ?? null;
+const getChange = (d: SymbolData) => d.change ?? d.regularMarketChange ?? null;
 
 const getRawPct = (d: SymbolData): number | null => {
   const v = d.changepct ?? d.regularMarketChangePercent ?? null;
@@ -95,17 +94,16 @@ const fmtCap = (v: number | null) => {
   return "$" + v.toFixed(0);
 };
 
-const fmtNum = (v: number | null, dp = 2) =>
-  v == null ? "—" : v.toFixed(dp);
+const fmtNum = (v: number | null, dp = 2) => (v == null ? "—" : v.toFixed(dp));
 
 const gainColor = (v: number | null) =>
   v == null
     ? "var(--sv-text-secondary)"
     : v > 0
-    ? "var(--sv-gain)"
-    : v < 0
-    ? "var(--sv-loss)"
-    : "var(--sv-text-secondary)";
+      ? "var(--sv-gain)"
+      : v < 0
+        ? "var(--sv-loss)"
+        : "var(--sv-text-secondary)";
 
 // ─── Summary strip ────────────────────────────────────────────────────────────
 
@@ -145,17 +143,38 @@ const SummaryStrip: React.FC<SummaryStripProps> = ({ data }) => {
     <div className="flex gap-2 flex-wrap mb-3 align-items-center">
       <div
         className="surface-card border-round-3xl text-sm font-semibold sv-text-muted"
-        style={{ padding: "0.35rem 0.875rem", border: "1px solid var(--sv-border)" }}
+        style={{
+          padding: "0.35rem 0.875rem",
+          border: "1px solid var(--sv-border)",
+        }}
       >
         <i className="pi pi-list mr-1" style={{ fontSize: "0.72rem" }} />
         {data.length} symbols
       </div>
       {gainers > 0 &&
-        pill("var(--sv-success-bg)", "var(--sv-success)", "pi-arrow-up", "var(--sv-gain)", `${gainers} gainers`)}
+        pill(
+          "var(--sv-success-bg)",
+          "var(--sv-success)",
+          "pi-arrow-up",
+          "var(--sv-gain)",
+          `${gainers} gainers`,
+        )}
       {losers > 0 &&
-        pill("var(--sv-danger-bg)", "var(--sv-danger)", "pi-arrow-down", "var(--sv-loss)", `${losers} losers`)}
+        pill(
+          "var(--sv-danger-bg)",
+          "var(--sv-danger)",
+          "pi-arrow-down",
+          "var(--sv-loss)",
+          `${losers} losers`,
+        )}
       {unchanged > 0 &&
-        pill("var(--sv-bg-surface)", "var(--sv-border)", "pi-minus", "var(--sv-text-muted)", `${unchanged} flat`)}
+        pill(
+          "var(--sv-bg-surface)",
+          "var(--sv-border)",
+          "pi-minus",
+          "var(--sv-text-muted)",
+          `${unchanged} flat`,
+        )}
     </div>
   );
 };
@@ -246,8 +265,9 @@ const WatchlistPage: React.FC = () => {
 
   // ── Watchlists ──
   const [watchlists, setWatchlists] = useState<Watchlist[]>([]);
-  const [selectedWatchlist, setSelectedWatchlist] =
-    useState<Watchlist | null>(null);
+  const [selectedWatchlist, setSelectedWatchlist] = useState<Watchlist | null>(
+    null,
+  );
   const [watchlistsLoading, setWatchlistsLoading] = useState(true);
 
   // ── Symbol data ──
@@ -462,12 +482,8 @@ const WatchlistPage: React.FC = () => {
             action: "delete",
             symbol: row.symbol,
           });
-          setSymbolData((prev) =>
-            prev.filter((d) => d.symbol !== row.symbol),
-          );
-          setSelectedTopSymbols((prev) =>
-            prev.filter((s) => s !== row.symbol),
-          );
+          setSymbolData((prev) => prev.filter((d) => d.symbol !== row.symbol));
+          setSelectedTopSymbols((prev) => prev.filter((s) => s !== row.symbol));
           toast.current?.show({
             severity: "success",
             summary: "Removed",
@@ -599,9 +615,7 @@ const WatchlistPage: React.FC = () => {
       const d = res.data;
       if (d.success === "1" || d.success === 1) {
         setWatchlists((prev) =>
-          prev.map((w) =>
-            w.id === editingWatchlist!.id ? { ...w, name } : w,
-          ),
+          prev.map((w) => (w.id === editingWatchlist!.id ? { ...w, name } : w)),
         );
         if (selectedWatchlist?.id === editingWatchlist!.id) {
           setSelectedWatchlist((prev) => (prev ? { ...prev, name } : null));
@@ -654,7 +668,10 @@ const WatchlistPage: React.FC = () => {
   );
 
   const priceBodyTemplate = (row: SymbolData) => (
-    <span className="font-semibold" style={{ fontFamily: "monospace", fontSize: "0.88rem" }}>
+    <span
+      className="font-semibold"
+      style={{ fontFamily: "monospace", fontSize: "0.88rem" }}
+    >
       {fmtPrice(getPrice(row))}
     </span>
   );
@@ -664,7 +681,11 @@ const WatchlistPage: React.FC = () => {
     return (
       <span
         className="font-semibold"
-        style={{ color: gainColor(v), fontFamily: "monospace", fontSize: "0.85rem" }}
+        style={{
+          color: gainColor(v),
+          fontFamily: "monospace",
+          fontSize: "0.85rem",
+        }}
       >
         {fmtChange(v)}
       </span>
@@ -681,18 +702,18 @@ const WatchlistPage: React.FC = () => {
             pct == null
               ? "var(--sv-bg-surface)"
               : pct > 0
-              ? "var(--sv-success-bg)"
-              : pct < 0
-              ? "var(--sv-danger-bg)"
-              : "var(--sv-bg-surface)",
+                ? "var(--sv-success-bg)"
+                : pct < 0
+                  ? "var(--sv-danger-bg)"
+                  : "var(--sv-bg-surface)",
           color:
             pct == null
               ? "var(--sv-text-muted)"
               : pct > 0
-              ? "var(--sv-gain)"
-              : pct < 0
-              ? "var(--sv-loss)"
-              : "var(--sv-text-muted)",
+                ? "var(--sv-gain)"
+                : pct < 0
+                  ? "var(--sv-loss)"
+                  : "var(--sv-text-muted)",
           fontSize: "0.78rem",
           fontWeight: 700,
           fontFamily: "monospace",
@@ -703,13 +724,19 @@ const WatchlistPage: React.FC = () => {
   };
 
   const volumeBodyTemplate = (row: SymbolData) => (
-    <span className="text-color-secondary" style={{ fontFamily: "monospace", fontSize: "0.82rem" }}>
+    <span
+      className="text-color-secondary"
+      style={{ fontFamily: "monospace", fontSize: "0.82rem" }}
+    >
       {fmtVolume(getVolume(row))}
     </span>
   );
 
   const capBodyTemplate = (row: SymbolData) => (
-    <span className="text-color-secondary" style={{ fontFamily: "monospace", fontSize: "0.82rem" }}>
+    <span
+      className="text-color-secondary"
+      style={{ fontFamily: "monospace", fontSize: "0.82rem" }}
+    >
       {fmtCap(getMarketCap(row))}
     </span>
   );
@@ -753,7 +780,8 @@ const WatchlistPage: React.FC = () => {
               top: 0,
               width: pos != null ? `${pos * 100}%` : "0%",
               height: "100%",
-              background: "linear-gradient(90deg, var(--sv-danger) 0%, var(--sv-warning) 50%, var(--sv-gain) 100%)",
+              background:
+                "linear-gradient(90deg, var(--sv-danger) 0%, var(--sv-warning) 50%, var(--sv-gain) 100%)",
               borderRadius: "3px",
             }}
           />
@@ -790,7 +818,9 @@ const WatchlistPage: React.FC = () => {
         }}
       />
     ) : (
-      <span className="sv-text-muted" style={{ fontSize: "0.82rem" }}>—</span>
+      <span className="sv-text-muted" style={{ fontSize: "0.82rem" }}>
+        —
+      </span>
     );
 
   const actionsBodyTemplate = (row: SymbolData) => (
@@ -819,33 +849,16 @@ const WatchlistPage: React.FC = () => {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      {/* ── Page header ── */}
-      <div className="flex align-items-start justify-content-between mb-4 flex-wrap gap-3">
-        <div>
-          <h1 className="m-0 sv-page-title text-3xl font-bold text-color">
-            <i className="pi pi-bookmark mr-2 sv-text-accent" style={{ fontSize: "1.3rem" }} />
-            Watchlists
-          </h1>
-          <p className="m-0 mt-1 text-sm sv-text-muted">
-            Track and monitor your favorite securities in real time
-          </p>
-        </div>
-        {!watchlistsLoading && watchlists.length > 0 && view === "main" && (
-          <Button
-            icon="pi pi-cog"
-            label="Manage Watchlists"
-            outlined
-            size="small"
-            onClick={() => setView("manage")}
-          />
-        )}
-      </div>
-
       {/* ── Loading skeleton ── */}
       {watchlistsLoading && (
         <div className="flex flex-column gap-2">
           {[1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} height="52px" className="mb-1" borderRadius="8px" />
+            <Skeleton
+              key={i}
+              height="52px"
+              className="mb-1"
+              borderRadius="8px"
+            />
           ))}
         </div>
       )}
@@ -865,7 +878,10 @@ const WatchlistPage: React.FC = () => {
               boxShadow: "var(--sv-shadow-glow)",
             }}
           >
-            <i className="pi pi-bookmark sv-text-accent" style={{ fontSize: "2.25rem" }} />
+            <i
+              className="pi pi-bookmark sv-text-accent"
+              style={{ fontSize: "2.25rem" }}
+            />
           </div>
           <h2 className="text-color m-0 mb-2" style={{ fontSize: "1.4rem" }}>
             No Watchlists Yet
@@ -908,7 +924,10 @@ const WatchlistPage: React.FC = () => {
                     onClick={() => setView("main")}
                     style={{ color: "var(--sv-text-muted)" }}
                   />
-                  <h3 className="m-0 font-bold text-color" style={{ fontSize: "1rem" }}>
+                  <h3
+                    className="m-0 font-bold text-color"
+                    style={{ fontSize: "1rem" }}
+                  >
                     Manage Watchlists
                   </h3>
                   <span
@@ -965,7 +984,10 @@ const WatchlistPage: React.FC = () => {
                 <div className="flex align-items-center gap-2 flex-wrap">
                   {/* Watchlist selector */}
                   <div className="flex align-items-center gap-2">
-                    <i className="pi pi-bookmark sv-text-accent" style={{ fontSize: "0.9rem" }} />
+                    <i
+                      className="pi pi-bookmark sv-text-accent"
+                      style={{ fontSize: "0.9rem" }}
+                    />
                     <Dropdown
                       value={selectedWatchlist}
                       options={watchlists}
@@ -976,7 +998,11 @@ const WatchlistPage: React.FC = () => {
                     />
                   </div>
 
-                  <Divider layout="vertical" className="mx-1 my-0" style={{ height: "32px" }} />
+                  <Divider
+                    layout="vertical"
+                    className="mx-1 my-0"
+                    style={{ height: "32px" }}
+                  />
 
                   {/* Add symbol */}
                   <div
@@ -1045,7 +1071,10 @@ const WatchlistPage: React.FC = () => {
                         className="flex flex-column align-items-center justify-content-center p-6"
                         style={{ textAlign: "center" }}
                       >
-                        <i className="pi pi-inbox sv-text-muted mb-3" style={{ fontSize: "3rem" }} />
+                        <i
+                          className="pi pi-inbox sv-text-muted mb-3"
+                          style={{ fontSize: "3rem" }}
+                        />
                         <h3 className="text-color-secondary m-0 mb-2">
                           Watchlist is empty
                         </h3>
@@ -1131,7 +1160,10 @@ const WatchlistPage: React.FC = () => {
                   </TabPanel>
 
                   {/* ─ Tab 2: Performance ─ */}
-                  <TabPanel header="Performance" leftIcon="pi pi-chart-line mr-2">
+                  <TabPanel
+                    header="Performance"
+                    leftIcon="pi pi-chart-line mr-2"
+                  >
                     <div className="p-4">
                       <div className="flex align-items-center gap-3 mb-4 flex-wrap">
                         <label className="text-color-secondary text-sm font-semibold white-space-nowrap">
@@ -1152,9 +1184,7 @@ const WatchlistPage: React.FC = () => {
                       {selectedTopSymbols.length > 0 && (
                         <div className="grid mb-4 gap-3">
                           {selectedTopSymbols.map((sym) => {
-                            const d = symbolData.find(
-                              (s) => s.symbol === sym,
-                            );
+                            const d = symbolData.find((s) => s.symbol === sym);
                             if (!d) return null;
                             const pct = getRawPct(d);
                             return (
@@ -1170,8 +1200,8 @@ const WatchlistPage: React.FC = () => {
                                       pct == null
                                         ? "var(--sv-border)"
                                         : pct > 0
-                                        ? "var(--sv-gain)"
-                                        : "var(--sv-loss)"
+                                          ? "var(--sv-gain)"
+                                          : "var(--sv-loss)"
                                     }`,
                                   }}
                                 >
@@ -1187,7 +1217,10 @@ const WatchlistPage: React.FC = () => {
                                   </div>
                                   <div
                                     className="font-bold text-color"
-                                    style={{ fontFamily: "monospace", fontSize: "1rem" }}
+                                    style={{
+                                      fontFamily: "monospace",
+                                      fontSize: "1rem",
+                                    }}
                                   >
                                     {fmtPrice(getPrice(d))}
                                   </div>
@@ -1222,7 +1255,10 @@ const WatchlistPage: React.FC = () => {
                         />
                         {selectedTopSymbols.length > 0 ? (
                           <>
-                            <p className="sv-text-muted text-center m-0" style={{ maxWidth: "360px" }}>
+                            <p
+                              className="sv-text-muted text-center m-0"
+                              style={{ maxWidth: "360px" }}
+                            >
                               Performance comparison chart for{" "}
                               <strong className="text-color-secondary">
                                 {selectedTopSymbols.join(", ")}
@@ -1266,7 +1302,10 @@ const WatchlistPage: React.FC = () => {
                       >
                         <i
                           className="pi pi-bell"
-                          style={{ fontSize: "2rem", color: "var(--sv-warning)" }}
+                          style={{
+                            fontSize: "2rem",
+                            color: "var(--sv-warning)",
+                          }}
                         />
                       </div>
                       <h3 className="text-color m-0 mb-2">Technical Alerts</h3>
@@ -1284,7 +1323,10 @@ const WatchlistPage: React.FC = () => {
                   </TabPanel>
 
                   {/* ─ Tab 4: Dividends & Earnings ─ */}
-                  <TabPanel header="Dividends & Earnings" leftIcon="pi pi-calendar mr-2">
+                  <TabPanel
+                    header="Dividends & Earnings"
+                    leftIcon="pi pi-calendar mr-2"
+                  >
                     <div className="grid p-3 gap-3">
                       {/* Dividends card */}
                       <div className="col-12 lg:col-6 p-0">
@@ -1309,8 +1351,13 @@ const WatchlistPage: React.FC = () => {
                               style={{ fontSize: "1.5rem" }}
                             />
                           </div>
-                          <h4 className="text-color m-0 mb-2">Upcoming Dividends</h4>
-                          <p className="sv-text-muted text-sm m-0" style={{ lineHeight: 1.6 }}>
+                          <h4 className="text-color m-0 mb-2">
+                            Upcoming Dividends
+                          </h4>
+                          <p
+                            className="sv-text-muted text-sm m-0"
+                            style={{ lineHeight: 1.6 }}
+                          >
                             Dividend ex-dates, payment dates, and yield
                             information for your watchlist securities.
                           </p>
@@ -1340,8 +1387,13 @@ const WatchlistPage: React.FC = () => {
                               style={{ fontSize: "1.5rem" }}
                             />
                           </div>
-                          <h4 className="text-color m-0 mb-2">Earnings Calendar</h4>
-                          <p className="sv-text-muted text-sm m-0" style={{ lineHeight: 1.6 }}>
+                          <h4 className="text-color m-0 mb-2">
+                            Earnings Calendar
+                          </h4>
+                          <p
+                            className="sv-text-muted text-sm m-0"
+                            style={{ lineHeight: 1.6 }}
+                          >
                             Upcoming earnings report dates and EPS estimates for
                             your watchlist securities.
                           </p>
