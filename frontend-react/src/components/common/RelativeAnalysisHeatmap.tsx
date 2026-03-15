@@ -71,7 +71,7 @@ const RelativeAnalysisHeatmap: React.FC<Props> = ({
    * computed by the backend, so the chart can reference the correct score key.
    */
   const [pairMap, setPairMap] = useState<Record<string, PairEntry>>({});
-  const [chartDialog, setChartDialog] = useState<PairEntry | null>(null);
+  const [chartDialog, setChartDialog] = useState<{ colSym: string; rowSym: string } | null>(null);
 
   // ── Fetch & process ─────────────────────────────────────────────────────────
   useEffect(() => {
@@ -132,7 +132,7 @@ const RelativeAnalysisHeatmap: React.FC<Props> = ({
     if (rowSym === colSym) return;
     // Angular: pair key = colSym + '_' + rowSym
     const pair = pairMap[`${colSym}_${rowSym}`];
-    if (pair) setChartDialog(pair);
+    if (pair) setChartDialog({ colSym, rowSym });
   };
 
   // ── Render ──────────────────────────────────────────────────────────────────
@@ -344,13 +344,13 @@ const RelativeAnalysisHeatmap: React.FC<Props> = ({
             <div className="flex align-items-center gap-2">
               <i className="pi pi-chart-bar" style={{ color: "#ef4444" }} />
               <span className="font-bold" style={{ fontSize: "1rem" }}>
-                {chartDialog.sym1}
+                {chartDialog.colSym}
               </span>
               <span
                 className="text-color-secondary"
                 style={{ fontSize: "0.9rem" }}
               >
-                vs {chartDialog.sym2} — Relative Analysis
+                vs {chartDialog.rowSym} — Relative Analysis
               </span>
             </div>
           ) : (
@@ -364,8 +364,8 @@ const RelativeAnalysisHeatmap: React.FC<Props> = ({
         {chartDialog && rawData.length > 0 && (
           <RelativeAnalysisChart
             data={rawData}
-            symbol1={chartDialog.sym1}
-            symbol2={chartDialog.sym2}
+            symbol1={chartDialog.colSym}
+            symbol2={chartDialog.rowSym}
             multiplier={1}
             cc={cc}
             height={480}
