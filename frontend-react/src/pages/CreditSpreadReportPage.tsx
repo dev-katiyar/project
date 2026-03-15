@@ -166,7 +166,6 @@ const StatPill: React.FC<{ label: string; value: string; color?: string }> = ({
       style={{
         fontSize: "0.9rem",
         color: color ?? "var(--sv-text-primary)",
-        fontFamily: "monospace",
       }}
     >
       {value}
@@ -206,7 +205,6 @@ const PercentileBadge: React.FC<{ value: number | null | undefined }> = ({ value
           color: textColor,
           padding: "0.15rem 0.45rem",
           fontSize: "0.78rem",
-          fontFamily: "monospace",
           minWidth: "2.6rem",
         }}
       >
@@ -316,7 +314,6 @@ const IntraCreditTable: React.FC<IntraCreditTableProps> = ({
                       className={mode === "change" ? `text-center ${getChangeClass(v)}` : "text-center"}
                       style={{
                         ...tdStyle,
-                        fontFamily: "monospace",
                         fontSize: "0.82rem",
                       }}
                     >
@@ -689,7 +686,6 @@ const CreditSpreadReportPage: React.FC = () => {
                             className="text-right font-semibold"
                             style={{
                               ...tdStyle,
-                              fontFamily: "monospace",
                               fontSize: "0.86rem",
                               color: "var(--sv-text-primary)",
                             }}
