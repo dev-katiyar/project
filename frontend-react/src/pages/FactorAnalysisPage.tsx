@@ -543,7 +543,9 @@ const FactorAnalysisPage: React.FC = () => {
                       {periodCols.map((c, i) => (
                         <th key={c} style={{ ...thSt, lineHeight: 1.4 }}>
                           <div>{lookbackPeriods[i] != null ? `${lookbackPeriods[i]}d` : ""}</div>
-                          <div style={{ fontWeight: 400, fontSize: "0.68rem", opacity: 0.7, whiteSpace: "nowrap" }}>{c}</div>
+                          <div style={{ fontWeight: 400, fontSize: "0.68rem", opacity: 0.7, whiteSpace: "nowrap" }}>{
+                            (() => { const p = c.split("_"); return p.length >= 2 ? `${p[0]} - ${p[1]}` : c; })()
+                          }</div>
                         </th>
                       ))}
                     </tr>
