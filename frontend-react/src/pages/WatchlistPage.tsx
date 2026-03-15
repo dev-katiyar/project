@@ -68,8 +68,11 @@ interface SymbolData {
   sma200?: number;
   // Fundamental scores
   mohanramScore?: number;
+  MohanramScore?: number;
   piotroskiScore?: number;
+  PiotroskiFScore?: number;
   svRank?: number;
+  ZacksRank?: number;
   // Technical indicators
   rsi?: number;
   macd?: number;
@@ -875,18 +878,17 @@ const WatchlistPage: React.FC = () => {
             ? "var(--sv-loss)"
             : "var(--sv-text-muted)";
     return (
-      <div className="text-right">
-        <div style={{ fontSize: "0.82rem", color: "var(--sv-text-secondary)" }}>
+      <div className="flex align-items-center justify-content-end gap-2 flex-wrap">
+        <span style={{ fontSize: "0.82rem", color: "var(--sv-text-secondary)" }}>
           {v != null ? fmtPrice(v) : "—"}
-        </div>
+        </span>
         {diff != null && (
-          <div style={{ fontSize: "0.73rem", fontWeight: 600, color }}>
-            {diff >= 0 ? "+" : ""}
-            {diff.toFixed(2)}{" "}
+          <span style={{ fontSize: "0.73rem", fontWeight: 600, color, whiteSpace: "nowrap" }}>
+            {diff >= 0 ? "+" : ""}{diff.toFixed(2)}{" "}
             <span style={{ opacity: 0.85 }}>
               ({pct != null ? `${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%` : "—"})
             </span>
-          </div>
+          </span>
         )}
       </div>
     );
@@ -899,99 +901,63 @@ const WatchlistPage: React.FC = () => {
   const sma200BodyTemplate = (row: SymbolData) => smaBodyTemplate(row.sma200, row);
 
   // ── Scores ─────────────────────────────────────────────────────────────────
-  const scoreBodyTemplate = (
-    val: number | undefined,
-    max: number,
-    lowGood = false,
-  ) => {
-    const v = val ?? null;
-    const ratio = v != null ? v / max : null;
-    const color =
-      v == null
-        ? "var(--sv-text-muted)"
-        : lowGood
-          ? ratio! < 0.4
-            ? "var(--sv-gain)"
-            : ratio! > 0.7
-              ? "var(--sv-loss)"
-              : "var(--sv-warning)"
-          : ratio! >= 0.6
-            ? "var(--sv-gain)"
-            : ratio! >= 0.35
-              ? "var(--sv-warning)"
-              : "var(--sv-loss)";
+  type ScoreVariant = "mohanram" | "piotroski" | "svrank";
+
+  const scoreColor = (value: number, variant: ScoreVariant) => {
+    if (variant === "svrank") {
+      if (value <= 2)
+        return { bg: "var(--sv-success-bg)", text: "var(--sv-gain)", border: "var(--sv-gain)" };
+      if (value === 3)
+        return { bg: "var(--sv-bg-surface)", text: "var(--sv-text-secondary)", border: "var(--sv-border)" };
+      return { bg: "var(--sv-danger-bg)", text: "var(--sv-loss)", border: "var(--sv-loss)" };
+    }
+    if (value <= 3)
+      return { bg: "var(--sv-danger-bg)", text: "var(--sv-loss)", border: "var(--sv-loss)" };
+    if (value <= 6)
+      return { bg: "var(--sv-bg-surface)", text: "var(--sv-text-secondary)", border: "var(--sv-border)" };
+    return { bg: "var(--sv-success-bg)", text: "var(--sv-gain)", border: "var(--sv-gain)" };
+  };
+
+  const ScoreBadge = ({ value, variant, max }: { value: number | undefined; variant: ScoreVariant; max: number }) => {
+    if (value == null) return <span className="sv-text-muted text-xs">—</span>;
+    const { bg, text, border } = scoreColor(value, variant);
     return (
-      <div className="flex align-items-center gap-2">
-        <span
-          style={{
-            fontSize: "0.85rem",
-            fontWeight: 700,
-            color,
-            minWidth: "22px",
-            textAlign: "right",
-          }}
-        >
-          {v != null ? v : "—"}
-        </span>
-        {v != null && (
-          <div
-            style={{
-              flex: 1,
-              height: "5px",
-              background: "var(--sv-border)",
-              borderRadius: "3px",
-              minWidth: "36px",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                width: `${(v / max) * 100}%`,
-                height: "100%",
-                background: color,
-                borderRadius: "3px",
-              }}
-            />
-          </div>
-        )}
+      <div
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 2,
+          background: bg,
+          border: `2px solid ${border}`,
+          borderRadius: 12,
+          padding: "2px 8px",
+          color: text,
+          fontWeight: 800,
+          fontSize: "0.8rem",
+          flexShrink: 0,
+        }}
+      >
+        {value}
+        <span style={{ fontWeight: 400, opacity: 0.7, fontSize: "0.7rem" }}>/{max}</span>
       </div>
     );
   };
 
-  const mohanramBodyTemplate = (row: SymbolData) =>
-    scoreBodyTemplate(row.mohanramScore, 8);
-  const piotroskiBodyTemplate = (row: SymbolData) =>
-    scoreBodyTemplate(row.piotroskiScore, 9);
-
-  const svRankBodyTemplate = (row: SymbolData) => {
-    const v = row.svRank ?? null;
-    return (
-      <div className="text-right">
-        {v != null ? (
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "0.8rem",
-              fontWeight: 700,
-              padding: "2px 8px",
-              borderRadius: "999px",
-              background: "var(--sv-accent-bg)",
-              color: "var(--sv-accent)",
-              border: "1px solid var(--sv-accent)",
-            }}
-          >
-            #{v}
-          </span>
-        ) : (
-          <span className="sv-text-muted" style={{ fontSize: "0.82rem" }}>
-            —
-          </span>
-        )}
-      </div>
-    );
-  };
+  const mohanramBodyTemplate = (row: SymbolData) => (
+    <div className="flex justify-content-center">
+      <ScoreBadge value={row.MohanramScore ?? row.mohanramScore} variant="mohanram" max={8} />
+    </div>
+  );
+  const piotroskiBodyTemplate = (row: SymbolData) => (
+    <div className="flex justify-content-center">
+      <ScoreBadge value={row.PiotroskiFScore ?? row.piotroskiScore} variant="piotroski" max={9} />
+    </div>
+  );
+  const svRankBodyTemplate = (row: SymbolData) => (
+    <div className="flex justify-content-center">
+      <ScoreBadge value={row.ZacksRank ?? row.svRank} variant="svrank" max={5} />
+    </div>
+  );
 
   // ── RSI ────────────────────────────────────────────────────────────────────
   const rsiBodyTemplate = (row: SymbolData) => {
@@ -1550,27 +1516,25 @@ const WatchlistPage: React.FC = () => {
                             header="Mohanram"
                             body={mohanramBodyTemplate}
                             sortable
-                            sortField="mohanramScore"
-                            style={{ minWidth: "110px" }}
+                            sortField="MohanramScore"
+                            style={{ minWidth: "110px", textAlign: "center" }}
+                            pt={{ headerContent: { className: "justify-content-center" } }}
                           />
                           <Column
                             header="Piotroski"
                             body={piotroskiBodyTemplate}
                             sortable
-                            sortField="piotroskiScore"
-                            style={{ minWidth: "105px" }}
+                            sortField="PiotroskiFScore"
+                            style={{ minWidth: "105px", textAlign: "center" }}
+                            pt={{ headerContent: { className: "justify-content-center" } }}
                           />
                           <Column
                             header="SV Rank"
                             body={svRankBodyTemplate}
                             sortable
-                            sortField="svRank"
-                            style={{ minWidth: "85px" }}
-                            pt={{
-                              headerContent: {
-                                className: "justify-content-end",
-                              },
-                            }}
+                            sortField="ZacksRank"
+                            style={{ minWidth: "85px", textAlign: "center" }}
+                            pt={{ headerContent: { className: "justify-content-center" } }}
                           />
                           <Column
                             header="RSI"
