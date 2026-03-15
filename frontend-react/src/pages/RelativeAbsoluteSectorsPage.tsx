@@ -438,7 +438,7 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
           style: { color: cc.text, fontSize: "11px" },
         },
         title: {
-          text: "← Underperforming  |  Relative Score (vs SPY)  |  Outperforming →",
+          text: "← Oversold  |  Relative Score (vs SPY)  |  Overbought →",
           style: { color: cc.text, fontWeight: "600", fontSize: "12px" },
         },
         plotBands: [],
@@ -949,7 +949,7 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
                     borderRadius: "0.25rem",
                   }}
                 >
-                  ↑ Outperforming
+                  ↑ Overbought
                 </span>
                 <span
                   style={{
@@ -960,7 +960,7 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
                     borderRadius: "0.25rem",
                   }}
                 >
-                  ↓ Underperforming
+                  ↓ Oversold
                 </span>
               </div>
             </div>
@@ -982,22 +982,22 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
               ) : relAbsOutput ? (
                 <>
                   <QuadrantTag
-                    label={"Oversold &\nOutperforming"}
+                    label={"Oversold &\nOverbought"}
                     color="#4ade80"
                     position="tl"
                   />
                   <QuadrantTag
-                    label={"Overbought &\nOutperforming"}
+                    label={"Overbought &\nOverbought"}
                     color="#fbbf24"
                     position="tr"
                   />
                   <QuadrantTag
-                    label={"Oversold &\nUnderperforming"}
+                    label={"Oversold &\nOversold"}
                     color="#94a3b8"
                     position="bl"
                   />
                   <QuadrantTag
-                    label={"Overbought &\nUnderperforming"}
+                    label={"Overbought &\nOversold"}
                     color="#f87171"
                     position="br"
                   />
