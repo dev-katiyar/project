@@ -97,17 +97,16 @@ const PeriodBtn: React.FC<{ label: string; active: boolean; onClick: () => void 
 }) => (
   <button
     onClick={onClick}
+    className="sv-option-btn"
     style={{
       padding: "0.25rem 0.8rem",
-      borderRadius: "0.4rem",
       fontSize: "0.78rem",
-      fontWeight: 700,
-      cursor: "pointer",
-      border: "1px solid",
-      transition: "all 0.15s",
-      borderColor: active ? "var(--sv-accent)" : "var(--sv-border)",
-      background:  active ? "var(--sv-accent)" : "var(--sv-bg-surface)",
-      color:       active ? "#fff"             : "var(--sv-text-secondary)",
+      borderRadius: "0.4rem",
+      ...(active ? {
+        borderColor: "var(--sv-accent)",
+        background: "var(--sv-accent)",
+        color: "#fff",
+      } : {}),
     }}
   >
     {label}
@@ -321,7 +320,6 @@ const FactorAnalysisPage: React.FC = () => {
   }, [pairDialog, cc]);
 
   // ── Derived table data ─────────────────────────────────────────────────────────
-  // Use Array.isArray() so that an API returning `{}` instead of `[]` doesn't break iteration
   const exRows     = useMemo(() => Array.isArray(faData?.excess_period_returns) ? faData!.excess_period_returns : [], [faData]);
   const scoresRank = useMemo(() => Array.isArray(faData?.scores_rank)           ? faData!.scores_rank           : [], [faData]);
 
@@ -376,7 +374,7 @@ const FactorAnalysisPage: React.FC = () => {
 
   // ── Empty state ────────────────────────────────────────────────────────────────
   const EmptyState: React.FC<{ icon: string; text: string }> = ({ icon, text }) => (
-    <div className="flex flex-column align-items-center justify-content-center gap-2" style={{ height: "200px", color: "var(--sv-text-muted)" }}>
+    <div className="flex flex-column align-items-center justify-content-center gap-2 sv-text-muted" style={{ height: "200px" }}>
       <i className={`pi ${icon}`} style={{ fontSize: "2.5rem", opacity: 0.2 }} />
       <span style={{ fontSize: "0.88rem" }}>{text}</span>
     </div>
@@ -397,13 +395,13 @@ const FactorAnalysisPage: React.FC = () => {
       {/* ── PAGE HEADER ─────────────────────────────────────────────────────── */}
       <div className="flex align-items-start justify-content-between mb-4 flex-wrap gap-3">
         <div>
-          <h2 style={{ margin: 0, fontSize: "1.45rem", fontWeight: 700, color: "var(--sv-text-primary)", letterSpacing: "-0.02em" }}>
+          <h2 className="sv-page-title m-0 font-bold" style={{ fontSize: "1.45rem" }}>
             Factor Analysis
           </h2>
-          <p style={{ margin: "0.3rem 0 0", fontSize: "0.82rem", color: "var(--sv-text-secondary)" }}>
+          <p className="m-0 mt-1 text-sm" style={{ color: "var(--sv-text-secondary)" }}>
             Excess Return Analysis vs SPY &nbsp;·&nbsp; Excess Returns, Correlations &amp; Z-Score Rankings
             {updateDate && (
-              <span style={{ marginLeft: "0.6rem", color: "var(--sv-text-muted)", fontSize: "0.75rem" }}>
+              <span className="ml-2 sv-text-muted" style={{ fontSize: "0.75rem" }}>
                 · Updated {updateDate}
               </span>
             )}
@@ -431,15 +429,11 @@ const FactorAnalysisPage: React.FC = () => {
 
       {/* ── CUSTOM SYMBOLS ──────────────────────────────────────────────────── */}
       {mode === "custom" && (
-        <div style={{
-          background: "var(--sv-bg-card)", border: "1px solid var(--sv-border)",
-          borderRadius: "0.75rem", padding: "0.875rem 1rem", marginBottom: "1.25rem",
-          boxShadow: "var(--sv-shadow-sm)",
-        }}>
+        <div className="surface-card border-1 border-round-xl p-3 mb-4" style={{ borderColor: "var(--sv-border)", boxShadow: "var(--sv-shadow-sm)" }}>
           <div className="flex align-items-center gap-3 mb-2 flex-wrap">
-            <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--sv-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+            <span className="sv-info-label text-xs font-bold">
               Custom Symbols &nbsp;
-              <span style={{ background: "var(--sv-bg-surface)", border: "1px solid var(--sv-border)", borderRadius: "0.3rem", padding: "0.05rem 0.4rem", fontWeight: 400 }}>
+              <span className="border-1 border-round px-1" style={{ borderColor: "var(--sv-border)", background: "var(--sv-bg-surface)", fontWeight: 400 }}>
                 {Object.keys(customDict).length}/10
               </span>
             </span>
@@ -461,24 +455,23 @@ const FactorAnalysisPage: React.FC = () => {
           </div>
           <div className="flex flex-wrap gap-2">
             {Object.keys(customDict).map((sym) => (
-              <span key={sym} style={{
-                display: "inline-flex", alignItems: "center", gap: "0.3rem",
-                padding: "0.22rem 0.65rem", background: "var(--sv-bg-surface)",
-                border: "1px solid var(--sv-border)", borderRadius: "999px",
-                fontSize: "0.75rem", fontWeight: 700, color: "var(--sv-accent)",
-              }}>
+              <span
+                key={sym}
+                className="inline-flex align-items-center gap-1 border-1 border-round-3xl px-2 py-1 text-xs font-bold sv-text-accent"
+                style={{ background: "var(--sv-bg-surface)", borderColor: "var(--sv-border)" }}
+              >
                 {sym}
                 <i className="pi pi-times" style={{ fontSize: "0.5rem", cursor: "pointer", opacity: 0.65 }} onClick={() => removeCustomSymbol(sym)} />
               </span>
             ))}
             {!Object.keys(customDict).length && (
-              <span style={{ fontSize: "0.78rem", color: "var(--sv-text-muted)", fontStyle: "italic" }}>
+              <span className="sv-text-muted text-sm" style={{ fontStyle: "italic" }}>
                 Add at least 4 symbols to run analysis
               </span>
             )}
           </div>
           {customError && (
-            <p style={{ color: "#f87171", fontSize: "0.74rem", margin: "0.4rem 0 0" }}>
+            <p className="sv-error-text text-xs m-0 mt-2">
               <i className="pi pi-exclamation-circle mr-1" />
               {customError}
             </p>
@@ -487,22 +480,25 @@ const FactorAnalysisPage: React.FC = () => {
       )}
 
       {/* ── TABS ────────────────────────────────────────────────────────────── */}
-      <div style={{
-        background: "var(--sv-bg-card)", border: "1px solid var(--sv-border)",
-        borderRadius: "0.75rem", overflow: "hidden", boxShadow: "var(--sv-shadow-md)",
-      }}>
-        <TabView pt={{ panelContainer: { style: { padding: "1.25rem" } } }}>
+      <div className="surface-card border-1 border-round-xl overflow-hidden" style={{ borderColor: "var(--sv-border)", boxShadow: "var(--sv-shadow-md)" }}>
+        <TabView
+          pt={{
+            root: { className: "sv-tabs" },
+            panelContainer: { style: { padding: "1.25rem" } },
+          }}
+        >
 
           {/* ── TAB 1: EXCESS RETURNS ─────────────────────────────────────── */}
           <TabPanel header="Excess Returns">
             {/* Controls row */}
             <div className="flex align-items-center gap-3 mb-3 flex-wrap">
-              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--sv-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                Lookback Days:
-              </span>
+              <span className="sv-info-label text-xs font-bold">Lookback Days:</span>
               {!editLookback ? (
                 <>
-                  <span style={{ fontSize: "0.78rem", color: "var(--sv-text-secondary)", background: "var(--sv-bg-surface)", padding: "0.15rem 0.5rem", borderRadius: "0.3rem", border: "1px solid var(--sv-border-light)" }}>
+                  <span
+                    className="border-1 border-round px-2 py-1 text-xs"
+                    style={{ color: "var(--sv-text-secondary)", background: "var(--sv-bg-surface)", borderColor: "var(--sv-border-light)" }}
+                  >
                     {lookbackPeriods.join(", ")}
                   </span>
                   <Button
@@ -523,13 +519,13 @@ const FactorAnalysisPage: React.FC = () => {
                   />
                   <Button icon="pi pi-check" rounded size="small" severity="success" style={{ width: "1.8rem", height: "1.8rem", padding: 0 }} onClick={saveLookback} />
                   <Button icon="pi pi-times" rounded text size="small" severity="secondary" style={{ width: "1.8rem", height: "1.8rem", padding: 0 }} onClick={() => { setEditLookback(false); setLookbackError(""); }} />
-                  {lookbackError && <span style={{ color: "#f87171", fontSize: "0.72rem" }}>{lookbackError}</span>}
+                  {lookbackError && <span className="sv-error-text text-xs">{lookbackError}</span>}
                 </div>
               )}
 
               {/* Color scale legend */}
               <div className="flex align-items-center gap-2 ml-auto">
-                <span style={{ fontSize: "0.64rem", color: "var(--sv-text-muted)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Scale:</span>
+                <span className="sv-info-label" style={{ fontSize: "0.64rem" }}>Scale:</span>
                 <span style={{ fontSize: "0.64rem", color: "#f87171", fontWeight: 600 }}>Under</span>
                 <div style={{ width: "90px", height: "10px", borderRadius: "3px", background: "linear-gradient(to right, rgba(215,18,28,0.85) 0%, rgba(40,40,60,0.1) 50%, rgba(18,168,38,0.85) 100%)", border: "1px solid var(--sv-border-light)" }} />
                 <span style={{ fontSize: "0.64rem", color: "#4ade80", fontWeight: 600 }}>Over</span>
@@ -575,9 +571,7 @@ const FactorAnalysisPage: React.FC = () => {
           {/* ── TAB 2: CORRELATIONS ───────────────────────────────────────── */}
           <TabPanel header="Correlations">
             <div className="flex align-items-center gap-3 mb-3 flex-wrap">
-              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--sv-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                Period:
-              </span>
+              <span className="sv-info-label text-xs font-bold">Period:</span>
               <div className="flex gap-1">
                 {corrPeriods.map((p) => (
                   <PeriodBtn key={p} label={`${p}D`} active={p === selCorrPeriod} onClick={() => setSelCorrPeriod(p)} />
@@ -627,9 +621,7 @@ const FactorAnalysisPage: React.FC = () => {
           {/* ── TAB 3: Z-SCORE & RANK ─────────────────────────────────────── */}
           <TabPanel header="Z-Score & Rank">
             <div className="flex align-items-center gap-3 mb-3 flex-wrap">
-              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--sv-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                Period:
-              </span>
+              <span className="sv-info-label text-xs font-bold">Period:</span>
               <div className="flex gap-1">
                 {scorePeriods.map((p) => (
                   <PeriodBtn key={p} label={`${p}D`} active={p === selScorePeriod} onClick={() => setSelScorePeriod(p)} />
@@ -640,7 +632,7 @@ const FactorAnalysisPage: React.FC = () => {
                   <PeriodBtn key={ft} label={ft} active={ft === scoreFieldType} onClick={() => setScoreFieldType(ft)} />
                 ))}
               </div>
-              <span style={{ fontSize: "0.68rem", color: "var(--sv-text-muted)", marginLeft: "auto" }}>
+              <span className="sv-text-muted ml-auto" style={{ fontSize: "0.68rem" }}>
                 <i className="pi pi-info-circle mr-1" style={{ fontSize: "0.65rem" }} />
                 Click cell to view pair trend
               </span>
@@ -648,8 +640,8 @@ const FactorAnalysisPage: React.FC = () => {
 
             {/* Extreme value legend */}
             {!loading && scoreSymbols.length > 0 && (
-              <div className="flex align-items-center gap-2 mb-3" style={{ fontSize: "0.65rem", color: "var(--sv-text-muted)" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
+              <div className="flex align-items-center gap-2 mb-3 sv-text-muted" style={{ fontSize: "0.65rem" }}>
+                <span className="inline-flex align-items-center gap-1">
                   <i className="pi pi-star-fill" style={{ color: "#f59e0b", fontSize: "0.6rem" }} />
                   Extreme: {scoreFieldType === "z-Score" ? "|z| ≥ 1" : "|rank| ≥ 80"}
                 </span>
@@ -712,9 +704,7 @@ const FactorAnalysisPage: React.FC = () => {
           <TabPanel header="Filtered Pairs">
             {/* Filter controls */}
             <div className="flex align-items-center gap-3 mb-3 flex-wrap">
-              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--sv-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                Correlation:
-              </span>
+              <span className="sv-info-label text-xs font-bold">Correlation:</span>
               <div className="flex gap-1">
                 {(["less", "more"] as const).map((d) => (
                   <PeriodBtn key={d} label={d === "less" ? "≤" : "≥"} active={d === corrDir} onClick={() => setCorrDir(d)} />
@@ -728,11 +718,14 @@ const FactorAnalysisPage: React.FC = () => {
               />
               <Button label="Apply" icon="pi pi-filter" size="small" onClick={applyFilter} disabled={loading || !faData} />
               {filterApplied && (
-                <span style={{ fontSize: "0.75rem", color: "var(--sv-text-secondary)", background: "var(--sv-bg-surface)", padding: "0.15rem 0.5rem", borderRadius: "0.3rem", border: "1px solid var(--sv-border-light)" }}>
+                <span
+                  className="border-1 border-round px-2 py-1 text-xs"
+                  style={{ color: "var(--sv-text-secondary)", background: "var(--sv-bg-surface)", borderColor: "var(--sv-border-light)" }}
+                >
                   {filteredPairs.length} pair{filteredPairs.length !== 1 ? "s" : ""} matched
                 </span>
               )}
-              <span style={{ marginLeft: "auto", fontSize: "0.68rem", color: "var(--sv-text-muted)" }}>
+              <span className="sv-text-muted ml-auto" style={{ fontSize: "0.68rem" }}>
                 <i className="pi pi-info-circle mr-1" style={{ fontSize: "0.65rem" }} />
                 Click row to view pair trend
               </span>
@@ -787,16 +780,19 @@ const FactorAnalysisPage: React.FC = () => {
         header={
           pairDialog ? (
             <div className="flex align-items-center gap-2 flex-wrap">
-              <i className="pi pi-chart-line" style={{ color: "var(--sv-accent)", fontSize: "1rem" }} />
-              <span style={{ fontWeight: 700, fontSize: "1rem" }}>
+              <i className="pi pi-chart-line sv-text-accent" style={{ fontSize: "1rem" }} />
+              <span className="font-bold" style={{ fontSize: "1rem" }}>
                 {pairDialog.sym1} <span style={{ opacity: 0.4, fontWeight: 400 }}>/</span> {pairDialog.sym2}
               </span>
               {pairDialog.data?.correlation != null && (
-                <span style={{
-                  fontSize: "0.76rem", fontWeight: 600, padding: "0.1rem 0.5rem", borderRadius: "0.3rem",
-                  border: "1px solid var(--sv-border)", background: "var(--sv-bg-surface)",
-                  color: "var(--sv-text-secondary)",
-                }}>
+                <span
+                  className="border-1 border-round px-2"
+                  style={{
+                    fontSize: "0.76rem", fontWeight: 600, padding: "0.1rem 0.5rem",
+                    borderColor: "var(--sv-border)", background: "var(--sv-bg-surface)",
+                    color: "var(--sv-text-secondary)",
+                  }}
+                >
                   Corr: {fmtNum(pairDialog.data.correlation)}
                 </span>
               )}
@@ -814,7 +810,7 @@ const FactorAnalysisPage: React.FC = () => {
 
         {!pairDialog?.loading && pairDialog?.data?.scores?.length ? (
           <>
-            <p style={{ fontSize: "0.76rem", color: "var(--sv-text-muted)", margin: "0 0 0.75rem", lineHeight: 1.5 }}>
+            <p className="sv-text-muted m-0 mb-3 text-sm" style={{ lineHeight: 1.5 }}>
               Historical percentile rank of the excess return spread.&nbsp;
               <span style={{ color: "#f59e0b" }}>Dashed lines at ±80</span> signal potential mean-reversion opportunities.
             </p>
