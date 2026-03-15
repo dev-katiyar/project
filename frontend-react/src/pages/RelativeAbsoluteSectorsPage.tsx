@@ -306,7 +306,9 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
     const series: Highcharts.SeriesLineOptions[] = Object.keys(
       relAbsOutput,
     ).map((sym, idx) => {
-      const dps = relAbsOutput[sym].slice(0, pts);
+      const sorted = [...relAbsOutput[sym]]
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      const dps = sorted.slice(Math.max(0, sorted.length - pts));
       return {
         type: "line",
         name: sym,
@@ -321,7 +323,7 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
           x: dp.absolute_score,
           y: dp.relative_score,
           name: dp.date,
-          ...(i === 0 && {
+          ...(i === dps.length - 1 && {
             marker: {
               enabled: true,
               radius: 6,
@@ -1002,6 +1004,7 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
                     position="br"
                   />
                   <HighchartsReact
+                    key={tailLen}
                     ref={chartRef}
                     highcharts={Highcharts}
                     options={scatterOptions}
