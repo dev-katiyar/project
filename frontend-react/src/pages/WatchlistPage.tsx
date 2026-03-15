@@ -279,6 +279,7 @@ const WatchlistPage: React.FC = () => {
   // ── View state ──
   const [view, setView] = useState<"main" | "manage">("main");
   const [activeTab, setActiveTab] = useState(0);
+  const [tickerFilter, setTickerFilter] = useState("");
 
   // ── Add single symbol ──
   const [addSymbolInput, setAddSymbolInput] = useState("");
@@ -644,19 +645,20 @@ const WatchlistPage: React.FC = () => {
   // ─── Column body templates ────────────────────────────────────────────────────
 
   const symbolBodyTemplate = (row: SymbolData) => (
-    <span
-      className="sv-text-accent border-round font-bold"
+    <div
+      className="flex align-items-center justify-content-center border-round-md"
       style={{
         background: "var(--sv-accent-bg)",
-        fontSize: "0.75rem",
-        padding: "0.2rem 0.5rem",
+        padding: "0.25rem 0.5rem",
+        fontWeight: 800,
+        fontSize: "0.82rem",
+        color: "var(--sv-accent)",
         letterSpacing: "0.05em",
-        fontFamily: "monospace",
-        display: "inline-block",
+        maxWidth: 80,
       }}
     >
       {row.symbol}
-    </span>
+    </div>
   );
 
   const nameBodyTemplate = (row: SymbolData) => (
@@ -670,83 +672,95 @@ const WatchlistPage: React.FC = () => {
   );
 
   const priceBodyTemplate = (row: SymbolData) => (
-    <span
-      className="font-semibold"
-      style={{ fontFamily: "monospace", fontSize: "0.88rem" }}
-    >
-      {fmtPrice(getPrice(row))}
-    </span>
+    <div className="text-right">
+      <span
+        className="font-semibold"
+        style={{ fontFamily: "monospace", fontSize: "0.88rem" }}
+      >
+        {fmtPrice(getPrice(row))}
+      </span>
+    </div>
   );
 
   const changeBodyTemplate = (row: SymbolData) => {
     const v = getChange(row);
     return (
-      <span
-        className="font-semibold"
-        style={{
-          color: gainColor(v),
-          fontFamily: "monospace",
-          fontSize: "0.85rem",
-        }}
-      >
-        {fmtChange(v)}
-      </span>
+      <div className="text-right">
+        <span
+          className="font-semibold"
+          style={{
+            color: gainColor(v),
+            fontFamily: "monospace",
+            fontSize: "0.85rem",
+          }}
+        >
+          {fmtChange(v)}
+        </span>
+      </div>
     );
   };
 
   const changePctBodyTemplate = (row: SymbolData) => {
     const pct = getRawPct(row);
     return (
-      <Tag
-        value={fmtPct(pct)}
-        style={{
-          background:
-            pct == null
-              ? "var(--sv-bg-surface)"
-              : pct > 0
-                ? "var(--sv-success-bg)"
-                : pct < 0
-                  ? "var(--sv-danger-bg)"
-                  : "var(--sv-bg-surface)",
-          color:
-            pct == null
-              ? "var(--sv-text-muted)"
-              : pct > 0
-                ? "var(--sv-gain)"
-                : pct < 0
-                  ? "var(--sv-loss)"
-                  : "var(--sv-text-muted)",
-          fontSize: "0.78rem",
-          fontWeight: 700,
-          fontFamily: "monospace",
-          border: "none",
-        }}
-      />
+      <div className="text-right">
+        <Tag
+          value={fmtPct(pct)}
+          style={{
+            background:
+              pct == null
+                ? "var(--sv-bg-surface)"
+                : pct > 0
+                  ? "var(--sv-success-bg)"
+                  : pct < 0
+                    ? "var(--sv-danger-bg)"
+                    : "var(--sv-bg-surface)",
+            color:
+              pct == null
+                ? "var(--sv-text-muted)"
+                : pct > 0
+                  ? "var(--sv-gain)"
+                  : pct < 0
+                    ? "var(--sv-loss)"
+                    : "var(--sv-text-muted)",
+            fontSize: "0.78rem",
+            fontWeight: 700,
+            fontFamily: "monospace",
+            border: "none",
+          }}
+        />
+      </div>
     );
   };
 
   const volumeBodyTemplate = (row: SymbolData) => (
-    <span
-      className="text-color-secondary"
-      style={{ fontFamily: "monospace", fontSize: "0.82rem" }}
-    >
-      {fmtVolume(getVolume(row))}
-    </span>
+    <div className="text-right">
+      <span
+        className="text-color-secondary"
+        style={{ fontFamily: "monospace", fontSize: "0.82rem" }}
+      >
+        {fmtVolume(getVolume(row))}
+      </span>
+    </div>
   );
 
   const capBodyTemplate = (row: SymbolData) => (
-    <span
-      className="text-color-secondary"
-      style={{ fontFamily: "monospace", fontSize: "0.82rem" }}
-    >
-      {fmtCap(getMarketCap(row))}
-    </span>
+    <div className="text-right">
+      <span
+        className="text-color-secondary"
+        style={{ fontFamily: "monospace", fontSize: "0.82rem" }}
+      >
+        {fmtCap(getMarketCap(row))}
+      </span>
+    </div>
   );
 
   const peBodyTemplate = (row: SymbolData) => (
-    <span style={{ fontFamily: "monospace", fontSize: "0.85rem" }}>
-      {fmtNum(getPE(row))}
-    </span>
+    <div className="text-right">
+      <span style={{ fontFamily: "monospace", fontSize: "0.85rem" }}>
+        {fmtNum(getPE(row))}
+      </span>
+    </div>
   );
 
   const week52BodyTemplate = (row: SymbolData) => {
@@ -1085,79 +1099,121 @@ const WatchlistPage: React.FC = () => {
                         </p>
                       </div>
                     ) : (
-                      <DataTable
-                        value={symbolData}
-                        sortMode="single"
-                        removableSort
-                        scrollable
-                        scrollHeight="600px"
-                        stripedRows
-                        size="small"
-                        style={{ fontSize: "0.85rem" }}
-                      >
-                        <Column
-                          field="symbol"
-                          header="Symbol"
-                          body={symbolBodyTemplate}
-                          sortable
-                          frozen
-                          style={{ minWidth: "100px" }}
-                        />
-                        <Column
-                          header="Name"
-                          body={nameBodyTemplate}
-                          style={{ minWidth: "180px" }}
-                        />
-                        <Column
-                          header="Price"
-                          body={priceBodyTemplate}
-                          sortable
-                          sortField="price"
-                          style={{ minWidth: "95px", textAlign: "right" }}
-                        />
-                        <Column
-                          header="Change"
-                          body={changeBodyTemplate}
-                          style={{ minWidth: "90px", textAlign: "right" }}
-                        />
-                        <Column
-                          header="Change %"
-                          body={changePctBodyTemplate}
-                          style={{ minWidth: "100px" }}
-                        />
-                        <Column
-                          header="Volume"
-                          body={volumeBodyTemplate}
-                          style={{ minWidth: "90px", textAlign: "right" }}
-                        />
-                        <Column
-                          header="Mkt Cap"
-                          body={capBodyTemplate}
-                          style={{ minWidth: "105px", textAlign: "right" }}
-                        />
-                        <Column
-                          header="P/E"
-                          body={peBodyTemplate}
-                          style={{ minWidth: "70px", textAlign: "right" }}
-                        />
-                        <Column
-                          header="52W Range"
-                          body={week52BodyTemplate}
-                          style={{ minWidth: "155px" }}
-                        />
-                        <Column
-                          header="Sector"
-                          body={sectorBodyTemplate}
-                          style={{ minWidth: "130px" }}
-                        />
-                        <Column
-                          header=""
-                          body={actionsBodyTemplate}
-                          frozen
-                          alignFrozen="right"
-                          style={{ minWidth: "56px", textAlign: "center" }}
-                        />
-                      </DataTable>
+                      <>
+                        {/* ── Table toolbar ── */}
+                        <div
+                          className="py-2 px-3 flex align-items-center justify-content-between gap-2 flex-wrap"
+                          style={{ borderBottom: "1px solid var(--sv-border)" }}
+                        >
+                          <div className="flex align-items-center gap-2">
+                            <i
+                              className="pi pi-table"
+                              style={{ color: "var(--sv-accent)", fontSize: "0.9rem" }}
+                            />
+                            <span
+                              className="text-xs font-semibold sv-text-muted"
+                              style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}
+                            >
+                              {symbolData.length} symbol{symbolData.length !== 1 ? "s" : ""}
+                            </span>
+                          </div>
+                          <IconField iconPosition="left">
+                            <InputIcon className="pi pi-search" />
+                            <InputText
+                              value={tickerFilter}
+                              onChange={(e) => setTickerFilter(e.target.value)}
+                              placeholder="Filter symbols…"
+                              className="sv-search-input"
+                            />
+                          </IconField>
+                        </div>
+
+                        <DataTable
+                          value={symbolData}
+                          sortMode="single"
+                          removableSort
+                          stripedRows
+                          rowHover
+                          size="small"
+                          globalFilter={tickerFilter}
+                          globalFilterFields={["symbol"]}
+                          paginator
+                          rows={15}
+                          rowsPerPageOptions={[15, 25, 50]}
+                          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+                          emptyMessage="No symbols match your filter"
+                          pt={{ wrapper: { style: { borderRadius: 0 } } }}
+                        >
+                          <Column
+                            field="symbol"
+                            header="Symbol"
+                            body={symbolBodyTemplate}
+                            sortable
+                            frozen
+                            style={{ minWidth: "100px" }}
+                          />
+                          <Column
+                            header="Name"
+                            body={nameBodyTemplate}
+                            style={{ minWidth: "180px" }}
+                          />
+                          <Column
+                            header="Price"
+                            body={priceBodyTemplate}
+                            sortable
+                            sortField="price"
+                            style={{ minWidth: "95px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
+                          />
+                          <Column
+                            header="Change"
+                            body={changeBodyTemplate}
+                            style={{ minWidth: "90px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
+                          />
+                          <Column
+                            header="Change %"
+                            body={changePctBodyTemplate}
+                            style={{ minWidth: "100px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
+                          />
+                          <Column
+                            header="Volume"
+                            body={volumeBodyTemplate}
+                            style={{ minWidth: "90px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
+                          />
+                          <Column
+                            header="Mkt Cap"
+                            body={capBodyTemplate}
+                            style={{ minWidth: "105px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
+                          />
+                          <Column
+                            header="P/E"
+                            body={peBodyTemplate}
+                            style={{ minWidth: "70px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
+                          />
+                          <Column
+                            header="52W Range"
+                            body={week52BodyTemplate}
+                            style={{ minWidth: "155px" }}
+                          />
+                          <Column
+                            header="Sector"
+                            body={sectorBodyTemplate}
+                            style={{ minWidth: "130px" }}
+                          />
+                          <Column
+                            header=""
+                            body={actionsBodyTemplate}
+                            frozen
+                            alignFrozen="right"
+                            style={{ minWidth: "56px", textAlign: "center" }}
+                          />
+                        </DataTable>
+                      </>
                     )}
                   </TabPanel>
 
