@@ -44,7 +44,6 @@ function buildOptions(
   const combinedKey = isAbsolute ? symbol1 : `${symbol1}_${symbol2}`;
 
   const scoreKey = `${combinedKey}_score`;
-  const diffKey = `${combinedKey}_diff`;
   const categories = data.map((d) => d.date);
   const tickInterval = Math.max(1, Math.ceil(categories.length / 8));
 
@@ -60,8 +59,10 @@ function buildOptions(
     : null;
 
   const diffData = data.map((d) => {
-    const raw = d[diffKey];
-    const val = raw != null ? Number(raw) * multiplier : null;
+    const v1 = d[symbol1];
+    const v2 = isRelative ? d[symbol2] : null;
+    const val =
+      v1 != null && v2 != null ? Number(v1) - Number(v2) : null;
     return {
       y: val,
       color:
