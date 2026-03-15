@@ -155,16 +155,18 @@ const PerformanceTab: React.FC<Props> = ({
         <>
           {/* Frequency selector */}
           <div className="flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-            <div className="sv-info-label font-bold text-sm flex align-items-center">
-              {/* <i className="pi pi-chart-bar mr-2" />
-              Returns — {frequency.charAt(0).toUpperCase() + frequency.slice(1)} */}
-            </div>
+            <div className="sv-info-label font-bold text-sm flex align-items-center"></div>
             <SelectButton
               value={frequency}
               onChange={(e) => e.value && setFrequency(e.value as Frequency)}
               options={freqOptions}
               optionLabel="label"
               optionValue="value"
+              pt={{
+                button: {
+                  style: { padding: "0.25rem 0.75rem", fontSize: "0.75rem" },
+                },
+              }}
             />
           </div>
 
