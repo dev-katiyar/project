@@ -17,6 +17,8 @@ import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
 import { Skeleton } from "primereact/skeleton";
 import { InputText } from "primereact/inputtext";
+import { IconField } from "primereact/iconfield";
+import { InputIcon } from "primereact/inputicon";
 import { OverlayPanel } from "primereact/overlaypanel";
 import api from "@/services/api";
 import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
@@ -707,8 +709,8 @@ const SuperInvestorPage: React.FC = () => {
 
         {/* Table toolbar */}
         <div className="flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-          <span className="p-input-icon-left">
-            <i className="pi pi-search" />
+          <IconField iconPosition="left">
+            <InputIcon className="pi pi-search" />
             <InputText
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
@@ -716,7 +718,7 @@ const SuperInvestorPage: React.FC = () => {
               size="small"
               style={{ width: 240 }}
             />
-          </span>
+          </IconField>
           <Button
             label="Export CSV"
             icon="pi pi-download"
