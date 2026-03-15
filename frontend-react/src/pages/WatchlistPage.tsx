@@ -19,6 +19,7 @@ import WatchlistTickerTable, {
   getRawPct,
 } from "@/components/watchlist/WatchlistTickerTable";
 import WatchlistPerformanceChart from "@/components/watchlist/WatchlistPerformanceChart";
+import TechSignalsTab from "@/components/portfolio/tabs/TechSignalsTab";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -795,39 +796,7 @@ const WatchlistPage: React.FC = () => {
 
                   {/* ─ Tab 3: Alerts ─ */}
                   <TabPanel header="Alerts" leftIcon="pi pi-bell mr-2">
-                    <div
-                      className="flex flex-column align-items-center justify-content-center p-6"
-                      style={{ textAlign: "center" }}
-                    >
-                      <div
-                        className="flex align-items-center justify-content-center border-circle mb-4"
-                        style={{
-                          width: "72px",
-                          height: "72px",
-                          background: "var(--sv-warning-bg)",
-                          border: "1px solid var(--sv-warning)",
-                        }}
-                      >
-                        <i
-                          className="pi pi-bell"
-                          style={{
-                            fontSize: "2rem",
-                            color: "var(--sv-warning)",
-                          }}
-                        />
-                      </div>
-                      <h3 className="text-color m-0 mb-2">Technical Alerts</h3>
-                      <p
-                        className="sv-text-muted m-0"
-                        style={{ maxWidth: "380px", lineHeight: 1.6 }}
-                      >
-                        Price alerts and technical analysis signals for{" "}
-                        {symbols.length > 0
-                          ? `${symbols.slice(0, 3).join(", ")}${symbols.length > 3 ? " and more" : ""}`
-                          : "your watchlist symbols"}{" "}
-                        will appear here.
-                      </p>
-                    </div>
+                    <TechSignalsTab symbols={symbols} active={activeTab === 2} />
                   </TabPanel>
 
                   {/* ─ Tab 4: Dividends & Earnings ─ */}
