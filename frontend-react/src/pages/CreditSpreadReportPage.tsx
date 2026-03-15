@@ -382,15 +382,30 @@ const CreditSpreadReportPage: React.FC = () => {
     fetchData();
   }, [fetchData]);
 
+  // ── Derived data ─────────────────────────────────────────────────────────────
+
+  const symNameMap = data?.sym_name_map ?? {};
+  const icsPercentiles = data?.sym_oas_percentiles?.data ?? [];
+  const periods = data?.periods ?? [];
+  const symbols = data?.symbols ?? [];
+
+  // sym_name_map is { FRED_series_id → display_symbol } — reverse it for API lookups
+  const displayToFredId = useMemo(
+    () => Object.fromEntries(Object.entries(symNameMap).map(([fredId, display]) => [display, fredId])),
+    [symNameMap]
+  );
+
   // ── Fetch historical data for selected symbol ────────────────────────────────
 
   useEffect(() => {
     if (!selSymbol) return;
+    const fredId = displayToFredId[selSymbol];
+    if (!fredId) return;
     setHistData(null);
     setHistStats(null);
     setHistLoading(true);
     api
-      .get(`/fred_api/oas_data/historical/${selSymbol}/20year`)
+      .get(`/fred_api/oas_data/historical/${fredId}/20year`)
       .then((res) => {
         if (res.data?.data && res.data?.stats) {
           const sorted = [...(res.data.data as HistDataPoint[])].sort(
@@ -402,7 +417,7 @@ const CreditSpreadReportPage: React.FC = () => {
       })
       .catch(() => {})
       .finally(() => setHistLoading(false));
-  }, [selSymbol]);
+  }, [selSymbol, displayToFredId]);
 
   // ── Chart options ────────────────────────────────────────────────────────────
 
@@ -520,13 +535,6 @@ const CreditSpreadReportPage: React.FC = () => {
       },
     };
   }, [histData, histStats, cc, selSymbol, data]);
-
-  // ── Derived data ─────────────────────────────────────────────────────────────
-
-  const symNameMap = data?.sym_name_map ?? {};
-  const icsPercentiles = data?.sym_oas_percentiles?.data ?? [];
-  const periods = data?.periods ?? [];
-  const symbols = data?.symbols ?? [];
 
   // ── Render ────────────────────────────────────────────────────────────────────
 
