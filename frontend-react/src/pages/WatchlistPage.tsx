@@ -790,10 +790,7 @@ const WatchlistPage: React.FC = () => {
                     header="Performance"
                     leftIcon="pi pi-chart-line mr-2"
                   >
-                    <WatchlistPerformanceChart
-                      symbols={symbols}
-                      symbolData={symbolData}
-                    />
+                    <WatchlistPerformanceChart symbols={symbols} />
                   </TabPanel>
 
                   {/* ─ Tab 3: Alerts ─ */}
