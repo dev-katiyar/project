@@ -10,6 +10,7 @@ import { Card } from "primereact/card";
 import { Dialog } from "primereact/dialog";
 import api from "@/services/api";
 import RelativeAnalysisChart from "./RelativeAnalysisChart";
+import RelativeAnalysisHeatmap from "./RelativeAnalysisHeatmap";
 import { useTheme } from "@/contexts/ThemeContext";
 import {
   CHART_COLORS,
@@ -52,6 +53,8 @@ const RelativeAbsoluteHoldingsPanel: React.FC<Props> = ({
 
   const [rows, setRows] = useState<HoldingRow[]>([]);
   const [relAbsOutput, setRelAbsOutput] = useState<RelAbsOutput | null>(null);
+  const [holdingSymbols, setHoldingSymbols] = useState<string[]>([]);
+  const [holdingNamesDict, setHoldingNamesDict] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showTail, setShowTail] = useState(true);
@@ -88,6 +91,10 @@ const RelativeAbsoluteHoldingsPanel: React.FC<Props> = ({
           holdingsDict[item.symbol] = item;
         }
         const tickers = Object.keys(holdingsDict);
+        setHoldingSymbols(tickers);
+        setHoldingNamesDict(
+          Object.fromEntries(tickers.map((s) => [s, holdingsDict[s].name])),
+        );
 
         api
           .post("/relative-absolute-analysis-sectors", {
@@ -598,6 +605,25 @@ const RelativeAbsoluteHoldingsPanel: React.FC<Props> = ({
         )}
       </div>
     </div>
+
+    {/* ── PAIRWISE HEATMAP ── */}
+    {holdingSymbols.length > 0 && (
+      <div className="mt-4">
+        <div className="mb-3">
+          <span className="font-bold text-color" style={{ fontSize: "0.9rem" }}>
+            Top Holdings — Relative Analysis with Each Other
+          </span>
+          <span className="sv-text-muted ml-2" style={{ fontSize: "0.78rem" }}>
+            · click a score to drill down
+          </span>
+        </div>
+        <RelativeAnalysisHeatmap
+          symbols={holdingSymbols}
+          symbolsDict={holdingNamesDict}
+          cc={cc}
+        />
+      </div>
+    )}
 
     {/* ── DRILL-DOWN DIALOGS ── */}
 
