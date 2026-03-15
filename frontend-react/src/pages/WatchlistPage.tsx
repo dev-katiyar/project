@@ -11,18 +11,14 @@ import { Message } from "primereact/message";
 import { Dropdown } from "primereact/dropdown";
 import { Skeleton } from "primereact/skeleton";
 import { TabView, TabPanel } from "primereact/tabview";
-import { MultiSelect } from "primereact/multiselect";
 import { Tag } from "primereact/tag";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Divider } from "primereact/divider";
 import WatchlistTickerTable, {
   type SymbolData,
   getRawPct,
-  getPrice,
-  fmtPrice,
-  fmtPct,
-  gainColor,
 } from "@/components/watchlist/WatchlistTickerTable";
+import WatchlistPerformanceChart from "@/components/watchlist/WatchlistPerformanceChart";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -230,8 +226,6 @@ const WatchlistPage: React.FC = () => {
   const [editing, setEditing] = useState(false);
   const [editError, setEditError] = useState("");
 
-  // ── Performance tab ──
-  const [selectedTopSymbols, setSelectedTopSymbols] = useState<string[]>([]);
 
   // ─── Load watchlists ─────────────────────────────────────────────────────────
 
@@ -263,7 +257,6 @@ const WatchlistPage: React.FC = () => {
   const loadWatchlistSymbols = useCallback(async (id: number) => {
     setSymbolsLoading(true);
     setSymbolData([]);
-    setSelectedTopSymbols([]);
     try {
       const res = await api.get(`/userwatchlist/${id}`);
       const symbols = (res.data as string[]) ?? [];
@@ -272,9 +265,6 @@ const WatchlistPage: React.FC = () => {
         const data = dataRes.data;
         const arr: SymbolData[] = Array.isArray(data) ? data : [data];
         setSymbolData(arr);
-        setSelectedTopSymbols(
-          arr.map((d) => d.symbol).slice(0, Math.min(5, arr.length)),
-        );
       }
     } catch {
       toast.current?.show({
@@ -411,7 +401,6 @@ const WatchlistPage: React.FC = () => {
             symbol: row.symbol,
           });
           setSymbolData((prev) => prev.filter((d) => d.symbol !== row.symbol));
-          setSelectedTopSymbols((prev) => prev.filter((s) => s !== row.symbol));
           toast.current?.show({
             severity: "success",
             summary: "Removed",
@@ -570,7 +559,6 @@ const WatchlistPage: React.FC = () => {
   // ─── Derived state ────────────────────────────────────────────────────────────
 
   const symbols = symbolData.map((d) => d.symbol);
-  const symbolOptions = symbols.map((s) => ({ label: s, value: s }));
   const isEmpty = !watchlistsLoading && watchlists.length === 0;
 
   // ─── Render ───────────────────────────────────────────────────────────────────
@@ -802,121 +790,10 @@ const WatchlistPage: React.FC = () => {
                     header="Performance"
                     leftIcon="pi pi-chart-line mr-2"
                   >
-                    <div className="p-4">
-                      <div className="flex align-items-center gap-3 mb-4 flex-wrap">
-                        <label className="text-color-secondary text-sm font-semibold white-space-nowrap">
-                          Compare symbols (max 10):
-                        </label>
-                        <MultiSelect
-                          value={selectedTopSymbols}
-                          options={symbolOptions}
-                          onChange={(e) => setSelectedTopSymbols(e.value)}
-                          selectionLimit={10}
-                          placeholder="Select symbols to compare"
-                          display="chip"
-                          style={{ flex: 1, minWidth: "220px" }}
-                        />
-                      </div>
-
-                      {/* Selected symbols mini dashboard */}
-                      {selectedTopSymbols.length > 0 && (
-                        <div className="grid mb-4 gap-3">
-                          {selectedTopSymbols.map((sym) => {
-                            const d = symbolData.find((s) => s.symbol === sym);
-                            if (!d) return null;
-                            const pct = getRawPct(d);
-                            return (
-                              <div
-                                key={sym}
-                                className="col-6 lg:col-3 xl:col-2 p-0"
-                              >
-                                <div
-                                  className="surface-overlay border-round-lg p-3 text-center"
-                                  style={{
-                                    border: "1px solid var(--sv-border)",
-                                    borderTop: `3px solid ${
-                                      pct == null
-                                        ? "var(--sv-border)"
-                                        : pct > 0
-                                          ? "var(--sv-gain)"
-                                          : "var(--sv-loss)"
-                                    }`,
-                                  }}
-                                >
-                                  <div
-                                    className="font-bold sv-text-accent mb-1"
-                                    style={{
-                                      fontSize: "0.8rem",
-                                    }}
-                                  >
-                                    {sym}
-                                  </div>
-                                  <div
-                                    className="font-bold text-color"
-                                    style={{
-                                      fontSize: "1rem",
-                                    }}
-                                  >
-                                    {fmtPrice(getPrice(d))}
-                                  </div>
-                                  <div
-                                    className="font-bold"
-                                    style={{
-                                      fontSize: "0.78rem",
-                                      color: gainColor(pct),
-                                    }}
-                                  >
-                                    {fmtPct(pct)}
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-
-                      {/* Chart placeholder */}
-                      <div
-                        className="flex align-items-center justify-content-center flex-column surface-overlay border-round-xl gap-3"
-                        style={{
-                          height: "320px",
-                          border: "1px dashed var(--sv-border)",
-                        }}
-                      >
-                        <i
-                          className="pi pi-chart-line sv-text-muted"
-                          style={{ fontSize: "3.5rem" }}
-                        />
-                        {selectedTopSymbols.length > 0 ? (
-                          <>
-                            <p
-                              className="sv-text-muted text-center m-0"
-                              style={{ maxWidth: "360px" }}
-                            >
-                              Performance comparison chart for{" "}
-                              <strong className="text-color-secondary">
-                                {selectedTopSymbols.join(", ")}
-                              </strong>
-                            </p>
-                            <span
-                              className="text-sm border-round-3xl"
-                              style={{
-                                color: "var(--sv-warning)",
-                                background: "var(--sv-warning-bg)",
-                                padding: "0.25rem 0.75rem",
-                                border: "1px solid var(--sv-warning)",
-                              }}
-                            >
-                              Chart integration coming soon
-                            </span>
-                          </>
-                        ) : (
-                          <p className="sv-text-muted m-0">
-                            Select symbols above to view performance comparison
-                          </p>
-                        )}
-                      </div>
-                    </div>
+                    <WatchlistPerformanceChart
+                      symbols={symbols}
+                      symbolData={symbolData}
+                    />
                   </TabPanel>
 
                   {/* ─ Tab 3: Alerts ─ */}
