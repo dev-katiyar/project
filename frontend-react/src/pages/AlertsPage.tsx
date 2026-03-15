@@ -9,6 +9,8 @@ import { Column } from "primereact/column";
 import { Skeleton } from "primereact/skeleton";
 import { Tag } from "primereact/tag";
 import { AutoComplete } from "primereact/autocomplete";
+import { IconField } from "primereact/iconfield";
+import { InputIcon } from "primereact/inputicon";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -687,15 +689,15 @@ const AlertsPage: React.FC = () => {
             <i className="pi pi-shield mr-2 sv-text-accent" />
             Alert Configuration
           </span>
-          <span className="p-input-icon-left">
-            <i className="pi pi-search" />
+          <IconField iconPosition="left">
+            <InputIcon className="pi pi-search" />
             <InputText
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
               placeholder="Filter symbols…"
               className="p-inputtext-sm"
             />
-          </span>
+          </IconField>
         </div>
 
         {/* Loading skeletons */}
