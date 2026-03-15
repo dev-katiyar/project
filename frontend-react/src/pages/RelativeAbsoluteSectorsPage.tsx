@@ -227,7 +227,9 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
         className="pi pi-sitemap sv-text-accent"
         style={{ fontSize: "1rem", opacity: 0.7, cursor: "pointer" }}
         title="View Top 10 Holdings"
-        onClick={() => setHoldingsDialog({ symbol: row.symbol, name: row.name })}
+        onClick={() =>
+          setHoldingsDialog({ symbol: row.symbol, name: row.name })
+        }
       />
     );
   };
@@ -760,6 +762,7 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
             multiplier={1}
             cc={cc}
             height={500}
+            scoreLabel="Abs. Score"
           />
         )}
         {!absLoading && absDialog?.data?.length === 0 && (
@@ -808,6 +811,7 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
             multiplier={-1}
             cc={cc}
             height={500}
+            scoreLabel="Rel. Score"
           />
         )}
         {!relLoading && relDialog?.data?.length === 0 && (

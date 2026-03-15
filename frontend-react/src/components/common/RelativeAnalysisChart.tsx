@@ -41,9 +41,7 @@ function buildOptions(
   scoreLabel: string,
 ): Highcharts.Options {
   const combinedKey =
-    multiplier === -1
-      ? `${symbol2}_${symbol1}`
-      : `${symbol1}_${symbol2}`;
+    multiplier === -1 ? `${symbol2}_${symbol1}` : `${symbol1}_${symbol2}`;
 
   const scoreKey = `${combinedKey}_score`;
   const diffKey = `${combinedKey}_diff`;
@@ -221,9 +219,7 @@ function buildOptions(
         gridLineColor: cc.grid,
         tickPositions: [-1, -0.75, -0.25, 0, 0.25, 0.75, 1],
         plotBands,
-        plotLines: [
-          { color: cc.text, dashStyle: "Dot", width: 1, value: 0 },
-        ],
+        plotLines: [{ color: cc.text, dashStyle: "Dot", width: 1, value: 0 }],
       },
 
       /* ─── [1] Price Change — bottom pane, left ─── */
@@ -241,9 +237,7 @@ function buildOptions(
         lineWidth: 1,
         lineColor: cc.border,
         gridLineColor: cc.grid,
-        plotLines: [
-          { color: cc.text, dashStyle: "Dot", width: 1, value: 0 },
-        ],
+        plotLines: [{ color: cc.text, dashStyle: "Dot", width: 1, value: 0 }],
         tickPositioner(this: any) {
           const max = parseFloat(
             Math.max(
@@ -317,10 +311,11 @@ const RelativeAnalysisChart: React.FC<RelativeAnalysisChartProps> = ({
   multiplier,
   cc,
   height = 500,
-  scoreLabel = "RA Score",
+  scoreLabel = "Score",
 }) => {
   const options = useMemo(
-    () => buildOptions(data, symbol1, symbol2, multiplier, cc, height, scoreLabel),
+    () =>
+      buildOptions(data, symbol1, symbol2, multiplier, cc, height, scoreLabel),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, symbol1, symbol2, multiplier, cc, height, scoreLabel],
   );
