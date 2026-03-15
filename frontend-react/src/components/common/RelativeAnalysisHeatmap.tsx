@@ -198,13 +198,10 @@ const RelativeAnalysisHeatmap: React.FC<Props> = ({
                     : score !== undefined
                       ? scoreColor(displayScore)
                       : "var(--sv-bg-surface)";
-                  // Light text only when background is dark enough
                   const textColor =
                     isDiag || score === undefined
                       ? "var(--sv-text-muted)"
-                      : Math.abs(displayScore) > 0.35
-                        ? "#ffffff"
-                        : "#111111";
+                      : "#ffffff";
 
                   return (
                     <td
