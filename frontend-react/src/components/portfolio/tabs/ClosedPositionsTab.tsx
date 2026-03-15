@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Tag } from "primereact/tag";
+import { InputText } from "primereact/inputtext";
 import { type ClosedPosition, fmtUSD, fmtUSDFull, fmtPct, gainColor } from "@/components/portfolio/PortfolioDetailPanel";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -23,19 +24,11 @@ const fmtDate = (d: string | undefined) => {
 
 const SymbolCell: React.FC<{ row: ClosedPosition }> = ({ row }) => (
   <div>
-    <div style={{ fontWeight: 700, color: "var(--sv-text-primary)", fontSize: "0.88rem" }}>
-      {row.symbol}
-    </div>
+    <div className="font-bold text-sm">{row.symbol}</div>
     {row.name && (
       <div
-        style={{
-          fontSize: "0.72rem",
-          color: "var(--sv-text-muted)",
-          maxWidth: "180px",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}
+        className="text-xs sv-text-muted overflow-hidden white-space-nowrap text-overflow-ellipsis"
+        style={{ maxWidth: "180px" }}
       >
         {row.name}
       </div>
@@ -45,11 +38,11 @@ const SymbolCell: React.FC<{ row: ClosedPosition }> = ({ row }) => (
 
 const PnlCell: React.FC<{ row: ClosedPosition }> = ({ row }) => (
   <div className="text-right">
-    <div style={{ fontWeight: 700, fontSize: "0.85rem", color: gainColor(row.pnl) }}>
+    <div className="font-bold text-sm" style={{ color: gainColor(row.pnl) }}>
       {fmtUSD(row.pnl)}
     </div>
     {row.pnlPercent !== undefined && (
-      <div style={{ fontSize: "0.72rem", color: gainColor(row.pnlPercent) }}>
+      <div className="text-xs" style={{ color: gainColor(row.pnlPercent) }}>
         {fmtPct(row.pnlPercent)}
       </div>
     )}
@@ -65,32 +58,26 @@ const ClosedSummary: React.FC<{ positions: ClosedPosition[] }> = ({ positions })
 
   return (
     <div
-      className="flex gap-4 flex-wrap"
-      style={{
-        padding: "0.6rem 1rem",
-        background: "var(--sv-bg-surface)",
-        borderBottom: "1px solid var(--sv-border)",
-        fontSize: "0.8rem",
-      }}
+      className="flex gap-4 flex-wrap px-3 py-2 text-sm surface-overlay"
+      style={{ borderBottom: "1px solid var(--sv-border)" }}
     >
-      <span style={{ color: "var(--sv-text-muted)" }}>
-        Closed Trades:{" "}
-        <strong style={{ color: "var(--sv-text-primary)" }}>{positions.length}</strong>
+      <span className="sv-text-muted">
+        Closed Trades: <strong className="text-color">{positions.length}</strong>
       </span>
-      <span style={{ color: "var(--sv-text-muted)" }}>
+      <span className="sv-text-muted">
         Realized P&L:{" "}
         <strong style={{ color: gainColor(totalPnl) }}>{fmtUSD(totalPnl)}</strong>
       </span>
-      <span style={{ color: "var(--sv-text-muted)" }}>
+      <span className="sv-text-muted">
         Win Rate:{" "}
         <strong style={{ color: Number(winRate) >= 50 ? "var(--sv-gain)" : "var(--sv-loss)" }}>
           {winRate}%
         </strong>
       </span>
-      <span style={{ color: "var(--sv-text-muted)" }}>
-        Winners: <strong style={{ color: "var(--sv-gain)" }}>{winners}</strong>
+      <span className="sv-text-muted">
+        Winners: <strong className="sv-text-gain">{winners}</strong>
         {" / "}
-        Losers: <strong style={{ color: "var(--sv-loss)" }}>{positions.length - winners}</strong>
+        Losers: <strong className="sv-text-loss">{positions.length - winners}</strong>
       </span>
     </div>
   );
@@ -103,12 +90,9 @@ const ClosedPositionsTab: React.FC<Props> = ({ positions }) => {
 
   if (!positions || positions.length === 0) {
     return (
-      <div
-        className="flex flex-column align-items-center justify-content-center gap-3"
-        style={{ padding: "4rem 1rem", color: "var(--sv-text-muted)" }}
-      >
+      <div className="flex flex-column align-items-center justify-content-center gap-3 py-8 sv-text-muted">
         <i className="pi pi-check-circle" style={{ fontSize: "2.5rem" }} />
-        <div style={{ fontSize: "0.9rem" }}>No closed positions</div>
+        <div className="text-sm">No closed positions</div>
       </div>
     );
   }
@@ -118,24 +102,14 @@ const ClosedPositionsTab: React.FC<Props> = ({ positions }) => {
       <ClosedSummary positions={positions} />
 
       {/* Search */}
-      <div style={{ padding: "0.6rem 1rem", borderBottom: "1px solid var(--sv-border)" }}>
-        <span className="p-input-icon-left">
-          <i className="pi pi-search" style={{ color: "var(--sv-text-muted)" }} />
-          <input
-            className="p-inputtext p-component"
+      <div className="px-3 py-2" style={{ borderBottom: "1px solid var(--sv-border)" }}>
+        <span className="relative">
+          <i className="pi pi-search sv-input-icon-left" />
+          <InputText
+            className="sv-search-input sv-input-pl-icon"
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
             placeholder="Search symbol…"
-            style={{
-              paddingLeft: "2.2rem",
-              width: "240px",
-              background: "var(--sv-bg-surface)",
-              border: "1px solid var(--sv-border)",
-              borderRadius: "8px",
-              color: "var(--sv-text-primary)",
-              fontSize: "0.82rem",
-              padding: "0.4rem 0.75rem 0.4rem 2.2rem",
-            }}
           />
         </span>
       </div>
@@ -173,7 +147,7 @@ const ClosedPositionsTab: React.FC<Props> = ({ positions }) => {
                 <Tag
                   value={r.side}
                   severity={r.side?.toLowerCase() === "buy" ? "success" : "danger"}
-                  style={{ fontSize: "0.7rem" }}
+                  className="text-xs"
                 />
               ) : null
             }
@@ -184,7 +158,7 @@ const ClosedPositionsTab: React.FC<Props> = ({ positions }) => {
           field="qty"
           header="Qty"
           body={(r: ClosedPosition) => (
-            <div className="text-right" style={{ fontSize: "0.85rem" }}>
+            <div className="text-right text-sm">
               {(r.qty ?? 0).toLocaleString("en-US", { maximumFractionDigits: 4 })}
             </div>
           )}
@@ -197,7 +171,7 @@ const ClosedPositionsTab: React.FC<Props> = ({ positions }) => {
             field="buyPrice"
             header="Buy Price"
             body={(r: ClosedPosition) => (
-              <div className="text-right" style={{ fontSize: "0.82rem", color: "var(--sv-text-secondary)" }}>
+              <div className="text-right text-xs text-color-secondary">
                 {r.buyPrice ? fmtUSDFull(r.buyPrice) : "—"}
               </div>
             )}
@@ -211,7 +185,7 @@ const ClosedPositionsTab: React.FC<Props> = ({ positions }) => {
             field="sellPrice"
             header="Sell Price"
             body={(r: ClosedPosition) => (
-              <div className="text-right" style={{ fontSize: "0.82rem", color: "var(--sv-text-secondary)" }}>
+              <div className="text-right text-xs text-color-secondary">
                 {r.sellPrice ? fmtUSDFull(r.sellPrice) : "—"}
               </div>
             )}
@@ -233,7 +207,7 @@ const ClosedPositionsTab: React.FC<Props> = ({ positions }) => {
             field="openDate"
             header="Open Date"
             body={(r: ClosedPosition) => (
-              <div style={{ fontSize: "0.8rem", color: "var(--sv-text-muted)", whiteSpace: "nowrap" }}>
+              <div className="text-xs sv-text-muted white-space-nowrap">
                 {fmtDate(r.openDate)}
               </div>
             )}
@@ -246,7 +220,7 @@ const ClosedPositionsTab: React.FC<Props> = ({ positions }) => {
             field="closeDate"
             header="Close Date"
             body={(r: ClosedPosition) => (
-              <div style={{ fontSize: "0.8rem", color: "var(--sv-text-muted)", whiteSpace: "nowrap" }}>
+              <div className="text-xs sv-text-muted white-space-nowrap">
                 {fmtDate(r.closeDate)}
               </div>
             )}
