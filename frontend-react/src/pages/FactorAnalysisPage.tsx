@@ -325,7 +325,7 @@ const FactorAnalysisPage: React.FC = () => {
   const scoresRank = useMemo(() => Array.isArray(faData?.scores_rank)           ? faData!.scores_rank           : [], [faData]);
 
   const periodCols = useMemo(
-    () => exRows.length ? Object.keys(exRows[0]).filter((k) => k !== "symbol" && k !== "name") : [],
+    () => exRows.length ? Object.keys(exRows[0]).filter((k) => k !== "symbol" && k !== "name").reverse() : [],
     [exRows]
   );
   const [exMin, exMax] = useMemo(() => {
