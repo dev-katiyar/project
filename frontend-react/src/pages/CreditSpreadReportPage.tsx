@@ -588,25 +588,8 @@ const CreditSpreadReportPage: React.FC = () => {
           >
             {/* Card Header */}
             <div className="px-3 pt-3 pb-2 border-bottom-1 surface-border">
-              <div className="flex align-items-center justify-content-between">
-                <div className="font-bold" style={{ fontSize: "0.88rem" }}>
-                  OAS Percentile Rankings
-                </div>
-                <div className="flex gap-1">
-                  {["3M", "1Y", "5Y", "20Y"].map((p) => (
-                    <span
-                      key={p}
-                      className="font-semibold border-round surface-section border-1 surface-border"
-                      style={{
-                        fontSize: "0.66rem",
-                        padding: "0.15rem 0.4rem",
-                        color: "var(--sv-text-secondary)",
-                      }}
-                    >
-                      {p}
-                    </span>
-                  ))}
-                </div>
+              <div className="font-bold" style={{ fontSize: "0.88rem" }}>
+                OAS Percentile Rankings
               </div>
               <div className="sv-text-muted mt-1" style={{ fontSize: "0.73rem" }}>
                 Click a row to load its 20-year history · Lower % = tighter spread = less stressed
