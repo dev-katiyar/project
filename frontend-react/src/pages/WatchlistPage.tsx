@@ -20,6 +20,7 @@ import WatchlistTickerTable, {
 } from "@/components/watchlist/WatchlistTickerTable";
 import WatchlistPerformanceChart from "@/components/watchlist/WatchlistPerformanceChart";
 import TechSignalsTab from "@/components/portfolio/tabs/TechSignalsTab";
+import { UpcomingDividendsTable, UpcomingEarningsTable } from "@/components/shared/UpcomingDividendsEarnings";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -804,79 +805,8 @@ const WatchlistPage: React.FC = () => {
                     header="Dividends & Earnings"
                     leftIcon="pi pi-calendar mr-2"
                   >
-                    <div className="grid p-3 gap-3">
-                      {/* Dividends card */}
-                      <div className="col-12 lg:col-6 p-0">
-                        <div
-                          className="surface-overlay border-round-xl p-5 text-center h-full"
-                          style={{
-                            border: "1px solid var(--sv-border)",
-                            borderTop: "3px solid var(--sv-gain)",
-                          }}
-                        >
-                          <div
-                            className="flex align-items-center justify-content-center border-circle mx-auto mb-4"
-                            style={{
-                              width: "52px",
-                              height: "52px",
-                              background: "var(--sv-success-bg)",
-                              border: "1px solid var(--sv-success)",
-                            }}
-                          >
-                            <i
-                              className="pi pi-dollar sv-text-gain"
-                              style={{ fontSize: "1.5rem" }}
-                            />
-                          </div>
-                          <h4 className="text-color m-0 mb-2">
-                            Upcoming Dividends
-                          </h4>
-                          <p
-                            className="sv-text-muted text-sm m-0"
-                            style={{ lineHeight: 1.6 }}
-                          >
-                            Dividend ex-dates, payment dates, and yield
-                            information for your watchlist securities.
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Earnings card */}
-                      <div className="col-12 lg:col-6 p-0">
-                        <div
-                          className="surface-overlay border-round-xl p-5 text-center h-full"
-                          style={{
-                            border: "1px solid var(--sv-border)",
-                            borderTop: "3px solid var(--sv-accent)",
-                          }}
-                        >
-                          <div
-                            className="flex align-items-center justify-content-center border-circle mx-auto mb-4"
-                            style={{
-                              width: "52px",
-                              height: "52px",
-                              background: "var(--sv-accent-bg)",
-                              border: "1px solid var(--sv-accent)",
-                            }}
-                          >
-                            <i
-                              className="pi pi-chart-bar sv-text-accent"
-                              style={{ fontSize: "1.5rem" }}
-                            />
-                          </div>
-                          <h4 className="text-color m-0 mb-2">
-                            Earnings Calendar
-                          </h4>
-                          <p
-                            className="sv-text-muted text-sm m-0"
-                            style={{ lineHeight: 1.6 }}
-                          >
-                            Upcoming earnings report dates and EPS estimates for
-                            your watchlist securities.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                    <UpcomingDividendsTable symbols={symbols} />
+                    <UpcomingEarningsTable symbols={symbols} />
                   </TabPanel>
                 </TabView>
               </div>
