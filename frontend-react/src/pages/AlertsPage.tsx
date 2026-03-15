@@ -46,12 +46,8 @@ const fmtPct = (v: number | undefined): string => {
   return `${v >= 0 ? "+" : ""}${v.toFixed(2)}%`;
 };
 
-const gainColor = (v: number | undefined): string =>
-  (v ?? 0) > 0
-    ? "var(--sv-gain)"
-    : (v ?? 0) < 0
-    ? "var(--sv-loss)"
-    : "var(--sv-text-secondary)";
+const gainClass = (v: number | undefined): string =>
+  (v ?? 0) > 0 ? "sv-text-gain" : (v ?? 0) < 0 ? "sv-text-loss" : "sv-text-muted";
 
 // ─── Alert Status ─────────────────────────────────────────────────────────────
 
@@ -113,53 +109,20 @@ const StatCard: React.FC<StatCardProps> = ({
   borderColor = "var(--sv-border)",
 }) => (
   <div
-    style={{
-      background: "var(--sv-bg-card)",
-      border: `1px solid ${borderColor}`,
-      borderRadius: "0.75rem",
-      padding: "1.25rem",
-      display: "flex",
-      alignItems: "center",
-      gap: "1rem",
-    }}
+    className="flex align-items-center gap-3 p-3 border-round-xl"
+    style={{ background: "var(--sv-bg-card)", border: `1px solid ${borderColor}` }}
   >
     <div
-      style={{
-        width: 48,
-        height: 48,
-        borderRadius: "50%",
-        background: bgColor,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexShrink: 0,
-      }}
+      className="flex align-items-center justify-content-center border-circle flex-shrink-0"
+      style={{ width: 48, height: 48, background: bgColor }}
     >
       <i className={`pi ${icon}`} style={{ color: accentColor, fontSize: "1.25rem" }} />
     </div>
     <div>
-      <div
-        style={{
-          fontSize: "2rem",
-          fontWeight: 800,
-          color: accentColor,
-          lineHeight: 1,
-        }}
-      >
+      <div className="font-bold line-height-1" style={{ fontSize: "2rem", color: accentColor }}>
         {loading ? <Skeleton width="48px" height="32px" /> : value}
       </div>
-      <div
-        style={{
-          fontSize: "0.75rem",
-          color: "var(--sv-text-muted)",
-          marginTop: "0.3rem",
-          textTransform: "uppercase",
-          letterSpacing: "0.06em",
-          fontWeight: 600,
-        }}
-      >
-        {label}
-      </div>
+      <div className="sv-info-label text-xs mt-1">{label}</div>
     </div>
   </div>
 );
@@ -429,36 +392,14 @@ const AlertsPage: React.FC = () => {
     return (
       <div className="flex align-items-center gap-2">
         <div
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: "6px",
-            background: "var(--sv-accent-bg)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
+          className="flex align-items-center justify-content-center border-round flex-shrink-0 sv-icon-badge"
+          style={{ width: 32, height: 32 }}
         >
-          <span
-            style={{
-              fontSize: "0.65rem",
-              fontWeight: 800,
-              color: "var(--sv-accent)",
-              letterSpacing: "0.03em",
-            }}
-          >
+          <span className="sv-text-accent font-bold" style={{ fontSize: "0.65rem", letterSpacing: "0.03em" }}>
             {alert.symbol.slice(0, 4)}
           </span>
         </div>
-        <span
-          style={{
-            fontWeight: 700,
-            color: "var(--sv-accent)",
-            letterSpacing: "0.04em",
-            fontSize: "0.95rem",
-          }}
-        >
+        <span className="sv-text-accent font-bold" style={{ letterSpacing: "0.04em", fontSize: "0.95rem" }}>
           {alert.symbol}
         </span>
       </div>
@@ -468,40 +409,22 @@ const AlertsPage: React.FC = () => {
   const priceBody = (alert: UserAlert) => {
     if (!alert.price && !alert._isNew)
       return <Skeleton width="70px" height="16px" />;
-    if (!alert.price) return <span style={{ color: "var(--sv-text-muted)" }}>—</span>;
-    return (
-      <span style={{ fontWeight: 700, color: "var(--sv-text-primary)" }}>
-        {fmtMoney(alert.price)}
-      </span>
-    );
+    if (!alert.price) return <span className="sv-text-muted">—</span>;
+    return <span className="font-bold">{fmtMoney(alert.price)}</span>;
   };
 
   const changeBody = (alert: UserAlert) => {
     if (!alert.price && !alert._isNew)
       return <Skeleton width="90px" height="16px" />;
     if (alert.priceChange == null)
-      return <span style={{ color: "var(--sv-text-muted)" }}>—</span>;
+      return <span className="sv-text-muted">—</span>;
     const sign = alert.priceChange >= 0 ? "+" : "";
     return (
       <div>
-        <span
-          style={{
-            fontWeight: 600,
-            color: gainColor(alert.priceChange),
-            fontSize: "0.9rem",
-          }}
-        >
-          {sign}
-          {fmtMoney(alert.priceChange)}
+        <span className={`font-semibold ${gainClass(alert.priceChange)}`} style={{ fontSize: "0.9rem" }}>
+          {sign}{fmtMoney(alert.priceChange)}
         </span>
-        <span
-          style={{
-            marginLeft: "0.35rem",
-            fontSize: "0.78rem",
-            color: gainColor(alert.priceChange),
-            opacity: 0.85,
-          }}
-        >
+        <span className={gainClass(alert.priceChange)} style={{ marginLeft: "0.35rem", fontSize: "0.78rem", opacity: 0.85 }}>
           ({fmtPct(alert.priceChangePct)})
         </span>
       </div>
@@ -523,26 +446,20 @@ const AlertsPage: React.FC = () => {
       );
     }
     const hi = Number(alert.high_target);
-    if (!hi) return <span style={{ color: "var(--sv-text-muted)" }}>—</span>;
-    const pctAway =
-      alert.price ? ((hi - alert.price) / alert.price) * 100 : null;
+    if (!hi) return <span className="sv-text-muted">—</span>;
+    const pctAway = alert.price ? ((hi - alert.price) / alert.price) * 100 : null;
     const isHit = pctAway !== null && pctAway <= 0;
     return (
       <div>
-        <div
-          style={{
-            fontWeight: 600,
-            color: isHit ? "var(--sv-danger)" : "var(--sv-text-primary)",
-          }}
-        >
+        <div className="font-semibold" style={{ color: isHit ? "var(--sv-danger)" : "var(--sv-text-primary)" }}>
           {fmtMoney(hi)}
         </div>
         {pctAway != null && (
           <div
+            className={isHit ? "font-bold" : ""}
             style={{
               fontSize: "0.72rem",
               color: isHit ? "var(--sv-danger)" : "var(--sv-text-muted)",
-              fontWeight: isHit ? 700 : 400,
             }}
           >
             {pctAway >= 0 ? `+${pctAway.toFixed(1)}% away` : "▲ TRIGGERED"}
@@ -567,26 +484,20 @@ const AlertsPage: React.FC = () => {
       );
     }
     const lo = Number(alert.low_target);
-    if (!lo) return <span style={{ color: "var(--sv-text-muted)" }}>—</span>;
-    const pctBuffer =
-      alert.price ? ((alert.price - lo) / alert.price) * 100 : null;
+    if (!lo) return <span className="sv-text-muted">—</span>;
+    const pctBuffer = alert.price ? ((alert.price - lo) / alert.price) * 100 : null;
     const isHit = pctBuffer !== null && pctBuffer <= 0;
     return (
       <div>
-        <div
-          style={{
-            fontWeight: 600,
-            color: isHit ? "var(--sv-warning)" : "var(--sv-text-primary)",
-          }}
-        >
+        <div className="font-semibold" style={{ color: isHit ? "var(--sv-warning)" : "var(--sv-text-primary)" }}>
           {fmtMoney(lo)}
         </div>
         {pctBuffer != null && (
           <div
+            className={isHit ? "font-bold" : ""}
             style={{
               fontSize: "0.72rem",
               color: isHit ? "var(--sv-warning)" : "var(--sv-text-muted)",
-              fontWeight: isHit ? 700 : 400,
             }}
           >
             {pctBuffer >= 0 ? `+${pctBuffer.toFixed(1)}% buffer` : "▼ TRIGGERED"}
@@ -611,10 +522,8 @@ const AlertsPage: React.FC = () => {
       );
     }
     const v = Number(alert.daily_high);
-    if (!v) return <span style={{ color: "var(--sv-text-muted)" }}>—</span>;
-    return (
-      <span style={{ fontWeight: 600, color: "var(--sv-gain)" }}>+{v}%</span>
-    );
+    if (!v) return <span className="sv-text-muted">—</span>;
+    return <span className="sv-text-gain font-semibold">+{v}%</span>;
   };
 
   const dailyLowBody = (alert: UserAlert, opts: { rowIndex: number }) => {
@@ -632,10 +541,8 @@ const AlertsPage: React.FC = () => {
       );
     }
     const v = Number(alert.daily_low);
-    if (!v) return <span style={{ color: "var(--sv-text-muted)" }}>—</span>;
-    return (
-      <span style={{ fontWeight: 600, color: "var(--sv-loss)" }}>-{v}%</span>
-    );
+    if (!v) return <span className="sv-text-muted">—</span>;
+    return <span className="sv-text-loss font-semibold">-{v}%</span>;
   };
 
   const statusBody = (alert: UserAlert) => {
@@ -675,46 +582,20 @@ const AlertsPage: React.FC = () => {
 
       {/* ── Page Header ─────────────────────────────────────────────────────── */}
       <div className="flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
-        <div>
-          <div className="flex align-items-center gap-2 mb-1">
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: "10px",
-                background: "var(--sv-accent-bg)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <i
-                className="pi pi-bell"
-                style={{ color: "var(--sv-accent)", fontSize: "1.2rem" }}
-              />
-            </div>
-            <div>
-              <h2
-                style={{
-                  margin: 0,
-                  color: "var(--sv-text-primary)",
-                  fontWeight: 800,
-                  fontSize: "1.4rem",
-                  lineHeight: 1.2,
-                }}
-              >
-                Price Alerts
-              </h2>
-              <p
-                style={{
-                  margin: 0,
-                  color: "var(--sv-text-muted)",
-                  fontSize: "0.82rem",
-                }}
-              >
-                Monitor price targets and daily move thresholds
-              </p>
-            </div>
+        <div className="flex align-items-center gap-2">
+          <div
+            className="flex align-items-center justify-content-center border-round-xl flex-shrink-0 sv-icon-badge"
+            style={{ width: 40, height: 40 }}
+          >
+            <i className="pi pi-bell sv-text-accent" style={{ fontSize: "1.2rem" }} />
+          </div>
+          <div>
+            <h2 className="m-0 font-bold sv-page-title" style={{ fontSize: "1.4rem", lineHeight: 1.2 }}>
+              Price Alerts
+            </h2>
+            <p className="m-0 sv-text-muted" style={{ fontSize: "0.82rem" }}>
+              Monitor price targets and daily move thresholds
+            </p>
           </div>
         </div>
 
@@ -794,29 +675,16 @@ const AlertsPage: React.FC = () => {
 
       {/* ── Alerts Table ─────────────────────────────────────────────────────── */}
       <div
-        style={{
-          background: "var(--sv-bg-card)",
-          border: "1px solid var(--sv-border)",
-          borderRadius: "0.75rem",
-          overflow: "hidden",
-        }}
+        className="border-round-xl overflow-hidden"
+        style={{ background: "var(--sv-bg-card)", border: "1px solid var(--sv-border)" }}
       >
         {/* Table toolbar */}
         <div
           className="flex align-items-center justify-content-between px-3 py-2"
           style={{ borderBottom: "1px solid var(--sv-border)" }}
         >
-          <span
-            style={{
-              fontWeight: 600,
-              color: "var(--sv-text-secondary)",
-              fontSize: "0.9rem",
-            }}
-          >
-            <i
-              className="pi pi-shield mr-2"
-              style={{ color: "var(--sv-accent)" }}
-            />
+          <span className="font-semibold text-sm" style={{ color: "var(--sv-text-secondary)" }}>
+            <i className="pi pi-shield mr-2 sv-text-accent" />
             Alert Configuration
           </span>
           <span className="p-input-icon-left">
@@ -841,34 +709,15 @@ const AlertsPage: React.FC = () => {
           /* Empty state */
           <div className="flex flex-column align-items-center justify-content-center p-6 gap-2">
             <div
-              style={{
-                width: 72,
-                height: 72,
-                borderRadius: "50%",
-                background: "var(--sv-bg-surface)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: "0.5rem",
-              }}
+              className="flex align-items-center justify-content-center border-circle mb-2"
+              style={{ width: 72, height: 72, background: "var(--sv-bg-surface)" }}
             >
-              <i
-                className="pi pi-bell-slash"
-                style={{ fontSize: "2rem", color: "var(--sv-text-muted)" }}
-              />
+              <i className="pi pi-bell-slash sv-text-muted" style={{ fontSize: "2rem" }} />
             </div>
-            <div
-              style={{
-                fontSize: "1.1rem",
-                fontWeight: 700,
-                color: "var(--sv-text-secondary)",
-              }}
-            >
+            <div className="font-bold text-xl" style={{ color: "var(--sv-text-secondary)" }}>
               No alerts configured
             </div>
-            <div
-              style={{ color: "var(--sv-text-muted)", fontSize: "0.875rem" }}
-            >
+            <div className="sv-text-muted text-sm">
               Click "Edit Alerts" to add price targets for your stocks
             </div>
             <Button
@@ -971,10 +820,7 @@ const AlertsPage: React.FC = () => {
       <Dialog
         header={
           <span>
-            <i
-              className="pi pi-exclamation-circle mr-2"
-              style={{ color: "var(--sv-danger)" }}
-            />
+            <i className="pi pi-exclamation-circle mr-2 sv-error-text" />
             Validation Error
           </span>
         }
@@ -983,7 +829,7 @@ const AlertsPage: React.FC = () => {
         modal
         style={{ width: "min(90vw, 420px)" }}
       >
-        <p style={{ margin: 0, color: "var(--sv-danger)", lineHeight: 1.5 }}>
+        <p className="m-0 sv-error-text" style={{ lineHeight: 1.5 }}>
           {validationError}
         </p>
         <div className="flex justify-content-end mt-3">
@@ -999,10 +845,7 @@ const AlertsPage: React.FC = () => {
       <Dialog
         header={
           <span>
-            <i
-              className="pi pi-trash mr-2"
-              style={{ color: "var(--sv-danger)" }}
-            />
+            <i className="pi pi-trash mr-2 sv-error-text" />
             Remove Alert
           </span>
         }
@@ -1011,21 +854,11 @@ const AlertsPage: React.FC = () => {
         modal
         style={{ width: "min(90vw, 380px)" }}
       >
-        <p style={{ margin: 0, color: "var(--sv-text-primary)" }}>
+        <p className="m-0">
           Remove price alert for{" "}
-          <strong style={{ color: "var(--sv-accent)" }}>
-            {deleteTarget?.symbol}
-          </strong>
-          ?
+          <strong className="sv-text-accent">{deleteTarget?.symbol}</strong>?
           {!deleteTarget?._isNew && (
-            <span
-              style={{
-                display: "block",
-                fontSize: "0.82rem",
-                color: "var(--sv-text-muted)",
-                marginTop: "0.35rem",
-              }}
-            >
+            <span className="sv-text-muted" style={{ display: "block", fontSize: "0.82rem", marginTop: "0.35rem" }}>
               This action cannot be undone.
             </span>
           )}
