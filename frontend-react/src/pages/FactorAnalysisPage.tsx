@@ -42,7 +42,7 @@ interface SymbolDict { code: string; name: string; dict: Record<string, string> 
 interface FaResponse {
   excess_period_returns: Array<Record<string, any>>;
   corr_matrices: Record<string, Record<string, Record<string, number>>>;
-  scores_rank: Array<Record<string, any>>;
+  scores_rank: Array<Record<string, any>> | Record<string, Record<string, Record<string, any>>>;
   update_date?: string;
 }
 
@@ -259,7 +259,14 @@ const FactorAnalysisPage: React.FC = () => {
   const applyFilter = () => {
     const thresh = parseFloat(corrThreshold);
     if (isNaN(thresh) || !faData) return;
-    const src = Array.isArray(faData.scores_rank) ? faData.scores_rank : [];
+    const raw = faData.scores_rank;
+    const src: Record<string, any>[] = Array.isArray(raw)
+      ? raw
+      : Object.entries(raw as Record<string, Record<string, Record<string, any>>>).flatMap(([sym1, inner]) =>
+          Object.entries(inner)
+            .filter(([sym2]) => sym1 !== sym2)
+            .map(([sym2, data]) => ({ sym1, sym2, correlation: data.corr ?? null, ...data }))
+        );
     const pairs = src.filter((row) =>
       corrDir === "less" ? +row.correlation <= thresh : +row.correlation >= thresh
     );
@@ -322,7 +329,21 @@ const FactorAnalysisPage: React.FC = () => {
 
   // ── Derived table data ─────────────────────────────────────────────────────────
   const exRows     = useMemo(() => Array.isArray(faData?.excess_period_returns) ? faData!.excess_period_returns : [], [faData]);
-  const scoresRank = useMemo(() => Array.isArray(faData?.scores_rank)           ? faData!.scores_rank           : [], [faData]);
+  const scoresRank = useMemo(() => {
+    const raw = faData?.scores_rank;
+    if (!raw) return [];
+    if (Array.isArray(raw)) return raw;
+    // API returns nested object { sym1: { sym2: { data } } } — flatten to row array
+    const rows: Record<string, any>[] = [];
+    for (const sym1 of Object.keys(raw)) {
+      for (const sym2 of Object.keys(raw[sym1])) {
+        if (sym1 === sym2) continue;
+        const data = (raw as Record<string, Record<string, Record<string, any>>>)[sym1][sym2];
+        if (data) rows.push({ sym1, sym2, correlation: data.corr ?? null, ...data });
+      }
+    }
+    return rows;
+  }, [faData]);
 
   const periodCols = useMemo(
     () => exRows.length ? Object.keys(exRows[0]).filter((k) => k !== "symbol" && k !== "name").reverse() : [],
@@ -687,7 +708,7 @@ const FactorAnalysisPage: React.FC = () => {
                           return (
                             <td
                               key={s2}
-                              onClick={() => pairRow && openPairChart(pairRow.sym1, pairRow.sym2)}
+                              onClick={() => pairRow && openPairChart(s1, s2)}
                               title={pairRow ? `${s1} vs ${s2} · click for trend chart` : undefined}
                               style={{
                                 ...tdSt, ...hs,
