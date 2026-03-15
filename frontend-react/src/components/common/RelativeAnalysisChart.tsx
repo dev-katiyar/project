@@ -40,8 +40,12 @@ function buildOptions(
   height: number,
   scoreLabel: string,
 ): Highcharts.Options {
-  const combinedKey =
-    multiplier === -1 ? `${symbol2}_${symbol1}` : `${symbol1}_${symbol2}`;
+  const isAbsolute = symbol1 === symbol2;
+  const combinedKey = isAbsolute
+    ? symbol1
+    : multiplier === -1
+      ? `${symbol2}_${symbol1}`
+      : `${symbol1}_${symbol2}`;
 
   const scoreKey = `${combinedKey}_score`;
   const diffKey = `${combinedKey}_diff`;
