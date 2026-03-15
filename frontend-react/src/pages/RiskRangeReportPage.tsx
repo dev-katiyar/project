@@ -112,7 +112,7 @@ function fmtNum(v: number | null | undefined, d = 2): string {
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
 function RiskBadge({ risk }: { risk: string }) {
-  if (!risk) return <span style={{ color: "var(--sv-text-muted)" }}>—</span>;
+  if (!risk) return <span className="sv-text-muted">—</span>;
   const r = risk.toLowerCase();
   const cfg =
     r === "high"
@@ -123,10 +123,8 @@ function RiskBadge({ risk }: { risk: string }) {
 
   return (
     <span
+      className="inline-flex align-items-center gap-1"
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 4,
         padding: "2px 10px",
         borderRadius: 20,
         background: cfg.bg,
@@ -145,14 +143,12 @@ function RiskBadge({ risk }: { risk: string }) {
 }
 
 function SignalBadge({ signal }: { signal: string }) {
-  if (!signal) return <span style={{ color: "var(--sv-text-muted)" }}>—</span>;
+  if (!signal) return <span className="sv-text-muted">—</span>;
   const isBull = signal.toLowerCase() === "bullish";
   return (
     <span
+      className="inline-flex align-items-center gap-1"
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 4,
         padding: "2px 10px",
         borderRadius: 20,
         background: isBull ? "rgba(34,197,94,0.12)" : "rgba(239,68,68,0.12)",
@@ -187,55 +183,25 @@ function StatsSummary({ data }: { data: RiskRow[] }) {
   ];
 
   return (
-    <div className="flex gap-3 mb-4" style={{ flexWrap: "wrap" }}>
+    <div className="flex gap-3 mb-4 flex-wrap">
       {cards.map((c) => (
         <div
           key={c.label}
-          style={{
-            background: c.bg,
-            border: `1px solid ${c.color}`,
-            borderRadius: 10,
-            padding: "12px 20px",
-            minWidth: 140,
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            flex: "0 0 auto",
-          }}
+          className="flex align-items-center gap-3 border-round-xl p-3"
+          style={{ background: c.bg, border: `1px solid ${c.color}`, minWidth: 140, flexShrink: 0 }}
         >
-          <i className={c.icon} style={{ color: c.color, fontSize: "1.5rem" }} />
+          <i className={`${c.icon} text-2xl`} style={{ color: c.color }} />
           <div>
-            <div style={{ fontSize: "1.6rem", fontWeight: 800, color: c.color, lineHeight: 1 }}>{c.value}</div>
-            <div
-              style={{
-                fontSize: "0.68rem",
-                color: "var(--sv-text-muted)",
-                letterSpacing: "0.07em",
-                textTransform: "uppercase",
-                marginTop: 2,
-              }}
-            >
-              {c.label}
-            </div>
+            <div className="font-bold" style={{ fontSize: "1.6rem", color: c.color, lineHeight: 1 }}>{c.value}</div>
+            <div className="sv-info-label" style={{ fontSize: "0.68rem", marginTop: 2 }}>{c.label}</div>
           </div>
         </div>
       ))}
 
       {/* Risk distribution bar */}
       {total > 0 && (
-        <div
-          style={{
-            flex: 1,
-            minWidth: 200,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            gap: 6,
-          }}
-        >
-          <div style={{ fontSize: "0.7rem", color: "var(--sv-text-muted)", textTransform: "uppercase", letterSpacing: "0.07em" }}>
-            Risk Distribution
-          </div>
+        <div className="flex flex-column justify-content-center gap-2 flex-1" style={{ minWidth: 200 }}>
+          <div className="sv-info-label" style={{ fontSize: "0.7rem" }}>Risk Distribution</div>
           <div style={{ display: "flex", height: 8, borderRadius: 4, overflow: "hidden", gap: 1 }}>
             {low > 0 && (
               <div
@@ -253,13 +219,13 @@ function StatsSummary({ data }: { data: RiskRow[] }) {
               />
             )}
           </div>
-          <div style={{ display: "flex", gap: 12 }}>
+          <div className="flex gap-3">
             {[
               { label: `${low} Low`, color: "var(--sv-gain)" },
               { label: `${normal} Normal`, color: "var(--sv-warning)" },
               { label: `${high} High`, color: "var(--sv-loss)" },
             ].map((item) => (
-              <span key={item.label} style={{ fontSize: "0.7rem", color: item.color, fontWeight: 600 }}>
+              <span key={item.label} className="font-semibold" style={{ fontSize: "0.7rem", color: item.color }}>
                 {item.label}
               </span>
             ))}
@@ -329,12 +295,9 @@ function RiskTable({ tableData, rowGroupMeta, isEtfView, onHoldingsClick, loadin
 
   if (loading) {
     return (
-      <div
-        className="flex justify-content-center align-items-center flex-column gap-3"
-        style={{ minHeight: 220, padding: "2rem" }}
-      >
+      <div className="flex justify-content-center align-items-center flex-column gap-3 p-5" style={{ minHeight: 220 }}>
         <ProgressSpinner style={{ width: 40, height: 40 }} strokeWidth="3" />
-        <span style={{ color: "var(--sv-text-muted)", fontSize: "0.83rem" }}>Preparing risk range analysis…</span>
+        <span className="sv-text-muted" style={{ fontSize: "0.83rem" }}>Preparing risk range analysis…</span>
       </div>
     );
   }
@@ -468,7 +431,7 @@ function RiskTable({ tableData, rowGroupMeta, isEtfView, onHoldingsClick, loadin
                   >
                     {/* Symbol */}
                     <td style={{ ...td, textAlign: "left", paddingLeft: 16 }}>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                      <div className="flex flex-column gap-1">
                         <span
                           style={{
                             fontWeight: 700,
@@ -508,27 +471,15 @@ function RiskTable({ tableData, rowGroupMeta, isEtfView, onHoldingsClick, loadin
                         <td style={{ ...td, textAlign: "left", color: "var(--sv-text-secondary)" }}>{row.name}</td>
                         <td style={{ ...td, borderRight: SECTION_BORDER }}>
                           {!isRef && !NO_HOLDINGS_SYMBOLS.includes(row.symbol) && (
-                            <button
+                            <Button
+                              icon="pi pi-sitemap"
+                              text
+                              size="small"
                               onClick={() => onHoldingsClick?.(row)}
-                              title={`View ${row.symbol} top holdings`}
-                              style={{
-                                background: "none",
-                                border: "none",
-                                cursor: "pointer",
-                                padding: "4px 8px",
-                                borderRadius: 6,
-                                color: "var(--sv-accent)",
-                                transition: "background 0.12s, color 0.12s",
-                              }}
-                              onMouseEnter={(e) => {
-                                (e.currentTarget as HTMLElement).style.background = "var(--sv-accent-bg)";
-                              }}
-                              onMouseLeave={(e) => {
-                                (e.currentTarget as HTMLElement).style.background = "none";
-                              }}
-                            >
-                              <i className="pi pi-sitemap" style={{ fontSize: "1rem" }} />
-                            </button>
+                              tooltip={`View ${row.symbol} top holdings`}
+                              tooltipOptions={{ position: "top" }}
+                              style={{ color: "var(--sv-accent)" }}
+                            />
                           )}
                         </td>
                       </>
@@ -714,48 +665,22 @@ export default function RiskRangeReportPage() {
 
   // ── Render ───────────────────────────────────────────────────────────────────
 
-  const cardStyle: CSSProperties = {
-    background: "var(--sv-bg-surface)",
-    borderRadius: 12,
-    boxShadow: "var(--sv-shadow-md)",
-    overflow: "hidden",
-    border: "1px solid var(--sv-border)",
-  };
-
   return (
-    <div className="sv-content-wrap" style={{ padding: "1.5rem 1.5rem 2.5rem" }}>
+    <div className="sv-content-wrap p-4 pb-6">
       {/* ── Page header ── */}
-      <div className="flex align-items-start justify-content-between mb-4" style={{ flexWrap: "wrap", gap: 12 }}>
+      <div className="flex align-items-start justify-content-between mb-4 flex-wrap gap-3">
         <div>
-          <h1
-            style={{
-              margin: 0,
-              fontSize: "1.45rem",
-              fontWeight: 700,
-              color: "var(--sv-text-primary)",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
+          <h1 className="flex align-items-center gap-2 m-0" style={{ fontSize: "1.45rem", fontWeight: 700, color: "var(--sv-text-primary)" }}>
             <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: 36,
-                height: 36,
-                borderRadius: 9,
-                background: "var(--sv-accent-bg)",
-                border: "1px solid var(--sv-accent)",
-              }}
+              className="sv-icon-badge inline-flex align-items-center justify-content-center border-round-lg flex-shrink-0"
+              style={{ border: "1px solid var(--sv-accent)" }}
             >
               <i className="pi pi-shield" style={{ color: "var(--sv-accent)", fontSize: "1rem" }} />
             </span>
             Risk Range Report
           </h1>
           {updateDate && (
-            <p style={{ margin: "6px 0 0 46px", fontSize: "0.77rem", color: "var(--sv-text-muted)" }}>
+            <p className="sv-text-muted m-0 mt-1 ml-6" style={{ fontSize: "0.77rem" }}>
               Price data as of{" "}
               <span style={{ color: "var(--sv-danger)", fontWeight: 600 }}>{updateDate} EST</span>
             </p>
@@ -768,26 +693,13 @@ export default function RiskRangeReportPage() {
           outlined
           loading={loading}
           onClick={() => loadMainData(true)}
-          style={{ fontSize: "0.82rem", alignSelf: "flex-start" }}
+          style={{ fontSize: "0.82rem" }}
         />
       </div>
 
       {/* ── Error state ── */}
       {error && (
-        <div
-          style={{
-            padding: "0.9rem 1.2rem",
-            borderRadius: 8,
-            background: "var(--sv-danger-bg)",
-            border: "1px solid var(--sv-danger)",
-            color: "var(--sv-danger)",
-            marginBottom: "1.25rem",
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            fontSize: "0.85rem",
-          }}
-        >
+        <div className="sv-alert-error flex align-items-center gap-2 border-round-lg p-3 mb-4" style={{ fontSize: "0.85rem" }}>
           <i className="pi pi-exclamation-triangle" style={{ fontSize: "1rem" }} />
           {error}
         </div>
@@ -795,14 +707,9 @@ export default function RiskRangeReportPage() {
 
       {/* ── Initial loading ── */}
       {loading && tableData.length === 0 && (
-        <div
-          className="flex justify-content-center align-items-center flex-column gap-3"
-          style={{ minHeight: 340 }}
-        >
+        <div className="flex justify-content-center align-items-center flex-column gap-3" style={{ minHeight: 340 }}>
           <ProgressSpinner style={{ width: 52, height: 52 }} strokeWidth="3" />
-          <span style={{ color: "var(--sv-text-muted)", fontSize: "0.85rem" }}>
-            Preparing risk range analysis…
-          </span>
+          <span className="sv-text-muted" style={{ fontSize: "0.85rem" }}>Preparing risk range analysis…</span>
         </div>
       )}
 
@@ -811,7 +718,7 @@ export default function RiskRangeReportPage() {
 
       {/* ── Main table ── */}
       {tableData.length > 0 && (
-        <div style={{ ...cardStyle, marginBottom: "1.5rem" }}>
+        <div className="sv-data-card mb-4">
           <RiskTable
             tableData={tableData}
             rowGroupMeta={rowGroupMeta}
@@ -824,36 +731,25 @@ export default function RiskRangeReportPage() {
 
       {/* ── ETF Holdings panel ── */}
       {selectedETF && (
-        <div
-          style={{
-            ...cardStyle,
-            border: "1px solid var(--sv-accent)",
-            boxShadow: "var(--sv-shadow-glow)",
-          }}
-        >
+        <div className="sv-data-card" style={{ border: "1px solid var(--sv-accent)", boxShadow: "var(--sv-shadow-glow)" }}>
           {/* Panel header */}
           <div
-            className="flex align-items-center justify-content-between"
-            style={{
-              padding: "12px 20px",
-              borderBottom: "1px solid var(--sv-border)",
-              background: "var(--sv-accent-bg)",
-            }}
+            className="flex align-items-center justify-content-between flex-wrap gap-2 px-4 py-3"
+            style={{ borderBottom: "1px solid var(--sv-border)", background: "var(--sv-accent-bg)" }}
           >
-            <div className="flex align-items-center gap-2" style={{ flexWrap: "wrap" }}>
+            <div className="flex align-items-center gap-2 flex-wrap">
               <i className="pi pi-sitemap" style={{ color: "var(--sv-accent)", fontSize: "1rem" }} />
-              <span style={{ fontWeight: 700, color: "var(--sv-text-primary)", fontSize: "0.95rem" }}>
+              <span className="font-bold" style={{ color: "var(--sv-text-primary)", fontSize: "0.95rem" }}>
                 {selectedETF.symbol}
               </span>
               <span style={{ color: "var(--sv-text-secondary)", fontSize: "0.85rem" }}>{selectedETF.name}</span>
               <span
+                className="font-bold border-round-3xl"
                 style={{
                   fontSize: "0.65rem",
                   padding: "2px 9px",
-                  borderRadius: 20,
                   background: "var(--sv-accent)",
                   color: "var(--sv-bg-body)",
-                  fontWeight: 700,
                   letterSpacing: "0.07em",
                   textTransform: "uppercase",
                 }}
@@ -861,34 +757,13 @@ export default function RiskRangeReportPage() {
                 ETF Holdings
               </span>
             </div>
-            <button
+            <Button
+              icon="pi pi-times"
+              label="Close"
+              size="small"
+              outlined
               onClick={handleCloseETF}
-              aria-label="Close ETF panel"
-              style={{
-                background: "none",
-                border: "1px solid var(--sv-border)",
-                cursor: "pointer",
-                color: "var(--sv-text-muted)",
-                borderRadius: 6,
-                padding: "4px 10px",
-                display: "flex",
-                alignItems: "center",
-                gap: 5,
-                fontSize: "0.78rem",
-                transition: "background 0.12s, color 0.12s",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.background = "var(--sv-bg-card)";
-                (e.currentTarget as HTMLElement).style.color = "var(--sv-text-primary)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.background = "none";
-                (e.currentTarget as HTMLElement).style.color = "var(--sv-text-muted)";
-              }}
-            >
-              <i className="pi pi-times" style={{ fontSize: "0.75rem" }} />
-              Close
-            </button>
+            />
           </div>
 
           {/* ETF table */}
