@@ -58,10 +58,13 @@ interface SymbolData {
   mtd?: number;
   ytd?: number;
   priceChangeYearly?: number;
+  priceChange2Year?: number;
+  priceChange3Year?: number;
   // SMAs
   sma20?: number;
   sma50?: number;
   sma100?: number;
+  sma150?: number;
   sma200?: number;
   // Fundamental scores
   mohanramScore?: number;
@@ -852,66 +855,48 @@ const WatchlistPage: React.FC = () => {
   const ytdBodyTemplate = (row: SymbolData) => pctChangeTag(row.ytd);
   const change1yBodyTemplate = (row: SymbolData) =>
     pctChangeTag(row.priceChangeYearly);
+  const change2yBodyTemplate = (row: SymbolData) =>
+    pctChangeTag(row.priceChange2Year);
+  const change3yBodyTemplate = (row: SymbolData) =>
+    pctChangeTag(row.priceChange3Year);
 
-  // ── SMA Trend Analysis ─────────────────────────────────────────────────────
-  const smaTrendBodyTemplate = (row: SymbolData) => {
+  // ── Individual SMA columns ─────────────────────────────────────────────────
+  const smaBodyTemplate = (val: number | undefined, row: SymbolData) => {
     const price = getPrice(row);
-    const smas: { label: string; val: number | undefined }[] = [
-      { label: "20", val: row.sma20 },
-      { label: "50", val: row.sma50 },
-      { label: "100", val: row.sma100 },
-      { label: "200", val: row.sma200 },
-    ];
+    const v = val ?? null;
+    const diff = price != null && v != null ? price - v : null;
+    const pct = diff != null && v != null && v !== 0 ? (diff / v) * 100 : null;
+    const color =
+      diff == null
+        ? "var(--sv-text-muted)"
+        : diff > 0
+          ? "var(--sv-gain)"
+          : diff < 0
+            ? "var(--sv-loss)"
+            : "var(--sv-text-muted)";
     return (
-      <div className="flex gap-1 align-items-center flex-wrap">
-        {smas.map(({ label, val }) => {
-          const above = price != null && val != null ? price > val : null;
-          return (
-            <span
-              key={label}
-              title={
-                val != null
-                  ? `SMA${label}: ${val.toFixed(2)}`
-                  : `SMA${label}: N/A`
-              }
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "0.68rem",
-                fontWeight: 700,
-                padding: "1px 5px",
-                borderRadius: "4px",
-                background:
-                  above == null
-                    ? "var(--sv-bg-surface)"
-                    : above
-                      ? "var(--sv-success-bg)"
-                      : "var(--sv-danger-bg)",
-                color:
-                  above == null
-                    ? "var(--sv-text-muted)"
-                    : above
-                      ? "var(--sv-gain)"
-                      : "var(--sv-loss)",
-                border: `1px solid ${above == null ? "var(--sv-border)" : above ? "var(--sv-gain)" : "var(--sv-loss)"}`,
-                lineHeight: 1.6,
-                cursor: "default",
-              }}
-            >
-              {label}
-              {above != null && (
-                <i
-                  className={`pi pi-arrow-${above ? "up" : "down"} ml-1`}
-                  style={{ fontSize: "0.55rem" }}
-                />
-              )}
+      <div className="text-right">
+        <div style={{ fontSize: "0.82rem", color: "var(--sv-text-secondary)" }}>
+          {v != null ? fmtPrice(v) : "—"}
+        </div>
+        {diff != null && (
+          <div style={{ fontSize: "0.73rem", fontWeight: 600, color }}>
+            {diff >= 0 ? "+" : ""}
+            {diff.toFixed(2)}{" "}
+            <span style={{ opacity: 0.85 }}>
+              ({pct != null ? `${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%` : "—"})
             </span>
-          );
-        })}
+          </div>
+        )}
       </div>
     );
   };
+
+  const sma20BodyTemplate = (row: SymbolData) => smaBodyTemplate(row.sma20, row);
+  const sma50BodyTemplate = (row: SymbolData) => smaBodyTemplate(row.sma50, row);
+  const sma100BodyTemplate = (row: SymbolData) => smaBodyTemplate(row.sma100, row);
+  const sma150BodyTemplate = (row: SymbolData) => smaBodyTemplate(row.sma150, row);
+  const sma200BodyTemplate = (row: SymbolData) => smaBodyTemplate(row.sma200, row);
 
   // ── Scores ─────────────────────────────────────────────────────────────────
   const scoreBodyTemplate = (
@@ -1498,9 +1483,68 @@ const WatchlistPage: React.FC = () => {
                             }}
                           />
                           <Column
-                            header="SMA Trend"
-                            body={smaTrendBodyTemplate}
-                            style={{ minWidth: "160px" }}
+                            header="2Y Chg"
+                            body={change2yBodyTemplate}
+                            sortable
+                            sortField="priceChange2Year"
+                            style={{ minWidth: "90px" }}
+                            pt={{
+                              headerContent: {
+                                className: "justify-content-end",
+                              },
+                            }}
+                          />
+                          <Column
+                            header="3Y Chg"
+                            body={change3yBodyTemplate}
+                            sortable
+                            sortField="priceChange3Year"
+                            style={{ minWidth: "90px" }}
+                            pt={{
+                              headerContent: {
+                                className: "justify-content-end",
+                              },
+                            }}
+                          />
+                          <Column
+                            header="SMA 20"
+                            body={sma20BodyTemplate}
+                            sortable
+                            sortField="sma20"
+                            style={{ minWidth: "90px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
+                          />
+                          <Column
+                            header="SMA 50"
+                            body={sma50BodyTemplate}
+                            sortable
+                            sortField="sma50"
+                            style={{ minWidth: "90px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
+                          />
+                          <Column
+                            header="SMA 100"
+                            body={sma100BodyTemplate}
+                            sortable
+                            sortField="sma100"
+                            style={{ minWidth: "90px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
+                          />
+                          <Column
+                            header="SMA 150"
+                            body={sma150BodyTemplate}
+                            sortable
+                            sortField="sma150"
+                            style={{ minWidth: "90px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
+                          />
+                          <Column
+                            header="SMA 200"
+                            body={sma200BodyTemplate}
+                            sortable
+                            sortField="sma200"
+                            style={{ minWidth: "90px" }}
+                            pt={{ headerContent: { className: "justify-content-end" } }}
                           />
                           <Column
                             header="Mohanram"
