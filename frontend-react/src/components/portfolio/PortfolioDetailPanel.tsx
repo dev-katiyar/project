@@ -12,6 +12,7 @@ import PerformanceTab from "@/components/portfolio/tabs/PerformanceTab";
 import ClosedPositionsTab from "@/components/portfolio/tabs/ClosedPositionsTab";
 import DividendsTab from "@/components/portfolio/tabs/DividendsTab";
 import MarketRadarTab from "@/components/portfolio/tabs/MarketRadarTab";
+import FundamentalsTab from "@/components/portfolio/tabs/FundamentalsTab";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -489,6 +490,14 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
               portfolioId={portfolio.portfolioid}
               portfolioName={portfolio.name}
               active={activeTabIndex === 4}
+            />
+          </TabPanel>
+
+          <TabPanel header="Fundamentals">
+            <FundamentalsTab
+              techAndFundamentals={
+                data.techAndFundamentals as Record<string, unknown>
+              }
             />
           </TabPanel>
 
