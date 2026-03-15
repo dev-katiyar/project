@@ -93,16 +93,26 @@ export interface CashTransaction {
 }
 
 export interface ClosedPosition {
+  id?: number;
   symbol: string;
   name?: string;
+  companyname?: string;
   qty: number;
   side?: string;
+  price?: number;
   buyPrice?: number;
   sellPrice?: number;
+  buyValue?: number;
+  sellValue?: number;
   pnl: number;
   pnlPercent?: number;
+  pnlPercentage?: number;
+  date?: string;
+  buyDate?: string;
+  sellDate?: string;
   openDate?: string;
   closeDate?: string;
+  commission?: number;
 }
 
 export interface PortfolioDetailData {
