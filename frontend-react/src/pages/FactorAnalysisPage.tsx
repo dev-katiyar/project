@@ -373,9 +373,7 @@ const FactorAnalysisPage: React.FC = () => {
       const { sym1, sym2 } = row;
       if (!sym1 || !sym2) continue;
       if (!map[sym1]) map[sym1] = {};
-      if (!map[sym2]) map[sym2] = {};
       map[sym1][sym2] = row;
-      map[sym2][sym1] = row;
     }
     return map;
   }, [scoresRank]);
