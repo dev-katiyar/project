@@ -351,6 +351,15 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
       chart: {
         type: "line",
         backgroundColor: cc.bg,
+        plotBackgroundColor: {
+          linearGradient: { x1: 0, y1: 1, x2: 1, y2: 0 },
+          stops: [
+            [0, "rgba(34,197,94,0.22)"],
+            [0.45, "rgba(0,0,0,0)"],
+            [0.55, "rgba(0,0,0,0)"],
+            [1, "rgba(239,68,68,0.22)"],
+          ],
+        } as any,
         plotBorderWidth: 1,
         plotBorderColor: cc.grid,
         zoomType: "xy",
@@ -381,7 +390,7 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
           {
             from: -1,
             to: 0,
-            color: "rgba(34,197,94,0.055)",
+            color: "transparent",
             label: {
               text: "OVERSOLD",
               style: {
@@ -397,7 +406,7 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
           {
             from: 0,
             to: 1,
-            color: "rgba(239,68,68,0.055)",
+            color: "transparent",
             label: {
               text: "OVERBOUGHT",
               style: {
@@ -431,10 +440,7 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
           text: "← Underperforming  |  Relative Score (vs SPY)  |  Outperforming →",
           style: { color: cc.text, fontWeight: "600", fontSize: "12px" },
         },
-        plotBands: [
-          { from: 0, to: 1, color: "rgba(34,197,94,0.03)" },
-          { from: -1, to: 0, color: "rgba(239,68,68,0.03)" },
-        ],
+        plotBands: [],
         plotLines: [
           { color: cc.text, dashStyle: "Dot", width: 1.5, value: 0, zIndex: 3 },
         ],
