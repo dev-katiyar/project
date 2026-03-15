@@ -660,7 +660,7 @@ const RelativeAbsoluteHoldingsPanel: React.FC<Props> = ({
           data={relDialog.data}
           symbol1={relDialog.symbol}
           symbol2="SPY"
-          multiplier={-1}
+          multiplier={1}
           cc={cc}
           height={500}
         />
