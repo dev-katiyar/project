@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { SelectButton } from "primereact/selectbutton";
@@ -17,26 +23,76 @@ import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
 // Static mapping from theme name → chart colors (matches values in themes.css).
 // This avoids the timing bug where getComputedStyle reads CSS vars before
 // ThemeContext's useEffect has applied the new data-theme attribute.
-const CHART_COLORS: Record<ThemeName, { bg: string; grid: string; text: string; border: string }> = {
+const CHART_COLORS: Record<
+  ThemeName,
+  { bg: string; grid: string; text: string; border: string }
+> = {
   dark: { bg: "#121a2e", grid: "#1c2840", text: "#7a8da8", border: "#1c2840" },
-  dim:  { bg: "#1c2945", grid: "#283a5c", text: "#7a92b8", border: "#283a5c" },
-  light:{ bg: "#ffffff", grid: "#dfe7f5", text: "#4a5e78", border: "#c8d4ec" },
+  dim: { bg: "#1c2945", grid: "#283a5c", text: "#7a92b8", border: "#283a5c" },
+  light: { bg: "#ffffff", grid: "#dfe7f5", text: "#4a5e78", border: "#c8d4ec" },
 };
 
 const SERIES_COLORS = [
-  "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6",
-  "#ec4899", "#14b8a6", "#f97316", "#06b6d4", "#84cc16",
-  "#6366f1", "#a855f7", "#0ea5e9", "#d946ef", "#fb923c",
+  "#3b82f6",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#8b5cf6",
+  "#ec4899",
+  "#14b8a6",
+  "#f97316",
+  "#06b6d4",
+  "#84cc16",
+  "#6366f1",
+  "#a855f7",
+  "#0ea5e9",
+  "#d946ef",
+  "#fb923c",
 ];
 
 const HOLDINGS_EXCLUDED = ["EEM", "EFA", "GDX", "VEA"];
 
 const SCORE_ZONES = [
-  { label: "Very\nOversold",  from: -1,    to: -0.75, bg: "#052e16", border: "#14532d", textColor: "#4ade80" },
-  { label: "Mod.\nOversold",  from: -0.75, to: -0.25, bg: "#14532d", border: "#166534", textColor: "#86efac" },
-  { label: "Neutral",         from: -0.25, to:  0.25, bg: "#1e293b", border: "#334155", textColor: "#94a3b8" },
-  { label: "Mod.\nOverbought",from:  0.25, to:  0.75, bg: "#7f1d1d", border: "#991b1b", textColor: "#fca5a5" },
-  { label: "Very\nOverbought",from:  0.75, to:  1,    bg: "#450a0a", border: "#7f1d1d", textColor: "#f87171" },
+  {
+    label: "Very\nOversold",
+    from: -1,
+    to: -0.75,
+    bg: "#052e16",
+    border: "#14532d",
+    textColor: "#4ade80",
+  },
+  {
+    label: "Mod.\nOversold",
+    from: -0.75,
+    to: -0.25,
+    bg: "#14532d",
+    border: "#166534",
+    textColor: "#86efac",
+  },
+  {
+    label: "Neutral",
+    from: -0.25,
+    to: 0.25,
+    bg: "#1e293b",
+    border: "#334155",
+    textColor: "#94a3b8",
+  },
+  {
+    label: "Mod.\nOverbought",
+    from: 0.25,
+    to: 0.75,
+    bg: "#7f1d1d",
+    border: "#991b1b",
+    textColor: "#fca5a5",
+  },
+  {
+    label: "Very\nOverbought",
+    from: 0.75,
+    to: 1,
+    bg: "#450a0a",
+    border: "#7f1d1d",
+    textColor: "#f87171",
+  },
 ];
 
 // ─── Types ──────────────────────────────────────────────────────────────────────
@@ -84,9 +140,11 @@ function getScoreZoneLabel(score: number): string {
 
 // ─── Sub-components ─────────────────────────────────────────────────────────────
 
-const ScoreBadge: React.FC<{ value: number; onClick: () => void; icon?: string }> = ({
-  value, onClick, icon = "pi-chart-line",
-}) => (
+const ScoreBadge: React.FC<{
+  value: number;
+  onClick: () => void;
+  icon?: string;
+}> = ({ value, onClick, icon = "pi-chart-line" }) => (
   <button
     onClick={onClick}
     title={getScoreZoneLabel(value)}
@@ -102,17 +160,26 @@ const ScoreBadge: React.FC<{ value: number; onClick: () => void; icon?: string }
       transition: "opacity 0.15s, transform 0.1s",
       boxShadow: "0 1px 4px rgba(0,0,0,0.4)",
     }}
-    onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = "0.85"; }}
-    onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = "1"; }}
+    onMouseEnter={(e) => {
+      (e.currentTarget as HTMLButtonElement).style.opacity = "0.85";
+    }}
+    onMouseLeave={(e) => {
+      (e.currentTarget as HTMLButtonElement).style.opacity = "1";
+    }}
   >
     <span>{value.toFixed(3)}</span>
-    <i className={`pi ${icon}`} style={{ fontSize: "0.65rem", opacity: 0.75 }} />
+    <i
+      className={`pi ${icon}`}
+      style={{ fontSize: "0.65rem", opacity: 0.75 }}
+    />
   </button>
 );
 
-const QuadrantTag: React.FC<{ label: string; color: string; position: "tl" | "tr" | "bl" | "br" }> = ({
-  label, color, position,
-}) => {
+const QuadrantTag: React.FC<{
+  label: string;
+  color: string;
+  position: "tl" | "tr" | "bl" | "br";
+}> = ({ label, color, position }) => {
   const isTop = position.startsWith("t");
   const isLeft = position.endsWith("l");
   return (
@@ -156,8 +223,14 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
   const [tailLen, setTailLen] = useState(3);
 
   // Detail dialogs
-  const [absDialog, setAbsDialog] = useState<{ symbol: string; data: any[] | null } | null>(null);
-  const [relDialog, setRelDialog] = useState<{ symbol: string; data: any[] | null } | null>(null);
+  const [absDialog, setAbsDialog] = useState<{
+    symbol: string;
+    data: any[] | null;
+  } | null>(null);
+  const [relDialog, setRelDialog] = useState<{
+    symbol: string;
+    data: any[] | null;
+  } | null>(null);
   const [absLoading, setAbsLoading] = useState(false);
   const [relLoading, setRelLoading] = useState(false);
 
@@ -208,60 +281,71 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
             symbol,
             name: selectedDict.dict[symbol] ?? symbol,
             isInChart: idx < 2,
-          })
+          }),
         );
         setRows(newRows);
       })
-      .finally(() => { if (!cancelled) setLoading(false); });
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [selectedDict]);
 
   // ── Scatter chart options ────────────────────────────────────────────────────
   const scatterOptions = useMemo((): Highcharts.Options => {
     if (!relAbsOutput || !rows.length) return {};
 
-    const visible = new Set(rows.filter((r) => r.isInChart).map((r) => r.symbol));
+    const visible = new Set(
+      rows.filter((r) => r.isInChart).map((r) => r.symbol),
+    );
     const pts = showTail ? tailLen * 5 : 1;
 
-    const series: Highcharts.SeriesLineOptions[] = Object.keys(relAbsOutput).map(
-      (sym, idx) => {
-        const dps = relAbsOutput[sym].slice(0, pts);
-        return {
-          type: "line",
-          name: sym,
-          visible: visible.has(sym),
-          color: SERIES_COLORS[idx % SERIES_COLORS.length],
-          lineWidth: 1.75,
-          marker: { enabled: false, states: { hover: { enabled: true, radius: 4 } } },
-          data: dps.map((dp, i) => ({
-            x: dp.absolute_score,
-            y: dp.relative_score,
-            name: dp.date,
-            ...(i === 0 && {
-              marker: {
-                enabled: true,
-                radius: 6,
-                fillColor: SERIES_COLORS[idx % SERIES_COLORS.length],
-                lineColor: "#fff",
-                lineWidth: 1.5,
-                symbol: "circle",
+    const series: Highcharts.SeriesLineOptions[] = Object.keys(
+      relAbsOutput,
+    ).map((sym, idx) => {
+      const dps = relAbsOutput[sym].slice(0, pts);
+      return {
+        type: "line",
+        name: sym,
+        visible: visible.has(sym),
+        color: SERIES_COLORS[idx % SERIES_COLORS.length],
+        lineWidth: 1.75,
+        marker: {
+          enabled: false,
+          states: { hover: { enabled: true, radius: 4 } },
+        },
+        data: dps.map((dp, i) => ({
+          x: dp.absolute_score,
+          y: dp.relative_score,
+          name: dp.date,
+          ...(i === 0 && {
+            marker: {
+              enabled: true,
+              radius: 6,
+              fillColor: SERIES_COLORS[idx % SERIES_COLORS.length],
+              lineColor: "#fff",
+              lineWidth: 1.5,
+              symbol: "circle",
+            },
+            dataLabels: {
+              enabled: true,
+              formatter(this: any) {
+                return `<b>${sym}</b>`;
               },
-              dataLabels: {
-                enabled: true,
-                formatter(this: any) { return `<b>${sym}</b>`; },
-                style: {
-                  fontSize: "10px",
-                  fontWeight: "700",
-                  color: SERIES_COLORS[idx % SERIES_COLORS.length],
-                  textOutline: `2px ${cc.bg}`,
-                },
+              style: {
+                fontSize: "10px",
+                fontWeight: "700",
+                color: SERIES_COLORS[idx % SERIES_COLORS.length],
+                textOutline: `2px ${cc.bg}`,
               },
-            }),
-          })),
-        };
-      }
-    );
+            },
+          }),
+        })),
+      };
+    });
 
     return {
       chart: {
@@ -270,7 +354,7 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
         plotBorderWidth: 1,
         plotBorderColor: cc.grid,
         zoomType: "xy",
-        height: 500,
+        height: "100%",
         style: { fontFamily: "Inter, sans-serif" },
         animation: { duration: 300 },
       },
@@ -279,33 +363,51 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
       legend: { enabled: false },
       accessibility: { enabled: false },
       xAxis: {
-        min: -1, max: 1,
+        min: -1,
+        max: 1,
         gridLineWidth: 1,
         gridLineColor: cc.grid,
         lineColor: cc.border,
         tickColor: cc.border,
-        labels: { format: "{value:.1f}", style: { color: cc.text, fontSize: "11px" } },
+        labels: {
+          format: "{value:.1f}",
+          style: { color: cc.text, fontSize: "11px" },
+        },
         title: {
           text: "← Oversold  |  Absolute Score  |  Overbought →",
           style: { color: cc.text, fontWeight: "600", fontSize: "12px" },
         },
         plotBands: [
           {
-            from: -1, to: 0,
+            from: -1,
+            to: 0,
             color: "rgba(34,197,94,0.055)",
             label: {
               text: "OVERSOLD",
-              style: { color: "rgba(74,222,128,0.5)", fontSize: "10px", fontWeight: "700" },
-              align: "left", x: 10, y: 18,
+              style: {
+                color: "rgba(74,222,128,0.5)",
+                fontSize: "10px",
+                fontWeight: "700",
+              },
+              align: "left",
+              x: 10,
+              y: 18,
             },
           },
           {
-            from: 0, to: 1,
+            from: 0,
+            to: 1,
             color: "rgba(239,68,68,0.055)",
             label: {
               text: "OVERBOUGHT",
-              style: { color: "rgba(248,113,113,0.5)", fontSize: "10px", fontWeight: "700" },
-              align: "right", x: -10, y: 18,
+              style: {
+                color: "rgba(248,113,113,0.5)",
+                fontSize: "10px",
+                fontWeight: "700",
+              },
+              align: "right",
+              x: -10,
+              y: 18,
             },
           },
         ],
@@ -314,20 +416,24 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
         ],
       },
       yAxis: {
-        min: -1, max: 1,
+        min: -1,
+        max: 1,
         startOnTick: false,
         endOnTick: false,
         gridLineWidth: 1,
         gridLineColor: cc.grid,
         lineColor: cc.border,
-        labels: { format: "{value:.1f}", style: { color: cc.text, fontSize: "11px" } },
+        labels: {
+          format: "{value:.1f}",
+          style: { color: cc.text, fontSize: "11px" },
+        },
         title: {
           text: "← Underperforming  |  Relative Score (vs SPY)  |  Outperforming →",
           style: { color: cc.text, fontWeight: "600", fontSize: "12px" },
         },
         plotBands: [
-          { from: 0,  to:  1, color: "rgba(34,197,94,0.03)" },
-          { from: -1, to:  0, color: "rgba(239,68,68,0.03)" },
+          { from: 0, to: 1, color: "rgba(34,197,94,0.03)" },
+          { from: -1, to: 0, color: "rgba(239,68,68,0.03)" },
         ],
         plotLines: [
           { color: cc.text, dashStyle: "Dot", width: 1.5, value: 0, zIndex: 3 },
@@ -349,7 +455,7 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
               <div style="font-size:0.75rem;color:#94a3b8;margin-bottom:0.4rem">${this.point.name}</div>
               <div style="display:flex;justify-content:space-between;gap:1rem">
                 <span>Absolute:</span>
-                <b style="color:${getScoreBg(this.point.x) }">&nbsp;${this.point.x.toFixed(3)}</b>
+                <b style="color:${getScoreBg(this.point.x)}">&nbsp;${this.point.x.toFixed(3)}</b>
               </div>
               <div style="display:flex;justify-content:space-between;gap:1rem">
                 <span>Relative:</span>
@@ -394,7 +500,10 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
       },
       yAxis: {
         gridLineColor: cc.grid,
-        labels: { format: "{value:.2f}", style: { color: cc.text, fontSize: "11px" } },
+        labels: {
+          format: "{value:.2f}",
+          style: { color: cc.text, fontSize: "11px" },
+        },
         title: { text: "" },
         plotLines: [{ color: cc.text, dashStyle: "Dot", width: 1, value: 0 }],
       },
@@ -422,17 +531,19 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
           lineWidth: 2,
         },
         ...(yKey2
-          ? [{
-              type: "line" as const,
-              name: yKey2,
-              data: data.map((d) => d[yKey2] ?? null),
-              color: "#ef4444",
-              lineWidth: 2,
-            }]
+          ? [
+              {
+                type: "line" as const,
+                name: yKey2,
+                data: data.map((d) => d[yKey2] ?? null),
+                color: "#ef4444",
+                lineWidth: 2,
+              },
+            ]
           : []),
       ],
     }),
-    [cc]
+    [cc],
   );
 
   // ── Handlers ────────────────────────────────────────────────────────────────
@@ -441,7 +552,9 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
   }, []);
 
   const handleToggle = useCallback((symbol: string, checked: boolean) => {
-    setRows((prev) => prev.map((r) => r.symbol === symbol ? { ...r, isInChart: checked } : r));
+    setRows((prev) =>
+      prev.map((r) => (r.symbol === symbol ? { ...r, isInChart: checked } : r)),
+    );
   }, []);
 
   const handleShowAll = useCallback((checked: boolean) => {
@@ -453,7 +566,12 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
     setAbsLoading(true);
     api
       .post("/absolute-analysis", { symbol1: row.symbol })
-      .then((res) => setAbsDialog({ symbol: row.symbol, data: Array.isArray(res.data) ? res.data : [] }))
+      .then((res) =>
+        setAbsDialog({
+          symbol: row.symbol,
+          data: Array.isArray(res.data) ? res.data : [],
+        }),
+      )
       .catch(() => setAbsDialog({ symbol: row.symbol, data: [] }))
       .finally(() => setAbsLoading(false));
   }, []);
@@ -463,7 +581,12 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
     setRelLoading(true);
     api
       .post("/relative-analysis", { symbol1: row.symbol, symbol2: "SPY" })
-      .then((res) => setRelDialog({ symbol: row.symbol, data: Array.isArray(res.data) ? res.data : [] }))
+      .then((res) =>
+        setRelDialog({
+          symbol: row.symbol,
+          data: Array.isArray(res.data) ? res.data : [],
+        }),
+      )
       .catch(() => setRelDialog({ symbol: row.symbol, data: [] }))
       .finally(() => setRelLoading(false));
   }, []);
@@ -473,7 +596,10 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
 
   // ── Column renderers ─────────────────────────────────────────────────────────
   const colSymbol = (row: RelAbsRow) => (
-    <span className="sv-text-accent font-bold" style={{ fontSize: "0.82rem", letterSpacing: "0.02em" }}>
+    <span
+      className="sv-text-accent font-bold"
+      style={{ fontSize: "0.82rem", letterSpacing: "0.02em" }}
+    >
       {row.symbol}
     </span>
   );
@@ -481,7 +607,14 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
   const colName = (row: RelAbsRow) => (
     <span
       className="text-color-secondary"
-      style={{ fontSize: "0.78rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", display: "block", maxWidth: "9rem" }}
+      style={{
+        fontSize: "0.78rem",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        display: "block",
+        maxWidth: "9rem",
+      }}
       title={row.name}
     >
       {row.name}
@@ -501,16 +634,23 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
 
   const colAbs = useCallback(
     (row: RelAbsRow) => (
-      <ScoreBadge value={row.absolute_score} onClick={() => handleAbsClick(row)} />
+      <ScoreBadge
+        value={row.absolute_score}
+        onClick={() => handleAbsClick(row)}
+      />
     ),
-    [handleAbsClick]
+    [handleAbsClick],
   );
 
   const colRel = useCallback(
     (row: RelAbsRow) => (
-      <ScoreBadge value={row.relative_score} onClick={() => handleRelClick(row)} icon="pi-chart-bar" />
+      <ScoreBadge
+        value={row.relative_score}
+        onClick={() => handleRelClick(row)}
+        icon="pi-chart-bar"
+      />
     ),
-    [handleRelClick]
+    [handleRelClick],
   );
 
   const colChart = useCallback(
@@ -521,7 +661,7 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
         style={{ transform: "scale(0.9)" }}
       />
     ),
-    [handleToggle]
+    [handleToggle],
   );
 
   // ── Table header ─────────────────────────────────────────────────────────────
@@ -535,13 +675,23 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
           {rows.length} {selectedDict?.name}
         </span>
         {latestDate && (
-          <span className="sv-text-muted border-round" style={{ fontSize: "0.68rem", background: "var(--sv-bg-surface)", padding: "0.1rem 0.4rem", border: "1px solid var(--sv-border-light)" }}>
+          <span
+            className="sv-text-muted border-round"
+            style={{
+              fontSize: "0.68rem",
+              background: "var(--sv-bg-surface)",
+              padding: "0.1rem 0.4rem",
+              border: "1px solid var(--sv-border-light)",
+            }}
+          >
             {latestDate}
           </span>
         )}
       </div>
       <div className="flex align-items-center gap-2">
-        <span className="text-color-secondary" style={{ fontSize: "0.72rem" }}>All</span>
+        <span className="text-color-secondary" style={{ fontSize: "0.72rem" }}>
+          All
+        </span>
         <Checkbox
           checked={allVisible}
           onChange={(e) => handleShowAll(!!e.checked)}
@@ -554,15 +704,21 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
   // ─── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="sv-page-min-h">
-
       {/* ── PAGE HEADER ── */}
       <div className="flex align-items-start justify-content-between mb-4 flex-wrap gap-3">
         <div>
-          <h2 className="sv-page-title font-bold m-0 text-color" style={{ fontSize: "1.45rem" }}>
+          <h2
+            className="sv-page-title font-bold m-0 text-color"
+            style={{ fontSize: "1.45rem" }}
+          >
             Performance Analysis
           </h2>
-          <p className="text-color-secondary mt-1 mb-0" style={{ fontSize: "0.82rem" }}>
-            Relative vs Absolute Scores &nbsp;·&nbsp; Benchmark: SPY &nbsp;·&nbsp; Click a score to drill down
+          <p
+            className="text-color-secondary mt-1 mb-0"
+            style={{ fontSize: "0.82rem" }}
+          >
+            Relative vs Absolute Scores &nbsp;·&nbsp; Benchmark: SPY
+            &nbsp;·&nbsp; Click a score to drill down
           </p>
         </div>
 
@@ -574,7 +730,9 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
             onChange={handleDictChange}
             disabled={loading}
             pt={{
-              button: { style: { fontSize: "0.82rem", padding: "0.4rem 1rem" } },
+              button: {
+                style: { fontSize: "0.82rem", padding: "0.4rem 1rem" },
+              },
             }}
           />
         </div>
@@ -582,16 +740,21 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
 
       {/* ── MAIN GRID ── */}
       <div className="grid">
-
         {/* ──── LEFT: Symbol Table ──── */}
-        <div className="col-12 lg:col-5 xl:col-4">
-
+        <div className="col-12 lg:col-7 xl:col-6">
           {/* Table card */}
-          <Card pt={{ body: { className: "p-0" }, content: { className: "p-0" } }}>
+          <Card
+            pt={{ body: { className: "p-0" }, content: { className: "p-0" } }}
+          >
             {loading ? (
               <div className="p-3">
                 {Array.from({ length: 9 }).map((_, i) => (
-                  <Skeleton key={i} height="2.4rem" className="mb-2" borderRadius="0.4rem" />
+                  <Skeleton
+                    key={i}
+                    height="2.4rem"
+                    className="mb-2"
+                    borderRadius="0.4rem"
+                  />
                 ))}
               </div>
             ) : (
@@ -606,36 +769,87 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
                 emptyMessage="No data"
                 style={{ fontSize: "0.82rem" }}
                 pt={{
-                  bodyRow: { style: { borderBottom: "1px solid var(--sv-border-light)" } },
-                  header: { style: { background: "var(--sv-bg-card)", border: "none", padding: 0 } },
+                  bodyRow: {
+                    style: { borderBottom: "1px solid var(--sv-border-light)" },
+                  },
+                  header: {
+                    style: {
+                      background: "var(--sv-bg-card)",
+                      border: "none",
+                      padding: 0,
+                    },
+                  },
                   thead: { style: { display: "none" } },
                 }}
               >
-                <Column field="symbol"         body={colSymbol}   style={{ width: "4.5rem", paddingLeft: "0.75rem" }} />
-                <Column field="name"           body={colName}     style={{ minWidth: "7rem" }} />
-                <Column header=""              body={colHoldings} style={{ width: "2.5rem", textAlign: "center" }} />
-                <Column field="absolute_score" body={colAbs}      style={{ width: "6.5rem" }} sortable />
-                <Column field="relative_score" body={colRel}      style={{ width: "6.5rem" }} sortable />
-                <Column header=""              body={colChart}    style={{ width: "3.5rem", textAlign: "center", paddingRight: "0.75rem" }} />
+                <Column
+                  field="symbol"
+                  body={colSymbol}
+                  style={{ width: "4.5rem", paddingLeft: "0.75rem" }}
+                />
+                <Column
+                  field="name"
+                  body={colName}
+                  style={{ minWidth: "7rem" }}
+                />
+                <Column
+                  header=""
+                  body={colHoldings}
+                  style={{ width: "2.5rem", textAlign: "center" }}
+                />
+                <Column
+                  field="absolute_score"
+                  body={colAbs}
+                  style={{ width: "6.5rem" }}
+                  sortable
+                />
+                <Column
+                  field="relative_score"
+                  body={colRel}
+                  style={{ width: "6.5rem" }}
+                  sortable
+                />
+                <Column
+                  header=""
+                  body={colChart}
+                  style={{
+                    width: "3.5rem",
+                    textAlign: "center",
+                    paddingRight: "0.75rem",
+                  }}
+                />
               </DataTable>
             )}
           </Card>
 
           {/* Column labels strip */}
           {!loading && rows.length > 0 && (
-            <div className="flex gap-1 mt-1 px-1 sv-info-label" style={{ fontSize: "0.62rem" }}>
-              <span style={{ width: "4.5rem", paddingLeft: "0.35rem" }}>Symbol</span>
+            <div
+              className="flex gap-1 mt-1 px-1 sv-info-label"
+              style={{ fontSize: "0.62rem" }}
+            >
+              <span style={{ width: "4.5rem", paddingLeft: "0.35rem" }}>
+                Symbol
+              </span>
               <span style={{ flex: 1 }}>Name</span>
               <span style={{ width: "2.5rem" }}></span>
               <span style={{ width: "6.5rem" }}>Absolute</span>
               <span style={{ width: "6.5rem" }}>Relative</span>
-              <span style={{ width: "3.5rem", textAlign: "center" }}>Chart</span>
+              <span style={{ width: "3.5rem", textAlign: "center" }}>
+                Chart
+              </span>
             </div>
           )}
 
           {/* Score legend */}
-          <Card className="mt-3" pt={{ body: { className: "p-3" }, content: { className: "p-0" } }}>
-            <p className="sv-info-label m-0 mb-2" style={{ fontSize: "0.65rem" }}>
+          <Card
+            className="mt-3"
+            pt={{ body: { className: "p-3" }, content: { className: "p-0" } }}
+          >
+            <p
+              className="sv-info-label m-0 mb-2"
+              style={{ fontSize: "0.65rem" }}
+            >
               Score Scale
             </p>
             <div className="flex" style={{ gap: "2px" }}>
@@ -661,54 +875,125 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
               ))}
             </div>
             <div className="flex justify-content-between mt-2">
-              <span className="font-semibold" style={{ fontSize: "0.63rem", color: "#4ade80" }}>← Buy Signal</span>
-              <span className="font-semibold" style={{ fontSize: "0.63rem", color: "#f87171" }}>Sell Signal →</span>
+              <span
+                className="font-semibold"
+                style={{ fontSize: "0.63rem", color: "#4ade80" }}
+              >
+                ← Buy Signal
+              </span>
+              <span
+                className="font-semibold"
+                style={{ fontSize: "0.63rem", color: "#f87171" }}
+              >
+                Sell Signal →
+              </span>
             </div>
             <div
               className="mt-2 pt-2 sv-text-muted"
-              style={{ borderTop: "1px solid var(--sv-border-light)", fontSize: "0.65rem", lineHeight: 1.5 }}
+              style={{
+                borderTop: "1px solid var(--sv-border-light)",
+                fontSize: "0.65rem",
+                lineHeight: 1.5,
+              }}
             >
-              <span className="text-color-secondary">Abs:</span> Measures absolute overbought/oversold level
+              <span className="text-color-secondary">Abs:</span> Measures
+              absolute overbought/oversold level
               <br />
-              <span className="text-color-secondary">Rel:</span> Performance vs SPY (benchmark)
+              <span className="text-color-secondary">Rel:</span> Performance vs
+              SPY (benchmark)
             </div>
           </Card>
         </div>
 
         {/* ──── RIGHT: Chart ──── */}
-        <div className="col-12 lg:col-7 xl:col-8">
-          <Card pt={{ body: { className: "p-3 pb-2" }, content: { className: "p-0" } }}>
-
+        <div className="col-12 lg:col-5 xl:col-6">
+          <Card
+            pt={{
+              body: { className: "p-3 pb-2" },
+              content: { className: "p-0" },
+            }}
+          >
             {/* Chart sub-header */}
             <div className="flex align-items-center justify-content-between mb-2">
               <div>
-                <span className="font-bold text-color" style={{ fontSize: "0.82rem" }}>
+                <span
+                  className="font-bold text-color"
+                  style={{ fontSize: "0.82rem" }}
+                >
                   Scatter Plot
                 </span>
-                <span className="sv-text-muted ml-2" style={{ fontSize: "0.75rem" }}>
+                <span
+                  className="sv-text-muted ml-2"
+                  style={{ fontSize: "0.75rem" }}
+                >
                   · drag to zoom · click score badges to drill down
                 </span>
               </div>
-              <div className="flex gap-2 font-semibold" style={{ fontSize: "0.65rem" }}>
-                <span style={{ color: "#4ade80", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.25)", padding: "0.15rem 0.5rem", borderRadius: "0.25rem" }}>
+              <div
+                className="flex gap-2 font-semibold"
+                style={{ fontSize: "0.65rem" }}
+              >
+                <span
+                  style={{
+                    color: "#4ade80",
+                    background: "rgba(34,197,94,0.1)",
+                    border: "1px solid rgba(34,197,94,0.25)",
+                    padding: "0.15rem 0.5rem",
+                    borderRadius: "0.25rem",
+                  }}
+                >
                   ↑ Outperforming
                 </span>
-                <span style={{ color: "#f87171", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)", padding: "0.15rem 0.5rem", borderRadius: "0.25rem" }}>
+                <span
+                  style={{
+                    color: "#f87171",
+                    background: "rgba(239,68,68,0.1)",
+                    border: "1px solid rgba(239,68,68,0.25)",
+                    padding: "0.15rem 0.5rem",
+                    borderRadius: "0.25rem",
+                  }}
+                >
                   ↓ Underperforming
                 </span>
               </div>
             </div>
 
             {/* Chart */}
-            <div style={{ position: "relative" }}>
+            <div
+              style={{
+                position: "relative",
+                aspectRatio: "1 / 1",
+                width: "100%",
+              }}
+            >
               {loading ? (
-                <Skeleton height="500px" borderRadius="0.5rem" />
+                <Skeleton
+                  height="100%"
+                  borderRadius="0.5rem"
+                  style={{ position: "absolute", inset: 0 }}
+                />
               ) : relAbsOutput ? (
                 <>
-                  <QuadrantTag label={"Oversold &\nOutperforming"} color="#4ade80" position="tl" />
-                  <QuadrantTag label={"Overbought &\nOutperforming"} color="#fbbf24" position="tr" />
-                  <QuadrantTag label={"Oversold &\nUnderperforming"} color="#94a3b8" position="bl" />
-                  <QuadrantTag label={"Overbought &\nUnderperforming"} color="#f87171" position="br" />
+                  <QuadrantTag
+                    label={"Oversold &\nOutperforming"}
+                    color="#4ade80"
+                    position="tl"
+                  />
+                  <QuadrantTag
+                    label={"Overbought &\nOutperforming"}
+                    color="#fbbf24"
+                    position="tr"
+                  />
+                  <QuadrantTag
+                    label={"Oversold &\nUnderperforming"}
+                    color="#94a3b8"
+                    position="bl"
+                  />
+                  <QuadrantTag
+                    label={"Overbought &\nUnderperforming"}
+                    color="#f87171"
+                    position="br"
+                  />
                   <HighchartsReact
                     ref={chartRef}
                     highcharts={Highcharts}
@@ -718,10 +1003,15 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
               ) : (
                 <div
                   className="flex flex-column align-items-center justify-content-center gap-3 sv-text-muted"
-                  style={{ height: "500px" }}
+                  style={{ height: "100%" }}
                 >
-                  <i className="pi pi-chart-scatter" style={{ fontSize: "3rem", opacity: 0.3 }} />
-                  <span style={{ fontSize: "0.9rem" }}>Select a category to load the chart</span>
+                  <i
+                    className="pi pi-chart-scatter"
+                    style={{ fontSize: "3rem", opacity: 0.3 }}
+                  />
+                  <span style={{ fontSize: "0.9rem" }}>
+                    Select a category to load the chart
+                  </span>
                 </div>
               )}
             </div>
@@ -730,7 +1020,10 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
             {relAbsOutput && !loading && (
               <div
                 className="flex align-items-center gap-3 mt-3 px-3 py-2 border-round"
-                style={{ background: "var(--sv-bg-surface)", border: "1px solid var(--sv-border-light)" }}
+                style={{
+                  background: "var(--sv-bg-surface)",
+                  border: "1px solid var(--sv-border-light)",
+                }}
               >
                 <Checkbox
                   inputId="showTail"
@@ -766,7 +1059,10 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
                 >
                   {tailLen}
                 </div>
-                <span className="sv-text-muted white-space-nowrap" style={{ fontSize: "0.78rem" }}>
+                <span
+                  className="sv-text-muted white-space-nowrap"
+                  style={{ fontSize: "0.78rem" }}
+                >
                   {tailLen === 1 ? "week" : "weeks"}
                   &nbsp;
                   <span>({tailLen * 5} pts)</span>
@@ -778,34 +1074,51 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
           {/* Visible series chips */}
           {!loading && rows.some((r) => r.isInChart) && (
             <div className="flex flex-wrap gap-1 mt-2">
-              {rows.filter((r) => r.isInChart).map((r) => {
-                const symbolIdx = rows.indexOf(r);
-                const color = SERIES_COLORS[symbolIdx % SERIES_COLORS.length];
-                return (
-                  <span
-                    key={r.symbol}
-                    onClick={() => handleToggle(r.symbol, false)}
-                    title={`${r.name} · click to remove`}
-                    className="inline-flex align-items-center gap-1 font-bold cursor-pointer border-round-3xl"
-                    style={{
-                      padding: "0.18rem 0.55rem",
-                      background: `${color}22`,
-                      border: `1px solid ${color}55`,
-                      color,
-                      fontSize: "0.7rem",
-                      transition: "opacity 0.15s",
-                    }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLSpanElement).style.opacity = "0.6"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLSpanElement).style.opacity = "1"; }}
-                  >
+              {rows
+                .filter((r) => r.isInChart)
+                .map((r) => {
+                  const symbolIdx = rows.indexOf(r);
+                  const color = SERIES_COLORS[symbolIdx % SERIES_COLORS.length];
+                  return (
                     <span
-                      style={{ width: "6px", height: "6px", borderRadius: "50%", background: color, display: "inline-block" }}
-                    />
-                    {r.symbol}
-                    <i className="pi pi-times" style={{ fontSize: "0.5rem", opacity: 0.7 }} />
-                  </span>
-                );
-              })}
+                      key={r.symbol}
+                      onClick={() => handleToggle(r.symbol, false)}
+                      title={`${r.name} · click to remove`}
+                      className="inline-flex align-items-center gap-1 font-bold cursor-pointer border-round-3xl"
+                      style={{
+                        padding: "0.18rem 0.55rem",
+                        background: `${color}22`,
+                        border: `1px solid ${color}55`,
+                        color,
+                        fontSize: "0.7rem",
+                        transition: "opacity 0.15s",
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLSpanElement).style.opacity =
+                          "0.6";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLSpanElement).style.opacity =
+                          "1";
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: "6px",
+                          height: "6px",
+                          borderRadius: "50%",
+                          background: color,
+                          display: "inline-block",
+                        }}
+                      />
+                      {r.symbol}
+                      <i
+                        className="pi pi-times"
+                        style={{ fontSize: "0.5rem", opacity: 0.7 }}
+                      />
+                    </span>
+                  );
+                })}
             </div>
           )}
         </div>
@@ -819,10 +1132,19 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
           absDialog ? (
             <div className="flex align-items-center gap-2">
               <i className="pi pi-chart-line" style={{ color: "#3b82f6" }} />
-              <span className="font-bold" style={{ fontSize: "1rem" }}>{absDialog.symbol}</span>
-              <span className="text-color-secondary" style={{ fontSize: "0.9rem" }}>— Absolute Analysis</span>
+              <span className="font-bold" style={{ fontSize: "1rem" }}>
+                {absDialog.symbol}
+              </span>
+              <span
+                className="text-color-secondary"
+                style={{ fontSize: "0.9rem" }}
+              >
+                — Absolute Analysis
+              </span>
             </div>
-          ) : ""
+          ) : (
+            ""
+          )
         }
         style={{ width: "min(92vw, 820px)" }}
         contentStyle={{ padding: "0.75rem 1rem 1rem" }}
@@ -831,8 +1153,12 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
         {absLoading && <Skeleton height="340px" borderRadius="0.5rem" />}
         {!absLoading && absDialog?.data && absDialog.data.length > 0 && (
           <>
-            <p className="sv-text-muted m-0 mb-3" style={{ fontSize: "0.78rem" }}>
-              Historical absolute score — negative = oversold (buy opportunity), positive = overbought
+            <p
+              className="sv-text-muted m-0 mb-3"
+              style={{ fontSize: "0.78rem" }}
+            >
+              Historical absolute score — negative = oversold (buy opportunity),
+              positive = overbought
             </p>
             <HighchartsReact
               highcharts={Highcharts}
@@ -841,7 +1167,10 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
           </>
         )}
         {!absLoading && absDialog?.data?.length === 0 && (
-          <div className="flex flex-column align-items-center justify-content-center gap-2 sv-text-muted" style={{ height: "200px" }}>
+          <div
+            className="flex flex-column align-items-center justify-content-center gap-2 sv-text-muted"
+            style={{ height: "200px" }}
+          >
             <i className="pi pi-info-circle" style={{ fontSize: "1.5rem" }} />
             <span>No data available for {absDialog?.symbol}</span>
           </div>
@@ -856,10 +1185,19 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
           relDialog ? (
             <div className="flex align-items-center gap-2">
               <i className="pi pi-chart-bar" style={{ color: "#ef4444" }} />
-              <span className="font-bold" style={{ fontSize: "1rem" }}>{relDialog.symbol}</span>
-              <span className="text-color-secondary" style={{ fontSize: "0.9rem" }}>vs SPY — Relative Analysis</span>
+              <span className="font-bold" style={{ fontSize: "1rem" }}>
+                {relDialog.symbol}
+              </span>
+              <span
+                className="text-color-secondary"
+                style={{ fontSize: "0.9rem" }}
+              >
+                vs SPY — Relative Analysis
+              </span>
             </div>
-          ) : ""
+          ) : (
+            ""
+          )
         }
         style={{ width: "min(92vw, 820px)" }}
         contentStyle={{ padding: "0.75rem 1rem 1rem" }}
@@ -868,23 +1206,33 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
         {relLoading && <Skeleton height="340px" borderRadius="0.5rem" />}
         {!relLoading && relDialog?.data && relDialog.data.length > 0 && (
           <>
-            <p className="sv-text-muted m-0 mb-3" style={{ fontSize: "0.78rem" }}>
-              Relative performance vs SPY — above zero = outperforming, below zero = underperforming
+            <p
+              className="sv-text-muted m-0 mb-3"
+              style={{ fontSize: "0.78rem" }}
+            >
+              Relative performance vs SPY — above zero = outperforming, below
+              zero = underperforming
             </p>
             <HighchartsReact
               highcharts={Highcharts}
-              options={buildDetailOptions(relDialog.data, relDialog.symbol, "SPY")}
+              options={buildDetailOptions(
+                relDialog.data,
+                relDialog.symbol,
+                "SPY",
+              )}
             />
           </>
         )}
         {!relLoading && relDialog?.data?.length === 0 && (
-          <div className="flex flex-column align-items-center justify-content-center gap-2 sv-text-muted" style={{ height: "200px" }}>
+          <div
+            className="flex flex-column align-items-center justify-content-center gap-2 sv-text-muted"
+            style={{ height: "200px" }}
+          >
             <i className="pi pi-info-circle" style={{ fontSize: "1.5rem" }} />
             <span>No data available for {relDialog?.symbol} / SPY</span>
           </div>
         )}
       </Dialog>
-
     </div>
   );
 };
