@@ -13,6 +13,16 @@ interface Props {
   allSymbols: string[];
 }
 
+interface UpcomingEarning {
+  id: number;
+  symbol: string;
+  date: string;
+  estimate: string | null;
+  reported: string | null;
+  surprise: string | null;
+  time: string | null;
+}
+
 interface UpcomingDividend {
   id: number;
   symbol: string;
@@ -29,6 +39,20 @@ interface UpcomingDividend {
   sector: string | null;
   yield: number | null;
 }
+
+const timeSeverity = (time: string | null): "success" | "info" | "warning" | "secondary" => {
+  switch (time?.toLowerCase()) {
+    case "pre-market": return "info";
+    case "post-market": return "warning";
+    case "during-market": return "success";
+    default: return "secondary";
+  }
+};
+
+const fmtTimeLabel = (time: string | null) => {
+  if (!time) return "TBD";
+  return time.split("-").map(w => w[0].toUpperCase() + w.slice(1)).join(" ");
+};
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -78,16 +102,33 @@ const DividendsTab: React.FC<Props> = ({ cashTransactions, allSymbols }) => {
   const [upcomingLoading, setUpcomingLoading] = useState(false);
   const [upcomingError, setUpcomingError] = useState("");
 
+  const [earnings, setEarnings] = useState<UpcomingEarning[]>([]);
+  const [earningsLoading, setEarningsLoading] = useState(false);
+  const [earningsError, setEarningsError] = useState("");
+
+  const symbolsKey = allSymbols.join(",");
+
   useEffect(() => {
     if (!allSymbols || allSymbols.length === 0) return;
     setUpcomingLoading(true);
     setUpcomingError("");
     api
-      .get(`/dividend/history?symbols=${allSymbols.join(",")}&upcoming=true`)
+      .get(`/dividend/history?symbols=${symbolsKey}&upcoming=true`)
       .then((res) => setUpcoming(res.data ?? []))
       .catch(() => setUpcomingError("Failed to load upcoming dividends."))
       .finally(() => setUpcomingLoading(false));
-  }, [allSymbols.join(",")]);
+  }, [symbolsKey]);
+
+  useEffect(() => {
+    if (!allSymbols || allSymbols.length === 0) return;
+    setEarningsLoading(true);
+    setEarningsError("");
+    api
+      .get(`/earning/history?symbols=${symbolsKey}&upcoming=true`)
+      .then((res) => setEarnings(res.data ?? []))
+      .catch(() => setEarningsError("Failed to load upcoming earnings."))
+      .finally(() => setEarningsLoading(false));
+  }, [symbolsKey]);
 
   if (!cashTransactions || cashTransactions.length === 0) {
     return (
@@ -326,6 +367,100 @@ const DividendsTab: React.FC<Props> = ({ cashTransactions, allSymbols }) => {
             )}
             sortable
             style={{ minWidth: "120px" }}
+          />
+        </DataTable>
+      )}
+
+      {/* ── Upcoming Earnings ── */}
+      <div
+        className="px-3 pt-4 pb-1 mt-2"
+        style={{ borderTop: "1px solid var(--sv-border)" }}
+      >
+        <div className="flex align-items-center justify-content-between mb-2">
+          <div className="sv-info-label font-bold text-sm">
+            <i className="pi pi-chart-bar mr-2" />
+            Upcoming Earnings
+          </div>
+          {!earningsLoading && earnings.length > 0 && (
+            <span className="sv-text-muted text-sm">
+              {earnings.length} scheduled report{earnings.length !== 1 ? "s" : ""}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {earningsLoading ? (
+        <div className="px-3 pb-3 flex flex-column gap-2">
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} height="2.4rem" borderRadius="6px" />
+          ))}
+        </div>
+      ) : earningsError ? (
+        <div className="flex align-items-center gap-2 px-3 pb-3 sv-text-muted text-sm">
+          <i className="pi pi-exclamation-circle" style={{ color: "var(--sv-loss)" }} />
+          {earningsError}
+        </div>
+      ) : earnings.length === 0 ? (
+        <div className="flex align-items-center gap-2 px-3 pb-4 sv-text-muted text-sm">
+          <i className="pi pi-info-circle" />
+          No upcoming earnings found for current holdings
+        </div>
+      ) : (
+        <DataTable
+          value={earnings}
+          size="small"
+          stripedRows
+          rowHover
+          dataKey="id"
+          scrollable
+          scrollHeight="320px"
+          sortField="date"
+          sortOrder={1}
+          emptyMessage="No upcoming earnings"
+        >
+          <Column
+            field="symbol"
+            header="Symbol"
+            body={(r: UpcomingEarning) => (
+              <div className="sv-text-accent font-bold text-sm">{r.symbol}</div>
+            )}
+            sortable
+            style={{ minWidth: "90px" }}
+          />
+          <Column
+            field="date"
+            header="Report Date"
+            body={(r: UpcomingEarning) => (
+              <div className="text-sm white-space-nowrap font-semibold" style={{ color: "var(--sv-text-secondary)" }}>
+                {fmtDate(r.date)}
+              </div>
+            )}
+            sortable
+            style={{ minWidth: "130px" }}
+          />
+          <Column
+            field="time"
+            header="Session"
+            body={(r: UpcomingEarning) => (
+              <Tag
+                value={fmtTimeLabel(r.time)}
+                severity={timeSeverity(r.time)}
+                style={{ fontSize: "0.68rem", padding: "0.15rem 0.5rem" }}
+              />
+            )}
+            style={{ minWidth: "120px" }}
+          />
+          <Column
+            field="estimate"
+            header="EPS Estimate"
+            body={(r: UpcomingEarning) => (
+              <div className="text-right text-sm font-semibold sv-text-muted">
+                {r.estimate != null ? `$${r.estimate}` : "—"}
+              </div>
+            )}
+            headerStyle={{ textAlign: "right" }}
+            sortable
+            style={{ minWidth: "110px" }}
           />
         </DataTable>
       )}
