@@ -26,21 +26,16 @@ const DivSummary: React.FC<{ transactions: CashTransaction[] }> = ({ transaction
 
   return (
     <div
-      className="flex gap-4 flex-wrap"
-      style={{
-        padding: "0.6rem 1rem",
-        background: "var(--sv-bg-surface)",
-        borderBottom: "1px solid var(--sv-border)",
-        fontSize: "0.8rem",
-      }}
+      className="flex gap-4 flex-wrap px-3 py-2 text-sm"
+      style={{ background: "var(--sv-bg-surface)", borderBottom: "1px solid var(--sv-border)" }}
     >
-      <span style={{ color: "var(--sv-text-muted)" }}>
+      <span className="sv-text-muted">
         Total Events:{" "}
-        <strong style={{ color: "var(--sv-text-primary)" }}>{transactions.length}</strong>
+        <strong className="text-color">{transactions.length}</strong>
       </span>
-      <span style={{ color: "var(--sv-text-muted)" }}>
+      <span className="sv-text-muted">
         Total Received:{" "}
-        <strong style={{ color: "var(--sv-gain)" }}>{fmtUSDFull(totalDividends)}</strong>
+        <strong className="sv-text-gain">{fmtUSDFull(totalDividends)}</strong>
       </span>
     </div>
   );
@@ -51,13 +46,10 @@ const DivSummary: React.FC<{ transactions: CashTransaction[] }> = ({ transaction
 const DividendsTab: React.FC<Props> = ({ cashTransactions }) => {
   if (!cashTransactions || cashTransactions.length === 0) {
     return (
-      <div
-        className="flex flex-column align-items-center justify-content-center gap-3"
-        style={{ padding: "4rem 1rem", color: "var(--sv-text-muted)" }}
-      >
+      <div className="flex flex-column align-items-center justify-content-center gap-3 py-8 px-3 sv-text-muted">
         <i className="pi pi-dollar" style={{ fontSize: "2.5rem" }} />
-        <div style={{ fontSize: "0.9rem" }}>No dividend history</div>
-        <div style={{ fontSize: "0.8rem", textAlign: "center", maxWidth: "340px" }}>
+        <div className="text-sm">No dividend history</div>
+        <div className="text-sm text-center" style={{ maxWidth: "340px" }}>
           Dividend payments will appear here once your holdings pay out
         </div>
       </div>
@@ -68,17 +60,8 @@ const DividendsTab: React.FC<Props> = ({ cashTransactions }) => {
     <div>
       <DivSummary transactions={cashTransactions} />
 
-      <div style={{ padding: "0.75rem 1rem 0.25rem" }}>
-        <div
-          style={{
-            fontWeight: 700,
-            fontSize: "0.8rem",
-            color: "var(--sv-text-secondary)",
-            textTransform: "uppercase",
-            letterSpacing: "0.05em",
-            marginBottom: "0.5rem",
-          }}
-        >
+      <div className="px-3 pt-3 pb-1">
+        <div className="sv-info-label font-bold text-sm mb-2">
           <i className="pi pi-history mr-2" />
           Dividend History
         </div>
@@ -105,9 +88,7 @@ const DividendsTab: React.FC<Props> = ({ cashTransactions }) => {
           field="symbol"
           header="Symbol"
           body={(r: CashTransaction) => (
-            <div style={{ fontWeight: 700, color: "var(--sv-accent)", fontSize: "0.88rem" }}>
-              {r.symbol}
-            </div>
+            <div className="sv-text-accent font-bold text-sm">{r.symbol}</div>
           )}
           sortable
           style={{ minWidth: "100px" }}
@@ -116,7 +97,7 @@ const DividendsTab: React.FC<Props> = ({ cashTransactions }) => {
           field="qty"
           header="# Shares"
           body={(r: CashTransaction) => (
-            <div className="text-right" style={{ fontSize: "0.85rem" }}>
+            <div className="text-right text-sm">
               {(r.qty ?? 0).toLocaleString("en-US", { maximumFractionDigits: 4 })}
             </div>
           )}
@@ -128,10 +109,7 @@ const DividendsTab: React.FC<Props> = ({ cashTransactions }) => {
           field="next_payout"
           header="Per Share"
           body={(r: CashTransaction) => (
-            <div
-              className="text-right"
-              style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--sv-text-primary)" }}
-            >
+            <div className="text-right text-sm font-semibold">
               {fmtUSDFull(r.next_payout ?? 0)}
             </div>
           )}
@@ -143,10 +121,7 @@ const DividendsTab: React.FC<Props> = ({ cashTransactions }) => {
           field="amount"
           header="Total Dividend"
           body={(r: CashTransaction) => (
-            <div
-              className="text-right"
-              style={{ fontWeight: 700, fontSize: "0.88rem", color: "var(--sv-gain)" }}
-            >
+            <div className="text-right text-sm font-bold sv-text-gain">
               {fmtUSDFull(r.amount ?? 0)}
             </div>
           )}
@@ -158,7 +133,7 @@ const DividendsTab: React.FC<Props> = ({ cashTransactions }) => {
           field="pay_date"
           header="Pay Date"
           body={(r: CashTransaction) => (
-            <div style={{ fontSize: "0.82rem", color: "var(--sv-text-secondary)", whiteSpace: "nowrap" }}>
+            <div className="text-sm white-space-nowrap" style={{ color: "var(--sv-text-secondary)" }}>
               {fmtDate(r.pay_date)}
             </div>
           )}
@@ -169,7 +144,7 @@ const DividendsTab: React.FC<Props> = ({ cashTransactions }) => {
           field="ex_dividend_date"
           header="Ex-Div Date"
           body={(r: CashTransaction) => (
-            <div style={{ fontSize: "0.82rem", color: "var(--sv-text-muted)", whiteSpace: "nowrap" }}>
+            <div className="text-sm white-space-nowrap sv-text-muted">
               {fmtDate(r.ex_dividend_date)}
             </div>
           )}
