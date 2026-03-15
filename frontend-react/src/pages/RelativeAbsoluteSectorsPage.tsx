@@ -748,7 +748,7 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
           >
             {loading ? (
               <div className="p-3">
-                {Array.from({ length: 9 }).map((_, i) => (
+                {Array.from({ length: 14 }).map((_, i) => (
                   <Skeleton
                     key={i}
                     height="2.4rem"
@@ -762,7 +762,7 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
                 value={rows}
                 size="small"
                 scrollable
-                scrollHeight="420px"
+                scrollHeight="600px"
                 header={tableHeader}
                 showGridlines={false}
                 stripedRows
