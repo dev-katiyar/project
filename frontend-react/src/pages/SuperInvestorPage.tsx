@@ -476,7 +476,18 @@ const SuperInvestorPage: React.FC = () => {
       plotOptions: {
         pie: {
           innerSize: "60%",
-          dataLabels: { enabled: false },
+          dataLabels: {
+            enabled: true,
+            format: "{point.name}<br/><b>{point.percentage:.1f}%</b>",
+            style: {
+              color: cc.textColor,
+              fontSize: "10px",
+              fontWeight: "normal",
+              textOutline: "none",
+            },
+            distance: 14,
+            filter: { property: "percentage", operator: ">", value: 2 },
+          },
           showInLegend: false,
           borderWidth: 0,
           states: { hover: { brightness: 0.1 } },
@@ -522,7 +533,7 @@ const SuperInvestorPage: React.FC = () => {
           innerSize: "60%",
           dataLabels: {
             enabled: true,
-            format: "{point.name}",
+            format: "{point.name}<br/><b>{point.percentage:.1f}%</b>",
             style: {
               color: cc.textColor,
               fontSize: "10px",
@@ -530,6 +541,7 @@ const SuperInvestorPage: React.FC = () => {
               textOutline: "none",
             },
             distance: 14,
+            filter: { property: "percentage", operator: ">", value: 2 },
           },
           showInLegend: false,
           borderWidth: 0,
