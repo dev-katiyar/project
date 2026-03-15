@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { useTheme } from "@/contexts/ThemeContext";
-import { getSeriesColor } from "@/components/portfolio/charts/chartColors";
+import { getSeriesColor, darkenColor } from "@/components/portfolio/charts/chartColors";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -80,10 +80,12 @@ const ReturnsChart: React.FC<ReturnsChartProps> = ({ categories, series, title }
           borderRadius: 3,
           groupPadding: 0.1,
           pointPadding: 0.05,
-          negativeColor: "var(--sv-loss)",
         },
       },
-      series,
+      series: series.map(s => ({
+        ...s,
+        negativeColor: darkenColor((s.color as string) || getSeriesColor(s.name ?? "")),
+      })),
       credits: { enabled: false },
     }),
     [categories, series, cc],

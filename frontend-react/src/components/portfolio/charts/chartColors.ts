@@ -23,6 +23,19 @@ const PALETTE = [
   "#facc15", // yellow
 ];
 
+/**
+ * Returns a darkened version of a hex color (for negative-value bars).
+ * factor 0.0 = black, 1.0 = original. Default 0.5 gives a distinct dark tint.
+ */
+export function darkenColor(hex: string, factor = 0.5): string {
+  const clean = hex.replace("#", "");
+  if (clean.length !== 6) return hex;
+  const r = Math.round(parseInt(clean.slice(0, 2), 16) * factor);
+  const g = Math.round(parseInt(clean.slice(2, 4), 16) * factor);
+  const b = Math.round(parseInt(clean.slice(4, 6), 16) * factor);
+  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+}
+
 const cache = new Map<string, string>();
 let cycleIdx = 0;
 
