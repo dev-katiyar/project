@@ -369,8 +369,8 @@ const FactorAnalysisPage: React.FC = () => {
   const [scoreMin, scoreMax] = scoreFieldType === "z-Score" ? [-3, 3] : [-100, 100];
 
   // ── Shared table styles ──────────────────────────────────────────────────────
-  const tblStyle: React.CSSProperties = { borderCollapse: "separate", borderSpacing: "2px", width: "100%", fontSize: "0.72rem" };
-  const thSt: React.CSSProperties    = { padding: "5px 8px", color: "var(--sv-text-muted)", fontWeight: 700, fontSize: "0.64rem", textTransform: "uppercase", letterSpacing: "0.04em", textAlign: "center", whiteSpace: "nowrap" };
+  const tblStyle: React.CSSProperties = { borderCollapse: "separate", borderSpacing: "2px", width: "100%", fontSize: "0.82rem" };
+  const thSt: React.CSSProperties    = { padding: "5px 8px", color: "var(--sv-text-muted)", fontWeight: 700, fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.04em", textAlign: "center", whiteSpace: "nowrap" };
   const tdSt: React.CSSProperties    = { padding: "5px 8px", textAlign: "center", borderRadius: "3px", fontWeight: 600, minWidth: "52px" };
 
   // ── Empty state ────────────────────────────────────────────────────────────────
@@ -540,7 +540,12 @@ const FactorAnalysisPage: React.FC = () => {
                     <tr>
                       <th style={{ ...thSt, textAlign: "left", paddingLeft: "0.5rem" }}>Symbol</th>
                       <th style={{ ...thSt, textAlign: "left" }}>Name</th>
-                      {periodCols.map((c) => <th key={c} style={thSt}>{c}</th>)}
+                      {periodCols.map((c, i) => (
+                        <th key={c} style={{ ...thSt, lineHeight: 1.4 }}>
+                          <div>{lookbackPeriods[i] != null ? `${lookbackPeriods[i]}d` : ""}</div>
+                          <div style={{ fontWeight: 400, fontSize: "0.68rem", opacity: 0.7, whiteSpace: "nowrap" }}>{c}</div>
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
@@ -549,7 +554,7 @@ const FactorAnalysisPage: React.FC = () => {
                         <td style={{ ...tdSt, textAlign: "left", paddingLeft: "0.5rem", color: "var(--sv-accent)", fontWeight: 700, letterSpacing: "0.03em" }}>
                           {row.symbol}
                         </td>
-                        <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-text-secondary)", fontWeight: 400, fontSize: "0.7rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "130px" }}
+                        <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-text-secondary)", fontWeight: 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "160px" }}
                           title={row.name}>
                           {getName(row.symbol)}
                         </td>
