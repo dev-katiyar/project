@@ -992,41 +992,44 @@ const WatchlistPage: React.FC = () => {
         </span>
       );
     }
+    // Determine direction: prefer hist, then macd vs signal, then macd sign
     const bullish =
-      hist != null ? hist > 0 : macd != null && sig != null ? macd > sig : null;
+      hist != null
+        ? hist > 0
+        : sig != null && macd != null
+          ? macd > sig
+          : macd != null
+            ? macd > 0
+            : null;
     return (
       <div className="flex align-items-center gap-1">
         <Tag
           value={bullish == null ? "—" : bullish ? "Bull" : "Bear"}
           style={{
-            background:
-              bullish == null
-                ? "var(--sv-bg-surface)"
-                : bullish
-                  ? "var(--sv-success-bg)"
-                  : "var(--sv-danger-bg)",
-            color:
-              bullish == null
-                ? "var(--sv-text-muted)"
-                : bullish
-                  ? "var(--sv-gain)"
-                  : "var(--sv-loss)",
+            background: bullish == null
+              ? "var(--sv-bg-surface)"
+              : bullish
+                ? "var(--sv-success-bg)"
+                : "var(--sv-danger-bg)",
+            color: bullish == null
+              ? "var(--sv-text-muted)"
+              : bullish
+                ? "var(--sv-gain)"
+                : "var(--sv-loss)",
             fontSize: "0.72rem",
             fontWeight: 700,
             border: "none",
           }}
         />
-        {hist != null && (
-          <span
-            style={{
-              fontSize: "0.75rem",
-              color: hist > 0 ? "var(--sv-gain)" : "var(--sv-loss)",
-            }}
-          >
-            {hist > 0 ? "+" : ""}
-            {hist.toFixed(2)}
-          </span>
-        )}
+        <span
+          style={{
+            fontSize: "0.75rem",
+            color: (hist ?? macd ?? 0) > 0 ? "var(--sv-gain)" : "var(--sv-loss)",
+          }}
+        >
+          {(hist ?? macd)! > 0 ? "+" : ""}
+          {(hist ?? macd)!.toFixed(2)}
+        </span>
       </div>
     );
   };
