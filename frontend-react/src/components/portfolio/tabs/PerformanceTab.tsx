@@ -3,6 +3,7 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { SelectButton } from "primereact/selectbutton";
 import { Skeleton } from "primereact/skeleton";
+import { Card } from "primereact/card";
 import api from "@/services/api";
 import { useTheme } from "@/contexts/ThemeContext";
 
@@ -149,8 +150,8 @@ const ReturnsChart: React.FC<{
   if (!categories.length) {
     return (
       <div
-        className="flex align-items-center justify-content-center"
-        style={{ height: "320px", color: "var(--sv-text-muted)", fontSize: "0.85rem" }}
+        className="flex align-items-center justify-content-center sv-text-muted text-sm"
+        style={{ height: "320px" }}
       >
         No {title.toLowerCase()} data available
       </div>
@@ -205,7 +206,7 @@ const PerformanceTab: React.FC<Props> = ({ portfolioId, active }) => {
   }, [perfData, frequency]);
 
   return (
-    <div style={{ padding: "1rem" }}>
+    <div className="p-3">
       {loading && (
         <>
           <Skeleton height="2.5rem" width="240px" className="mb-3" borderRadius="8px" />
@@ -214,11 +215,9 @@ const PerformanceTab: React.FC<Props> = ({ portfolioId, active }) => {
       )}
 
       {error && !loading && (
-        <div
-          style={{ padding: "2rem", textAlign: "center", color: "var(--sv-loss)" }}
-        >
-          <i className="pi pi-exclamation-triangle" style={{ fontSize: "1.5rem" }} />
-          <p style={{ marginTop: "0.5rem" }}>{error}</p>
+        <div className="sv-alert-error border-round p-4 flex flex-column align-items-center gap-2 text-center">
+          <i className="pi pi-exclamation-triangle text-2xl" />
+          <p className="m-0">{error}</p>
         </div>
       )}
 
@@ -226,15 +225,7 @@ const PerformanceTab: React.FC<Props> = ({ portfolioId, active }) => {
         <>
           {/* Frequency selector */}
           <div className="flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-            <div
-              style={{
-                fontWeight: 700,
-                fontSize: "0.85rem",
-                color: "var(--sv-text-secondary)",
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-              }}
-            >
+            <div className="sv-info-label font-bold text-sm flex align-items-center">
               <i className="pi pi-chart-bar mr-2" />
               Returns — {frequency.charAt(0).toUpperCase() + frequency.slice(1)}
             </div>
@@ -244,35 +235,20 @@ const PerformanceTab: React.FC<Props> = ({ portfolioId, active }) => {
               options={freqOptions}
               optionLabel="label"
               optionValue="value"
-              style={{ fontSize: "0.8rem" }}
             />
           </div>
 
-          <div
-            style={{
-              background: "var(--sv-bg-surface)",
-              border: "1px solid var(--sv-border)",
-              borderRadius: "10px",
-              padding: "1rem",
-            }}
-          >
+          <Card className="p-2">
             <ReturnsChart
               categories={chartData.categories}
               series={chartData.series}
               title={frequency}
             />
-          </div>
+          </Card>
 
           {/* Benchmark legend note */}
           {perfData?.names && perfData.names.length > 1 && (
-            <div
-              style={{
-                marginTop: "0.75rem",
-                fontSize: "0.72rem",
-                color: "var(--sv-text-muted)",
-                textAlign: "center",
-              }}
-            >
+            <div className="text-center sv-text-muted mt-2" style={{ fontSize: "0.72rem" }}>
               Benchmarks: {perfData.names.slice(1).join(", ")}
             </div>
           )}
