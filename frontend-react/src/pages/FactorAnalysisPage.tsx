@@ -172,6 +172,7 @@ const FactorAnalysisPage: React.FC = () => {
 
   const symbols  = useMemo(() => Object.keys(activeDict.dict), [activeDict]);
   const dictType = activeDict.code;
+  const getName  = useCallback((sym: string) => activeDict.dict[sym] ?? sym, [activeDict]);
 
   // ── Load symbol dicts ────────────────────────────────────────────────────────
   useEffect(() => {
@@ -550,7 +551,7 @@ const FactorAnalysisPage: React.FC = () => {
                         </td>
                         <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-text-secondary)", fontWeight: 400, fontSize: "0.7rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "130px" }}
                           title={row.name}>
-                          {row.name ?? row.symbol}
+                          {getName(row.symbol)}
                         </td>
                         {periodCols.map((c) => {
                           const val = parseFloat(row[c]);
@@ -590,13 +591,13 @@ const FactorAnalysisPage: React.FC = () => {
                   <thead>
                     <tr>
                       <th style={{ ...thSt, textAlign: "left" }}></th>
-                      {corrSymbols.map((s) => <th key={s} style={thSt}>{s}</th>)}
+                      {corrSymbols.map((s) => <th key={s} style={thSt} title={getName(s)}>{s}</th>)}
                     </tr>
                   </thead>
                   <tbody>
                     {corrSymbols.map((s1) => (
                       <tr key={s1}>
-                        <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-accent)", fontWeight: 700, paddingLeft: "0.4rem" }}>{s1}</td>
+                        <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-accent)", fontWeight: 700, paddingLeft: "0.4rem" }} title={getName(s1)}>{s1}</td>
                         {corrSymbols.map((s2) => {
                           if (s1 === s2) return (
                             <td key={s2} style={{ ...tdSt, background: "rgba(100,100,120,0.18)", color: "var(--sv-text-muted)" }}>
@@ -654,13 +655,13 @@ const FactorAnalysisPage: React.FC = () => {
                   <thead>
                     <tr>
                       <th style={{ ...thSt, textAlign: "left" }}></th>
-                      {scoreSymbols.map((s) => <th key={s} style={thSt}>{s}</th>)}
+                      {scoreSymbols.map((s) => <th key={s} style={thSt} title={getName(s)}>{s}</th>)}
                     </tr>
                   </thead>
                   <tbody>
                     {scoreSymbols.map((s1) => (
                       <tr key={s1}>
-                        <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-accent)", fontWeight: 700, paddingLeft: "0.4rem" }}>{s1}</td>
+                        <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-accent)", fontWeight: 700, paddingLeft: "0.4rem" }} title={getName(s1)}>{s1}</td>
                         {scoreSymbols.map((s2) => {
                           if (s1 === s2) return (
                             <td key={s2} style={{ ...tdSt, background: "rgba(100,100,120,0.18)", color: "var(--sv-text-muted)", cursor: "default" }}>—</td>
@@ -755,8 +756,8 @@ const FactorAnalysisPage: React.FC = () => {
                         onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.8")}
                         onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
                       >
-                        <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-accent)", fontWeight: 700 }}>{row.sym1}</td>
-                        <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-accent)", fontWeight: 700 }}>{row.sym2}</td>
+                        <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-accent)", fontWeight: 700 }} title={getName(row.sym1)}>{row.sym1}</td>
+                        <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-accent)", fontWeight: 700 }} title={getName(row.sym2)}>{row.sym2}</td>
                         <td style={{ ...tdSt, ...getHeatStyle(+row.correlation, -1, 1) }}>{fmtNum(+row.correlation)}</td>
                         {scorePeriods.map((p) => {
                           const val = row[`${p}_rank`];
