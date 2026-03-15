@@ -667,7 +667,6 @@ const WatchlistPage: React.FC = () => {
         fontWeight: 800,
         fontSize: "0.82rem",
         color: "var(--sv-accent)",
-        letterSpacing: "0.05em",
         maxWidth: 80,
       }}
     >
@@ -689,7 +688,7 @@ const WatchlistPage: React.FC = () => {
     <div className="text-right">
       <span
         className="font-semibold"
-        style={{ fontFamily: "monospace", fontSize: "0.88rem" }}
+        style={{ fontSize: "0.88rem" }}
       >
         {fmtPrice(getPrice(row))}
       </span>
@@ -704,7 +703,6 @@ const WatchlistPage: React.FC = () => {
           className="font-semibold"
           style={{
             color: gainColor(v),
-            fontFamily: "monospace",
             fontSize: "0.85rem",
           }}
         >
@@ -739,7 +737,6 @@ const WatchlistPage: React.FC = () => {
                     : "var(--sv-text-muted)",
             fontSize: "0.78rem",
             fontWeight: 700,
-            fontFamily: "monospace",
             border: "none",
           }}
         />
@@ -751,7 +748,7 @@ const WatchlistPage: React.FC = () => {
     <div className="text-right">
       <span
         className="text-color-secondary"
-        style={{ fontFamily: "monospace", fontSize: "0.82rem" }}
+        style={{ fontSize: "0.82rem" }}
       >
         {fmtVolume(getVolume(row))}
       </span>
@@ -762,7 +759,7 @@ const WatchlistPage: React.FC = () => {
     <div className="text-right">
       <span
         className="text-color-secondary"
-        style={{ fontFamily: "monospace", fontSize: "0.82rem" }}
+        style={{ fontSize: "0.82rem" }}
       >
         {fmtCap(getMarketCap(row))}
       </span>
@@ -771,7 +768,7 @@ const WatchlistPage: React.FC = () => {
 
   const peBodyTemplate = (row: SymbolData) => (
     <div className="text-right">
-      <span style={{ fontFamily: "monospace", fontSize: "0.85rem" }}>
+      <span style={{ fontSize: "0.85rem" }}>
         {fmtNum(getPE(row))}
       </span>
     </div>
@@ -1314,8 +1311,6 @@ const WatchlistPage: React.FC = () => {
                                     className="font-bold sv-text-accent mb-1"
                                     style={{
                                       fontSize: "0.8rem",
-                                      fontFamily: "monospace",
-                                      letterSpacing: "0.05em",
                                     }}
                                   >
                                     {sym}
@@ -1323,7 +1318,6 @@ const WatchlistPage: React.FC = () => {
                                   <div
                                     className="font-bold text-color"
                                     style={{
-                                      fontFamily: "monospace",
                                       fontSize: "1rem",
                                     }}
                                   >
@@ -1334,7 +1328,6 @@ const WatchlistPage: React.FC = () => {
                                     style={{
                                       fontSize: "0.78rem",
                                       color: gainColor(pct),
-                                      fontFamily: "monospace",
                                     }}
                                   >
                                     {fmtPct(pct)}
