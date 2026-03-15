@@ -57,7 +57,7 @@ interface SymbolData {
   // Performance
   mtd?: number;
   ytd?: number;
-  change1y?: number;
+  priceChangeYearly?: number;
   // SMAs
   sma20?: number;
   sma50?: number;
@@ -96,7 +96,6 @@ const getRawPct = (d: SymbolData): number | null => {
   return Math.abs(v) < 1 ? v * 100 : v;
 };
 
-const getVolume = (d: SymbolData) => d.volume ?? d.regularMarketVolume ?? null;
 const getMarketCap = (d: SymbolData) => d.marketcap ?? d.marketCap ?? null;
 const getPE = (d: SymbolData) => d.pe ?? d.trailingPE ?? null;
 const get52High = (d: SymbolData) =>
@@ -113,14 +112,6 @@ const fmtChange = (v: number | null) =>
 
 const fmtPct = (v: number | null) =>
   v == null ? "—" : (v >= 0 ? "+" : "") + v.toFixed(2) + "%";
-
-const fmtVolume = (v: number | null) => {
-  if (v == null) return "—";
-  if (v >= 1e9) return (v / 1e9).toFixed(1) + "B";
-  if (v >= 1e6) return (v / 1e6).toFixed(1) + "M";
-  if (v >= 1e3) return (v / 1e3).toFixed(1) + "K";
-  return v.toString();
-};
 
 const fmtCap = (v: number | null) => {
   if (v == null) return "—";
@@ -679,108 +670,62 @@ const WatchlistPage: React.FC = () => {
   // ─── Column body templates ────────────────────────────────────────────────────
 
   const symbolBodyTemplate = (row: SymbolData) => (
-    <div
-      className="flex align-items-center justify-content-center border-round-md"
-      style={{
-        background: "var(--sv-accent-bg)",
-        padding: "0.25rem 0.5rem",
-        fontWeight: 800,
-        fontSize: "0.82rem",
-        color: "var(--sv-accent)",
-        maxWidth: 80,
-      }}
-    >
-      {row.symbol}
-    </div>
-  );
-
-  const nameBodyTemplate = (row: SymbolData) => (
-    <span
-      className="text-color-secondary overflow-hidden white-space-nowrap text-overflow-ellipsis"
-      style={{ fontSize: "0.82rem", maxWidth: "180px", display: "block" }}
-      title={getName(row)}
-    >
-      {getName(row)}
-    </span>
-  );
-
-  const priceBodyTemplate = (row: SymbolData) => (
-    <div className="text-right">
-      <span
-        className="font-semibold"
-        style={{ fontSize: "0.88rem" }}
+    <div>
+      <div
+        style={{
+          display: "inline-block",
+          background: "var(--sv-accent-bg)",
+          color: "var(--sv-accent)",
+          fontWeight: 800,
+          fontSize: "0.82rem",
+          letterSpacing: "0.05em",
+          padding: "0.2rem 0.5rem",
+          borderRadius: 6,
+          marginBottom: 2,
+        }}
       >
-        {fmtPrice(getPrice(row))}
-      </span>
-    </div>
-  );
-
-  const changeBodyTemplate = (row: SymbolData) => {
-    const v = getChange(row);
-    return (
-      <div className="text-right">
-        <span
-          className="font-semibold"
+        {row.symbol}
+      </div>
+      {getName(row) !== row.symbol && (
+        <div
+          className="sv-text-muted overflow-hidden white-space-nowrap"
           style={{
-            color: gainColor(v),
-            fontSize: "0.85rem",
+            fontSize: "0.68rem",
+            maxWidth: 160,
+            textOverflow: "ellipsis",
           }}
         >
-          {fmtChange(v)}
-        </span>
-      </div>
-    );
-  };
-
-  const changePctBodyTemplate = (row: SymbolData) => {
-    const pct = getRawPct(row);
-    return (
-      <div className="text-right">
-        <Tag
-          value={fmtPct(pct)}
-          style={{
-            background:
-              pct == null
-                ? "var(--sv-bg-surface)"
-                : pct > 0
-                  ? "var(--sv-success-bg)"
-                  : pct < 0
-                    ? "var(--sv-danger-bg)"
-                    : "var(--sv-bg-surface)",
-            color:
-              pct == null
-                ? "var(--sv-text-muted)"
-                : pct > 0
-                  ? "var(--sv-gain)"
-                  : pct < 0
-                    ? "var(--sv-loss)"
-                    : "var(--sv-text-muted)",
-            fontSize: "0.78rem",
-            fontWeight: 700,
-            border: "none",
-          }}
-        />
-      </div>
-    );
-  };
-
-  const volumeBodyTemplate = (row: SymbolData) => (
-    <div className="text-right">
-      <span
-        className="text-color-secondary"
-        style={{ fontSize: "0.82rem" }}
-      >
-        {fmtVolume(getVolume(row))}
-      </span>
+          {getName(row)}
+        </div>
+      )}
     </div>
   );
+
+  const priceBodyTemplate = (row: SymbolData) => {
+    const pct = getRawPct(row);
+    const chg = getChange(row);
+    return (
+      <div className="text-right">
+        <div className="font-bold" style={{ fontSize: "0.88rem" }}>
+          {fmtPrice(getPrice(row))}
+        </div>
+        {(chg != null || pct != null) && (
+          <div
+            className="font-semibold mt-1"
+            style={{ fontSize: "0.75rem", color: gainColor(pct ?? chg) }}
+          >
+            {chg != null ? fmtChange(chg) : ""}
+            {chg != null && pct != null ? " " : ""}
+            {pct != null ? `(${fmtPct(pct)})` : ""}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const capBodyTemplate = (row: SymbolData) => (
     <div className="text-right">
-      <span
-        className="text-color-secondary"
-        style={{ fontSize: "0.82rem" }}
-      >
+      <span className="text-color-secondary" style={{ fontSize: "0.82rem" }}>
         {fmtCap(getMarketCap(row))}
       </span>
     </div>
@@ -788,9 +733,7 @@ const WatchlistPage: React.FC = () => {
 
   const peBodyTemplate = (row: SymbolData) => (
     <div className="text-right">
-      <span style={{ fontSize: "0.85rem" }}>
-        {fmtNum(getPE(row))}
-      </span>
+      <span style={{ fontSize: "0.85rem" }}>{fmtNum(getPE(row))}</span>
     </div>
   );
 
@@ -907,7 +850,8 @@ const WatchlistPage: React.FC = () => {
 
   const mtdBodyTemplate = (row: SymbolData) => pctChangeTag(row.mtd);
   const ytdBodyTemplate = (row: SymbolData) => pctChangeTag(row.ytd);
-  const change1yBodyTemplate = (row: SymbolData) => pctChangeTag(row.change1y);
+  const change1yBodyTemplate = (row: SymbolData) =>
+    pctChangeTag(row.priceChangeYearly);
 
   // ── SMA Trend Analysis ─────────────────────────────────────────────────────
   const smaTrendBodyTemplate = (row: SymbolData) => {
@@ -921,12 +865,15 @@ const WatchlistPage: React.FC = () => {
     return (
       <div className="flex gap-1 align-items-center flex-wrap">
         {smas.map(({ label, val }) => {
-          const above =
-            price != null && val != null ? price > val : null;
+          const above = price != null && val != null ? price > val : null;
           return (
             <span
               key={label}
-              title={val != null ? `SMA${label}: ${val.toFixed(2)}` : `SMA${label}: N/A`}
+              title={
+                val != null
+                  ? `SMA${label}: ${val.toFixed(2)}`
+                  : `SMA${label}: N/A`
+              }
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -990,7 +937,15 @@ const WatchlistPage: React.FC = () => {
               : "var(--sv-loss)";
     return (
       <div className="flex align-items-center gap-2">
-        <span style={{ fontSize: "0.85rem", fontWeight: 700, color, minWidth: "22px", textAlign: "right" }}>
+        <span
+          style={{
+            fontSize: "0.85rem",
+            fontWeight: 700,
+            color,
+            minWidth: "22px",
+            textAlign: "right",
+          }}
+        >
           {v != null ? v : "—"}
         </span>
         {v != null && (
@@ -1045,7 +1000,9 @@ const WatchlistPage: React.FC = () => {
             #{v}
           </span>
         ) : (
-          <span className="sv-text-muted" style={{ fontSize: "0.82rem" }}>—</span>
+          <span className="sv-text-muted" style={{ fontSize: "0.82rem" }}>
+            —
+          </span>
         )}
       </div>
     );
@@ -1062,8 +1019,7 @@ const WatchlistPage: React.FC = () => {
           : v <= 30
             ? "var(--sv-gain)"
             : "var(--sv-text-secondary)";
-    const label =
-      v == null ? "" : v >= 70 ? " OB" : v <= 30 ? " OS" : "";
+    const label = v == null ? "" : v >= 70 ? " OB" : v <= 30 ? " OS" : "";
     return (
       <div className="text-right">
         <span style={{ fontSize: "0.85rem", fontWeight: 700, color }}>
@@ -1079,24 +1035,45 @@ const WatchlistPage: React.FC = () => {
     const sig = row.macdSignal ?? null;
     const hist = row.macdHist ?? null;
     if (macd == null && hist == null) {
-      return <span className="sv-text-muted" style={{ fontSize: "0.82rem" }}>—</span>;
+      return (
+        <span className="sv-text-muted" style={{ fontSize: "0.82rem" }}>
+          —
+        </span>
+      );
     }
-    const bullish = hist != null ? hist > 0 : macd != null && sig != null ? macd > sig : null;
+    const bullish =
+      hist != null ? hist > 0 : macd != null && sig != null ? macd > sig : null;
     return (
       <div className="flex align-items-center gap-1">
         <Tag
           value={bullish == null ? "—" : bullish ? "Bull" : "Bear"}
           style={{
-            background: bullish == null ? "var(--sv-bg-surface)" : bullish ? "var(--sv-success-bg)" : "var(--sv-danger-bg)",
-            color: bullish == null ? "var(--sv-text-muted)" : bullish ? "var(--sv-gain)" : "var(--sv-loss)",
+            background:
+              bullish == null
+                ? "var(--sv-bg-surface)"
+                : bullish
+                  ? "var(--sv-success-bg)"
+                  : "var(--sv-danger-bg)",
+            color:
+              bullish == null
+                ? "var(--sv-text-muted)"
+                : bullish
+                  ? "var(--sv-gain)"
+                  : "var(--sv-loss)",
             fontSize: "0.72rem",
             fontWeight: 700,
             border: "none",
           }}
         />
         {hist != null && (
-          <span style={{ fontSize: "0.75rem", color: hist > 0 ? "var(--sv-gain)" : "var(--sv-loss)" }}>
-            {hist > 0 ? "+" : ""}{hist.toFixed(2)}
+          <span
+            style={{
+              fontSize: "0.75rem",
+              color: hist > 0 ? "var(--sv-gain)" : "var(--sv-loss)",
+            }}
+          >
+            {hist > 0 ? "+" : ""}
+            {hist.toFixed(2)}
           </span>
         )}
       </div>
@@ -1108,7 +1085,13 @@ const WatchlistPage: React.FC = () => {
     const v = row.dividendYield ?? null;
     return (
       <div className="text-right">
-        <span style={{ fontSize: "0.85rem", color: v != null && v > 0 ? "var(--sv-gain)" : "var(--sv-text-muted)" }}>
+        <span
+          style={{
+            fontSize: "0.85rem",
+            color:
+              v != null && v > 0 ? "var(--sv-gain)" : "var(--sv-text-muted)",
+          }}
+        >
           {v != null ? `${v.toFixed(2)}%` : "—"}
         </span>
       </div>
@@ -1433,69 +1416,30 @@ const WatchlistPage: React.FC = () => {
                             body={symbolBodyTemplate}
                             sortable
                             frozen
-                            style={{ minWidth: "100px" }}
+                            style={{ minWidth: "160px" }}
                           />
                           <Column
-                            header="Name"
-                            body={nameBodyTemplate}
-                            style={{ minWidth: "180px" }}
+                            header="Sector"
+                            body={sectorBodyTemplate}
+                            style={{ minWidth: "130px" }}
                           />
                           <Column
                             header="Price"
                             body={priceBodyTemplate}
                             sortable
                             sortField="price"
-                            style={{ minWidth: "95px" }}
+                            style={{ minWidth: "115px" }}
                             pt={{
                               headerContent: {
                                 className: "justify-content-end",
                               },
                             }}
                           />
-                          <Column
-                            header="Change"
-                            body={changeBodyTemplate}
-                            style={{ minWidth: "90px" }}
-                            pt={{
-                              headerContent: {
-                                className: "justify-content-end",
-                              },
-                            }}
-                          />
-                          <Column
-                            header="Change %"
-                            body={changePctBodyTemplate}
-                            style={{ minWidth: "100px" }}
-                            pt={{
-                              headerContent: {
-                                className: "justify-content-end",
-                              },
-                            }}
-                          />
-                          <Column
-                            header="Volume"
-                            body={volumeBodyTemplate}
-                            style={{ minWidth: "90px" }}
-                            pt={{
-                              headerContent: {
-                                className: "justify-content-end",
-                              },
-                            }}
-                          />
+
                           <Column
                             header="Mkt Cap"
                             body={capBodyTemplate}
                             style={{ minWidth: "105px" }}
-                            pt={{
-                              headerContent: {
-                                className: "justify-content-end",
-                              },
-                            }}
-                          />
-                          <Column
-                            header="P/E"
-                            body={peBodyTemplate}
-                            style={{ minWidth: "70px" }}
                             pt={{
                               headerContent: {
                                 className: "justify-content-end",
@@ -1508,9 +1452,14 @@ const WatchlistPage: React.FC = () => {
                             style={{ minWidth: "155px" }}
                           />
                           <Column
-                            header="Sector"
-                            body={sectorBodyTemplate}
-                            style={{ minWidth: "130px" }}
+                            header="P/E"
+                            body={peBodyTemplate}
+                            style={{ minWidth: "70px" }}
+                            pt={{
+                              headerContent: {
+                                className: "justify-content-end",
+                              },
+                            }}
                           />
                           <Column
                             header="MTD"
@@ -1518,7 +1467,11 @@ const WatchlistPage: React.FC = () => {
                             sortable
                             sortField="mtd"
                             style={{ minWidth: "90px" }}
-                            pt={{ headerContent: { className: "justify-content-end" } }}
+                            pt={{
+                              headerContent: {
+                                className: "justify-content-end",
+                              },
+                            }}
                           />
                           <Column
                             header="YTD"
@@ -1526,15 +1479,23 @@ const WatchlistPage: React.FC = () => {
                             sortable
                             sortField="ytd"
                             style={{ minWidth: "90px" }}
-                            pt={{ headerContent: { className: "justify-content-end" } }}
+                            pt={{
+                              headerContent: {
+                                className: "justify-content-end",
+                              },
+                            }}
                           />
                           <Column
                             header="1Y Chg"
                             body={change1yBodyTemplate}
                             sortable
-                            sortField="change1y"
+                            sortField="priceChangeYearly"
                             style={{ minWidth: "90px" }}
-                            pt={{ headerContent: { className: "justify-content-end" } }}
+                            pt={{
+                              headerContent: {
+                                className: "justify-content-end",
+                              },
+                            }}
                           />
                           <Column
                             header="SMA Trend"
@@ -1561,7 +1522,11 @@ const WatchlistPage: React.FC = () => {
                             sortable
                             sortField="svRank"
                             style={{ minWidth: "85px" }}
-                            pt={{ headerContent: { className: "justify-content-end" } }}
+                            pt={{
+                              headerContent: {
+                                className: "justify-content-end",
+                              },
+                            }}
                           />
                           <Column
                             header="RSI"
@@ -1569,7 +1534,11 @@ const WatchlistPage: React.FC = () => {
                             sortable
                             sortField="rsi"
                             style={{ minWidth: "80px" }}
-                            pt={{ headerContent: { className: "justify-content-end" } }}
+                            pt={{
+                              headerContent: {
+                                className: "justify-content-end",
+                              },
+                            }}
                           />
                           <Column
                             header="MACD"
@@ -1582,7 +1551,11 @@ const WatchlistPage: React.FC = () => {
                             sortable
                             sortField="dividendYield"
                             style={{ minWidth: "80px" }}
-                            pt={{ headerContent: { className: "justify-content-end" } }}
+                            pt={{
+                              headerContent: {
+                                className: "justify-content-end",
+                              },
+                            }}
                           />
                           <Column
                             header=""
