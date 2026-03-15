@@ -5,6 +5,7 @@ import { Card } from "primereact/card";
 import { Skeleton } from "primereact/skeleton";
 import { useTheme } from "@/contexts/ThemeContext";
 import api from "@/services/api";
+import { getSeriesColor } from "@/components/portfolio/charts/chartColors";
 
 // ─── Period config ────────────────────────────────────────────────────────────
 
@@ -33,12 +34,6 @@ const CHART_THEME: Record<string, { bg: string; grid: string; text: string; tool
   light: { bg: "transparent", grid: "#e5e7eb", text: "#4a5568", tooltip: "#ffffff" },
 };
 
-function getSeriesLineColor(key: string): string {
-  const lower = key.toLowerCase();
-  if (lower.includes("s&p") || lower.includes("spy") || lower.includes("sp500")) return "#38bdf8";
-  if (lower.includes("60/40") || lower.includes("index")) return "#f87171";
-  return "#22c55e";
-}
 
 // ─── Stat Pill ────────────────────────────────────────────────────────────────
 
@@ -156,7 +151,7 @@ const PortfolioGrowthChart: React.FC<Props> = ({
       type: "line",
       name: key,
       data: data.map(d => parseFloat(Number(d[key]).toFixed(3))),
-      color: getSeriesLineColor(key),
+      color: getSeriesColor(key),
       lineWidth: key === pKey ? 3 : 2,
       marker: { enabled: false },
       yAxis: 0,

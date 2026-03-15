@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { useTheme } from "@/contexts/ThemeContext";
+import { getSeriesColor } from "@/components/portfolio/charts/chartColors";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -11,21 +12,7 @@ export interface ReturnsChartProps {
   title: string;
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-const SERIES_COLORS: Record<string, string> = {
-  default: "#4f8ef7",
-  "60/40": "#f87171",
-  "S&P": "#38bdf8",
-  sp500: "#38bdf8",
-};
-
-export function getSeriesColor(name: string): string {
-  if (name.includes("60/40")) return SERIES_COLORS["60/40"];
-  if (name.toLowerCase().includes("s&p") || name.toLowerCase().includes("sp500"))
-    return SERIES_COLORS["S&P"];
-  return SERIES_COLORS.default;
-}
+export { getSeriesColor };
 
 // ─── Chart theme ──────────────────────────────────────────────────────────────
 
