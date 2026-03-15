@@ -5,6 +5,7 @@ import { Skeleton } from "primereact/skeleton";
 import { Card } from "primereact/card";
 import api from "@/services/api";
 import ReturnsChart, { getSeriesColor } from "@/components/portfolio/charts/ReturnsChart";
+import PortfolioGrowthChart from "@/components/portfolio/charts/PortfolioGrowthChart";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -54,10 +55,11 @@ function buildChartData(
 
 interface Props {
   portfolioId: number | string;
+  portfolioName?: string;
   active: boolean;
 }
 
-const PerformanceTab: React.FC<Props> = ({ portfolioId, active }) => {
+const PerformanceTab: React.FC<Props> = ({ portfolioId, portfolioName, active }) => {
   const [perfData, setPerfData] = useState<PerfData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -96,6 +98,28 @@ const PerformanceTab: React.FC<Props> = ({ portfolioId, active }) => {
 
   return (
     <div className="p-3">
+      {/* Portfolio Growth: historical line chart with period selector */}
+      <div className="mb-4">
+        <PortfolioGrowthChart
+          portfolioId={portfolioId}
+          portfolioName={portfolioName}
+          active={active}
+        />
+      </div>
+
+      <div
+        className="mb-3"
+        style={{ borderTop: "1px solid var(--sv-border)" }}
+      />
+
+      {/* Periodic Returns: column chart by frequency */}
+      <div className="flex align-items-center gap-2 mb-3">
+        <i className="pi pi-chart-bar" style={{ color: "var(--sv-accent)", fontSize: "1rem" }} />
+        <span className="font-bold" style={{ fontSize: "0.95rem", color: "var(--sv-text-primary)" }}>
+          Periodic Returns
+        </span>
+      </div>
+
       {loading && (
         <>
           <Skeleton height="2.5rem" width="240px" className="mb-3" borderRadius="8px" />

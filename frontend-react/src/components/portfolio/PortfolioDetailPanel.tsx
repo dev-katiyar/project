@@ -487,6 +487,7 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
           <TabPanel header="Performance">
             <PerformanceTab
               portfolioId={portfolio.portfolioid}
+              portfolioName={portfolio.name}
               active={activeTabIndex === 4}
             />
           </TabPanel>
