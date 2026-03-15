@@ -74,11 +74,8 @@ const TransactionStats: React.FC<{ transactions: Transaction[] }> = ({
 
   return (
     <div
-      className="flex gap-4 flex-wrap px-3 py-2 text-sm"
-      style={{
-        background: "var(--sv-bg-surface)",
-        borderBottom: "1px solid var(--sv-border)",
-      }}
+      className="flex gap-4 flex-wrap px-3 py-2 text-sm surface-overlay"
+      style={{ borderBottom: "1px solid var(--sv-border)" }}
     >
       <span className="sv-text-muted">
         Total: <strong className="text-color">{transactions.length}</strong>
@@ -136,15 +133,15 @@ const TransactionsTab: React.FC<Props> = ({ transactions }) => {
         className="px-3 py-2"
         style={{ borderBottom: "1px solid var(--sv-border)" }}
       >
-        <div className="relative" style={{ display: "inline-block" }}>
+        <span className="relative">
           <i className="pi pi-search sv-input-icon-left" />
           <InputText
-            className="sv-search-input"
+            className="sv-search-input sv-input-pl-icon"
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
             placeholder="Search symbol…"
           />
-        </div>
+        </span>
       </div>
 
       <DataTable
@@ -155,11 +152,11 @@ const TransactionsTab: React.FC<Props> = ({ transactions }) => {
         dataKey="id"
         globalFilter={globalFilter}
         globalFilterFields={["symbol", "name", "companyname"]}
+        scrollable
+        scrollHeight="430px"
         paginator
-        rows={10}
+        rows={15}
         rowsPerPageOptions={[10, 15, 25, 50]}
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-        currentPageReportTemplate="{first} to {last} of {totalRecords}"
         emptyMessage="No transactions found"
       >
         <Column
