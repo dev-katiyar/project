@@ -1277,10 +1277,11 @@ const WatchlistPage: React.FC = () => {
               )}
 
               {/* ── Tabs card ── */}
-              <div className="p-card surface-card overflow-hidden">
+              <div style={{ background: "var(--sv-bg-card)", border: "1px solid var(--sv-border)", borderRadius: "6px", overflow: "hidden", padding: "0.75rem", boxShadow: "var(--sv-shadow-md)" }}>
                 <TabView
                   activeIndex={activeTab}
                   onTabChange={(e) => setActiveTab(e.index)}
+                  pt={{ root: { className: "sv-tabs" } }}
                 >
                   {/* ─ Tab 1: My Tickers ─ */}
                   <TabPanel header="My Tickers" leftIcon="pi pi-table mr-2">
