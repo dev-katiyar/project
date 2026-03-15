@@ -87,24 +87,30 @@ const RangeBar: React.FC<{ low: number | undefined; high: number | undefined; cu
     return <span className="sv-text-muted text-xs">—</span>;
   }
   const pct = Math.min(100, Math.max(0, ((current - low) / (high - low)) * 100));
-  const isNearHigh = pct >= 75;
-  const markerColor = isNearHigh ? "var(--sv-gain)" : pct <= 25 ? "var(--sv-loss)" : "var(--sv-accent)";
+  const markerColor = pct >= 75 ? "var(--sv-gain)" : pct <= 25 ? "var(--sv-loss)" : "var(--sv-accent)";
+  const markerHex   = pct >= 75 ? "#22c55e"        : pct <= 25 ? "#ef4444"        : "#6366f1";
   return (
-    <div style={{ minWidth: 120 }}>
-      <div style={{ position: "relative", height: 6, background: "var(--sv-border)", borderRadius: 3, margin: "4px 0" }}>
+    <div style={{ minWidth: 130 }}>
+      <div style={{ position: "relative", marginBottom: "0.45rem" }}>
         <div style={{
-          position: "absolute", left: `${pct}%`, top: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 10, height: 10, borderRadius: "50%",
-          background: markerColor,
-          border: "2px solid var(--sv-bg-card)",
-          boxShadow: `0 0 4px ${markerColor}`,
-        }} />
+          height: 8, borderRadius: 4,
+          background: "linear-gradient(to right, #ef4444 0%, #f97316 25%, #6366f1 50%, #22c55e 100%)",
+        }}>
+          <div style={{
+            position: "absolute",
+            left: `calc(${pct}% - 7px)`,
+            top: -3,
+            width: 14, height: 14, borderRadius: "50%",
+            background: markerColor,
+            border: "2px solid var(--sv-bg-card)",
+            boxShadow: `0 0 8px ${markerHex}80`,
+          }} />
+        </div>
       </div>
-      <div className="flex justify-content-between" style={{ fontSize: "0.62rem", color: "var(--sv-text-muted)" }}>
-        <span>{fmtUSD(low)}</span>
+      <div className="flex justify-content-between" style={{ fontSize: "0.62rem" }}>
+        <span style={{ color: "#ef4444" }}>{fmtUSD(low)}</span>
         <span style={{ color: markerColor, fontWeight: 700 }}>{Math.round(pct)}%</span>
-        <span>{fmtUSD(high)}</span>
+        <span style={{ color: "#22c55e" }}>{fmtUSD(high)}</span>
       </div>
     </div>
   );
@@ -153,75 +159,6 @@ const NetSignalTag: React.FC<{ signal: string | undefined }> = ({ signal }) => {
   );
 };
 
-// ─── Summary Strip ────────────────────────────────────────────────────────────
-
-const SummaryStrip: React.FC<{ items: FundamentalItem[] }> = ({ items }) => {
-  if (!items.length) return null;
-
-  const avgPiotroski =
-    items.filter((r) => r.PiotroskiFScore != null).reduce((s, r) => s + (r.PiotroskiFScore ?? 0), 0) /
-    (items.filter((r) => r.PiotroskiFScore != null).length || 1);
-
-  const avgMohanram =
-    items.filter((r) => r.MohanramScore != null).reduce((s, r) => s + (r.MohanramScore ?? 0), 0) /
-    (items.filter((r) => r.MohanramScore != null).length || 1);
-
-  const strongBuyCount = items.filter((r) => r.ZacksRank != null && r.ZacksRank <= 2).length;
-  const divPayerCount  = items.filter((r) => r.dividendYield != null && r.dividendYield > 0).length;
-
-  const pills = [
-    {
-      icon: "pi-star",
-      label: "Avg Piotroski",
-      value: avgPiotroski.toFixed(1),
-      color: avgPiotroski >= 7 ? "var(--sv-gain)" : avgPiotroski >= 4 ? "var(--sv-text-secondary)" : "var(--sv-loss)",
-    },
-    {
-      icon: "pi-chart-bar",
-      label: "Avg Mohanram",
-      value: avgMohanram.toFixed(1),
-      color: avgMohanram >= 6 ? "var(--sv-gain)" : avgMohanram >= 4 ? "var(--sv-text-secondary)" : "var(--sv-loss)",
-    },
-    {
-      icon: "pi-arrow-up-right",
-      label: "Strong Buy / Buy",
-      value: `${strongBuyCount} / ${items.length}`,
-      color: strongBuyCount > 0 ? "var(--sv-gain)" : "var(--sv-text-secondary)",
-    },
-    {
-      icon: "pi-dollar",
-      label: "Dividend Payers",
-      value: `${divPayerCount} / ${items.length}`,
-      color: divPayerCount > 0 ? "var(--sv-accent)" : "var(--sv-text-secondary)",
-    },
-  ];
-
-  return (
-    <div
-      className="flex gap-3 flex-wrap px-3 py-2"
-      style={{ borderBottom: "1px solid var(--sv-border)", background: "var(--sv-bg-surface)" }}
-    >
-      {pills.map((p) => (
-        <div
-          key={p.label}
-          className="flex align-items-center gap-2 border-round-lg"
-          style={{ background: "var(--sv-bg-card)", border: "1px solid var(--sv-border)", padding: "0.4rem 0.75rem" }}
-        >
-          <i className={`pi ${p.icon}`} style={{ color: p.color, fontSize: "0.8rem" }} />
-          <div>
-            <div style={{ fontSize: "0.68rem", color: "var(--sv-text-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-              {p.label}
-            </div>
-            <div style={{ fontWeight: 800, fontSize: "1rem", color: p.color, lineHeight: 1.1 }}>
-              {p.value}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
-
 // ─── Main component ───────────────────────────────────────────────────────────
 
 const FundamentalsTab: React.FC<Props> = ({ techAndFundamentals }) => {
@@ -249,9 +186,6 @@ const FundamentalsTab: React.FC<Props> = ({ techAndFundamentals }) => {
   return (
     <div>
       <Tooltip target=".ft-tip" />
-
-      {/* ── Summary strip ── */}
-      <SummaryStrip items={items} />
 
       {/* ── Toolbar ── */}
       <div
