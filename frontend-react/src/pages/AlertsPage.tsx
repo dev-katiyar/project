@@ -428,25 +428,12 @@ const AlertsPage: React.FC = () => {
       );
     }
     return (
-      <div className="flex align-items-center gap-2">
-        <div
-          className="flex align-items-center justify-content-center border-round flex-shrink-0 sv-icon-badge"
-          style={{ width: 32, height: 32 }}
-        >
-          <span
-            className="sv-text-accent font-bold"
-            style={{ fontSize: "0.65rem", letterSpacing: "0.03em" }}
-          >
-            {alert.symbol.slice(0, 4)}
-          </span>
-        </div>
-        <span
-          className="sv-text-accent font-bold"
-          style={{ letterSpacing: "0.04em", fontSize: "0.95rem" }}
-        >
-          {alert.symbol}
-        </span>
-      </div>
+      <span
+        className="sv-text-accent font-bold"
+        style={{ letterSpacing: "0.04em", fontSize: "0.95rem" }}
+      >
+        {alert.symbol}
+      </span>
     );
   };
 
