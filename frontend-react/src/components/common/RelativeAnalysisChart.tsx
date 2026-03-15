@@ -25,6 +25,8 @@ export interface RelativeAnalysisChartProps {
   multiplier: 1 | -1;
   cc: ChartColors;
   height?: number;
+  /** Label for the score series and yAxis title */
+  scoreLabel?: string;
 }
 
 const PANE_GAP = 2; // % gap between the two panes
@@ -36,6 +38,7 @@ function buildOptions(
   multiplier: 1 | -1,
   cc: ChartColors,
   height: number,
+  scoreLabel: string,
 ): Highcharts.Options {
   const combinedKey =
     multiplier === -1
@@ -159,7 +162,7 @@ function buildOptions(
     // RA Score line → yAxis 0
     {
       type: "line",
-      name: "RA Score",
+      name: scoreLabel,
       yAxis: 0,
       data: scoreData as any,
       color: "#22c55e",
@@ -204,7 +207,7 @@ function buildOptions(
       /* ─── [0] RA Score — top pane ─── */
       {
         title: {
-          text: "RA Score",
+          text: scoreLabel,
           style: { color: cc.text, fontSize: "10px" },
           offset: 0,
           x: -30,
@@ -314,11 +317,12 @@ const RelativeAnalysisChart: React.FC<RelativeAnalysisChartProps> = ({
   multiplier,
   cc,
   height = 500,
+  scoreLabel = "RA Score",
 }) => {
   const options = useMemo(
-    () => buildOptions(data, symbol1, symbol2, multiplier, cc, height),
+    () => buildOptions(data, symbol1, symbol2, multiplier, cc, height, scoreLabel),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, symbol1, symbol2, multiplier, cc, height],
+    [data, symbol1, symbol2, multiplier, cc, height, scoreLabel],
   );
 
   if (!data.length) return null;
