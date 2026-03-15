@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from "react";
 import { useParams } from "react-router-dom";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
@@ -55,36 +61,76 @@ interface Transaction {
 
 const CHART_COLORS: Record<
   ThemeName,
-  { tooltipBg: string; tooltipText: string; textColor: string; titleColor: string }
+  {
+    tooltipBg: string;
+    tooltipText: string;
+    textColor: string;
+    titleColor: string;
+  }
 > = {
-  dark:  { tooltipBg: "#121a2e", tooltipText: "#e8edf5", textColor: "#7a8da8", titleColor: "#e8edf5" },
-  dim:   { tooltipBg: "#1c2945", tooltipText: "#dce8f5", textColor: "#7a92b8", titleColor: "#dce8f5" },
-  light: { tooltipBg: "#ffffff", tooltipText: "#0d1425", textColor: "#4a5e78", titleColor: "#0d1425" },
+  dark: {
+    tooltipBg: "#121a2e",
+    tooltipText: "#e8edf5",
+    textColor: "#7a8da8",
+    titleColor: "#e8edf5",
+  },
+  dim: {
+    tooltipBg: "#1c2945",
+    tooltipText: "#dce8f5",
+    textColor: "#7a92b8",
+    titleColor: "#dce8f5",
+  },
+  light: {
+    tooltipBg: "#ffffff",
+    tooltipText: "#0d1425",
+    textColor: "#4a5e78",
+    titleColor: "#0d1425",
+  },
 };
 
 const PIE_COLORS = [
-  "#2e5be6", "#f5a623", "#22c55e", "#a855f7", "#06b6d4",
-  "#f97316", "#ef4444", "#84cc16", "#6366f1", "#ec4899",
-  "#14b8a6", "#94a3b8", "#e11d48", "#0891b2", "#7c3aed",
-  "#d946ef", "#0284c7", "#65a30d", "#dc2626", "#9333ea",
-  "#0ea5e9", "#f59e0b", "#10b981", "#8b5cf6", "#3b82f6",
+  "#2e5be6",
+  "#f5a623",
+  "#22c55e",
+  "#a855f7",
+  "#06b6d4",
+  "#f97316",
+  "#ef4444",
+  "#84cc16",
+  "#6366f1",
+  "#ec4899",
+  "#14b8a6",
+  "#94a3b8",
+  "#e11d48",
+  "#0891b2",
+  "#7c3aed",
+  "#d946ef",
+  "#0284c7",
+  "#65a30d",
+  "#dc2626",
+  "#9333ea",
+  "#0ea5e9",
+  "#f59e0b",
+  "#10b981",
+  "#8b5cf6",
+  "#3b82f6",
 ];
 
 const SECTOR_COLORS: Record<string, string> = {
-  "Technology": "#2e5be6",
+  Technology: "#2e5be6",
   "Information Technology": "#2e5be6",
-  "Healthcare": "#22c55e",
+  Healthcare: "#22c55e",
   "Health Care": "#22c55e",
-  "Financials": "#f5a623",
-  "Finance": "#f5a623",
+  Financials: "#f5a623",
+  Finance: "#f5a623",
   "Consumer Discretionary": "#a855f7",
   "Communication Services": "#06b6d4",
-  "Industrials": "#f97316",
+  Industrials: "#f97316",
   "Consumer Staples": "#84cc16",
-  "Energy": "#ef4444",
-  "Utilities": "#6366f1",
+  Energy: "#ef4444",
+  Utilities: "#6366f1",
   "Real Estate": "#ec4899",
-  "Materials": "#14b8a6",
+  Materials: "#14b8a6",
 };
 
 // ── Formatters ────────────────────────────────────────────────────────────────
@@ -93,14 +139,16 @@ const fmtCompactUsd = (v: any): string => {
   const n = parseFloat(v);
   if (isNaN(n)) return "—";
   if (Math.abs(n) >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
-  if (Math.abs(n) >= 1e9)  return `$${(n / 1e9).toFixed(2)}B`;
-  if (Math.abs(n) >= 1e6)  return `$${(n / 1e6).toFixed(2)}M`;
+  if (Math.abs(n) >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
+  if (Math.abs(n) >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
   return `$${n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 };
 
 const fmtUsd = (v: any): string => {
   const n = parseFloat(v);
-  return isNaN(n) ? "—" : `$${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return isNaN(n)
+    ? "—"
+    : `$${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 };
 
 const fmtNum = (v: any): string => {
@@ -122,7 +170,10 @@ const StatCard: React.FC<{
   accent?: boolean;
   subValue?: string;
 }> = ({ icon, label, value, accent = false, subValue }) => (
-  <div className="p-card flex align-items-center gap-3 flex-1 p-3" style={{ minWidth: 0 }}>
+  <div
+    className="p-card flex align-items-center gap-3 flex-1 p-3"
+    style={{ minWidth: 0 }}
+  >
     <div
       className="flex align-items-center justify-content-center border-round-lg flex-shrink-0"
       style={{
@@ -133,14 +184,20 @@ const StatCard: React.FC<{
     >
       <i
         className={`${icon} text-lg`}
-        style={{ color: accent ? "var(--sv-accent)" : "var(--sv-text-secondary)" }}
+        style={{
+          color: accent ? "var(--sv-accent)" : "var(--sv-text-secondary)",
+        }}
       />
     </div>
     <div style={{ minWidth: 0 }}>
       <div className="sv-info-label text-xs mb-1">{label}</div>
       <div
         className="text-lg font-bold"
-        style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+        style={{
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
       >
         {value}
       </div>
@@ -149,20 +206,28 @@ const StatCard: React.FC<{
   </div>
 );
 
-const SelectorCard: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+const SelectorCard: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => (
   <div className="p-card flex align-items-center gap-3 flex-wrap p-3 mb-4">
     {children}
   </div>
 );
 
-const EmptyState: React.FC<{ icon: string; title: string; description: string }> = ({
-  icon,
-  title,
-  description,
-}) => (
+const EmptyState: React.FC<{
+  icon: string;
+  title: string;
+  description: string;
+}> = ({ icon, title, description }) => (
   <div className="p-card text-center sv-text-muted p-6">
-    <i className={`${icon} sv-text-accent block mb-3`} style={{ fontSize: "3rem" }} />
-    <div className="font-semibold mb-2 text-base" style={{ color: "var(--sv-text-secondary)" }}>
+    <i
+      className={`${icon} sv-text-accent block mb-3`}
+      style={{ fontSize: "3rem" }}
+    />
+    <div
+      className="font-semibold mb-2 text-base"
+      style={{ color: "var(--sv-text-secondary)" }}
+    >
       {title}
     </div>
     <div className="text-sm">{description}</div>
@@ -172,13 +237,38 @@ const EmptyState: React.FC<{ icon: string; title: string; description: string }>
 const HoldingsLoadingSkeleton: React.FC = () => (
   <div className="flex flex-column gap-3 pt-2">
     <div className="flex gap-3 flex-wrap">
-      <Skeleton height="80px" className="flex-1" borderRadius="12px" style={{ minWidth: 160 }} />
-      <Skeleton height="80px" className="flex-1" borderRadius="12px" style={{ minWidth: 160 }} />
-      <Skeleton height="80px" className="flex-1" borderRadius="12px" style={{ minWidth: 160 }} />
+      <Skeleton
+        height="80px"
+        className="flex-1"
+        borderRadius="12px"
+        style={{ minWidth: 160 }}
+      />
+      <Skeleton
+        height="80px"
+        className="flex-1"
+        borderRadius="12px"
+        style={{ minWidth: 160 }}
+      />
+      <Skeleton
+        height="80px"
+        className="flex-1"
+        borderRadius="12px"
+        style={{ minWidth: 160 }}
+      />
     </div>
     <div className="flex gap-3 flex-wrap">
-      <Skeleton height="360px" className="flex-1" borderRadius="12px" style={{ minWidth: 280 }} />
-      <Skeleton height="360px" className="flex-1" borderRadius="12px" style={{ minWidth: 280 }} />
+      <Skeleton
+        height="360px"
+        className="flex-1"
+        borderRadius="12px"
+        style={{ minWidth: 280 }}
+      />
+      <Skeleton
+        height="360px"
+        className="flex-1"
+        borderRadius="12px"
+        style={{ minWidth: 280 }}
+      />
     </div>
     <Skeleton height="440px" borderRadius="12px" />
   </div>
@@ -197,7 +287,9 @@ const SuperInvestorPage: React.FC = () => {
   // Investor list
   const [investors, setInvestors] = useState<Investor[]>([]);
   const [loadingInvestors, setLoadingInvestors] = useState(true);
-  const [selectedInvestor, setSelectedInvestor] = useState<Investor | null>(null);
+  const [selectedInvestor, setSelectedInvestor] = useState<Investor | null>(
+    null,
+  );
 
   // Combined tab – report dates
   const [reportDates, setReportDates] = useState<ReportDate[]>([]);
@@ -360,7 +452,12 @@ const SuperInvestorPage: React.FC = () => {
     }
 
     return {
-      chart: { type: "pie", backgroundColor: "transparent", height: 360, margin: [30, 0, 10, 0] },
+      chart: {
+        type: "pie",
+        backgroundColor: "transparent",
+        height: 360,
+        margin: [30, 0, 10, 0],
+      },
       title: {
         text: "Holdings by Symbol",
         style: { color: cc.titleColor, fontSize: "13px", fontWeight: "600" },
@@ -399,7 +496,12 @@ const SuperInvestorPage: React.FC = () => {
     if (!sectorDist || sectorDist.length === 0) return {};
 
     return {
-      chart: { type: "pie", backgroundColor: "transparent", height: 360, margin: [30, 0, 10, 0] },
+      chart: {
+        type: "pie",
+        backgroundColor: "transparent",
+        height: 360,
+        margin: [30, 0, 10, 0],
+      },
       title: {
         text: "Sector Distribution",
         style: { color: cc.titleColor, fontSize: "13px", fontWeight: "600" },
@@ -447,7 +549,10 @@ const SuperInvestorPage: React.FC = () => {
   // ── Column body renderers ─────────────────────────────────────────────────
 
   const symbolBody = (row: Holding) => (
-    <span className="sv-text-accent font-bold text-sm" style={{ letterSpacing: "0.02em" }}>
+    <span
+      className="sv-text-accent font-bold text-sm"
+      style={{ letterSpacing: "0.02em" }}
+    >
       {row.rep_symbol}
     </span>
   );
@@ -472,11 +577,15 @@ const SuperInvestorPage: React.FC = () => {
   };
 
   const pctBody = (row: Holding) => (
-    <div className="text-right font-semibold text-sm">{fmtPct(row.rep_pcnt)}</div>
+    <div className="text-right font-semibold text-sm">
+      {fmtPct(row.rep_pcnt)}
+    </div>
   );
 
   const qtyBody = (row: Holding) => (
-    <div className="text-right sv-text-muted text-sm">{fmtNum(row.rep_qty)}</div>
+    <div className="text-right sv-text-muted text-sm">
+      {fmtNum(row.rep_qty)}
+    </div>
   );
 
   const priceBody = (row: Holding) => (
@@ -484,7 +593,9 @@ const SuperInvestorPage: React.FC = () => {
   );
 
   const valueBody = (row: Holding) => (
-    <div className="text-right font-semibold text-sm">{fmtCompactUsd(row.rep_value)}</div>
+    <div className="text-right font-semibold text-sm">
+      {fmtCompactUsd(row.rep_value)}
+    </div>
   );
 
   const txnSideBody = (row: Transaction) => {
@@ -543,25 +654,39 @@ const SuperInvestorPage: React.FC = () => {
 
         {/* Stats row */}
         <div className="flex gap-3 flex-wrap mb-4">
-          <StatCard icon="pi pi-calendar" label="Report Date" value={reportDate} />
+          <StatCard
+            icon="pi pi-calendar"
+            label="Report Date"
+            value={reportDate}
+          />
           <StatCard
             icon="pi pi-wallet"
             label="Total Portfolio Value"
             value={fmtCompactUsd(totalValue)}
             accent
           />
-          <StatCard icon="pi pi-chart-bar" label="Holdings" value={`${holdingsCount} stocks`} />
+          <StatCard
+            icon="pi pi-chart-bar"
+            label="Holdings"
+            value={`${holdingsCount} stocks`}
+          />
         </div>
 
         {/* Charts */}
         <div className="flex gap-3 flex-wrap mb-4">
           {showSymbolChart && (
             <div className="p-card flex-1 p-3" style={{ minWidth: 280 }}>
-              <HighchartsReact highcharts={Highcharts} options={holdingsChartOptions} />
+              <HighchartsReact
+                highcharts={Highcharts}
+                options={holdingsChartOptions}
+              />
             </div>
           )}
           <div className="p-card flex-1 p-3" style={{ minWidth: 280 }}>
-            <HighchartsReact highcharts={Highcharts} options={sectorChartOptions} />
+            <HighchartsReact
+              highcharts={Highcharts}
+              options={sectorChartOptions}
+            />
           </div>
         </div>
 
@@ -700,9 +825,24 @@ const SuperInvestorPage: React.FC = () => {
           scrollHeight="55vh"
           className="p-datatable-sm p-datatable-striped text-sm"
         >
-          <Column field="name" header="Fund Name" sortable style={{ minWidth: 150 }} />
-          <Column field="rep_date" header="Date" sortable style={{ minWidth: 110 }} />
-          <Column field="rep_symbol_name" header="Symbol" sortable style={{ minWidth: 140 }} />
+          <Column
+            field="name"
+            header="Fund Name"
+            sortable
+            style={{ minWidth: 150 }}
+          />
+          <Column
+            field="rep_date"
+            header="Date"
+            sortable
+            style={{ minWidth: 110 }}
+          />
+          <Column
+            field="rep_symbol_name"
+            header="Symbol"
+            sortable
+            style={{ minWidth: 140 }}
+          />
           <Column
             field="rep_side"
             header="Action"
@@ -715,7 +855,9 @@ const SuperInvestorPage: React.FC = () => {
             field="rep_qty"
             header="Quantity"
             sortable
-            body={(r: Transaction) => <div className="text-right">{fmtNum(r.rep_qty)}</div>}
+            body={(r: Transaction) => (
+              <div className="text-right">{fmtNum(r.rep_qty)}</div>
+            )}
             style={{ minWidth: 110 }}
             align="right"
           />
@@ -723,14 +865,18 @@ const SuperInvestorPage: React.FC = () => {
             field="rep_price"
             header="Price"
             sortable
-            body={(r: Transaction) => <div className="text-right">{fmtUsd(r.rep_price)}</div>}
+            body={(r: Transaction) => (
+              <div className="text-right">{fmtUsd(r.rep_price)}</div>
+            )}
             style={{ minWidth: 110 }}
             align="right"
           />
           <Column
             header="Value"
             body={(r: Transaction) => (
-              <div className="text-right font-semibold">{fmtCompactUsd(r.rep_qty * r.rep_price)}</div>
+              <div className="text-right font-semibold">
+                {fmtCompactUsd(r.rep_qty * r.rep_price)}
+              </div>
             )}
             style={{ minWidth: 110 }}
             align="right"
@@ -744,30 +890,6 @@ const SuperInvestorPage: React.FC = () => {
 
   return (
     <div className="sv-layout-wrap p-4">
-      {/* ── Page header ── */}
-      <div
-        className="p-card flex align-items-center gap-3 mb-4 py-4 px-5"
-        style={{
-          background: "linear-gradient(135deg, var(--sv-bg-card) 0%, var(--sv-bg-surface) 100%)",
-          borderRadius: 16,
-        }}
-      >
-        <div
-          className="flex align-items-center justify-content-center border-round-xl flex-shrink-0"
-          style={{ width: 50, height: 50, background: "var(--sv-accent-gradient)" }}
-        >
-          <i className="pi pi-star-fill text-xl" style={{ color: "#fff" }} />
-        </div>
-        <div>
-          <h1 className="m-0 sv-page-title text-xl font-bold">
-            Super Investor Portfolios
-          </h1>
-          <p className="m-0 mt-1 sv-text-muted text-sm">
-            Track holdings and transactions of legendary institutional investors
-          </p>
-        </div>
-      </div>
-
       {/* ── Tabs ── */}
       <TabView
         activeIndex={activeTab}
@@ -785,7 +907,11 @@ const SuperInvestorPage: React.FC = () => {
                 options={investors}
                 onChange={(e) => setSelectedInvestor(e.value)}
                 optionLabel="name"
-                placeholder={loadingInvestors ? "Loading investors…" : "Select a Super Investor…"}
+                placeholder={
+                  loadingInvestors
+                    ? "Loading investors…"
+                    : "Select a Super Investor…"
+                }
                 filter
                 filterBy="name"
                 showClear
@@ -818,7 +944,10 @@ const SuperInvestorPage: React.FC = () => {
             <SelectorCard>
               <i className="pi pi-calendar sv-text-muted" />
               <div className="flex align-items-center gap-2">
-                <span className="sv-info-label text-xs" style={{ whiteSpace: "nowrap" }}>
+                <span
+                  className="sv-info-label text-xs"
+                  style={{ whiteSpace: "nowrap" }}
+                >
                   Report Date
                 </span>
                 <Dropdown
