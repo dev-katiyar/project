@@ -399,8 +399,9 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
                 fontWeight: "700",
               },
               align: "left",
+              verticalAlign: "bottom",
               x: 10,
-              y: 18,
+              y: -8,
             },
           },
           {
