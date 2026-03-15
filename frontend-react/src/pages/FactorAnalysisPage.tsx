@@ -597,14 +597,16 @@ const FactorAnalysisPage: React.FC = () => {
                 <table style={tblStyle}>
                   <thead>
                     <tr>
-                      <th style={{ ...thSt, textAlign: "left" }}></th>
+                      <th style={{ ...thSt, textAlign: "left" }}>Name</th>
+                      <th style={{ ...thSt, textAlign: "left" }}>Symbol</th>
                       {corrSymbols.map((s) => <th key={s} style={thSt} title={getName(s)}>{s}</th>)}
                     </tr>
                   </thead>
                   <tbody>
                     {corrSymbols.map((s1) => (
                       <tr key={s1}>
-                        <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-accent)", fontWeight: 700, paddingLeft: "0.4rem" }} title={getName(s1)}>{s1}</td>
+                        <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-text-secondary)", paddingLeft: "0.4rem", whiteSpace: "nowrap" }}>{getName(s1)}</td>
+                        <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-accent)", fontWeight: 700, paddingLeft: "0.4rem" }}>{s1}</td>
                         {corrSymbols.map((s2) => {
                           if (s1 === s2) return (
                             <td key={s2} style={{ ...tdSt, background: "rgba(100,100,120,0.18)", color: "var(--sv-text-muted)" }}>
@@ -661,14 +663,16 @@ const FactorAnalysisPage: React.FC = () => {
                 <table style={tblStyle}>
                   <thead>
                     <tr>
-                      <th style={{ ...thSt, textAlign: "left" }}></th>
+                      <th style={{ ...thSt, textAlign: "left" }}>Name</th>
+                      <th style={{ ...thSt, textAlign: "left" }}>Symbol</th>
                       {scoreSymbols.map((s) => <th key={s} style={thSt} title={getName(s)}>{s}</th>)}
                     </tr>
                   </thead>
                   <tbody>
                     {scoreSymbols.map((s1) => (
                       <tr key={s1}>
-                        <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-accent)", fontWeight: 700, paddingLeft: "0.4rem" }} title={getName(s1)}>{s1}</td>
+                        <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-text-secondary)", paddingLeft: "0.4rem", whiteSpace: "nowrap" }}>{getName(s1)}</td>
+                        <td style={{ ...tdSt, textAlign: "left", color: "var(--sv-accent)", fontWeight: 700, paddingLeft: "0.4rem" }}>{s1}</td>
                         {scoreSymbols.map((s2) => {
                           if (s1 === s2) return (
                             <td key={s2} style={{ ...tdSt, background: "rgba(100,100,120,0.18)", color: "var(--sv-text-muted)", cursor: "default" }}>—</td>
