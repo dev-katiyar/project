@@ -651,15 +651,29 @@ const CreditSpreadReportPage: React.FC = () => {
                           }}
                         >
                           <td style={{ ...tdStyle, paddingLeft: "0.5rem" }}>
-                            <div
-                              className="font-bold"
-                              style={{
-                                color: isSelected ? "var(--sv-accent)" : "var(--sv-text-primary)",
-                                letterSpacing: "0.03em",
-                                fontSize: "0.84rem",
-                              }}
-                            >
-                              {row.symbol}
+                            <div className="flex align-items-center gap-2">
+                              <i
+                                className="pi pi-chart-line"
+                                style={{
+                                  fontSize: "1rem",
+                                  padding: "0.25rem",
+                                  borderRadius: "0.3rem",
+                                  background: isSelected ? "var(--sv-accent-bg)" : "transparent",
+                                  color: isSelected ? "var(--sv-accent)" : "var(--sv-text-muted)",
+                                  border: isSelected ? "1px solid var(--sv-accent)" : "1px solid transparent",
+                                  transition: "all 0.15s",
+                                }}
+                              />
+                              <span
+                                className="font-bold"
+                                style={{
+                                  color: isSelected ? "var(--sv-accent)" : "var(--sv-text-primary)",
+                                  letterSpacing: "0.03em",
+                                  fontSize: "0.84rem",
+                                }}
+                              >
+                                {row.symbol}
+                              </span>
                             </div>
                             <div className="sv-text-muted mt-1" style={{ fontSize: "0.67rem" }}>
                               {symNameMap[row.symbol] ?? ""}
