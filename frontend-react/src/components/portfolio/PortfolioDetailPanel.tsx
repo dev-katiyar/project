@@ -13,6 +13,7 @@ import ClosedPositionsTab from "@/components/portfolio/tabs/ClosedPositionsTab";
 import DividendsTab from "@/components/portfolio/tabs/DividendsTab";
 import MarketRadarTab from "@/components/portfolio/tabs/MarketRadarTab";
 import FundamentalsTab from "@/components/portfolio/tabs/FundamentalsTab";
+import TechSignalsTab from "@/components/portfolio/tabs/TechSignalsTab";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -297,9 +298,7 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
 
   const handleTabChange = (e: { index: number }) => {
     setActiveTabIndex(e.index);
-    if (e.index === 4 && !perfLoaded) {
-      setPerfLoaded(true);
-    }
+    if (e.index === 4 && !perfLoaded) setPerfLoaded(true);
   };
 
   const details = data?.portfolioDetails;
@@ -498,6 +497,13 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
               techAndFundamentals={
                 data.techAndFundamentals as Record<string, unknown>
               }
+            />
+          </TabPanel>
+
+          <TabPanel header="Signals">
+            <TechSignalsTab
+              symbols={data.openPositions.map((p) => p.symbol)}
+              active={activeTabIndex === 6}
             />
           </TabPanel>
 
