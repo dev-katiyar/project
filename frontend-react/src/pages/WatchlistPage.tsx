@@ -4,6 +4,8 @@ import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
+import { IconField } from "primereact/iconfield";
+import { InputIcon } from "primereact/inputicon";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Message } from "primereact/message";
 import { Dropdown } from "primereact/dropdown";
@@ -1009,8 +1011,8 @@ const WatchlistPage: React.FC = () => {
                     className="flex align-items-center gap-1 flex-1"
                     style={{ minWidth: "220px" }}
                   >
-                    <span className="p-input-icon-left" style={{ flex: 1 }}>
-                      <i className="pi pi-search" />
+                    <IconField iconPosition="left" style={{ flex: 1 }}>
+                      <InputIcon className="pi pi-search" />
                       <InputText
                         value={addSymbolInput}
                         onChange={(e) =>
@@ -1020,9 +1022,9 @@ const WatchlistPage: React.FC = () => {
                           e.key === "Enter" && handleAddSymbol()
                         }
                         placeholder="Ticker symbol (e.g. AAPL)"
-                        style={{ width: "100%", paddingLeft: "2.25rem" }}
+                        style={{ width: "100%" }}
                       />
-                    </span>
+                    </IconField>
                     <Button
                       icon="pi pi-plus"
                       label="Add"
