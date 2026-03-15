@@ -4,7 +4,9 @@ import { SelectButton } from "primereact/selectbutton";
 import { Skeleton } from "primereact/skeleton";
 import { Card } from "primereact/card";
 import api from "@/services/api";
-import ReturnsChart, { getSeriesColor } from "@/components/portfolio/charts/ReturnsChart";
+import ReturnsChart, {
+  getSeriesColor,
+} from "@/components/portfolio/charts/ReturnsChart";
 import PortfolioGrowthChart from "@/components/portfolio/charts/PortfolioGrowthChart";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -59,7 +61,11 @@ interface Props {
   active: boolean;
 }
 
-const PerformanceTab: React.FC<Props> = ({ portfolioId, portfolioName, active }) => {
+const PerformanceTab: React.FC<Props> = ({
+  portfolioId,
+  portfolioName,
+  active,
+}) => {
   const [perfData, setPerfData] = useState<PerfData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -114,15 +120,26 @@ const PerformanceTab: React.FC<Props> = ({ portfolioId, portfolioName, active })
 
       {/* Periodic Returns: column chart by frequency */}
       <div className="flex align-items-center gap-2 mb-3">
-        <i className="pi pi-chart-bar" style={{ color: "var(--sv-accent)", fontSize: "1rem" }} />
-        <span className="font-bold" style={{ fontSize: "0.95rem", color: "var(--sv-text-primary)" }}>
+        <i
+          className="pi pi-chart-bar"
+          style={{ color: "var(--sv-accent)", fontSize: "1rem" }}
+        />
+        <span
+          className="font-bold"
+          style={{ fontSize: "0.95rem", color: "var(--sv-text-primary)" }}
+        >
           Periodic Returns
         </span>
       </div>
 
       {loading && (
         <>
-          <Skeleton height="2.5rem" width="240px" className="mb-3" borderRadius="8px" />
+          <Skeleton
+            height="2.5rem"
+            width="240px"
+            className="mb-3"
+            borderRadius="8px"
+          />
           <Skeleton height="320px" borderRadius="8px" />
         </>
       )}
@@ -139,8 +156,8 @@ const PerformanceTab: React.FC<Props> = ({ portfolioId, portfolioName, active })
           {/* Frequency selector */}
           <div className="flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
             <div className="sv-info-label font-bold text-sm flex align-items-center">
-              <i className="pi pi-chart-bar mr-2" />
-              Returns — {frequency.charAt(0).toUpperCase() + frequency.slice(1)}
+              {/* <i className="pi pi-chart-bar mr-2" />
+              Returns — {frequency.charAt(0).toUpperCase() + frequency.slice(1)} */}
             </div>
             <SelectButton
               value={frequency}
@@ -161,7 +178,10 @@ const PerformanceTab: React.FC<Props> = ({ portfolioId, portfolioName, active })
 
           {/* Benchmark legend note */}
           {perfData?.names && perfData.names.length > 1 && (
-            <div className="text-center sv-text-muted mt-2" style={{ fontSize: "0.72rem" }}>
+            <div
+              className="text-center sv-text-muted mt-2"
+              style={{ fontSize: "0.72rem" }}
+            >
               Benchmarks: {perfData.names.slice(1).join(", ")}
             </div>
           )}
