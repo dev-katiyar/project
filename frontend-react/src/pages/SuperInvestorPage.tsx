@@ -365,6 +365,9 @@ const SuperInvestorPage: React.FC = () => {
         if (routeCode) {
           const found = data.find((inv) => inv.code === routeCode);
           if (found) setSelectedInvestor(found);
+          else if (data.length > 0) setSelectedInvestor(data[0]);
+        } else if (data.length > 0) {
+          setSelectedInvestor(data[0]);
         }
       } catch {
         // silent
