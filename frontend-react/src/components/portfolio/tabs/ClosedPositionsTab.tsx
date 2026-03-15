@@ -162,7 +162,7 @@ const ClosedPositionsTab: React.FC<Props> = ({ positions }) => {
               {(r.qty ?? 0).toLocaleString("en-US", { maximumFractionDigits: 4 })}
             </div>
           )}
-          headerStyle={{ textAlign: "right" }}
+          pt={{ headerContent: { className: "justify-content-end" } }}
           sortable
           style={{ minWidth: "80px" }}
         />
@@ -175,7 +175,7 @@ const ClosedPositionsTab: React.FC<Props> = ({ positions }) => {
                 {r.buyPrice ? fmtUSDFull(r.buyPrice) : "—"}
               </div>
             )}
-            headerStyle={{ textAlign: "right" }}
+            pt={{ headerContent: { className: "justify-content-end" } }}
             sortable
             style={{ minWidth: "100px" }}
           />
@@ -189,7 +189,7 @@ const ClosedPositionsTab: React.FC<Props> = ({ positions }) => {
                 {r.sellPrice ? fmtUSDFull(r.sellPrice) : "—"}
               </div>
             )}
-            headerStyle={{ textAlign: "right" }}
+            pt={{ headerContent: { className: "justify-content-end" } }}
             sortable
             style={{ minWidth: "100px" }}
           />
@@ -198,7 +198,7 @@ const ClosedPositionsTab: React.FC<Props> = ({ positions }) => {
           field="pnl"
           header="Realized P&L"
           body={(r: ClosedPosition) => <PnlCell row={r} />}
-          headerStyle={{ textAlign: "right" }}
+          pt={{ headerContent: { className: "justify-content-end" } }}
           sortable
           style={{ minWidth: "130px" }}
         />
