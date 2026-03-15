@@ -368,8 +368,8 @@ const CreditSpreadReportPage: React.FC = () => {
       }
       const d: CreditSpreadResponse = res.data;
       setData(d);
-      if (d.sym_name_map) {
-        setSelSymbol(Object.keys(d.sym_name_map)[0] ?? null);
+      if (d.symbols?.length) {
+        setSelSymbol(d.symbols[0]);
       }
     } catch {
       setError("Failed to load credit spread data. Please try again.");
