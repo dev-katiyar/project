@@ -122,87 +122,35 @@ const StatCard: React.FC<{
   accent?: boolean;
   subValue?: string;
 }> = ({ icon, label, value, accent = false, subValue }) => (
-  <div
-    style={{
-      background: "var(--sv-bg-card)",
-      border: "1px solid var(--sv-border)",
-      borderRadius: 12,
-      padding: "1rem 1.25rem",
-      display: "flex",
-      alignItems: "center",
-      gap: "0.875rem",
-      flex: 1,
-      minWidth: 0,
-      boxShadow: "var(--sv-shadow-sm)",
-    }}
-  >
+  <div className="p-card flex align-items-center gap-3 flex-1 p-3" style={{ minWidth: 0 }}>
     <div
+      className="flex align-items-center justify-content-center border-round-lg flex-shrink-0"
       style={{
         width: 46,
         height: 46,
-        borderRadius: 10,
-        background: accent ? "var(--sv-accent-bg, rgba(245,166,35,0.12))" : "var(--sv-bg-surface)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexShrink: 0,
+        background: accent ? "var(--sv-accent-bg)" : "var(--sv-bg-surface)",
       }}
     >
       <i
-        className={icon}
-        style={{
-          fontSize: "1.15rem",
-          color: accent ? "var(--sv-accent)" : "var(--sv-text-secondary)",
-        }}
+        className={`${icon} text-lg`}
+        style={{ color: accent ? "var(--sv-accent)" : "var(--sv-text-secondary)" }}
       />
     </div>
     <div style={{ minWidth: 0 }}>
+      <div className="sv-info-label text-xs mb-1">{label}</div>
       <div
-        style={{
-          fontSize: "0.72rem",
-          color: "var(--sv-text-muted)",
-          textTransform: "uppercase",
-          letterSpacing: "0.06em",
-          marginBottom: 3,
-          fontWeight: 600,
-        }}
-      >
-        {label}
-      </div>
-      <div
-        style={{
-          fontSize: "1.1rem",
-          fontWeight: 700,
-          color: "var(--sv-text-primary)",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-        }}
+        className="text-lg font-bold"
+        style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
       >
         {value}
       </div>
-      {subValue && (
-        <div style={{ fontSize: "0.75rem", color: "var(--sv-text-muted)", marginTop: 1 }}>{subValue}</div>
-      )}
+      {subValue && <div className="sv-text-muted text-xs mt-1">{subValue}</div>}
     </div>
   </div>
 );
 
 const SelectorCard: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div
-    style={{
-      background: "var(--sv-bg-card)",
-      border: "1px solid var(--sv-border)",
-      borderRadius: 12,
-      padding: "1rem 1.25rem",
-      marginBottom: "1.25rem",
-      display: "flex",
-      alignItems: "center",
-      gap: "1rem",
-      flexWrap: "wrap",
-      boxShadow: "var(--sv-shadow-sm)",
-    }}
-  >
+  <div className="p-card flex align-items-center gap-3 flex-wrap p-3 mb-4">
     {children}
   </div>
 );
@@ -212,42 +160,23 @@ const EmptyState: React.FC<{ icon: string; title: string; description: string }>
   title,
   description,
 }) => (
-  <div
-    style={{
-      textAlign: "center",
-      padding: "4rem 2rem",
-      background: "var(--sv-bg-card)",
-      border: "1px solid var(--sv-border)",
-      borderRadius: 12,
-      color: "var(--sv-text-muted)",
-    }}
-  >
-    <i
-      className={icon}
-      style={{ fontSize: "3rem", marginBottom: "1rem", display: "block", color: "var(--sv-accent)" }}
-    />
-    <div
-      style={{
-        fontSize: "1.05rem",
-        fontWeight: 600,
-        color: "var(--sv-text-secondary)",
-        marginBottom: "0.4rem",
-      }}
-    >
+  <div className="p-card text-center sv-text-muted p-6">
+    <i className={`${icon} sv-text-accent block mb-3`} style={{ fontSize: "3rem" }} />
+    <div className="font-semibold mb-2 text-base" style={{ color: "var(--sv-text-secondary)" }}>
       {title}
     </div>
-    <div style={{ fontSize: "0.875rem" }}>{description}</div>
+    <div className="text-sm">{description}</div>
   </div>
 );
 
 const HoldingsLoadingSkeleton: React.FC = () => (
-  <div className="flex flex-column gap-3" style={{ paddingTop: "0.5rem" }}>
-    <div className="flex gap-3" style={{ flexWrap: "wrap" }}>
+  <div className="flex flex-column gap-3 pt-2">
+    <div className="flex gap-3 flex-wrap">
       <Skeleton height="80px" className="flex-1" borderRadius="12px" style={{ minWidth: 160 }} />
       <Skeleton height="80px" className="flex-1" borderRadius="12px" style={{ minWidth: 160 }} />
       <Skeleton height="80px" className="flex-1" borderRadius="12px" style={{ minWidth: 160 }} />
     </div>
-    <div className="flex gap-3" style={{ flexWrap: "wrap" }}>
+    <div className="flex gap-3 flex-wrap">
       <Skeleton height="360px" className="flex-1" borderRadius="12px" style={{ minWidth: 280 }} />
       <Skeleton height="360px" className="flex-1" borderRadius="12px" style={{ minWidth: 280 }} />
     </div>
@@ -375,7 +304,6 @@ const SuperInvestorPage: React.FC = () => {
       if (reportDates.length > 0 && selectedReportDate) {
         loadHoldings("all", selectedReportDate);
       } else {
-        // Need to fetch report dates first
         (async () => {
           try {
             const res = await api.get("/holdings/report-dates");
@@ -519,7 +447,7 @@ const SuperInvestorPage: React.FC = () => {
   // ── Column body renderers ─────────────────────────────────────────────────
 
   const symbolBody = (row: Holding) => (
-    <span style={{ fontWeight: 700, color: "var(--sv-accent)", fontSize: "0.88rem", letterSpacing: "0.02em" }}>
+    <span className="sv-text-accent font-bold text-sm" style={{ letterSpacing: "0.02em" }}>
       {row.rep_symbol}
     </span>
   );
@@ -528,12 +456,10 @@ const SuperInvestorPage: React.FC = () => {
     const color = SECTOR_COLORS[row.sector];
     return (
       <span
+        className="text-xs font-medium border-round"
         style={{
           display: "inline-block",
           padding: "2px 8px",
-          borderRadius: 4,
-          fontSize: "0.74rem",
-          fontWeight: 500,
           background: color ? `${color}22` : "var(--sv-bg-surface)",
           color: color ?? "var(--sv-text-secondary)",
           border: `1px solid ${color ? `${color}44` : "var(--sv-border)"}`,
@@ -546,23 +472,19 @@ const SuperInvestorPage: React.FC = () => {
   };
 
   const pctBody = (row: Holding) => (
-    <div style={{ textAlign: "right", fontWeight: 600, fontSize: "0.88rem" }}>{fmtPct(row.rep_pcnt)}</div>
+    <div className="text-right font-semibold text-sm">{fmtPct(row.rep_pcnt)}</div>
   );
 
   const qtyBody = (row: Holding) => (
-    <div style={{ textAlign: "right", color: "var(--sv-text-secondary)", fontSize: "0.85rem" }}>
-      {fmtNum(row.rep_qty)}
-    </div>
+    <div className="text-right sv-text-muted text-sm">{fmtNum(row.rep_qty)}</div>
   );
 
   const priceBody = (row: Holding) => (
-    <div style={{ textAlign: "right", fontSize: "0.85rem" }}>{fmtUsd(row.rep_price)}</div>
+    <div className="text-right text-sm">{fmtUsd(row.rep_price)}</div>
   );
 
   const valueBody = (row: Holding) => (
-    <div style={{ textAlign: "right", fontWeight: 600, fontSize: "0.88rem" }}>
-      {fmtCompactUsd(row.rep_value)}
-    </div>
+    <div className="text-right font-semibold text-sm">{fmtCompactUsd(row.rep_value)}</div>
   );
 
   const txnSideBody = (row: Transaction) => {
@@ -571,7 +493,8 @@ const SuperInvestorPage: React.FC = () => {
       <Tag
         value={row.rep_side?.toUpperCase() ?? "—"}
         severity={isBuy ? "success" : "danger"}
-        style={{ fontWeight: 700, fontSize: "0.72rem", minWidth: 44, justifyContent: "center" }}
+        className="text-xs font-bold"
+        style={{ minWidth: 44, justifyContent: "center" }}
       />
     );
   };
@@ -604,15 +527,10 @@ const SuperInvestorPage: React.FC = () => {
     return (
       <>
         {/* Investor name + actions */}
-        <div
-          className="flex align-items-center justify-content-between"
-          style={{ marginBottom: "1rem", flexWrap: "wrap", gap: "0.75rem" }}
-        >
+        <div className="flex align-items-center justify-content-between mb-3 flex-wrap gap-3">
           <div>
-            <h2 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 700, color: "var(--sv-text-primary)" }}>
-              {investorName}
-            </h2>
-            <span style={{ fontSize: "0.78rem", color: "var(--sv-text-muted)" }}>Portfolio Holdings</span>
+            <h2 className="m-0 text-lg font-bold">{investorName}</h2>
+            <span className="sv-text-muted text-xs">Portfolio Holdings</span>
           </div>
           <Button
             label="Recent Transactions"
@@ -620,12 +538,11 @@ const SuperInvestorPage: React.FC = () => {
             severity="secondary"
             size="small"
             onClick={openTransactions}
-            style={{ fontSize: "0.82rem" }}
           />
         </div>
 
         {/* Stats row */}
-        <div className="flex gap-3" style={{ marginBottom: "1.25rem", flexWrap: "wrap" }}>
+        <div className="flex gap-3 flex-wrap mb-4">
           <StatCard icon="pi pi-calendar" label="Report Date" value={reportDate} />
           <StatCard
             icon="pi pi-wallet"
@@ -637,42 +554,19 @@ const SuperInvestorPage: React.FC = () => {
         </div>
 
         {/* Charts */}
-        <div className="flex gap-3" style={{ marginBottom: "1.25rem", flexWrap: "wrap" }}>
+        <div className="flex gap-3 flex-wrap mb-4">
           {showSymbolChart && (
-            <div
-              style={{
-                flex: 1,
-                minWidth: 280,
-                background: "var(--sv-bg-card)",
-                border: "1px solid var(--sv-border)",
-                borderRadius: 12,
-                padding: "0.75rem",
-                boxShadow: "var(--sv-shadow-sm)",
-              }}
-            >
+            <div className="p-card flex-1 p-3" style={{ minWidth: 280 }}>
               <HighchartsReact highcharts={Highcharts} options={holdingsChartOptions} />
             </div>
           )}
-          <div
-            style={{
-              flex: 1,
-              minWidth: 280,
-              background: "var(--sv-bg-card)",
-              border: "1px solid var(--sv-border)",
-              borderRadius: 12,
-              padding: "0.75rem",
-              boxShadow: "var(--sv-shadow-sm)",
-            }}
-          >
+          <div className="p-card flex-1 p-3" style={{ minWidth: 280 }}>
             <HighchartsReact highcharts={Highcharts} options={sectorChartOptions} />
           </div>
         </div>
 
         {/* Table toolbar */}
-        <div
-          className="flex align-items-center justify-content-between"
-          style={{ marginBottom: "0.75rem", flexWrap: "wrap", gap: "0.5rem" }}
-        >
+        <div className="flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
           <span className="p-input-icon-left">
             <i className="pi pi-search" />
             <InputText
@@ -680,7 +574,7 @@ const SuperInvestorPage: React.FC = () => {
               onChange={(e) => setGlobalFilter(e.target.value)}
               placeholder="Search symbol or sector…"
               size="small"
-              style={{ width: 240, fontSize: "0.85rem" }}
+              style={{ width: 240 }}
             />
           </span>
           <Button
@@ -690,20 +584,11 @@ const SuperInvestorPage: React.FC = () => {
             size="small"
             text
             onClick={() => holdingsTableRef.current?.exportCSV()}
-            style={{ fontSize: "0.82rem" }}
           />
         </div>
 
         {/* Holdings table */}
-        <div
-          style={{
-            background: "var(--sv-bg-card)",
-            border: "1px solid var(--sv-border)",
-            borderRadius: 12,
-            overflow: "hidden",
-            boxShadow: "var(--sv-shadow-sm)",
-          }}
-        >
+        <div className="p-card overflow-hidden">
           <DataTable
             ref={holdingsTableRef}
             value={holdings}
@@ -715,8 +600,7 @@ const SuperInvestorPage: React.FC = () => {
             globalFilter={globalFilter}
             globalFilterFields={["rep_symbol", "sector"]}
             emptyMessage="No holdings found."
-            className="p-datatable-sm p-datatable-striped"
-            style={{ fontSize: "0.85rem" }}
+            className="p-datatable-sm p-datatable-striped text-sm"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
           >
             <Column
@@ -788,8 +672,8 @@ const SuperInvestorPage: React.FC = () => {
 
     if (transactions.length === 0) {
       return (
-        <div style={{ textAlign: "center", padding: "2.5rem", color: "var(--sv-text-muted)" }}>
-          <i className="pi pi-inbox" style={{ fontSize: "2rem", marginBottom: "0.75rem", display: "block" }} />
+        <div className="text-center p-5 sv-text-muted">
+          <i className="pi pi-inbox block mb-3" style={{ fontSize: "2rem" }} />
           No recent transactions found.
         </div>
       );
@@ -797,7 +681,7 @@ const SuperInvestorPage: React.FC = () => {
 
     return (
       <>
-        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "0.75rem" }}>
+        <div className="flex justify-content-end mb-3">
           <Button
             label="Export CSV"
             icon="pi pi-download"
@@ -805,7 +689,6 @@ const SuperInvestorPage: React.FC = () => {
             size="small"
             text
             onClick={() => txnsTableRef.current?.exportCSV()}
-            style={{ fontSize: "0.82rem" }}
           />
         </div>
         <DataTable
@@ -815,8 +698,7 @@ const SuperInvestorPage: React.FC = () => {
           sortOrder={-1}
           scrollable
           scrollHeight="55vh"
-          className="p-datatable-sm p-datatable-striped"
-          style={{ fontSize: "0.85rem" }}
+          className="p-datatable-sm p-datatable-striped text-sm"
         >
           <Column field="name" header="Fund Name" sortable style={{ minWidth: 150 }} />
           <Column field="rep_date" header="Date" sortable style={{ minWidth: 110 }} />
@@ -833,9 +715,7 @@ const SuperInvestorPage: React.FC = () => {
             field="rep_qty"
             header="Quantity"
             sortable
-            body={(r: Transaction) => (
-              <div style={{ textAlign: "right" }}>{fmtNum(r.rep_qty)}</div>
-            )}
+            body={(r: Transaction) => <div className="text-right">{fmtNum(r.rep_qty)}</div>}
             style={{ minWidth: 110 }}
             align="right"
           />
@@ -843,18 +723,14 @@ const SuperInvestorPage: React.FC = () => {
             field="rep_price"
             header="Price"
             sortable
-            body={(r: Transaction) => (
-              <div style={{ textAlign: "right" }}>{fmtUsd(r.rep_price)}</div>
-            )}
+            body={(r: Transaction) => <div className="text-right">{fmtUsd(r.rep_price)}</div>}
             style={{ minWidth: 110 }}
             align="right"
           />
           <Column
             header="Value"
             body={(r: Transaction) => (
-              <div style={{ textAlign: "right", fontWeight: 600 }}>
-                {fmtCompactUsd(r.rep_qty * r.rep_price)}
-              </div>
+              <div className="text-right font-semibold">{fmtCompactUsd(r.rep_qty * r.rep_price)}</div>
             )}
             style={{ minWidth: 110 }}
             align="right"
@@ -867,60 +743,43 @@ const SuperInvestorPage: React.FC = () => {
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div style={{ padding: "1.25rem", maxWidth: 1600, margin: "0 auto" }}>
+    <div className="sv-layout-wrap p-4">
       {/* ── Page header ── */}
       <div
+        className="p-card flex align-items-center gap-3 mb-4 py-4 px-5"
         style={{
           background: "linear-gradient(135deg, var(--sv-bg-card) 0%, var(--sv-bg-surface) 100%)",
-          border: "1px solid var(--sv-border)",
           borderRadius: 16,
-          padding: "1.25rem 1.75rem",
-          marginBottom: "1.5rem",
-          display: "flex",
-          alignItems: "center",
-          gap: "1rem",
-          boxShadow: "var(--sv-shadow-sm)",
         }}
       >
         <div
-          style={{
-            width: 50,
-            height: 50,
-            borderRadius: 12,
-            background: "var(--sv-accent-gradient)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
+          className="flex align-items-center justify-content-center border-round-xl flex-shrink-0"
+          style={{ width: 50, height: 50, background: "var(--sv-accent-gradient)" }}
         >
-          <i className="pi pi-star-fill" style={{ fontSize: "1.3rem", color: "#fff" }} />
+          <i className="pi pi-star-fill text-xl" style={{ color: "#fff" }} />
         </div>
         <div>
-          <h1
-            style={{
-              margin: 0,
-              fontSize: "1.35rem",
-              fontWeight: 700,
-              color: "var(--sv-text-primary)",
-            }}
-          >
+          <h1 className="m-0 sv-page-title text-xl font-bold">
             Super Investor Portfolios
           </h1>
-          <p style={{ margin: "0.2rem 0 0", fontSize: "0.84rem", color: "var(--sv-text-muted)" }}>
+          <p className="m-0 mt-1 sv-text-muted text-sm">
             Track holdings and transactions of legendary institutional investors
           </p>
         </div>
       </div>
 
       {/* ── Tabs ── */}
-      <TabView activeIndex={activeTab} onTabChange={handleTabChange}>
+      <TabView
+        activeIndex={activeTab}
+        onTabChange={handleTabChange}
+        pt={{ root: { className: "sv-tabs" } }}
+      >
         {/* ── Tab 1: Individual Investor ── */}
         <TabPanel header="Individual Investor" leftIcon="pi pi-user mr-2">
-          <div style={{ paddingTop: "0.25rem" }}>
+          <div className="pt-1">
             {/* Investor selector */}
             <SelectorCard>
-              <i className="pi pi-search" style={{ color: "var(--sv-text-muted)" }} />
+              <i className="pi pi-search sv-text-muted" />
               <Dropdown
                 value={selectedInvestor}
                 options={investors}
@@ -935,7 +794,7 @@ const SuperInvestorPage: React.FC = () => {
                 emptyMessage="No investors found"
               />
               {loadingInvestors && (
-                <i className="pi pi-spin pi-spinner" style={{ color: "var(--sv-text-muted)" }} />
+                <i className="pi pi-spin pi-spinner sv-text-muted" />
               )}
             </SelectorCard>
 
@@ -954,21 +813,12 @@ const SuperInvestorPage: React.FC = () => {
 
         {/* ── Tab 2: Combined Portfolio ── */}
         <TabPanel header="Combined Portfolio" leftIcon="pi pi-users mr-2">
-          <div style={{ paddingTop: "0.25rem" }}>
+          <div className="pt-1">
             {/* Controls */}
             <SelectorCard>
-              <i className="pi pi-calendar" style={{ color: "var(--sv-text-muted)" }} />
+              <i className="pi pi-calendar sv-text-muted" />
               <div className="flex align-items-center gap-2">
-                <span
-                  style={{
-                    fontSize: "0.76rem",
-                    color: "var(--sv-text-muted)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
-                    fontWeight: 600,
-                    whiteSpace: "nowrap",
-                  }}
-                >
+                <span className="sv-info-label text-xs" style={{ whiteSpace: "nowrap" }}>
                   Report Date
                 </span>
                 <Dropdown
@@ -991,41 +841,27 @@ const SuperInvestorPage: React.FC = () => {
                     size="small"
                     outlined
                     onClick={(e) => overlayRef.current?.toggle(e)}
-                    style={{ fontSize: "0.82rem" }}
                   />
                   <OverlayPanel
                     ref={overlayRef}
                     style={{ maxWidth: 320 }}
                     pt={{ content: { style: { padding: "0.75rem 1rem" } } }}
                   >
-                    <div
-                      style={{
-                        fontSize: "0.83rem",
-                        fontWeight: 700,
-                        marginBottom: "0.5rem",
-                        color: "var(--sv-text-primary)",
-                      }}
-                    >
+                    <div className="font-bold mb-2 text-sm">
                       Included Super Investors
                     </div>
                     <div style={{ maxHeight: 280, overflowY: "auto" }}>
                       {includedInvestors.map((inv, i) => (
                         <div
                           key={i}
+                          className="flex align-items-center gap-2 text-sm"
                           style={{
                             padding: "0.35rem 0",
                             borderBottom: "1px solid var(--sv-border)",
                             color: "var(--sv-text-secondary)",
-                            fontSize: "0.82rem",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.5rem",
                           }}
                         >
-                          <i
-                            className="pi pi-user"
-                            style={{ color: "var(--sv-accent)", fontSize: "0.72rem" }}
-                          />
+                          <i className="pi pi-user sv-text-accent text-xs" />
                           {inv.investor_name ?? inv.name ?? String(inv)}
                         </div>
                       ))}
@@ -1044,8 +880,8 @@ const SuperInvestorPage: React.FC = () => {
       <Dialog
         header={
           <div className="flex align-items-center gap-2">
-            <i className="pi pi-history" style={{ color: "var(--sv-accent)" }} />
-            <span style={{ fontWeight: 700 }}>Recent Transactions</span>
+            <i className="pi pi-history sv-text-accent" />
+            <span className="font-bold">Recent Transactions</span>
           </div>
         }
         visible={showTransactions}
