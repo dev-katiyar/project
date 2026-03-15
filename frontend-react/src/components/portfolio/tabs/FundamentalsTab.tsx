@@ -71,6 +71,7 @@ const ScoreBadge: React.FC<{ value: number | undefined; variant: ScoreVariant; m
       display: "inline-flex", alignItems: "center", gap: 2,
       background: bg, border: `2px solid ${border}`, borderRadius: 12,
       padding: "2px 8px", color: text, fontWeight: 800, fontSize: "0.8rem",
+      flexShrink: 0,
     }}>
       {value}
       <span style={{ fontWeight: 400, opacity: 0.7, fontSize: "0.7rem" }}>/{max}</span>
@@ -109,7 +110,7 @@ const RangeBar: React.FC<{ low: number | undefined; high: number | undefined; cu
   );
 };
 
-// ─── Sector colors (used for sector tags in the table) ───────────────────────
+// ─── Sector colors ────────────────────────────────────────────────────────────
 
 const SECTOR_COLORS: Record<string, string> = {
   Technology:      "#38bdf8",
@@ -152,6 +153,75 @@ const NetSignalTag: React.FC<{ signal: string | undefined }> = ({ signal }) => {
   );
 };
 
+// ─── Summary Strip ────────────────────────────────────────────────────────────
+
+const SummaryStrip: React.FC<{ items: FundamentalItem[] }> = ({ items }) => {
+  if (!items.length) return null;
+
+  const avgPiotroski =
+    items.filter((r) => r.PiotroskiFScore != null).reduce((s, r) => s + (r.PiotroskiFScore ?? 0), 0) /
+    (items.filter((r) => r.PiotroskiFScore != null).length || 1);
+
+  const avgMohanram =
+    items.filter((r) => r.MohanramScore != null).reduce((s, r) => s + (r.MohanramScore ?? 0), 0) /
+    (items.filter((r) => r.MohanramScore != null).length || 1);
+
+  const strongBuyCount = items.filter((r) => r.ZacksRank != null && r.ZacksRank <= 2).length;
+  const divPayerCount  = items.filter((r) => r.dividendYield != null && r.dividendYield > 0).length;
+
+  const pills = [
+    {
+      icon: "pi-star",
+      label: "Avg Piotroski",
+      value: avgPiotroski.toFixed(1),
+      color: avgPiotroski >= 7 ? "var(--sv-gain)" : avgPiotroski >= 4 ? "var(--sv-text-secondary)" : "var(--sv-loss)",
+    },
+    {
+      icon: "pi-chart-bar",
+      label: "Avg Mohanram",
+      value: avgMohanram.toFixed(1),
+      color: avgMohanram >= 6 ? "var(--sv-gain)" : avgMohanram >= 4 ? "var(--sv-text-secondary)" : "var(--sv-loss)",
+    },
+    {
+      icon: "pi-arrow-up-right",
+      label: "Strong Buy / Buy",
+      value: `${strongBuyCount} / ${items.length}`,
+      color: strongBuyCount > 0 ? "var(--sv-gain)" : "var(--sv-text-secondary)",
+    },
+    {
+      icon: "pi-dollar",
+      label: "Dividend Payers",
+      value: `${divPayerCount} / ${items.length}`,
+      color: divPayerCount > 0 ? "var(--sv-accent)" : "var(--sv-text-secondary)",
+    },
+  ];
+
+  return (
+    <div
+      className="flex gap-3 flex-wrap px-3 py-2"
+      style={{ borderBottom: "1px solid var(--sv-border)", background: "var(--sv-bg-surface)" }}
+    >
+      {pills.map((p) => (
+        <div
+          key={p.label}
+          className="flex align-items-center gap-2 border-round-lg"
+          style={{ background: "var(--sv-bg-card)", border: "1px solid var(--sv-border)", padding: "0.4rem 0.75rem" }}
+        >
+          <i className={`pi ${p.icon}`} style={{ color: p.color, fontSize: "0.8rem" }} />
+          <div>
+            <div style={{ fontSize: "0.68rem", color: "var(--sv-text-muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+              {p.label}
+            </div>
+            <div style={{ fontWeight: 800, fontSize: "1rem", color: p.color, lineHeight: 1.1 }}>
+              {p.value}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 const FundamentalsTab: React.FC<Props> = ({ techAndFundamentals }) => {
@@ -180,24 +250,18 @@ const FundamentalsTab: React.FC<Props> = ({ techAndFundamentals }) => {
     <div>
       <Tooltip target=".ft-tip" />
 
-      {/* ── Holdings table header ── */}
+      {/* ── Summary strip ── */}
+      <SummaryStrip items={items} />
+
+      {/* ── Toolbar ── */}
       <div
         className="py-2 px-3 flex align-items-center justify-content-between gap-2 flex-wrap"
-        style={{ borderTop: "1px solid var(--sv-border)", borderBottom: "1px solid var(--sv-border)" }}
+        style={{ borderBottom: "1px solid var(--sv-border)" }}
       >
         <div className="flex align-items-center gap-2">
           <i className="pi pi-table" style={{ color: "var(--sv-accent)", fontSize: "0.9rem" }} />
           <span className="text-xs font-semibold sv-text-muted" style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}>
             Holdings Fundamentals
-          </span>
-          <span
-            className="border-round-lg"
-            style={{
-              background: "var(--sv-accent-bg)", color: "var(--sv-accent)",
-              fontSize: "0.65rem", fontWeight: 700, padding: "0.15rem 0.5rem",
-            }}
-          >
-            {items.length} stocks
           </span>
         </div>
         <div className="relative" style={{ display: "inline-block" }}>
@@ -221,15 +285,16 @@ const FundamentalsTab: React.FC<Props> = ({ techAndFundamentals }) => {
         globalFilter={globalFilter}
         globalFilterFields={["symbol", "name", "sector"]}
         paginator
-        rows={15}
+        rows={10}
         rowsPerPageOptions={[10, 15, 25, 50]}
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+        currentPageReportTemplate="{first} to {last} of {totalRecords}"
         sortField="PiotroskiFScore"
         sortOrder={-1}
         emptyMessage="No symbols match your filter"
         pt={{ wrapper: { style: { borderRadius: 0 } } }}
       >
-        {/* Symbol + name + sector */}
+        {/* Symbol + name */}
         <Column
           field="symbol"
           header="Stock"
@@ -252,21 +317,33 @@ const FundamentalsTab: React.FC<Props> = ({ techAndFundamentals }) => {
                   {r.name}
                 </div>
               )}
-              {r.sector && (
-                <div style={{
-                  fontSize: "0.62rem", marginTop: 2, display: "inline-block",
-                  background: `${SECTOR_COLORS[r.sector] ?? "#6366f1"}22`,
-                  color: SECTOR_COLORS[r.sector] ?? "#6366f1",
-                  padding: "0.1rem 0.4rem", borderRadius: 4, fontWeight: 600,
-                }}>
-                  {r.sector}
-                </div>
-              )}
             </div>
           )}
         />
 
-        {/* Net signal (buy/sell) — only if data present */}
+        {/* Sector */}
+        <Column
+          field="sector"
+          header="Sector"
+          sortable
+          style={{ minWidth: 140 }}
+          body={(r: FundamentalItem) => {
+            if (!r.sector) return <span className="sv-text-muted text-xs">—</span>;
+            const color = SECTOR_COLORS[r.sector] ?? "#6366f1";
+            return (
+              <div style={{
+                display: "inline-block",
+                background: `${color}22`, color,
+                fontSize: "0.72rem", fontWeight: 600,
+                padding: "0.15rem 0.5rem", borderRadius: 4,
+              }}>
+                {r.sector}
+              </div>
+            );
+          }}
+        />
+
+        {/* Net signal — only if data present */}
         {hasNetSignal && (
           <Column
             field="net_signal"
@@ -318,13 +395,8 @@ const FundamentalsTab: React.FC<Props> = ({ techAndFundamentals }) => {
           }
           pt={{ headerContent: { className: "justify-content-center" } }}
           body={(r: FundamentalItem) => (
-            <div className="flex flex-column align-items-center gap-1">
+            <div className="flex justify-content-center">
               <ScoreBadge value={r.PiotroskiFScore} variant="piotroski" max={9} />
-              {r.PiotroskiFScore != null && (
-                <div style={{ fontSize: "0.6rem", color: "var(--sv-text-muted)" }}>
-                  {r.PiotroskiFScore >= 7 ? "Strong" : r.PiotroskiFScore >= 4 ? "Average" : "Weak"}
-                </div>
-              )}
             </div>
           )}
         />
@@ -345,13 +417,8 @@ const FundamentalsTab: React.FC<Props> = ({ techAndFundamentals }) => {
           }
           pt={{ headerContent: { className: "justify-content-center" } }}
           body={(r: FundamentalItem) => (
-            <div className="flex flex-column align-items-center gap-1">
+            <div className="flex justify-content-center">
               <ScoreBadge value={r.MohanramScore} variant="mohanram" max={8} />
-              {r.MohanramScore != null && (
-                <div style={{ fontSize: "0.6rem", color: "var(--sv-text-muted)" }}>
-                  {r.MohanramScore >= 6 ? "Quality" : r.MohanramScore >= 4 ? "Average" : "Weak"}
-                </div>
-              )}
             </div>
           )}
         />
@@ -372,13 +439,8 @@ const FundamentalsTab: React.FC<Props> = ({ techAndFundamentals }) => {
           }
           pt={{ headerContent: { className: "justify-content-center" } }}
           body={(r: FundamentalItem) => (
-            <div className="flex flex-column align-items-center gap-1">
+            <div className="flex justify-content-center">
               <ScoreBadge value={r.ZacksRank} variant="svrank" max={5} />
-              {r.ZacksRank != null && (
-                <div style={{ fontSize: "0.6rem", color: "var(--sv-text-muted)" }}>
-                  {r.ZacksRank === 1 ? "Strong Buy" : r.ZacksRank === 2 ? "Buy" : r.ZacksRank === 3 ? "Hold" : r.ZacksRank === 4 ? "Sell" : "Strong Sell"}
-                </div>
-              )}
             </div>
           )}
         />
