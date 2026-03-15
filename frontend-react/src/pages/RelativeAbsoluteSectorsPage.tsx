@@ -28,6 +28,7 @@ import {
   buildScatterChartOptions,
 } from "@/components/common/RelativeAbsoluteShared";
 import RelativeAbsoluteHoldingsPanel from "@/components/common/RelativeAbsoluteHoldingsPanel";
+import RelativeAnalysisChart from "@/components/common/RelativeAnalysisChart";
 
 // ─── Constants ─────────────────────────────────────────────────────────────────
 
@@ -143,77 +144,6 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
     if (!relAbsOutput || !rows.length) return {};
     return buildScatterChartOptions(relAbsOutput, rows, showTail, tailLen, cc);
   }, [relAbsOutput, rows, showTail, tailLen, cc]);
-
-  // ── Detail chart builder ─────────────────────────────────────────────────────
-  const buildDetailOptions = useCallback(
-    (data: any[], yKey: string, yKey2?: string): Highcharts.Options => ({
-      chart: {
-        type: "line",
-        backgroundColor: cc.bg,
-        height: 340,
-        style: { fontFamily: "Inter, sans-serif" },
-        animation: false,
-      },
-      title: { text: "" },
-      credits: { enabled: false },
-      accessibility: { enabled: false },
-      xAxis: {
-        categories: data.map((d) => d.date),
-        tickInterval: Math.ceil(data.length / 8),
-        labels: {
-          rotation: -35,
-          style: { color: cc.text, fontSize: "10px" },
-        },
-        lineColor: cc.border,
-        tickColor: cc.border,
-      },
-      yAxis: {
-        gridLineColor: cc.grid,
-        labels: {
-          format: "{value:.2f}",
-          style: { color: cc.text, fontSize: "11px" },
-        },
-        title: { text: "" },
-        plotLines: [{ color: cc.text, dashStyle: "Dot", width: 1, value: 0 }],
-      },
-      legend: {
-        enabled: !!yKey2,
-        itemStyle: { color: cc.text, fontSize: "12px" },
-        itemHoverStyle: { color: "#fff" },
-      },
-      tooltip: {
-        backgroundColor: cc.bg,
-        borderColor: cc.border,
-        style: { color: cc.text },
-      },
-      plotOptions: {
-        line: {
-          marker: { enabled: false },
-        },
-      },
-      series: [
-        {
-          type: "line",
-          name: yKey,
-          data: data.map((d) => d[yKey] ?? null),
-          color: "#3b82f6",
-          lineWidth: 2,
-        },
-        ...(yKey2
-          ? [
-              {
-                type: "line" as const,
-                name: yKey2,
-                data: data.map((d) => d[yKey2] ?? null),
-                color: "#ef4444",
-                lineWidth: 2,
-              },
-            ]
-          : []),
-      ],
-    }),
-    [cc],
-  );
 
   // ── Handlers ────────────────────────────────────────────────────────────────
   const handleDictChange = useCallback((e: any) => {
@@ -821,21 +751,16 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
         contentStyle={{ padding: "0.75rem 1rem 1rem" }}
         draggable={false}
       >
-        {absLoading && <Skeleton height="340px" borderRadius="0.5rem" />}
+        {absLoading && <Skeleton height="500px" borderRadius="0.5rem" />}
         {!absLoading && absDialog?.data && absDialog.data.length > 0 && (
-          <>
-            <p
-              className="sv-text-muted m-0 mb-3"
-              style={{ fontSize: "0.78rem" }}
-            >
-              Historical absolute score — negative = oversold (buy opportunity),
-              positive = overbought
-            </p>
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={buildDetailOptions(absDialog.data, absDialog.symbol)}
-            />
-          </>
+          <RelativeAnalysisChart
+            data={absDialog.data}
+            symbol1={absDialog.symbol}
+            symbol2={absDialog.symbol}
+            multiplier={1}
+            cc={cc}
+            height={500}
+          />
         )}
         {!absLoading && absDialog?.data?.length === 0 && (
           <div
@@ -874,25 +799,16 @@ const RelativeAbsoluteSectorsPage: React.FC = () => {
         contentStyle={{ padding: "0.75rem 1rem 1rem" }}
         draggable={false}
       >
-        {relLoading && <Skeleton height="340px" borderRadius="0.5rem" />}
+        {relLoading && <Skeleton height="500px" borderRadius="0.5rem" />}
         {!relLoading && relDialog?.data && relDialog.data.length > 0 && (
-          <>
-            <p
-              className="sv-text-muted m-0 mb-3"
-              style={{ fontSize: "0.78rem" }}
-            >
-              Relative performance vs SPY — above zero = outperforming, below
-              zero = underperforming
-            </p>
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={buildDetailOptions(
-                relDialog.data,
-                relDialog.symbol,
-                "SPY",
-              )}
-            />
-          </>
+          <RelativeAnalysisChart
+            data={relDialog.data}
+            symbol1={relDialog.symbol}
+            symbol2="SPY"
+            multiplier={-1}
+            cc={cc}
+            height={500}
+          />
         )}
         {!relLoading && relDialog?.data?.length === 0 && (
           <div

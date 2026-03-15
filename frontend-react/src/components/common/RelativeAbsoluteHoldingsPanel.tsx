@@ -7,7 +7,9 @@ import { Checkbox } from "primereact/checkbox";
 import { Slider } from "primereact/slider";
 import { Skeleton } from "primereact/skeleton";
 import { Card } from "primereact/card";
+import { Dialog } from "primereact/dialog";
 import api from "@/services/api";
+import RelativeAnalysisChart from "./RelativeAnalysisChart";
 import { useTheme } from "@/contexts/ThemeContext";
 import {
   CHART_COLORS,
@@ -54,6 +56,12 @@ const RelativeAbsoluteHoldingsPanel: React.FC<Props> = ({
   const [error, setError] = useState<string | null>(null);
   const [showTail, setShowTail] = useState(true);
   const [tailLen, setTailLen] = useState(3);
+
+  // Drill-down dialogs
+  const [absDialog, setAbsDialog] = useState<{ symbol: string; data: any[] | null } | null>(null);
+  const [relDialog, setRelDialog] = useState<{ symbol: string; data: any[] | null } | null>(null);
+  const [absLoading, setAbsLoading] = useState(false);
+  const [relLoading, setRelLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -136,6 +144,30 @@ const RelativeAbsoluteHoldingsPanel: React.FC<Props> = ({
     setRows((prev) => prev.map((r) => ({ ...r, isInChart: checked })));
   }, []);
 
+  const handleAbsClick = useCallback((row: HoldingRow) => {
+    setAbsDialog({ symbol: row.symbol, data: null });
+    setAbsLoading(true);
+    api
+      .post("/absolute-analysis", { symbol1: row.symbol })
+      .then((res) =>
+        setAbsDialog({ symbol: row.symbol, data: Array.isArray(res.data) ? res.data : [] }),
+      )
+      .catch(() => setAbsDialog({ symbol: row.symbol, data: [] }))
+      .finally(() => setAbsLoading(false));
+  }, []);
+
+  const handleRelClick = useCallback((row: HoldingRow) => {
+    setRelDialog({ symbol: row.symbol, data: null });
+    setRelLoading(true);
+    api
+      .post("/relative-analysis", { symbol1: row.symbol, symbol2: "SPY" })
+      .then((res) =>
+        setRelDialog({ symbol: row.symbol, data: Array.isArray(res.data) ? res.data : [] }),
+      )
+      .catch(() => setRelDialog({ symbol: row.symbol, data: [] }))
+      .finally(() => setRelLoading(false));
+  }, []);
+
   const allVisible = rows.length > 0 && rows.every((r) => r.isInChart);
 
   // ── Column renderers ────────────────────────────────────────────────────────
@@ -173,15 +205,17 @@ const RelativeAbsoluteHoldingsPanel: React.FC<Props> = ({
   );
 
   const colAbs = useCallback(
-    (row: HoldingRow) => <ScoreBadge value={row.absolute_score} />,
-    [],
+    (row: HoldingRow) => (
+      <ScoreBadge value={row.absolute_score} onClick={() => handleAbsClick(row)} />
+    ),
+    [handleAbsClick],
   );
 
   const colRel = useCallback(
     (row: HoldingRow) => (
-      <ScoreBadge value={row.relative_score} icon="pi-chart-bar" />
+      <ScoreBadge value={row.relative_score} icon="pi-chart-bar" onClick={() => handleRelClick(row)} />
     ),
-    [],
+    [handleRelClick],
   );
 
   const colChart = useCallback(
@@ -243,6 +277,7 @@ const RelativeAbsoluteHoldingsPanel: React.FC<Props> = ({
   // ── Render ──────────────────────────────────────────────────────────────────
 
   return (
+    <>
     <div className="grid">
       {/* ── Table side ── */}
       <div className="col-12 lg:col-6">
@@ -563,6 +598,81 @@ const RelativeAbsoluteHoldingsPanel: React.FC<Props> = ({
         )}
       </div>
     </div>
+
+    {/* ── DRILL-DOWN DIALOGS ── */}
+
+    {/* ── ABSOLUTE ANALYSIS DIALOG ── */}
+    <Dialog
+      visible={!!absDialog}
+      onHide={() => setAbsDialog(null)}
+      header={
+        absDialog ? (
+          <div className="flex align-items-center gap-2">
+            <i className="pi pi-chart-line" style={{ color: "#3b82f6" }} />
+            <span className="font-bold" style={{ fontSize: "1rem" }}>{absDialog.symbol}</span>
+            <span className="text-color-secondary" style={{ fontSize: "0.9rem" }}>— Absolute Analysis</span>
+          </div>
+        ) : ""
+      }
+      style={{ width: "min(92vw, 820px)" }}
+      contentStyle={{ padding: "0.75rem 1rem 1rem" }}
+      draggable={false}
+    >
+      {absLoading && <Skeleton height="500px" borderRadius="0.5rem" />}
+      {!absLoading && absDialog?.data && absDialog.data.length > 0 && (
+        <RelativeAnalysisChart
+          data={absDialog.data}
+          symbol1={absDialog.symbol}
+          symbol2={absDialog.symbol}
+          multiplier={1}
+          cc={cc}
+          height={500}
+        />
+      )}
+      {!absLoading && absDialog?.data?.length === 0 && (
+        <div className="flex flex-column align-items-center justify-content-center gap-2 sv-text-muted" style={{ height: "200px" }}>
+          <i className="pi pi-info-circle" style={{ fontSize: "1.5rem" }} />
+          <span>No data available for {absDialog?.symbol}</span>
+        </div>
+      )}
+    </Dialog>
+
+    {/* ── RELATIVE ANALYSIS DIALOG ── */}
+    <Dialog
+      visible={!!relDialog}
+      onHide={() => setRelDialog(null)}
+      header={
+        relDialog ? (
+          <div className="flex align-items-center gap-2">
+            <i className="pi pi-chart-bar" style={{ color: "#ef4444" }} />
+            <span className="font-bold" style={{ fontSize: "1rem" }}>{relDialog.symbol}</span>
+            <span className="text-color-secondary" style={{ fontSize: "0.9rem" }}>vs SPY — Relative Analysis</span>
+          </div>
+        ) : ""
+      }
+      style={{ width: "min(92vw, 820px)" }}
+      contentStyle={{ padding: "0.75rem 1rem 1rem" }}
+      draggable={false}
+    >
+      {relLoading && <Skeleton height="500px" borderRadius="0.5rem" />}
+      {!relLoading && relDialog?.data && relDialog.data.length > 0 && (
+        <RelativeAnalysisChart
+          data={relDialog.data}
+          symbol1={relDialog.symbol}
+          symbol2="SPY"
+          multiplier={-1}
+          cc={cc}
+          height={500}
+        />
+      )}
+      {!relLoading && relDialog?.data?.length === 0 && (
+        <div className="flex flex-column align-items-center justify-content-center gap-2 sv-text-muted" style={{ height: "200px" }}>
+          <i className="pi pi-info-circle" style={{ fontSize: "1.5rem" }} />
+          <span>No data available for {relDialog?.symbol} / SPY</span>
+        </div>
+      )}
+    </Dialog>
+    </>
   );
 };
 
