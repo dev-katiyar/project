@@ -103,12 +103,12 @@ function fmtChange(v: number | null | undefined): string {
   return `${n >= 0 ? "+" : ""}${n.toFixed(2)}`;
 }
 
-function getChangeStyle(v: number | null | undefined): React.CSSProperties {
+function getChangeClass(v: number | null | undefined): string {
   const n = Number(v);
-  if (v == null || isNaN(n)) return { color: "var(--sv-text-muted)" };
-  if (n > 0) return { color: "var(--sv-loss)", fontWeight: 600 };
-  if (n < 0) return { color: "var(--sv-gain)", fontWeight: 600 };
-  return { color: "var(--sv-text-muted)" };
+  if (v == null || isNaN(n)) return "sv-text-muted";
+  if (n > 0) return "sv-text-loss font-semibold";
+  if (n < 0) return "sv-text-gain font-semibold";
+  return "sv-text-muted";
 }
 
 function periodLabel(key: string): string {
@@ -144,15 +144,8 @@ const tdStyle: React.CSSProperties = {
 
 const EmptyState: React.FC<{ icon: string; text: string }> = ({ icon, text }) => (
   <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      height: "200px",
-      gap: "0.75rem",
-      color: "var(--sv-text-muted)",
-    }}
+    className="flex flex-column align-items-center justify-content-center gap-3 sv-text-muted"
+    style={{ height: "200px" }}
   >
     <i className={`pi ${icon}`} style={{ fontSize: "2.5rem", opacity: 0.2 }} />
     <span style={{ fontSize: "0.85rem" }}>{text}</span>
@@ -164,21 +157,14 @@ const StatPill: React.FC<{ label: string; value: string; color?: string }> = ({
   value,
   color,
 }) => (
-  <div style={{ textAlign: "center" }}>
-    <div
-      style={{
-        fontSize: "0.66rem",
-        color: "var(--sv-text-muted)",
-        letterSpacing: "0.04em",
-        textTransform: "uppercase",
-      }}
-    >
+  <div className="text-center">
+    <div className="sv-info-label" style={{ fontSize: "0.66rem" }}>
       {label}
     </div>
     <div
+      className="font-bold"
       style={{
         fontSize: "0.9rem",
-        fontWeight: 700,
         color: color ?? "var(--sv-text-primary)",
         fontFamily: "monospace",
       }}
@@ -190,7 +176,7 @@ const StatPill: React.FC<{ label: string; value: string; color?: string }> = ({
 
 const PercentileBadge: React.FC<{ value: number | null | undefined }> = ({ value }) => {
   if (value == null || isNaN(Number(value))) {
-    return <span style={{ color: "var(--sv-text-muted)" }}>—</span>;
+    return <span className="sv-text-muted">—</span>;
   }
   const t = Number(value);
   let bg: string, textColor: string;
@@ -211,30 +197,27 @@ const PercentileBadge: React.FC<{ value: number | null | undefined }> = ({ value
     textColor = "var(--sv-loss)";
   }
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.2rem" }}>
+    <div className="flex flex-column align-items-center gap-1">
       <span
+        className="font-bold text-center border-round"
         style={{
           display: "inline-block",
           background: bg,
           color: textColor,
-          borderRadius: "0.3rem",
           padding: "0.15rem 0.45rem",
-          fontWeight: 700,
           fontSize: "0.78rem",
           fontFamily: "monospace",
           minWidth: "2.6rem",
-          textAlign: "center",
         }}
       >
         {(t * 100).toFixed(0)}%
       </span>
       <div
+        className="border-round-xl overflow-hidden"
         style={{
           width: "2.6rem",
           height: "3px",
-          borderRadius: "99px",
           background: "var(--sv-border)",
-          overflow: "hidden",
         }}
       >
         <div
@@ -271,46 +254,28 @@ const IntraCreditTable: React.FC<IntraCreditTableProps> = ({
   mode,
 }) => (
   <div
-    style={{
-      background: "var(--sv-bg-card)",
-      border: "1px solid var(--sv-border)",
-      borderRadius: "0.75rem",
-      overflow: "hidden",
-      boxShadow: "var(--sv-shadow-md)",
-    }}
+    className="flex flex-column overflow-hidden h-full surface-card border-1 surface-border border-round-lg"
+    style={{ boxShadow: "var(--sv-shadow-md)" }}
   >
-    <div
-      style={{
-        padding: "0.875rem 1rem 0.65rem",
-        borderBottom: "1px solid var(--sv-border)",
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "space-between",
-        gap: "0.75rem",
-      }}
-    >
+    <div className="flex align-items-start justify-content-between gap-3 px-3 pt-3 pb-2 border-bottom-1 surface-border">
       <div>
-        <div
-          style={{ fontSize: "0.88rem", fontWeight: 700, color: "var(--sv-text-primary)" }}
-        >
+        <div className="font-bold" style={{ fontSize: "0.88rem" }}>
           {title}
         </div>
-        <div
-          style={{ fontSize: "0.73rem", color: "var(--sv-text-muted)", marginTop: "0.15rem" }}
-        >
+        <div className="sv-text-muted mt-1" style={{ fontSize: "0.73rem" }}>
           {subtitle}
         </div>
       </div>
       {mode === "change" && (
-        <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", flexShrink: 0 }}>
+        <div className="flex gap-3 align-items-center flex-shrink-0">
           <LegendDot color="var(--sv-gain)" label="Tightened" />
           <LegendDot color="var(--sv-loss)" label="Widened" />
         </div>
       )}
     </div>
-    <div style={{ overflowX: "auto" }}>
+    <div className="overflow-x-auto">
       {loading ? (
-        <div style={{ padding: "0.75rem" }}>
+        <div className="p-3">
           {Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} height="2rem" borderRadius="0.3rem" className="mb-2" />
           ))}
@@ -318,16 +283,9 @@ const IntraCreditTable: React.FC<IntraCreditTableProps> = ({
       ) : data.length === 0 ? (
         <EmptyState icon="pi-table" text="No data available" />
       ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.81rem" }}>
+        <table className="w-full" style={{ borderCollapse: "collapse", fontSize: "0.81rem" }}>
           <thead>
-            <tr
-              style={{
-                background: "var(--sv-bg-surface)",
-                position: "sticky",
-                top: 0,
-                zIndex: 1,
-              }}
-            >
+            <tr className="surface-section sticky top-0 z-1">
               <th style={{ ...thStyle, textAlign: "left" }}>Rating</th>
               {symbols.map((sym) => (
                 <th key={sym} style={{ ...thStyle, textAlign: "center" }}>
@@ -340,16 +298,13 @@ const IntraCreditTable: React.FC<IntraCreditTableProps> = ({
             {data.map((row, i) => (
               <tr
                 key={row.symbol as string}
-                style={{
-                  background:
-                    i % 2 === 0 ? "transparent" : "var(--sv-bg-surface)",
-                }}
+                className={i % 2 === 0 ? "" : "surface-section"}
               >
                 <td style={{ ...tdStyle, minWidth: "7rem" }}>
-                  <div style={{ fontWeight: 700, color: "var(--sv-text-primary)" }}>
+                  <div className="font-bold" style={{ color: "var(--sv-text-primary)" }}>
                     {row.symbol as string}
                   </div>
-                  <div style={{ fontSize: "0.68rem", color: "var(--sv-text-muted)" }}>
+                  <div className="sv-text-muted" style={{ fontSize: "0.68rem" }}>
                     {symNameMap[row.symbol as string] ?? ""}
                   </div>
                 </td>
@@ -358,12 +313,11 @@ const IntraCreditTable: React.FC<IntraCreditTableProps> = ({
                   return (
                     <td
                       key={sym}
+                      className={mode === "change" ? `text-center ${getChangeClass(v)}` : "text-center"}
                       style={{
                         ...tdStyle,
-                        textAlign: "center",
                         fontFamily: "monospace",
                         fontSize: "0.82rem",
-                        ...(mode === "change" ? getChangeStyle(v) : {}),
                       }}
                     >
                       {mode === "value" ? fmtCell(v) : fmtChange(v)}
@@ -380,17 +334,12 @@ const IntraCreditTable: React.FC<IntraCreditTableProps> = ({
 );
 
 const LegendDot: React.FC<{ color: string; label: string }> = ({ color, label }) => (
-  <div style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
+  <div className="flex align-items-center gap-1">
     <div
-      style={{
-        width: "8px",
-        height: "8px",
-        borderRadius: "50%",
-        background: color,
-        flexShrink: 0,
-      }}
+      className="border-circle flex-shrink-0"
+      style={{ width: "8px", height: "8px", background: color }}
     />
-    <span style={{ fontSize: "0.7rem", color: "var(--sv-text-muted)" }}>{label}</span>
+    <span className="sv-text-muted" style={{ fontSize: "0.7rem" }}>{label}</span>
   </div>
 );
 
@@ -585,34 +534,17 @@ const CreditSpreadReportPage: React.FC = () => {
   // ── Render ────────────────────────────────────────────────────────────────────
 
   return (
-    <div style={{ padding: "1.25rem 1.5rem", minHeight: "100vh" }}>
+    <div className="p-4 sv-page-min-h">
       {/* ── Page Header ──────────────────────────────────────────────────────── */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          marginBottom: "1.5rem",
-          gap: "1rem",
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="flex align-items-start justify-content-between mb-4 gap-3 flex-wrap">
         <div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.625rem",
-              marginBottom: "0.3rem",
-            }}
-          >
+          <div className="flex align-items-center gap-2 mb-1">
             <span
+              className="font-bold border-round"
               style={{
                 background: "var(--sv-accent-gradient)",
-                borderRadius: "0.35rem",
                 padding: "0.2rem 0.55rem",
                 fontSize: "0.65rem",
-                fontWeight: 700,
                 color: "var(--sv-text-inverse)",
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
@@ -620,19 +552,11 @@ const CreditSpreadReportPage: React.FC = () => {
             >
               FRED
             </span>
-            <h1
-              style={{
-                margin: 0,
-                fontSize: "1.35rem",
-                fontWeight: 700,
-                color: "var(--sv-text-primary)",
-                letterSpacing: "-0.01em",
-              }}
-            >
+            <h1 className="m-0 font-bold sv-page-title" style={{ fontSize: "1.35rem" }}>
               Corporate Credit Spreads
             </h1>
           </div>
-          <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--sv-text-muted)" }}>
+          <p className="m-0 text-sm sv-text-muted">
             Option-Adjusted Spreads (OAS) vs US Treasuries · Bank of America indices ·
             Federal Reserve Economic Data
           </p>
@@ -651,354 +575,242 @@ const CreditSpreadReportPage: React.FC = () => {
 
       {/* ── Error Banner ─────────────────────────────────────────────────────── */}
       {error && (
-        <div
-          style={{
-            background: "var(--sv-danger-bg)",
-            border: "1px solid var(--sv-danger)",
-            borderRadius: "0.5rem",
-            padding: "0.75rem 1rem",
-            marginBottom: "1.25rem",
-            color: "var(--sv-danger)",
-            fontSize: "0.88rem",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-          }}
-        >
+        <div className="sv-alert-error flex align-items-center gap-2 border-round p-3 mb-4 text-sm">
           <i className="pi pi-exclamation-triangle" />
           {error}
         </div>
       )}
 
       {/* ── Top Section: Percentiles + Chart ─────────────────────────────────── */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "minmax(0, 5fr) minmax(0, 7fr)",
-          gap: "1rem",
-          marginBottom: "1rem",
-        }}
-      >
+      <div className="grid mb-3">
         {/* Left: OAS Percentile Rankings */}
-        <div
-          style={{
-            background: "var(--sv-bg-card)",
-            border: "1px solid var(--sv-border)",
-            borderRadius: "0.75rem",
-            overflow: "hidden",
-            boxShadow: "var(--sv-shadow-md)",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          {/* Card Header */}
+        <div className="col-12 lg:col-5" style={{ minWidth: 0 }}>
           <div
-            style={{
-              padding: "0.875rem 1rem 0.65rem",
-              borderBottom: "1px solid var(--sv-border)",
-            }}
+            className="flex flex-column overflow-hidden h-full surface-card border-1 surface-border border-round-lg"
+            style={{ boxShadow: "var(--sv-shadow-md)" }}
           >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "0.88rem",
-                  fontWeight: 700,
-                  color: "var(--sv-text-primary)",
-                }}
-              >
-                OAS Percentile Rankings
+            {/* Card Header */}
+            <div className="px-3 pt-3 pb-2 border-bottom-1 surface-border">
+              <div className="flex align-items-center justify-content-between">
+                <div className="font-bold" style={{ fontSize: "0.88rem" }}>
+                  OAS Percentile Rankings
+                </div>
+                <div className="flex gap-1">
+                  {["3M", "1Y", "5Y", "20Y"].map((p) => (
+                    <span
+                      key={p}
+                      className="font-semibold border-round surface-section border-1 surface-border"
+                      style={{
+                        fontSize: "0.66rem",
+                        padding: "0.15rem 0.4rem",
+                        color: "var(--sv-text-secondary)",
+                      }}
+                    >
+                      {p}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div style={{ display: "flex", gap: "0.35rem" }}>
-                {["3M", "1Y", "5Y", "20Y"].map((p) => (
-                  <span
-                    key={p}
-                    style={{
-                      fontSize: "0.66rem",
-                      fontWeight: 600,
-                      padding: "0.15rem 0.4rem",
-                      borderRadius: "0.25rem",
-                      background: "var(--sv-bg-surface)",
-                      color: "var(--sv-text-secondary)",
-                      border: "1px solid var(--sv-border)",
-                    }}
-                  >
-                    {p}
-                  </span>
-                ))}
+              <div className="sv-text-muted mt-1" style={{ fontSize: "0.73rem" }}>
+                Click a row to load its 20-year history · Lower % = tighter spread = less stressed
               </div>
             </div>
-            <div
-              style={{
-                fontSize: "0.73rem",
-                color: "var(--sv-text-muted)",
-                marginTop: "0.2rem",
-              }}
-            >
-              Click a row to load its 20-year history · Lower % = tighter spread = less stressed
-            </div>
-          </div>
 
-          {/* Percentiles Table */}
-          <div style={{ overflowY: "auto", flex: 1 }}>
-            {loading ? (
-              <div style={{ padding: "0.75rem" }}>
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <Skeleton
-                    key={i}
-                    height="2.4rem"
-                    borderRadius="0.3rem"
-                    className="mb-2"
-                  />
-                ))}
-              </div>
-            ) : icsPercentiles.length === 0 ? (
-              <EmptyState icon="pi-chart-bar" text="No data available" />
-            ) : (
-              <table
-                style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.82rem" }}
-              >
-                <thead>
-                  <tr
-                    style={{
-                      background: "var(--sv-bg-surface)",
-                      position: "sticky",
-                      top: 0,
-                      zIndex: 1,
-                    }}
-                  >
-                    <th style={{ ...thStyle, textAlign: "left" }}>Symbol</th>
-                    <th style={{ ...thStyle, textAlign: "right" }}>
-                      <span
-                        id="oas-tip"
-                        style={{
-                          borderBottom: "1px dashed var(--sv-text-muted)",
-                          cursor: "help",
-                        }}
-                      >
-                        OAS
-                      </span>
-                    </th>
-                    {periods.map((p) => (
-                      <th
-                        key={p.key}
-                        style={{ ...thStyle, textAlign: "center" }}
-                      >
-                        {periodLabel(p.key)}
+            {/* Percentiles Table */}
+            <div className="overflow-y-auto flex-1">
+              {loading ? (
+                <div className="p-3">
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <Skeleton key={i} height="2.4rem" borderRadius="0.3rem" className="mb-2" />
+                  ))}
+                </div>
+              ) : icsPercentiles.length === 0 ? (
+                <EmptyState icon="pi-chart-bar" text="No data available" />
+              ) : (
+                <table
+                  className="w-full"
+                  style={{ borderCollapse: "collapse", fontSize: "0.82rem" }}
+                >
+                  <thead>
+                    <tr className="surface-section sticky top-0 z-1">
+                      <th style={{ ...thStyle, textAlign: "left" }}>Symbol</th>
+                      <th style={{ ...thStyle, textAlign: "right" }}>
+                        <span
+                          id="oas-tip"
+                          className="cursor-help"
+                          style={{ borderBottom: "1px dashed var(--sv-text-muted)" }}
+                        >
+                          OAS
+                        </span>
                       </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {icsPercentiles.map((row, i) => {
-                    const isSelected = row.symbol === selSymbol;
-                    return (
-                      <tr
-                        key={row.symbol}
-                        onClick={() => setSelSymbol(row.symbol)}
-                        style={{
-                          cursor: "pointer",
-                          background: isSelected
-                            ? "var(--sv-accent-bg)"
-                            : i % 2 === 0
-                            ? "transparent"
-                            : "var(--sv-bg-surface)",
-                          borderLeft: isSelected
-                            ? "3px solid var(--sv-accent)"
-                            : "3px solid transparent",
-                          transition: "background 0.12s",
-                        }}
-                      >
-                        <td style={{ ...tdStyle, paddingLeft: "0.5rem" }}>
-                          <div
-                            style={{
-                              fontWeight: 700,
-                              color: isSelected
-                                ? "var(--sv-accent)"
-                                : "var(--sv-text-primary)",
-                              letterSpacing: "0.03em",
-                              fontSize: "0.84rem",
-                            }}
-                          >
-                            {row.symbol}
-                          </div>
-                          <div
-                            style={{
-                              fontSize: "0.67rem",
-                              color: "var(--sv-text-muted)",
-                              marginTop: "0.05rem",
-                            }}
-                          >
-                            {symNameMap[row.symbol] ?? ""}
-                          </div>
-                        </td>
-                        <td
+                      {periods.map((p) => (
+                        <th key={p.key} style={{ ...thStyle, textAlign: "center" }}>
+                          {periodLabel(p.key)}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {icsPercentiles.map((row, i) => {
+                      const isSelected = row.symbol === selSymbol;
+                      return (
+                        <tr
+                          key={row.symbol}
+                          className="cursor-pointer"
+                          onClick={() => setSelSymbol(row.symbol)}
                           style={{
-                            ...tdStyle,
-                            textAlign: "right",
-                            fontFamily: "monospace",
-                            fontWeight: 600,
-                            fontSize: "0.86rem",
-                            color: "var(--sv-text-primary)",
+                            background: isSelected
+                              ? "var(--sv-accent-bg)"
+                              : i % 2 === 0
+                              ? "transparent"
+                              : "var(--sv-bg-surface)",
+                            borderLeft: isSelected
+                              ? "3px solid var(--sv-accent)"
+                              : "3px solid transparent",
+                            transition: "background 0.12s",
                           }}
                         >
-                          {fmtOas(row.current_oas)}
-                        </td>
-                        {periods.map((p) => (
-                          <td
-                            key={p.key}
-                            style={{ ...tdStyle, textAlign: "center" }}
-                          >
-                            <PercentileBadge value={row[p.key] as number} />
+                          <td style={{ ...tdStyle, paddingLeft: "0.5rem" }}>
+                            <div
+                              className="font-bold"
+                              style={{
+                                color: isSelected ? "var(--sv-accent)" : "var(--sv-text-primary)",
+                                letterSpacing: "0.03em",
+                                fontSize: "0.84rem",
+                              }}
+                            >
+                              {row.symbol}
+                            </div>
+                            <div className="sv-text-muted mt-1" style={{ fontSize: "0.67rem" }}>
+                              {symNameMap[row.symbol] ?? ""}
+                            </div>
                           </td>
-                        ))}
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
+                          <td
+                            className="text-right font-semibold"
+                            style={{
+                              ...tdStyle,
+                              fontFamily: "monospace",
+                              fontSize: "0.86rem",
+                              color: "var(--sv-text-primary)",
+                            }}
+                          >
+                            {fmtOas(row.current_oas)}
+                          </td>
+                          {periods.map((p) => (
+                            <td key={p.key} className="text-center" style={tdStyle}>
+                              <PercentileBadge value={row[p.key] as number} />
+                            </td>
+                          ))}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Right: Historical Chart */}
-        <div
-          style={{
-            background: "var(--sv-bg-card)",
-            border: "1px solid var(--sv-border)",
-            borderRadius: "0.75rem",
-            overflow: "hidden",
-            boxShadow: "var(--sv-shadow-md)",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          {/* Card Header */}
+        <div className="col-12 lg:col-7" style={{ minWidth: 0 }}>
           <div
-            style={{
-              padding: "0.875rem 1rem 0.65rem",
-              borderBottom: "1px solid var(--sv-border)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: "1rem",
-            }}
+            className="flex flex-column overflow-hidden h-full surface-card border-1 surface-border border-round-lg"
+            style={{ boxShadow: "var(--sv-shadow-md)" }}
           >
-            <div>
-              <div
-                style={{
-                  fontSize: "0.88rem",
-                  fontWeight: 700,
-                  color: "var(--sv-text-primary)",
-                }}
-              >
-                20-Year Historical Spread
+            {/* Card Header */}
+            <div className="flex align-items-center justify-content-between gap-3 px-3 pt-3 pb-2 border-bottom-1 surface-border">
+              <div>
+                <div className="font-bold" style={{ fontSize: "0.88rem" }}>
+                  20-Year Historical Spread
+                </div>
+                <div className="sv-text-muted mt-1" style={{ fontSize: "0.73rem" }}>
+                  {selSymbol && symNameMap[selSymbol]
+                    ? `${selSymbol} · ${symNameMap[selSymbol]}`
+                    : "Select a row to explore history"}
+                </div>
               </div>
-              <div
-                style={{
-                  fontSize: "0.73rem",
-                  color: "var(--sv-text-muted)",
-                  marginTop: "0.15rem",
-                }}
-              >
-                {selSymbol && symNameMap[selSymbol]
-                  ? `${selSymbol} · ${symNameMap[selSymbol]}`
-                  : "Select a row to explore history"}
-              </div>
-            </div>
-            {selSymbol && histStats && (
-              <div
-                style={{
-                  display: "flex",
-                  gap: "1.5rem",
-                  flexShrink: 0,
-                  paddingRight: "0.25rem",
-                }}
-              >
-                <StatPill label="20Y Avg" value={`${histStats.mean.toFixed(2)}%`} />
-                <StatPill
-                  label="Max"
-                  value={`${histStats.max.toFixed(2)}%`}
-                  color="var(--sv-loss)"
-                />
-                {histStats.min != null && (
+              {selSymbol && histStats && (
+                <div className="flex gap-4 flex-shrink-0 pr-1">
+                  <StatPill label="20Y Avg" value={`${histStats.mean.toFixed(2)}%`} />
                   <StatPill
-                    label="Min"
-                    value={`${histStats.min.toFixed(2)}%`}
-                    color="var(--sv-gain)"
+                    label="Max"
+                    value={`${histStats.max.toFixed(2)}%`}
+                    color="var(--sv-loss)"
                   />
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Chart area */}
-          <div style={{ flex: 1, padding: "0.35rem 0" }}>
-            {histLoading ? (
-              <div style={{ padding: "1rem 1.25rem" }}>
-                <Skeleton height="310px" borderRadius="0.5rem" />
-              </div>
-            ) : histData ? (
-              <HighchartsReact highcharts={Highcharts} options={chartOptions} />
-            ) : (
-              <EmptyState
-                icon="pi-chart-line"
-                text="Select a symbol from the table to view its 20-year spread history"
-              />
-            )}
-          </div>
-
-          {/* Chart legend */}
-          {histData && (
-            <div
-              style={{
-                display: "flex",
-                gap: "1rem",
-                padding: "0.4rem 1rem 0.65rem",
-                borderTop: "1px solid var(--sv-border-light)",
-              }}
-            >
-              <ChartLegendItem color="rgba(239,68,68,0.22)" label="Above avg — elevated risk" />
-              <ChartLegendItem color="rgba(34,197,94,0.18)" label="Below avg — compressed spread" />
-              <ChartLegendItem color={cc.text} label="20Y average" dashed />
+                  {histStats.min != null && (
+                    <StatPill
+                      label="Min"
+                      value={`${histStats.min.toFixed(2)}%`}
+                      color="var(--sv-gain)"
+                    />
+                  )}
+                </div>
+              )}
             </div>
-          )}
+
+            {/* Chart area */}
+            <div className="flex-1 py-1">
+              {histLoading ? (
+                <div className="p-4">
+                  <Skeleton height="310px" borderRadius="0.5rem" />
+                </div>
+              ) : histData ? (
+                <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+              ) : (
+                <EmptyState
+                  icon="pi-chart-line"
+                  text="Select a symbol from the table to view its 20-year spread history"
+                />
+              )}
+            </div>
+
+            {/* Chart legend */}
+            {histData && (
+              <div
+                className="flex gap-3 px-3 py-2"
+                style={{ borderTop: "1px solid var(--sv-border-light)" }}
+              >
+                <ChartLegendItem color="rgba(239,68,68,0.22)" label="Above avg — elevated risk" />
+                <ChartLegendItem color="rgba(34,197,94,0.18)" label="Below avg — compressed spread" />
+                <ChartLegendItem color={cc.text} label="20Y average" dashed />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {/* ── Bottom Section: Intra-Credit Spread Tables ───────────────────────── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-        <IntraCreditTable
-          title="Intra Credit Spread"
-          subtitle={
-            data?.intra_credit_spread_last?.date
-              ? `As of ${data.intra_credit_spread_last.date}`
-              : "Latest available"
-          }
-          data={data?.intra_credit_spread_last?.data ?? []}
-          symbols={symbols}
-          symNameMap={symNameMap}
-          loading={loading}
-          mode="value"
-        />
-        <IntraCreditTable
-          title="4-Week Spread Change"
-          subtitle={
-            data?.intra_credit_spread_change_4wk?.date
-              ? `Since ${data.intra_credit_spread_change_4wk.date}`
-              : "4-week rolling change"
-          }
-          data={data?.intra_credit_spread_change_4wk?.data ?? []}
-          symbols={symbols}
-          symNameMap={symNameMap}
-          loading={loading}
-          mode="change"
-        />
+      <div className="grid">
+        <div className="col-12 md:col-6">
+          <IntraCreditTable
+            title="Intra Credit Spread"
+            subtitle={
+              data?.intra_credit_spread_last?.date
+                ? `As of ${data.intra_credit_spread_last.date}`
+                : "Latest available"
+            }
+            data={data?.intra_credit_spread_last?.data ?? []}
+            symbols={symbols}
+            symNameMap={symNameMap}
+            loading={loading}
+            mode="value"
+          />
+        </div>
+        <div className="col-12 md:col-6">
+          <IntraCreditTable
+            title="4-Week Spread Change"
+            subtitle={
+              data?.intra_credit_spread_change_4wk?.date
+                ? `Since ${data.intra_credit_spread_change_4wk.date}`
+                : "4-week rolling change"
+            }
+            data={data?.intra_credit_spread_change_4wk?.data ?? []}
+            symbols={symbols}
+            symNameMap={symNameMap}
+            loading={loading}
+            mode="change"
+          />
+        </div>
       </div>
 
       {/* ── Tooltip ──────────────────────────────────────────────────────────── */}
@@ -1017,18 +829,18 @@ const ChartLegendItem: React.FC<{
   label: string;
   dashed?: boolean;
 }> = ({ color, label, dashed }) => (
-  <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+  <div className="flex align-items-center gap-1">
     <div
+      className="border-round"
       style={{
         width: "22px",
         height: "3px",
         background: color,
-        borderRadius: "2px",
         borderTop: dashed ? `1.5px dashed ${color}` : undefined,
         opacity: 0.85,
       }}
     />
-    <span style={{ fontSize: "0.69rem", color: "var(--sv-text-muted)" }}>{label}</span>
+    <span className="sv-text-muted" style={{ fontSize: "0.69rem" }}>{label}</span>
   </div>
 );
 
