@@ -751,3 +751,78 @@ a:hover {
 .sv-synopsis-text .sv-synopsis-up   { color: var(--sv-gain); font-weight: 600; }
 .sv-synopsis-text .sv-synopsis-down { color: var(--sv-loss); font-weight: 600; }
 .sv-card-field:focus { border-color: var(--sv-accent); }
+
+/* ======================================================================
+   Screens / Screener page components
+   ====================================================================== */
+
+/* Preset card — hover accent border (use alongside sv-data-card) */
+.sv-preset-card { transition: border-color 0.15s, box-shadow 0.15s; }
+.sv-preset-card:hover { border-color: var(--sv-accent) !important; }
+
+/* Sidebar screen item */
+.sv-sidebar-item {
+  padding: 0.5rem 0.7rem;
+  cursor: pointer;
+  border-radius: 0.35rem;
+  border-left: 3px solid transparent;
+  font-size: 0.83rem;
+  transition: background 0.1s, color 0.1s;
+  overflow: hidden;
+  margin-bottom: 1px;
+  color: var(--sv-text-primary);
+}
+.sv-sidebar-item:hover { background: var(--sv-bg-surface); }
+.sv-sidebar-item.active {
+  background: var(--sv-accent-bg);
+  border-left-color: var(--sv-accent);
+  color: var(--sv-accent);
+  font-weight: 700;
+}
+
+/* Symbol chip in results grid */
+.sv-symbol-chip {
+  background: var(--sv-bg-surface);
+  border: 1px solid var(--sv-border);
+  border-radius: 0.35rem;
+  padding: 0.22rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--sv-accent);
+  font-family: monospace;
+  letter-spacing: 0.04em;
+  cursor: default;
+  transition: border-color 0.1s;
+}
+.sv-symbol-chip:hover { border-color: var(--sv-accent); }
+
+/* Filter active chip pill */
+.sv-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--sv-accent);
+  color: var(--sv-text-inverse);
+  border-radius: 1rem;
+  padding: 0.28rem 0.4rem 0.28rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Filter chip icon buttons */
+.sv-chip-btn {
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  padding: 0;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.22);
+}
+.sv-chip-btn.remove { background: rgba(255, 255, 255, 0.15); }

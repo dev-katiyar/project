@@ -3,11 +3,11 @@ import React, {
   useEffect,
   useCallback,
   useMemo,
-  useRef,
 } from "react";
 import api from "@/services/api";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Button } from "primereact/button";
+import { Divider } from "primereact/divider";
 import { Skeleton } from "primereact/skeleton";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
@@ -161,7 +161,7 @@ function resetFilter(f: ScreenFilter): ScreenFilter {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Shared micro-styles
+// Table cell shared styles (no primeflex equivalent for th/td)
 // ─────────────────────────────────────────────────────────────────────────────
 
 const thS: React.CSSProperties = {
@@ -189,37 +189,13 @@ const EmptyState: React.FC<{ icon: string; title: string; body?: string }> = ({
   title,
   body,
 }) => (
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "3rem 1.5rem",
-      gap: "0.75rem",
-      color: "var(--sv-text-muted)",
-      textAlign: "center",
-    }}
-  >
+  <div className="flex flex-column align-items-center justify-content-center text-center p-5 gap-3 sv-text-muted">
     <i className={`pi ${icon}`} style={{ fontSize: "2.5rem", opacity: 0.18 }} />
-    <div
-      style={{
-        fontWeight: 700,
-        color: "var(--sv-text-secondary)",
-        fontSize: "0.9rem",
-      }}
-    >
+    <div className="font-bold text-sm" style={{ color: "var(--sv-text-secondary)" }}>
       {title}
     </div>
     {body && (
-      <p
-        style={{
-          margin: 0,
-          fontSize: "0.81rem",
-          maxWidth: "28rem",
-          lineHeight: 1.65,
-        }}
-      >
+      <p className="m-0 text-sm" style={{ maxWidth: "28rem", lineHeight: 1.65 }}>
         {body}
       </p>
     )}
@@ -255,145 +231,72 @@ const PresetCard: React.FC<{
   preset: PresetSummary;
   isSv?: boolean;
   onRun: (p: PresetSummary) => void;
-}> = ({ preset, isSv, onRun }) => {
-  const [hov, setHov] = useState(false);
-  return (
+}> = ({ preset, isSv, onRun }) => (
+  <div className="sv-data-card sv-preset-card flex flex-column h-full">
+    {/* Header */}
     <div
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        background: "var(--sv-bg-card)",
-        border: `1px solid ${hov ? "var(--sv-accent)" : "var(--sv-border)"}`,
-        borderRadius: "0.75rem",
-        overflow: "hidden",
-        boxShadow: hov ? "var(--sv-shadow-md)" : "var(--sv-shadow-sm)",
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        transition: "border-color 0.15s, box-shadow 0.15s",
-      }}
+      className="flex align-items-center justify-content-between gap-2 px-3 py-2"
+      style={{ borderBottom: "1px solid var(--sv-border)" }}
     >
-      {/* Header */}
-      <div
-        style={{
-          padding: "0.85rem 1rem 0.6rem",
-          borderBottom: "1px solid var(--sv-border)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: "0.5rem",
-        }}
-      >
+      <div className="flex align-items-center gap-2 overflow-hidden">
+        {isSv && <SvBadge />}
         <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.45rem",
-            minWidth: 0,
-          }}
+          className="font-bold text-sm text-overflow-ellipsis white-space-nowrap overflow-hidden"
+          style={{ color: "var(--sv-text-primary)" }}
         >
-          {isSv && <SvBadge />}
-          <div
-            style={{
-              fontWeight: 700,
-              color: "var(--sv-text-primary)",
-              fontSize: "0.88rem",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {preset.preset_name}
-          </div>
+          {preset.preset_name}
         </div>
-        <Button
-          icon="pi pi-play"
-          label="Run"
-          size="small"
-          onClick={() => onRun(preset)}
-          style={{ flexShrink: 0, fontSize: "0.78rem" }}
-        />
       </div>
-
-      {/* Symbol rows */}
-      <div style={{ flex: 1 }}>
-        {!preset.preset_top_symbols?.length ? (
-          <div
-            style={{
-              padding: "0.65rem 1rem",
-              fontSize: "0.78rem",
-              color: "var(--sv-text-muted)",
-              fontStyle: "italic",
-            }}
-          >
-            Run screen to populate results
-          </div>
-        ) : (
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              fontSize: "0.79rem",
-            }}
-          >
-            <thead>
-              <tr style={{ background: "var(--sv-bg-surface)" }}>
-                <th style={{ ...thS, textAlign: "left" }}>Symbol</th>
-                <th style={{ ...thS, textAlign: "right" }}>Price</th>
-                <th style={{ ...thS, textAlign: "right" }}>1D Chg</th>
-              </tr>
-            </thead>
-            <tbody>
-              {preset.preset_top_symbols.slice(0, 5).map((row, i) => (
-                <tr
-                  key={row.symbol}
-                  style={{
-                    background:
-                      i % 2 ? "var(--sv-bg-surface)" : "transparent",
-                  }}
-                >
-                  <td
-                    style={{
-                      ...tdS,
-                      fontWeight: 700,
-                      color: "var(--sv-accent)",
-                      letterSpacing: "0.03em",
-                    }}
-                  >
-                    {row.symbol}
-                  </td>
-                  <td
-                    style={{
-                      ...tdS,
-                      textAlign: "right",
-                      fontFamily: "monospace",
-                    }}
-                  >
-                    {fmtPrice(row.price)}
-                  </td>
-                  <td
-                    style={{
-                      ...tdS,
-                      textAlign: "right",
-                      fontFamily: "monospace",
-                      fontWeight: 600,
-                      color:
-                        row.priceChange >= 0
-                          ? "var(--sv-gain)"
-                          : "var(--sv-loss)",
-                    }}
-                  >
-                    {fmtChg(row.priceChange)} ({fmtPct(row.priceChangePct)})
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+      <Button
+        icon="pi pi-play"
+        label="Run"
+        size="small"
+        onClick={() => onRun(preset)}
+        style={{ flexShrink: 0, fontSize: "0.78rem" }}
+      />
     </div>
-  );
-};
+
+    {/* Symbol rows */}
+    <div className="flex-1">
+      {!preset.preset_top_symbols?.length ? (
+        <div className="p-3 text-sm sv-text-muted" style={{ fontStyle: "italic" }}>
+          Run screen to populate results
+        </div>
+      ) : (
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.79rem" }}>
+          <thead>
+            <tr style={{ background: "var(--sv-bg-surface)" }}>
+              <th style={{ ...thS, textAlign: "left" }}>Symbol</th>
+              <th style={{ ...thS, textAlign: "right" }}>Price</th>
+              <th style={{ ...thS, textAlign: "right" }}>1D Chg</th>
+            </tr>
+          </thead>
+          <tbody>
+            {preset.preset_top_symbols.slice(0, 5).map((row, i) => (
+              <tr
+                key={row.symbol}
+                style={{ background: i % 2 ? "var(--sv-bg-surface)" : "transparent" }}
+              >
+                <td style={{ ...tdS, fontWeight: 700, letterSpacing: "0.03em" }} className="sv-text-accent">
+                  {row.symbol}
+                </td>
+                <td style={{ ...tdS, textAlign: "right", fontFamily: "monospace" }}>
+                  {fmtPrice(row.price)}
+                </td>
+                <td
+                  style={{ ...tdS, textAlign: "right", fontFamily: "monospace", fontWeight: 600 }}
+                  className={row.priceChange >= 0 ? "sv-text-gain" : "sv-text-loss"}
+                >
+                  {fmtChg(row.priceChange)} ({fmtPct(row.priceChangePct)})
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  </div>
+);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SidebarItem — preset list in detail mode
@@ -404,51 +307,17 @@ const SidebarItem: React.FC<{
   selected: boolean;
   isSv?: boolean;
   onSelect: () => void;
-}> = ({ preset, selected, isSv, onSelect }) => {
-  const [hov, setHov] = useState(false);
-  return (
-    <div
-      onClick={onSelect}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        padding: "0.5rem 0.7rem",
-        cursor: "pointer",
-        borderRadius: "0.35rem",
-        display: "flex",
-        alignItems: "center",
-        gap: "0.4rem",
-        background:
-          selected
-            ? "var(--sv-accent-bg)"
-            : hov
-            ? "var(--sv-bg-surface)"
-            : "transparent",
-        borderLeft: `3px solid ${
-          selected ? "var(--sv-accent)" : "transparent"
-        }`,
-        color: selected ? "var(--sv-accent)" : "var(--sv-text-primary)",
-        fontWeight: selected ? 700 : 400,
-        fontSize: "0.83rem",
-        transition: "all 0.1s",
-        overflow: "hidden",
-        marginBottom: "1px",
-      }}
-    >
-      {isSv && <SvBadge small />}
-      <span
-        style={{
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-          flex: 1,
-        }}
-      >
-        {preset.preset_name}
-      </span>
-    </div>
-  );
-};
+}> = ({ preset, selected, isSv, onSelect }) => (
+  <div
+    onClick={onSelect}
+    className={`sv-sidebar-item flex align-items-center gap-2${selected ? " active" : ""}`}
+  >
+    {isSv && <SvBadge small />}
+    <span className="text-overflow-ellipsis white-space-nowrap overflow-hidden flex-1">
+      {preset.preset_name}
+    </span>
+  </div>
+);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FilterChip
@@ -459,61 +328,17 @@ const FilterChip: React.FC<{
   onEdit: () => void;
   onRemove: () => void;
 }> = ({ filter, onEdit, onRemove }) => (
-  <div
-    style={{
-      display: "inline-flex",
-      alignItems: "center",
-      gap: "0.3rem",
-      background: "var(--sv-accent)",
-      color: "var(--sv-text-inverse)",
-      borderRadius: "1rem",
-      padding: "0.28rem 0.4rem 0.28rem 0.7rem",
-      fontSize: "0.78rem",
-      fontWeight: 600,
-      flexShrink: 0,
-    }}
-  >
-    <span style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+  <div className="sv-filter-chip">
+    <span
+      className="text-overflow-ellipsis white-space-nowrap overflow-hidden"
+      style={{ maxWidth: "200px" }}
+    >
       {buildFilterText(filter)}
     </span>
-    <button
-      onClick={onEdit}
-      title="Edit filter"
-      style={{
-        background: "rgba(255,255,255,0.22)",
-        border: "none",
-        cursor: "pointer",
-        borderRadius: "50%",
-        width: "18px",
-        height: "18px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "inherit",
-        padding: 0,
-        flexShrink: 0,
-      }}
-    >
+    <button onClick={onEdit} title="Edit filter" className="sv-chip-btn">
       <i className="pi pi-pencil" style={{ fontSize: "0.58rem" }} />
     </button>
-    <button
-      onClick={onRemove}
-      title="Remove filter"
-      style={{
-        background: "rgba(255,255,255,0.15)",
-        border: "none",
-        cursor: "pointer",
-        borderRadius: "50%",
-        width: "18px",
-        height: "18px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "inherit",
-        padding: 0,
-        flexShrink: 0,
-      }}
-    >
+    <button onClick={onRemove} title="Remove filter" className="sv-chip-btn remove">
       <i className="pi pi-times" style={{ fontSize: "0.58rem" }} />
     </button>
   </div>
@@ -538,17 +363,11 @@ const FilterEditor: React.FC<{
       {/* Slider type */}
       {local.type === "slider" && local.slider_values && (
         <div>
-          <div
-            style={{
-              fontSize: "0.8rem",
-              color: "var(--sv-text-muted)",
-              marginBottom: "0.5rem",
-            }}
-          >
+          <div className="text-sm sv-text-muted mb-2">
             Range: {local.slider_values[0]} – {local.slider_values[1]}
             {local.range_text ? ` ${local.range_text}` : ""}
           </div>
-          <div style={{ padding: "0.25rem 0.5rem 1.25rem" }}>
+          <div className="px-2" style={{ paddingBottom: "1.25rem" }}>
             <Slider
               value={sliderVals as number[]}
               onChange={(e) =>
@@ -563,15 +382,8 @@ const FilterEditor: React.FC<{
             />
           </div>
           <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              fontSize: "0.9rem",
-              fontWeight: 700,
-              color: "var(--sv-text-primary)",
-              marginBottom: "1.25rem",
-              fontFamily: "monospace",
-            }}
+            className="flex justify-content-between font-bold mb-4"
+            style={{ fontSize: "0.9rem", color: "var(--sv-text-primary)", fontFamily: "monospace" }}
           >
             <span>{sliderVals[0]}{local.range_text ? ` ${local.range_text}` : ""}</span>
             <span>{sliderVals[1]}{local.range_text ? ` ${local.range_text}` : ""}</span>
@@ -591,7 +403,7 @@ const FilterEditor: React.FC<{
             onChange={(e) =>
               setLocal((p) => ({ ...p, selected_value: e.value }))
             }
-            style={{ width: "100%", marginBottom: "1rem" }}
+            className="w-full mb-3"
             placeholder="Select…"
             filter
           />
@@ -607,7 +419,7 @@ const FilterEditor: React.FC<{
           onChange={(e) =>
             setLocal((p) => ({ ...p, selected_value: e.value }))
           }
-          style={{ width: "100%", marginBottom: "1rem" }}
+          className="w-full mb-3"
           placeholder="Select options…"
           filter
           display="chip"
@@ -618,15 +430,7 @@ const FilterEditor: React.FC<{
       {local.type === "dropdown" &&
         local.allow_custom &&
         local.selected_value === CUSTOM_ID && (
-          <div
-            style={{
-              display: "flex",
-              gap: "0.5rem",
-              alignItems: "center",
-              marginBottom: "1rem",
-              flexWrap: "wrap",
-            }}
-          >
+          <div className="flex align-items-center gap-2 mb-3 flex-wrap">
             <InputText
               value={String(local.minValue ?? "")}
               onChange={(e) =>
@@ -635,7 +439,7 @@ const FilterEditor: React.FC<{
               style={{ width: "90px", fontSize: "0.85rem" }}
               placeholder="Min"
             />
-            <span style={{ color: "var(--sv-text-muted)" }}>to</span>
+            <span className="sv-text-muted">to</span>
             <InputText
               value={String(local.maxValue ?? "")}
               onChange={(e) =>
@@ -645,21 +449,12 @@ const FilterEditor: React.FC<{
               placeholder="Max"
             />
             {local.range_text && (
-              <span style={{ fontSize: "0.8rem", color: "var(--sv-text-muted)" }}>
-                {local.range_text}
-              </span>
+              <span className="text-sm sv-text-muted">{local.range_text}</span>
             )}
           </div>
         )}
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          gap: "0.5rem",
-          paddingTop: "0.25rem",
-        }}
-      >
+      <div className="flex justify-content-end gap-2 pt-1">
         <Button label="Cancel" text size="small" onClick={onClose} />
         <Button
           label="Apply"
@@ -685,7 +480,7 @@ const ResultsGrid: React.FC<{
 }> = ({ symbols, loading }) => {
   if (loading) {
     return (
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
+      <div className="flex flex-wrap gap-2">
         {Array.from({ length: 24 }).map((_, i) => (
           <Skeleton key={i} width="58px" height="28px" borderRadius="0.35rem" />
         ))}
@@ -695,38 +490,11 @@ const ResultsGrid: React.FC<{
 
   return (
     <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "0.35rem",
-        maxHeight: "320px",
-        overflowY: "auto",
-        paddingRight: "0.25rem",
-      }}
+      className="flex flex-wrap gap-2"
+      style={{ maxHeight: "320px", overflowY: "auto", paddingRight: "0.25rem" }}
     >
       {symbols.map((sym) => (
-        <span
-          key={sym}
-          style={{
-            background: "var(--sv-bg-surface)",
-            border: "1px solid var(--sv-border)",
-            borderRadius: "0.35rem",
-            padding: "0.22rem 0.55rem",
-            fontSize: "0.78rem",
-            fontWeight: 700,
-            color: "var(--sv-accent)",
-            fontFamily: "monospace",
-            letterSpacing: "0.04em",
-            cursor: "default",
-            transition: "border-color 0.1s",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor = "var(--sv-accent)";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor = "var(--sv-border)";
-          }}
-        >
+        <span key={sym} className="sv-symbol-chip">
           {sym}
         </span>
       ))}
@@ -743,15 +511,8 @@ const SectionHeader: React.FC<{
   title: string;
   action?: React.ReactNode;
 }> = ({ isSv, title, action }) => (
-  <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      gap: "0.65rem",
-      marginBottom: "0.875rem",
-    }}
-  >
-    {isSv && (
+  <div className="flex align-items-center gap-3 mb-3">
+    {isSv ? (
       <span
         style={{
           background: "var(--sv-accent-gradient)",
@@ -765,45 +526,30 @@ const SectionHeader: React.FC<{
       >
         SV
       </span>
-    )}
-    {!isSv && (
-      <i
-        className="pi pi-user"
-        style={{ color: "var(--sv-accent)", fontSize: "0.85rem" }}
-      />
+    ) : (
+      <i className="pi pi-user sv-text-accent text-sm" />
     )}
     <h2
-      style={{
-        margin: 0,
-        fontSize: "0.95rem",
-        fontWeight: 700,
-        color: "var(--sv-text-primary)",
-      }}
+      className="m-0 font-bold"
+      style={{ fontSize: "0.95rem", color: "var(--sv-text-primary)" }}
     >
       {title}
     </h2>
-    <div style={{ flex: 1, height: "1px", background: "var(--sv-border)" }} />
+    <div className="flex-1" style={{ height: "1px", background: "var(--sv-border)" }} />
     {action}
   </div>
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Card wrapper
+// Panel — card wrapper using sv-data-card
 // ─────────────────────────────────────────────────────────────────────────────
 
 const Panel: React.FC<{
   children: React.ReactNode;
+  className?: string;
   style?: React.CSSProperties;
-}> = ({ children, style }) => (
-  <div
-    style={{
-      background: "var(--sv-bg-card)",
-      border: "1px solid var(--sv-border)",
-      borderRadius: "0.75rem",
-      boxShadow: "var(--sv-shadow-sm)",
-      ...style,
-    }}
-  >
+}> = ({ children, className, style }) => (
+  <div className={`sv-data-card${className ? ` ${className}` : ""}`} style={style}>
     {children}
   </div>
 );
@@ -898,14 +644,10 @@ const ScreensCombinedPage: React.FC = () => {
             ? filtersData
             : [];
 
-          // Apply defaults to all filters
           const filters = rawFilters.map((f) => {
             const c = deepClone(f);
             if (c.type === "slider" && c.slider_values) {
-              c.selected_slider_values = [...c.slider_values] as [
-                number,
-                number,
-              ];
+              c.selected_slider_values = [...c.slider_values] as [number, number];
             }
             if (c.type === "dropdown") {
               c.selected_value = c.multiple ? [] : DEFAULT_ID;
@@ -913,13 +655,10 @@ const ScreensCombinedPage: React.FC = () => {
             return c;
           });
 
-          setSortColumns(
-            Array.isArray(sortColsData) ? sortColsData : []
-          );
+          setSortColumns(Array.isArray(sortColsData) ? sortColsData : []);
 
           if (presetData?.values?.length) {
             const savedValues: ScreenFilter[] = presetData.values;
-            // Merge saved values into the full filter list
             const merged = filters.map((f) => {
               const saved = savedValues.find((s) => s.name === f.name);
               if (!saved) return f;
@@ -931,9 +670,7 @@ const ScreensCombinedPage: React.FC = () => {
             if (presetData.sortBy) {
               const parts = (presetData.sortBy as string).split(" ");
               setSortBy(parts[0] ?? "");
-              setSortOrder(
-                parts[1] === "asc" ? "Ascending" : "Descending"
-              );
+              setSortOrder(parts[1] === "asc" ? "Ascending" : "Descending");
             }
             if (presetData.limit) setLimit(presetData.limit);
           } else {
@@ -1158,7 +895,7 @@ const ScreensCombinedPage: React.FC = () => {
   const renderOverview = () => (
     <div>
       {/* SV Screens */}
-      <div style={{ marginBottom: "2.5rem" }}>
+      <div className="mb-5">
         <SectionHeader isSv title="SimpleVisor Screens" />
         {presetsLoading ? (
           <div className="grid">
@@ -1244,37 +981,18 @@ const ScreensCombinedPage: React.FC = () => {
       }}
     >
       {/* ── Sidebar ─────────────────────────────────────────────────────── */}
-      <Panel
-        style={{
-          position: "sticky",
-          top: "1rem",
-          overflow: "hidden",
-        }}
-      >
-        {/* SV label */}
+      <Panel style={{ position: "sticky", top: "1rem", overflow: "hidden" }}>
+        {/* SV screens label */}
         <div
-          style={{
-            padding: "0.65rem 0.75rem 0.3rem",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.4rem",
-            borderBottom: "1px solid var(--sv-border)",
-          }}
+          className="flex align-items-center gap-2 px-3 py-2"
+          style={{ borderBottom: "1px solid var(--sv-border)" }}
         >
           <SvBadge small />
-          <span
-            style={{
-              fontSize: "0.65rem",
-              fontWeight: 700,
-              color: "var(--sv-text-muted)",
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-            }}
-          >
+          <span className="sv-info-label" style={{ fontSize: "0.65rem" }}>
             Screens
           </span>
         </div>
-        <div style={{ padding: "0.35rem 0.35rem 0.25rem" }}>
+        <div className="p-1 pb-0">
           {presetsLoading
             ? Array.from({ length: 3 }).map((_, i) => (
                 <Skeleton key={i} height="28px" borderRadius="0.35rem" className="mb-1" />
@@ -1290,53 +1008,24 @@ const ScreensCombinedPage: React.FC = () => {
               ))}
         </div>
 
-        {/* Divider */}
-        <div
-          style={{
-            height: "1px",
-            background: "var(--sv-border)",
-            margin: "0.25rem 0.75rem",
-          }}
-        />
+        <Divider className="my-1 mx-3" style={{ width: "auto" }} />
 
         {/* My screens label */}
-        <div
-          style={{
-            padding: "0.3rem 0.75rem",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <span
-            style={{
-              fontSize: "0.65rem",
-              fontWeight: 700,
-              color: "var(--sv-text-muted)",
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-            }}
-          >
+        <div className="flex align-items-center justify-content-between px-3 py-1">
+          <span className="sv-info-label" style={{ fontSize: "0.65rem" }}>
             My Screens
           </span>
-          <button
+          <Button
+            icon="pi pi-plus"
+            text
+            rounded
+            size="small"
             onClick={handleNewScreen}
             title="New screen"
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              color: "var(--sv-accent)",
-              display: "flex",
-              alignItems: "center",
-              padding: "0.15rem",
-              borderRadius: "0.25rem",
-            }}
-          >
-            <i className="pi pi-plus" style={{ fontSize: "0.72rem" }} />
-          </button>
+            style={{ width: "22px", height: "22px", color: "var(--sv-accent)" }}
+          />
         </div>
-        <div style={{ padding: "0.25rem 0.35rem 0.5rem" }}>
+        <div className="p-1 pb-2">
           {presetsLoading ? (
             <Skeleton height="28px" borderRadius="0.35rem" />
           ) : (
@@ -1358,12 +1047,8 @@ const ScreensCombinedPage: React.FC = () => {
               )}
               {!userPresets?.preset_data?.length && !isNewPreset && (
                 <div
-                  style={{
-                    padding: "0.4rem 0.7rem",
-                    fontSize: "0.77rem",
-                    color: "var(--sv-text-muted)",
-                    fontStyle: "italic",
-                  }}
+                  className="px-3 py-2 text-sm sv-text-muted"
+                  style={{ fontStyle: "italic" }}
                 >
                   No screens yet
                 </div>
@@ -1374,52 +1059,26 @@ const ScreensCombinedPage: React.FC = () => {
       </Panel>
 
       {/* ── Filter + Results panel ─────────────────────────────────────── */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <div className="flex flex-column gap-3">
         {/* Panel header */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: "0.75rem",
-          }}
-        >
-          <div
-            style={{ display: "flex", alignItems: "center", gap: "0.65rem" }}
-          >
-            <button
+        <div className="flex align-items-center justify-content-between flex-wrap gap-3">
+          <div className="flex align-items-center gap-3">
+            <Button
+              icon="pi pi-arrow-left"
+              label="All Screens"
+              text
+              size="small"
               onClick={handleBack}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                color: "var(--sv-accent)",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.3rem",
-                fontSize: "0.82rem",
-                fontWeight: 600,
-                padding: 0,
-              }}
-            >
-              <i className="pi pi-arrow-left" />
-              All Screens
-            </button>
+              style={{ color: "var(--sv-accent)", fontWeight: 600, fontSize: "0.82rem", padding: 0 }}
+            />
             <span style={{ color: "var(--sv-border-light)" }}>|</span>
-            <div
-              style={{
-                fontWeight: 700,
-                fontSize: "1rem",
-                color: "var(--sv-text-primary)",
-              }}
-            >
+            <div className="font-bold" style={{ fontSize: "1rem", color: "var(--sv-text-primary)" }}>
               {isNewPreset ? "New Screen" : selectedPreset?.preset_name}
             </div>
           </div>
 
           {/* Actions */}
-          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          <div className="flex gap-2 flex-wrap">
             {!isNewPreset && (
               <Button
                 label="Save"
@@ -1453,15 +1112,7 @@ const ScreensCombinedPage: React.FC = () => {
         {/* ── Filter configuration panel ──────────────────────────────── */}
         <Panel style={{ padding: "1rem" }}>
           {/* Controls row */}
-          <div
-            style={{
-              display: "flex",
-              gap: "0.6rem",
-              alignItems: "center",
-              flexWrap: "wrap",
-              marginBottom: "0.875rem",
-            }}
-          >
+          <div className="flex gap-2 align-items-center flex-wrap mb-3">
             <Dropdown
               value={null}
               options={remainingFilters}
@@ -1517,29 +1168,18 @@ const ScreensCombinedPage: React.FC = () => {
               text
               severity="secondary"
               onClick={handleResetFilters}
-              style={{ marginLeft: "auto" }}
+              className="ml-auto"
             />
           </div>
 
           {/* Active filter chips */}
           <div
-            style={{
-              minHeight: "2.5rem",
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "0.45rem",
-              alignItems: "center",
-              padding: "0.25rem 0",
-            }}
+            className="flex flex-wrap gap-2 align-items-center py-1"
+            style={{ minHeight: "2.5rem" }}
           >
             {filterDataLoading ? (
               Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton
-                  key={i}
-                  width="120px"
-                  height="30px"
-                  borderRadius="1rem"
-                />
+                <Skeleton key={i} width="120px" height="30px" borderRadius="1rem" />
               ))
             ) : selectedFilters.length > 0 ? (
               selectedFilters.map((f) => (
@@ -1551,31 +1191,15 @@ const ScreensCombinedPage: React.FC = () => {
                 />
               ))
             ) : (
-              <span
-                style={{
-                  fontSize: "0.81rem",
-                  color: "var(--sv-text-muted)",
-                  fontStyle: "italic",
-                }}
-              >
-                No filters applied — showing all stocks · Use "+ Add Filter"
-                to narrow results
+              <span className="text-sm sv-text-muted" style={{ fontStyle: "italic" }}>
+                No filters applied — showing all stocks · Use "+ Add Filter" to narrow results
               </span>
             )}
           </div>
 
           {/* Error */}
           {filterError && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.4rem",
-                color: "var(--sv-danger)",
-                fontSize: "0.82rem",
-                marginTop: "0.5rem",
-              }}
-            >
+            <div className="flex align-items-center gap-2 sv-error-text text-sm mt-2">
               <i className="pi pi-exclamation-circle" />
               {filterError}
             </div>
@@ -1583,34 +1207,15 @@ const ScreensCombinedPage: React.FC = () => {
 
           {/* Run row */}
           <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: "0.875rem",
-              paddingTop: "0.75rem",
-              borderTop: "1px solid var(--sv-border-light)",
-            }}
+            className="flex justify-content-between align-items-center mt-3 pt-3"
+            style={{ borderTop: "1px solid var(--sv-border-light)" }}
           >
-            <div
-              style={{
-                fontSize: "0.82rem",
-                color: "var(--sv-text-secondary)",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.4rem",
-              }}
-            >
+            <div className="flex align-items-center gap-2 text-sm" style={{ color: "var(--sv-text-secondary)" }}>
               {scanMsg && (
                 <>
-                  <i
-                    className="pi pi-chart-bar"
-                    style={{ color: "var(--sv-accent)" }}
-                  />
+                  <i className="pi pi-chart-bar sv-text-accent" />
                   <span>
-                    <strong style={{ color: "var(--sv-accent)" }}>
-                      {scanMsg.split(" ")[0]}
-                    </strong>{" "}
+                    <strong className="sv-text-accent">{scanMsg.split(" ")[0]}</strong>{" "}
                     {scanMsg.split(" ").slice(1).join(" ")}
                   </span>
                 </>
@@ -1631,71 +1236,35 @@ const ScreensCombinedPage: React.FC = () => {
           <Panel style={{ overflow: "hidden" }}>
             {/* Results header */}
             <div
-              style={{
-                padding: "0.75rem 1rem",
-                borderBottom: "1px solid var(--sv-border)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
+              className="flex align-items-center justify-content-between px-3 py-3"
+              style={{ borderBottom: "1px solid var(--sv-border)" }}
             >
-              <div
-                style={{
-                  fontWeight: 700,
-                  fontSize: "0.88rem",
-                  color: "var(--sv-text-primary)",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.5rem",
-                }}
-              >
-                <i
-                  className="pi pi-list"
-                  style={{ color: "var(--sv-accent)", fontSize: "0.85rem" }}
-                />
+              <div className="flex align-items-center gap-2 font-bold text-sm" style={{ color: "var(--sv-text-primary)" }}>
+                <i className="pi pi-list sv-text-accent text-sm" />
                 Scan Results
               </div>
               {!scanLoading && scannedSymbols.length > 0 && (
-                <div
+                <span
+                  className="font-bold text-xs"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.75rem",
+                    background: "var(--sv-accent-bg)",
+                    color: "var(--sv-accent)",
+                    borderRadius: "1rem",
+                    padding: "0.18rem 0.65rem",
                   }}
                 >
-                  <span
-                    style={{
-                      background: "var(--sv-accent-bg)",
-                      color: "var(--sv-accent)",
-                      borderRadius: "1rem",
-                      padding: "0.18rem 0.65rem",
-                      fontSize: "0.75rem",
-                      fontWeight: 700,
-                    }}
-                  >
-                    {scannedSymbols.length} ticker
-                    {scannedSymbols.length !== 1 ? "s" : ""}
-                  </span>
-                </div>
+                  {scannedSymbols.length} ticker{scannedSymbols.length !== 1 ? "s" : ""}
+                </span>
               )}
             </div>
 
-            <div style={{ padding: "0.875rem 1rem" }}>
+            <div className="p-3">
               {!scanLoading && scannedSymbols.length === 0 ? (
-                <div
-                  style={{
-                    fontSize: "0.82rem",
-                    color: "var(--sv-text-muted)",
-                    padding: "0.5rem 0",
-                  }}
-                >
+                <div className="text-sm sv-text-muted py-1">
                   No stocks matched the current filters.
                 </div>
               ) : (
-                <ResultsGrid
-                  symbols={scannedSymbols}
-                  loading={scanLoading}
-                />
+                <ResultsGrid symbols={scannedSymbols} loading={scanLoading} />
               )}
             </div>
           </Panel>
@@ -1724,25 +1293,9 @@ const ScreensCombinedPage: React.FC = () => {
       <ConfirmPopup />
 
       {/* ── Page Header ──────────────────────────────────────────────────── */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          marginBottom: "1.75rem",
-          gap: "1rem",
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="flex align-items-start justify-content-between flex-wrap gap-3 mb-5">
         <div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.625rem",
-              marginBottom: "0.3rem",
-            }}
-          >
+          <div className="flex align-items-center gap-2 mb-1">
             <span
               style={{
                 background: "var(--sv-accent-gradient)",
@@ -1758,20 +1311,13 @@ const ScreensCombinedPage: React.FC = () => {
               SCREENER
             </span>
             <h1
-              style={{
-                margin: 0,
-                fontSize: "1.35rem",
-                fontWeight: 700,
-                color: "var(--sv-text-primary)",
-                letterSpacing: "-0.01em",
-              }}
+              className="m-0 font-bold sv-page-title"
+              style={{ fontSize: "1.35rem", color: "var(--sv-text-primary)" }}
             >
               Stock Screener
             </h1>
           </div>
-          <p
-            style={{ margin: 0, fontSize: "0.82rem", color: "var(--sv-text-muted)" }}
-          >
+          <p className="m-0 text-sm sv-text-muted">
             Filter stocks by fundamental, technical &amp; quantitative criteria
           </p>
         </div>
@@ -1822,14 +1368,8 @@ const ScreensCombinedPage: React.FC = () => {
         style={{ width: "380px" }}
         draggable={false}
         footer={
-          <div
-            style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}
-          >
-            <Button
-              label="Cancel"
-              text
-              onClick={() => setShowSaveDialog(false)}
-            />
+          <div className="flex justify-content-end gap-2">
+            <Button label="Cancel" text onClick={() => setShowSaveDialog(false)} />
             <Button
               label="Save"
               icon="pi pi-save"
@@ -1842,13 +1382,8 @@ const ScreensCombinedPage: React.FC = () => {
       >
         <div>
           <label
-            style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              fontSize: "0.85rem",
-              color: "var(--sv-text-secondary)",
-              fontWeight: 600,
-            }}
+            className="block mb-2 font-semibold text-sm"
+            style={{ color: "var(--sv-text-secondary)" }}
           >
             Screen Name
           </label>
@@ -1861,16 +1396,10 @@ const ScreensCombinedPage: React.FC = () => {
               }
             }}
             placeholder="e.g. High Growth Tech"
-            style={{ width: "100%" }}
+            className="w-full"
             autoFocus
           />
-          <div
-            style={{
-              fontSize: "0.78rem",
-              color: "var(--sv-text-muted)",
-              marginTop: "0.5rem",
-            }}
-          >
+          <div className="text-xs sv-text-muted mt-2">
             Give your screen a memorable name to find it easily later.
           </div>
         </div>
