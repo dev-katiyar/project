@@ -295,7 +295,7 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
   const [loading, setLoading] = useState(false);
   const [view, setView] = useState<ViewMode>("table");
   const [chartType, setChartType] = useState<ChartType>("column");
-  const [tableType, setTableType] = useState<TableType>("performance");
+  const [tableType, setTableType] = useState<TableType>("overview");
   const [selectedMetric, setSelectedMetric] = useState<ChartMetric>(
     CHART_METRICS[2], // MTD by default
   );
@@ -650,6 +650,7 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
     if (tableType === "overview") {
       return (
         <DataTable
+          key="overview"
           value={data}
           size="small"
           scrollable
@@ -735,6 +736,7 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
     if (tableType === "performance") {
       return (
         <DataTable
+          key="performance"
           value={data}
           size="small"
           scrollable
@@ -814,6 +816,7 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
     if (tableType === "technicals") {
       return (
         <DataTable
+          key="technicals"
           value={data}
           size="small"
           scrollable
@@ -907,6 +910,7 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
     if (tableType === "fundamentals") {
       return (
         <DataTable
+          key="fundamentals"
           value={data}
           size="small"
           scrollable
