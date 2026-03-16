@@ -263,7 +263,7 @@ const FactorAnalysisView: React.FC<FactorAnalysisViewProps> = ({
 
   // ── Pair chart options ────────────────────────────────────────────────────
   const pairChartOpts = useMemo((): Highcharts.Options => {
-    const scores = pairDialog?.data?.scores;
+    const scores = [...(pairDialog?.data?.scores ?? [])].sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
     if (!scores?.length) return {};
     const fields = scoreRef.current
       .map((p) => `${p}_rank`)
