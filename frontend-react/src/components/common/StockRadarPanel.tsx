@@ -23,11 +23,14 @@ interface SymbolData {
   sector?: string;
   // Performance
   mom?: number;
+  wtd?: number;
   mtd?: number;
   qtd?: number;
   ytd?: number;
   change_oneMonth_pct?: number;
   change_oneyearbeforedate_pct?: number;
+  priceChange2Year?: number;
+  priceChange3Year?: number;
   // Technicals
   rsi?: number;
   macdhist?: number;
@@ -681,6 +684,13 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
             body={pctBody("priceChangePct")}
           />
           <Column
+            header="WTD %"
+            align="right"
+            sortable
+            sortField="wtd"
+            body={pctBody("wtd")}
+          />
+          <Column
             header="MTD %"
             align="right"
             sortable
@@ -714,6 +724,20 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
             sortable
             sortField="change_oneyearbeforedate_pct"
             body={pctBody("change_oneyearbeforedate_pct")}
+          />
+          <Column
+            header="2Y %"
+            align="right"
+            sortable
+            sortField="priceChange2Year"
+            body={pctBody("priceChange2Year")}
+          />
+          <Column
+            header="3Y %"
+            align="right"
+            sortable
+            sortField="priceChange3Year"
+            body={pctBody("priceChange3Year")}
           />
         </DataTable>
       );
