@@ -280,11 +280,11 @@ const PresetCard: React.FC<{
                 <td style={{ ...tdS, fontWeight: 700, letterSpacing: "0.03em" }} className="sv-text-accent">
                   {row.symbol}
                 </td>
-                <td style={{ ...tdS, textAlign: "right", fontFamily: "monospace" }}>
+                <td style={{ ...tdS, textAlign: "right" }}>
                   {fmtPrice(row.price)}
                 </td>
                 <td
-                  style={{ ...tdS, textAlign: "right", fontFamily: "monospace", fontWeight: 600 }}
+                  style={{ ...tdS, textAlign: "right", fontWeight: 600 }}
                   className={row.priceChange >= 0 ? "sv-text-gain" : "sv-text-loss"}
                 >
                   {fmtChg(row.priceChange)} ({fmtPct(row.priceChangePct)})
@@ -383,7 +383,7 @@ const FilterEditor: React.FC<{
           </div>
           <div
             className="flex justify-content-between font-bold mb-4"
-            style={{ fontSize: "0.9rem", color: "var(--sv-text-primary)", fontFamily: "monospace" }}
+            style={{ fontSize: "0.9rem", color: "var(--sv-text-primary)" }}
           >
             <span>{sliderVals[0]}{local.range_text ? ` ${local.range_text}` : ""}</span>
             <span>{sliderVals[1]}{local.range_text ? ` ${local.range_text}` : ""}</span>
