@@ -267,7 +267,8 @@ const FactorAnalysisView: React.FC<FactorAnalysisViewProps> = ({
     if (!scores?.length) return {};
     const fields = scoreRef.current
       .map((p) => `${p}_rank`)
-      .filter((f) => f in (scores[0] ?? {}));
+      .filter((f) => f in (scores[0] ?? {}))
+      .filter((f) => f.includes("21") || f.includes("63"));
     return {
       chart: { backgroundColor: cc.bg, height: 300, animation: false, style: { fontFamily: "Inter, sans-serif" } },
       title: { text: "" },
