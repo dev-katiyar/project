@@ -1107,8 +1107,8 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
         {view === "table" && (
           <PillGroup<TableType>
             options={[
-              { value: "overview", label: "Overview" },
               { value: "performance", label: "Performance" },
+              { value: "overview", label: "Overview" },
               { value: "technicals", label: "Technicals" },
               { value: "fundamentals", label: "Fundamentals" },
             ]}
