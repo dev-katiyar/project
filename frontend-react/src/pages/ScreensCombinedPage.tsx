@@ -3,6 +3,7 @@ import React, {
   useEffect,
   useCallback,
   useMemo,
+  useRef,
 } from "react";
 import api from "@/services/api";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -15,6 +16,7 @@ import { Dropdown } from "primereact/dropdown";
 import { MultiSelect } from "primereact/multiselect";
 import { Slider } from "primereact/slider";
 import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
+import { Toast } from "primereact/toast";
 import { Tooltip } from "primereact/tooltip";
 import { useNavigate } from "react-router-dom";
 import StockRadarPanel from "@/components/common/StockRadarPanel";
@@ -535,6 +537,7 @@ const Panel: React.FC<{
 const ScreensCombinedPage: React.FC = () => {
   useTheme(); // for theme-reactive re-renders
   const navigate = useNavigate();
+  const toastRef = useRef<Toast>(null);
 
   // ── Presets state ────────────────────────────────────────────────────────
   const [svPresets, setSvPresets] = useState<PresetsData | null>(null);
@@ -799,9 +802,18 @@ const ScreensCombinedPage: React.FC = () => {
   // ── Save as new ──────────────────────────────────────────────────────────
 
   const handleSaveAsNew = useCallback(() => {
+    if (selectedFilters.length === 0) {
+      toastRef.current?.show({
+        severity: "warn",
+        summary: "No filters selected",
+        detail: "Please select at least one filter with a non-default value.",
+        life: 4000,
+      });
+      return;
+    }
     setSavePresetName("");
     setShowSaveDialog(true);
-  }, []);
+  }, [selectedFilters]);
 
   const handleConfirmSave = useCallback(() => {
     if (!savePresetName.trim()) return;
@@ -829,8 +841,21 @@ const ScreensCombinedPage: React.FC = () => {
           });
         }
         loadPresets();
+        toastRef.current?.show({
+          severity: "success",
+          summary: "Screen saved",
+          detail: `"${savePresetName.trim()}" has been saved.`,
+          life: 3000,
+        });
       })
-      .catch(() => {})
+      .catch(() => {
+        toastRef.current?.show({
+          severity: "error",
+          summary: "Save failed",
+          detail: "Could not save screen. Please try again.",
+          life: 4000,
+        });
+      })
       .finally(() => setSaveLoading(false));
   }, [
     savePresetName,
@@ -1256,6 +1281,7 @@ const ScreensCombinedPage: React.FC = () => {
 
   return (
     <div style={{ padding: "1.25rem 1.5rem", minHeight: "100vh" }}>
+      <Toast ref={toastRef} />
       <ConfirmPopup />
 
       {/* ── Page Header ──────────────────────────────────────────────────── */}
