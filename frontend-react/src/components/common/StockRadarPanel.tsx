@@ -150,11 +150,6 @@ function fmtLargeNum(v: number | undefined): string {
   return `$${n.toFixed(0)}`;
 }
 
-function fmtInt(v: number | undefined): string {
-  if (v == null || isNaN(Number(v))) return "—";
-  return Number(v).toLocaleString("en-US", { maximumFractionDigits: 0 });
-}
-
 function fmtDecimal(v: number | undefined): string {
   if (v == null || isNaN(Number(v))) return "—";
   return Number(v).toFixed(2);
@@ -643,12 +638,6 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
                 ({fmtVal(r.priceChangePct, "percent")})
               </span>
             )}
-          />
-          <Column
-            header="Volume"
-            field="volume"
-            align="right"
-            body={numBody("volume", fmtInt)}
           />
           <Column
             header="Mkt Cap"
