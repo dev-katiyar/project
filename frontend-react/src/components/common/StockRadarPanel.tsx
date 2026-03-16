@@ -125,10 +125,7 @@ const LOSS_COLOR: Record<ThemeName, string> = {
 // Formatters
 // ─────────────────────────────────────────────────────────────────────────────
 
-function fmtVal(
-  v: number | undefined,
-  format: "percent" | "decimal",
-): string {
+function fmtVal(v: number | undefined, format: "percent" | "decimal"): string {
   if (v == null || isNaN(Number(v))) return "—";
   const n = Number(v);
   const sign = n >= 0 ? "+" : "";
@@ -339,11 +336,9 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
   const stats = useMemo(() => {
     if (!data.length) return null;
     const gainers = data.filter((d) => (d.priceChangePct ?? 0) > 0).length;
-    const avgYtd =
-      data.reduce((s, d) => s + (d.ytd ?? 0), 0) / data.length;
+    const avgYtd = data.reduce((s, d) => s + (d.ytd ?? 0), 0) / data.length;
     const byYtd = [...data].sort((a, b) => (b.ytd ?? 0) - (a.ytd ?? 0));
-    const avgMom =
-      data.reduce((s, d) => s + (d.mom ?? 0), 0) / data.length;
+    const avgMom = data.reduce((s, d) => s + (d.mom ?? 0), 0) / data.length;
     return {
       total: data.length,
       gainers,
@@ -358,8 +353,7 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
   const columnChartOptions = useMemo((): Highcharts.Options => {
     const sorted = [...data].sort(
       (a, b) =>
-        Number(b[selectedMetric.key] ?? 0) -
-        Number(a[selectedMetric.key] ?? 0),
+        Number(b[selectedMetric.key] ?? 0) - Number(a[selectedMetric.key] ?? 0),
     );
     const gainC = GAIN_COLOR[theme];
     const lossC = LOSS_COLOR[theme];
@@ -494,7 +488,8 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
                   "var(--sv-shadow-md)";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLDivElement).style.transform = "scale(1)";
+                (e.currentTarget as HTMLDivElement).style.transform =
+                  "scale(1)";
                 (e.currentTarget as HTMLDivElement).style.boxShadow = "none";
               }}
             >
@@ -566,30 +561,51 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
     const { week_low_52: low, week_high_52: high, price: current } = r;
     if (!low || !high || !current || high <= low)
       return <span className="sv-text-muted text-xs">—</span>;
-    const pct = Math.min(100, Math.max(0, ((current - low) / (high - low)) * 100));
-    const markerColor = pct >= 75 ? "var(--sv-gain)" : pct <= 25 ? "var(--sv-loss)" : "var(--sv-accent)";
-    const markerHex   = pct >= 75 ? "#22c55e"        : pct <= 25 ? "#ef4444"        : "#6366f1";
+    const pct = Math.min(
+      100,
+      Math.max(0, ((current - low) / (high - low)) * 100),
+    );
+    const markerColor =
+      pct >= 75
+        ? "var(--sv-gain)"
+        : pct <= 25
+          ? "var(--sv-loss)"
+          : "var(--sv-accent)";
+    const markerHex = pct >= 75 ? "#22c55e" : pct <= 25 ? "#ef4444" : "#6366f1";
     return (
       <div style={{ minWidth: 130 }}>
         <div style={{ position: "relative", marginBottom: "0.35rem" }}>
-          <div style={{
-            height: 7, borderRadius: 4,
-            background: "linear-gradient(to right, #ef4444 0%, #f97316 25%, #6366f1 50%, #22c55e 100%)",
-          }}>
-            <div style={{
-              position: "absolute",
-              left: `calc(${pct}% - 6px)`,
-              top: -3,
-              width: 13, height: 13, borderRadius: "50%",
-              background: markerColor,
-              border: "2px solid var(--sv-bg-card)",
-              boxShadow: `0 0 7px ${markerHex}80`,
-            }} />
+          <div
+            style={{
+              height: 7,
+              borderRadius: 4,
+              background:
+                "linear-gradient(to right, #ef4444 0%, #f97316 25%, #6366f1 50%, #22c55e 100%)",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                left: `calc(${pct}% - 6px)`,
+                top: -3,
+                width: 13,
+                height: 13,
+                borderRadius: "50%",
+                background: markerColor,
+                border: "2px solid var(--sv-bg-card)",
+                boxShadow: `0 0 7px ${markerHex}80`,
+              }}
+            />
           </div>
         </div>
-        <div className="flex justify-content-between" style={{ fontSize: "0.6rem" }}>
+        <div
+          className="flex justify-content-between"
+          style={{ fontSize: "0.6rem" }}
+        >
           <span style={{ color: "#ef4444" }}>{fmtCurrency(low)}</span>
-          <span style={{ color: markerColor, fontWeight: 700 }}>{Math.round(pct)}%</span>
+          <span style={{ color: markerColor, fontWeight: 700 }}>
+            {Math.round(pct)}%
+          </span>
           <span style={{ color: "#22c55e" }}>{fmtCurrency(high)}</span>
         </div>
       </div>
@@ -646,10 +662,7 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
             field="name"
             style={{ minWidth: "10rem" }}
             body={(r: SymbolData) => (
-              <span
-                className="sv-text-muted"
-                style={{ fontSize: "0.78rem" }}
-              >
+              <span className="sv-text-muted" style={{ fontSize: "0.78rem" }}>
                 {r.companyName ?? "—"}
               </span>
             )}
@@ -696,7 +709,12 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
             align="right"
             sortable
             body={(r: SymbolData) => (
-              <span style={{ fontSize: "0.8rem", color: "var(--sv-text-secondary)" }}>
+              <span
+                style={{
+                  fontSize: "0.8rem",
+                  color: "var(--sv-text-secondary)",
+                }}
+              >
                 {r.beta != null ? Number(r.beta).toFixed(2) : "—"}
               </span>
             )}
@@ -705,10 +723,7 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
             header="Sector"
             field="sector"
             body={(r: SymbolData) => (
-              <span
-                className="sv-text-muted"
-                style={{ fontSize: "0.75rem" }}
-              >
+              <span className="sv-text-muted" style={{ fontSize: "0.75rem" }}>
                 {r.sector ?? "—"}
               </span>
             )}
@@ -833,12 +848,18 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
                 v == null
                   ? "var(--sv-text-muted)"
                   : v >= 70
-                  ? "var(--sv-danger)"
-                  : v <= 30
-                  ? "var(--sv-success)"
-                  : "var(--sv-text-secondary)";
+                    ? "var(--sv-danger)"
+                    : v <= 30
+                      ? "var(--sv-success)"
+                      : "var(--sv-text-secondary)";
               return (
-                <span style={{ fontSize: "0.8rem", color, fontWeight: v != null && (v >= 70 || v <= 30) ? 700 : 400 }}>
+                <span
+                  style={{
+                    fontSize: "0.8rem",
+                    color,
+                    fontWeight: v != null && (v >= 70 || v <= 30) ? 700 : 400,
+                  }}
+                >
                   {fmtDecimal(v)}
                 </span>
               );
@@ -850,7 +871,10 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
             sortable
             sortField="macdhist"
             body={(r: SymbolData) => (
-              <span className={pctClass(r.macdhist)} style={{ fontSize: "0.8rem" }}>
+              <span
+                className={pctClass(r.macdhist)}
+                style={{ fontSize: "0.8rem" }}
+              >
                 {fmtDecimal(r.macdhist)}
               </span>
             )}
@@ -961,18 +985,12 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
     const gainerRatio = stats.gainers / stats.total;
     return (
       <div className="flex flex-wrap gap-2 mb-3">
-        <StatChip
-          icon="pi-list"
-          label="Symbols"
-          value={String(stats.total)}
-        />
+        <StatChip icon="pi-list" label="Symbols" value={String(stats.total)} />
         <StatChip
           icon="pi-arrow-up-right"
           label="Gaining Today"
           value={`${stats.gainers} of ${stats.total}`}
-          color={
-            gainerRatio >= 0.5 ? "var(--sv-success)" : "var(--sv-danger)"
-          }
+          color={gainerRatio >= 0.5 ? "var(--sv-success)" : "var(--sv-danger)"}
         />
         <StatChip
           icon="pi-calendar"
@@ -1089,8 +1107,8 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
         {view === "table" && (
           <PillGroup<TableType>
             options={[
-              { value: "performance", label: "Performance" },
               { value: "overview", label: "Overview" },
+              { value: "performance", label: "Performance" },
               { value: "technicals", label: "Technicals" },
               { value: "fundamentals", label: "Fundamentals" },
             ]}
