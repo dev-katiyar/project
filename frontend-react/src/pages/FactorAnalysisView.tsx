@@ -280,26 +280,56 @@ const FactorAnalysisView: React.FC<FactorAnalysisViewProps> = ({
         labels: { rotation: -35, style: { color: cc.text, fontSize: "10px" } },
         lineColor: cc.border, tickColor: cc.border,
       },
-      yAxis: {
-        gridLineColor: cc.grid,
-        labels: { format: "{value:.0f}", style: { color: cc.text, fontSize: "11px" } },
-        title: { text: "Percentile Rank", style: { color: cc.text, fontSize: "11px" } },
-        plotLines: [
-          { value: 0,   color: cc.text,    dashStyle: "Dot",       width: 1 },
-          { value: 80,  color: "#f59e0b",  dashStyle: "ShortDash", width: 1, label: { text: "80", style: { color: "#f59e0b", fontSize: "9px" } } },
-          { value: -80, color: "#f59e0b",  dashStyle: "ShortDash", width: 1, label: { text: "-80", style: { color: "#f59e0b", fontSize: "9px" } } },
-        ],
-      },
+      yAxis: [
+        {
+          gridLineColor: cc.grid,
+          labels: { format: "{value:.0f}", style: { color: cc.text, fontSize: "11px" } },
+          title: { text: "Percentile Rank", style: { color: cc.text, fontSize: "11px" } },
+          plotLines: [
+            { value: 0,   color: cc.text,    dashStyle: "Dot",       width: 1 },
+            { value: 80,  color: "#f59e0b",  dashStyle: "ShortDash", width: 1, label: { text: "80", style: { color: "#f59e0b", fontSize: "9px" } } },
+            { value: -80, color: "#f59e0b",  dashStyle: "ShortDash", width: 1, label: { text: "-80", style: { color: "#f59e0b", fontSize: "9px" } } },
+          ],
+        },
+        {
+          opposite: true,
+          gridLineWidth: 0,
+          labels: { format: "{value:.0f}", style: { color: cc.text, fontSize: "11px" } },
+          title: { text: "Diff (21D−63D)", style: { color: cc.text, fontSize: "11px" } },
+          plotLines: [{ value: 0, color: cc.text, dashStyle: "Dot", width: 1 }],
+        },
+      ],
       legend: { itemStyle: { color: cc.text, fontSize: "11px" }, itemHoverStyle: { color: "#fff" } },
-      tooltip: { backgroundColor: cc.bg, borderColor: cc.border, style: { color: cc.text }, shared: true },
+      tooltip: { backgroundColor: cc.bg, borderColor: cc.border, style: { color: cc.text }, shared: true, valueDecimals: 2 },
       plotOptions: { line: { marker: { enabled: false } } },
-      series: fields.map((f, i) => ({
-        type: "line" as const,
-        name: f.replace("_rank", "d"),
-        data: scores.map((s) => s[f] ?? null),
-        color: PAIR_COLORS[i % PAIR_COLORS.length],
-        lineWidth: 2,
-      })),
+      series: [
+        ...fields.map((f, i) => ({
+          type: "line" as const,
+          name: f.replace("_rank", "d"),
+          data: scores.map((s) => s[f] ?? null),
+          color: PAIR_COLORS[i % PAIR_COLORS.length],
+          lineWidth: 2,
+          yAxis: 0,
+        })),
+        (() => {
+          const f21 = fields.find((f) => f.includes("21"));
+          const f63 = fields.find((f) => f.includes("63"));
+          const diffData = scores.map((s) => {
+            const v21 = s[f21 ?? ""] ?? null;
+            const v63 = s[f63 ?? ""] ?? null;
+            const diff = v21 != null && v63 != null ? v21 - v63 : null;
+            return { y: diff, color: diff == null ? undefined : diff >= 0 ? "rgba(34,197,94,0.35)" : "rgba(239,68,68,0.35)" };
+          });
+          return {
+            type: "column" as const,
+            name: "21D−63D Diff",
+            data: diffData,
+            yAxis: 1,
+            lineWidth: 0,
+            borderWidth: 0,
+          };
+        })(),
+      ],
     };
   }, [pairDialog, cc]);
 
