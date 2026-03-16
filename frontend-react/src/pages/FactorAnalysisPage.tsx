@@ -418,14 +418,24 @@ const FactorAnalysisPage: React.FC = () => {
           <h2 className="sv-page-title m-0 font-bold" style={{ fontSize: "1.45rem" }}>
             Factor Analysis
           </h2>
-          <p className="m-0 mt-1 text-sm" style={{ color: "var(--sv-text-secondary)" }}>
-            Excess Return Analysis vs SPY &nbsp;·&nbsp; Excess Returns, Correlations &amp; Z-Score Rankings
-            {updateDate && (
-              <span className="ml-2 sv-text-muted" style={{ fontSize: "0.75rem" }}>
-                · Updated {updateDate}
-              </span>
-            )}
-          </p>
+          <div className="flex align-items-center gap-1 mt-1">
+            <p className="m-0 text-sm" style={{ color: "var(--sv-text-secondary)" }}>
+              Excess Return Analysis vs SPY &nbsp;·&nbsp; Excess Returns, Correlations &amp; Z-Score Rankings
+              {updateDate && (
+                <span className="ml-2 sv-text-muted" style={{ fontSize: "0.75rem" }}>
+                  · Updated {updateDate}
+                </span>
+              )}
+            </p>
+            <Button
+              icon="pi pi-refresh"
+              rounded text severity="secondary" size="small"
+              loading={loading}
+              onClick={() => fetchData(true)}
+              tooltip="Reload live price data"
+              tooltipOptions={{ position: "left" }}
+            />
+          </div>
         </div>
 
         <div className="flex align-items-center gap-2 flex-wrap">
@@ -435,14 +445,6 @@ const FactorAnalysisPage: React.FC = () => {
             onChange={(e) => e.value && setMode(e.value)}
             disabled={loading}
             pt={{ button: { style: { fontSize: "0.82rem", padding: "0.4rem 1rem" } } }}
-          />
-          <Button
-            icon="pi pi-refresh"
-            rounded text severity="secondary" size="small"
-            loading={loading}
-            onClick={() => fetchData(true)}
-            tooltip="Reload live price data"
-            tooltipOptions={{ position: "left" }}
           />
         </div>
       </div>
