@@ -16,6 +16,8 @@ import { MultiSelect } from "primereact/multiselect";
 import { Slider } from "primereact/slider";
 import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
 import { Tooltip } from "primereact/tooltip";
+import { useNavigate } from "react-router-dom";
+import StockRadarPanel from "@/components/common/StockRadarPanel";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -473,37 +475,6 @@ const FilterEditor: React.FC<{
   );
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// ResultsGrid — scanned symbols display
-// ─────────────────────────────────────────────────────────────────────────────
-
-const ResultsGrid: React.FC<{
-  symbols: string[];
-  loading: boolean;
-}> = ({ symbols, loading }) => {
-  if (loading) {
-    return (
-      <div className="flex flex-wrap gap-2">
-        {Array.from({ length: 24 }).map((_, i) => (
-          <Skeleton key={i} width="58px" height="28px" borderRadius="0.35rem" />
-        ))}
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className="flex flex-wrap gap-2"
-      style={{ maxHeight: "320px", overflowY: "auto", paddingRight: "0.25rem" }}
-    >
-      {symbols.map((sym) => (
-        <span key={sym} className="sv-symbol-chip">
-          {sym}
-        </span>
-      ))}
-    </div>
-  );
-};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SectionHeader — reusable section title row
@@ -563,6 +534,7 @@ const Panel: React.FC<{
 
 const ScreensCombinedPage: React.FC = () => {
   useTheme(); // for theme-reactive re-renders
+  const navigate = useNavigate();
 
   // ── Presets state ────────────────────────────────────────────────────────
   const [svPresets, setSvPresets] = useState<PresetsData | null>(null);
@@ -1238,40 +1210,28 @@ const ScreensCombinedPage: React.FC = () => {
         </Panel>
 
         {/* ── Results panel ──────────────────────────────────────────────── */}
-        {(hasScanned || scanLoading) && (
-          <Panel style={{ overflow: "hidden" }}>
-            {/* Results header */}
-            <div
-              className="flex align-items-center justify-content-between px-3 py-3"
-              style={{ borderBottom: "1px solid var(--sv-border)" }}
-            >
-              <div className="flex align-items-center gap-2 font-bold text-sm" style={{ color: "var(--sv-text-primary)" }}>
-                <i className="pi pi-list sv-text-accent text-sm" />
-                Scan Results
-              </div>
-              {!scanLoading && scannedSymbols.length > 0 && (
-                <span
-                  className="font-bold text-xs"
-                  style={{
-                    background: "var(--sv-accent-bg)",
-                    color: "var(--sv-accent)",
-                    borderRadius: "1rem",
-                    padding: "0.18rem 0.65rem",
-                  }}
-                >
-                  {scannedSymbols.length} ticker{scannedSymbols.length !== 1 ? "s" : ""}
-                </span>
-              )}
+        {hasScanned && !scanLoading && scannedSymbols.length === 0 && (
+          <Panel>
+            <div className="text-sm sv-text-muted p-3">
+              No stocks matched the current filters.
             </div>
+          </Panel>
+        )}
 
+        {hasScanned && !scanLoading && scannedSymbols.length > 0 && (
+          <StockRadarPanel
+            symbols={scannedSymbols}
+            title="Scan Results"
+            onSymbolClick={(symbol) =>
+              navigate(`/overview-stock?symbol=${symbol}`)
+            }
+          />
+        )}
+
+        {scanLoading && (
+          <Panel>
             <div className="p-3">
-              {!scanLoading && scannedSymbols.length === 0 ? (
-                <div className="text-sm sv-text-muted py-1">
-                  No stocks matched the current filters.
-                </div>
-              ) : (
-                <ResultsGrid symbols={scannedSymbols} loading={scanLoading} />
-              )}
+              <Skeleton height="420px" borderRadius="0.5rem" />
             </div>
           </Panel>
         )}
