@@ -37,6 +37,9 @@ interface SymbolData {
   sma20?: number;
   sma50?: number;
   sma200?: number;
+  week_high_52?: number;
+  week_low_52?: number;
+  beta?: number;
   // Fundamentals
   trailingPE?: number;
   priceToBook?: number;
@@ -559,6 +562,40 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
       );
     };
 
+  const rangeBar52W = (r: SymbolData): React.ReactNode => {
+    const { week_low_52: low, week_high_52: high, price: current } = r;
+    if (!low || !high || !current || high <= low)
+      return <span className="sv-text-muted text-xs">—</span>;
+    const pct = Math.min(100, Math.max(0, ((current - low) / (high - low)) * 100));
+    const markerColor = pct >= 75 ? "var(--sv-gain)" : pct <= 25 ? "var(--sv-loss)" : "var(--sv-accent)";
+    const markerHex   = pct >= 75 ? "#22c55e"        : pct <= 25 ? "#ef4444"        : "#6366f1";
+    return (
+      <div style={{ minWidth: 130 }}>
+        <div style={{ position: "relative", marginBottom: "0.35rem" }}>
+          <div style={{
+            height: 7, borderRadius: 4,
+            background: "linear-gradient(to right, #ef4444 0%, #f97316 25%, #6366f1 50%, #22c55e 100%)",
+          }}>
+            <div style={{
+              position: "absolute",
+              left: `calc(${pct}% - 6px)`,
+              top: -3,
+              width: 13, height: 13, borderRadius: "50%",
+              background: markerColor,
+              border: "2px solid var(--sv-bg-card)",
+              boxShadow: `0 0 7px ${markerHex}80`,
+            }} />
+          </div>
+        </div>
+        <div className="flex justify-content-between" style={{ fontSize: "0.6rem" }}>
+          <span style={{ color: "#ef4444" }}>{fmtCurrency(low)}</span>
+          <span style={{ color: markerColor, fontWeight: 700 }}>{Math.round(pct)}%</span>
+          <span style={{ color: "#22c55e" }}>{fmtCurrency(high)}</span>
+        </div>
+      </div>
+    );
+  };
+
   // ── Tables ───────────────────────────────────────────────────────────────
 
   const renderTable = () => {
@@ -647,6 +684,22 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
             field="marketCap"
             align="right"
             body={numBody("marketCap", fmtLargeNum)}
+          />
+          <Column
+            header="52W Range"
+            style={{ minWidth: "9rem" }}
+            body={rangeBar52W}
+          />
+          <Column
+            header="Beta"
+            field="beta"
+            align="right"
+            sortable
+            body={(r: SymbolData) => (
+              <span style={{ fontSize: "0.8rem", color: "var(--sv-text-secondary)" }}>
+                {r.beta != null ? Number(r.beta).toFixed(2) : "—"}
+              </span>
+            )}
           />
           <Column
             header="Sector"
