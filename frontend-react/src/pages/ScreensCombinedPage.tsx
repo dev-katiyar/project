@@ -55,6 +55,9 @@ interface PresetSummary {
   preset_id: string;
   preset_name: string;
   preset_top_symbols?: PresetTopSymbol[];
+  values?: ScreenFilter[];
+  sortBy?: string;
+  limit?: number;
 }
 
 interface PresetsData {
@@ -617,7 +620,7 @@ const ScreensCombinedPage: React.FC = () => {
   // ── Load filter data for a preset ────────────────────────────────────────
 
   const loadFilterData = useCallback(
-    (presetId: string) => {
+    (presetId: string, existingPresetData?: PresetSummary) => {
       setFilterDataLoading(true);
       setSelectedFilters([]);
       setScannedSymbols([]);
@@ -630,9 +633,12 @@ const ScreensCombinedPage: React.FC = () => {
 
       const isNew = presetId.startsWith("new_");
 
-      const fetchPreset = isNew
-        ? Promise.resolve(null)
-        : api.get(`/screen/preset/data/${presetId}`).then((r) => r.data);
+      const fetchPreset =
+        existingPresetData
+          ? Promise.resolve(existingPresetData)
+          : isNew
+          ? Promise.resolve(null)
+          : api.get(`/screen/preset/data/${presetId}`).then((r) => r.data);
 
       Promise.all([
         api.get("/screen/filter").then((r) => r.data),
@@ -690,7 +696,7 @@ const ScreensCombinedPage: React.FC = () => {
       setSelectedPreset(preset);
       setIsNewPreset(false);
       setView("detail");
-      loadFilterData(preset.preset_id);
+      loadFilterData(preset.preset_id, preset);
     },
     [loadFilterData]
   );
