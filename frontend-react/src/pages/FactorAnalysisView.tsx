@@ -140,6 +140,11 @@ const FactorAnalysisView: React.FC<FactorAnalysisViewProps> = ({
   const [lookbackInput, setLookbackInput] = useState(DEFAULT_LOOKBACK.join(", "));
   const [lookbackError, setLookbackError] = useState("");
 
+  // ── Corr periods edit ─────────────────────────────────────────────────────
+  const [editCorrPeriods, setEditCorrPeriods] = useState(false);
+  const [corrPeriodsInput, setCorrPeriodsInput] = useState(DEFAULT_CORR.join(", "));
+  const [corrPeriodsError, setCorrPeriodsError] = useState("");
+
   // ── Filter ────────────────────────────────────────────────────────────────
   const [corrThreshold, setCorrThreshold] = useState("-0.6");
   const [corrDir, setCorrDir]             = useState<"less" | "more">("less");
@@ -199,6 +204,19 @@ const FactorAnalysisView: React.FC<FactorAnalysisViewProps> = ({
     scoreRef.current    = DEFAULT_SCORE;
     if (symbols.length) fetchData();
   }, [symbols, dictType]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Corr periods save ─────────────────────────────────────────────────────
+  const saveCorrPeriods = () => {
+    const parts = corrPeriodsInput.split(",").map((s) => parseInt(s.trim(), 10)).filter((n) => !isNaN(n) && n > 0);
+    if (parts.length < 1 || parts.length > 6) { setCorrPeriodsError("Enter 1–6 positive numbers"); return; }
+    setCorrPeriodsError("");
+    const sorted = [...parts].sort((a, b) => b - a);
+    corrRef.current = sorted;
+    setCorrPeriods(sorted);
+    setSelCorrPeriod((prev) => sorted.includes(prev) ? prev : sorted[0]);
+    setEditCorrPeriods(false);
+    fetchData();
+  };
 
   // ── Lookback save ─────────────────────────────────────────────────────────
   const saveLookback = () => {
@@ -503,11 +521,34 @@ const FactorAnalysisView: React.FC<FactorAnalysisViewProps> = ({
           <TabPanel header="Correlations">
             <div className="flex align-items-center gap-3 mb-3 flex-wrap">
               <span className="sv-info-label text-xs font-bold">Period:</span>
-              <div className="flex gap-1">
-                {corrPeriods.map((p) => (
-                  <PeriodBtn key={p} label={`${p}D`} active={p === selCorrPeriod} onClick={() => setSelCorrPeriod(p)} />
-                ))}
-              </div>
+              {!editCorrPeriods ? (
+                <>
+                  <div className="flex gap-1">
+                    {corrPeriods.map((p) => (
+                      <PeriodBtn key={p} label={`${p}D`} active={p === selCorrPeriod} onClick={() => setSelCorrPeriod(p)} />
+                    ))}
+                  </div>
+                  <Button
+                    icon="pi pi-pencil" rounded text size="small" severity="secondary"
+                    style={{ width: "1.7rem", height: "1.7rem", padding: 0 }}
+                    onClick={() => { setCorrPeriodsInput(corrPeriods.join(", ")); setEditCorrPeriods(true); setCorrPeriodsError(""); }}
+                  />
+                </>
+              ) : (
+                <div className="flex align-items-center gap-2 flex-wrap">
+                  <InputText
+                    value={corrPeriodsInput}
+                    onChange={(e) => setCorrPeriodsInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && saveCorrPeriods()}
+                    placeholder="e.g. 21, 126, 252"
+                    style={{ width: "200px", fontSize: "0.82rem" }}
+                    autoFocus
+                  />
+                  <Button icon="pi pi-check" rounded size="small" severity="success" style={{ width: "1.8rem", height: "1.8rem", padding: 0 }} onClick={saveCorrPeriods} />
+                  <Button icon="pi pi-times" rounded text size="small" severity="secondary" style={{ width: "1.8rem", height: "1.8rem", padding: 0 }} onClick={() => { setEditCorrPeriods(false); setCorrPeriodsError(""); }} />
+                  {corrPeriodsError && <span className="sv-error-text text-xs">{corrPeriodsError}</span>}
+                </div>
+              )}
               <div className="flex align-items-center gap-2 ml-auto">
                 <span style={{ fontSize: "0.64rem", color: "#f87171", fontWeight: 600 }}>-1</span>
                 <div style={{ width: "72px", height: "10px", borderRadius: "3px", background: "linear-gradient(to right, rgba(215,18,28,0.85) 0%, rgba(40,40,60,0.1) 50%, rgba(18,168,38,0.85) 100%)", border: "1px solid var(--sv-border-light)" }} />
