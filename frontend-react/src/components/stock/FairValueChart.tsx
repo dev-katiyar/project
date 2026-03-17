@@ -107,13 +107,6 @@ const FairValueChart: React.FC<Props> = ({ symbol }) => {
         width: 2,
         dashStyle: "Dash",
         zIndex: 5,
-        label: {
-          text: `Fair Value $${fv.toFixed(2)}`,
-          style: { color: "#fdd835", fontSize: "11px", fontWeight: "700" },
-          align: "right",
-          x: -4,
-          y: -6,
-        },
       },
     ];
 
@@ -126,6 +119,7 @@ const FairValueChart: React.FC<Props> = ({ symbol }) => {
         animation: { duration: 400 },
         marginBottom: 10,
         marginTop: 10,
+        marginRight: 90,
       },
       title:    { text: undefined },
       subtitle: { text: undefined },
