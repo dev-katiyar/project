@@ -1,171 +1,18 @@
-import React, { useEffect, useRef } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
-
-// Augment window to expose TradingView and Datafeeds globals loaded via script tags
-declare global {
-  interface Window {
-    TradingView: {
-      widget: new (options: Record<string, unknown>) => ITvWidget;
-    };
-    Datafeeds: {
-      UDFCompatibleDatafeed: new (url: string, timeout?: number) => unknown;
-    };
-  }
-}
-
-interface ITvWidget {
-  onChartReady(cb: () => void): void;
-  activeChart(): {
-    symbol(): string;
-    onSymbolChanged(): { subscribe(ctx: null, cb: () => void): void };
-    setSymbol(symbol: string, cb: () => void): void;
-    resetData(): void;
-    createStudy(
-      name: string,
-      forceOverlay?: boolean,
-      lock?: boolean,
-      inputs?: unknown[]
-    ): Promise<unknown>;
-  };
-  layoutName(): string | null;
-  remove(): void;
-}
-
-const DATAFEED_URL = "/api/tv";
-const LIBRARY_PATH = "/charting_library/";
-const CLIENT_ID = "simplevisor.com";
-
-const TIME_FRAMES = [
-  { text: "1M", resolution: "1D", description: "1 Month", title: "1M" },
-  { text: "3M", resolution: "1D", description: "3 Months", title: "3M" },
-  { text: "6M", resolution: "1D", description: "6 Months", title: "6M" },
-  { text: "1Y", resolution: "1D", description: "1 Year", title: "1Y" },
-  { text: "5Y", resolution: "1W", description: "5 Years", title: "5Y" },
-  { text: "50Y", resolution: "3M", description: "50 Years", title: "All" },
-];
-
-// Map each app theme to TradingView theme + matching color overrides
-const TV_THEME_CONFIG: Record<
-  ThemeName,
-  {
-    theme: "Dark" | "Light";
-    toolbar_bg: string;
-    overrides: Record<string, string>;
-  }
-> = {
-  dark: {
-    theme: "Dark",
-    toolbar_bg: "#0d1220",
-    overrides: {
-      "paneProperties.background": "#121a2e",
-      "paneProperties.backgroundType": "solid",
-      "paneProperties.vertGridProperties.color": "#1c2840",
-      "paneProperties.horzGridProperties.color": "#1c2840",
-      "scalesProperties.textColor": "#7a8da8",
-      "scalesProperties.backgroundColor": "#121a2e",
-    },
-  },
-  dim: {
-    theme: "Dark",
-    toolbar_bg: "#162038",
-    overrides: {
-      "paneProperties.background": "#1c2945",
-      "paneProperties.backgroundType": "solid",
-      "paneProperties.vertGridProperties.color": "#283a5c",
-      "paneProperties.horzGridProperties.color": "#283a5c",
-      "scalesProperties.textColor": "#7a92b8",
-      "scalesProperties.backgroundColor": "#1c2945",
-    },
-  },
-  light: {
-    theme: "Light",
-    toolbar_bg: "#ffffff",
-    overrides: {
-      "paneProperties.background": "#ffffff",
-      "paneProperties.backgroundType": "solid",
-      "paneProperties.vertGridProperties.color": "#dfe7f5",
-      "paneProperties.horzGridProperties.color": "#dfe7f5",
-      "scalesProperties.textColor": "#4a5e78",
-      "scalesProperties.backgroundColor": "#ffffff",
-    },
-  },
-};
+import React, { useState } from "react";
+import TvChart from "@/components/common/TvChart";
 
 const TvChartsPage: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const widgetRef = useRef<ITvWidget | null>(null);
-  const { user } = useAuth();
-  const { theme } = useTheme();
+  const [symbol] = useState(() => localStorage.getItem("currentSymbol") ?? "AAPL");
 
-  useEffect(() => {
-    if (!containerRef.current) return;
-    if (!window.TradingView || !window.Datafeeds) return;
-
-    const userId = user?.userId ?? "sv_unknown_user";
-    const symbol = localStorage.getItem("currentSymbol") ?? "AAPL";
-    const tvConfig = TV_THEME_CONFIG[theme];
-
-    const widgetOptions = {
-      symbol,
-      datafeed: new window.Datafeeds.UDFCompatibleDatafeed(
-        DATAFEED_URL,
-        10000 * 1000
-      ),
-      interval: "D",
-      container: containerRef.current,
-      library_path: LIBRARY_PATH,
-      locale: "en",
-      theme: tvConfig.theme,
-      toolbar_bg: tvConfig.toolbar_bg,
-      overrides: tvConfig.overrides,
-      disabled_features: ["use_localstorage_for_settings"],
-      enabled_features: ["study_templates"],
-      charts_storage_url: "https://saveload.tradingview.com",
-      charts_storage_api_version: "1.1",
-      load_last_chart: true,
-      client_id: CLIENT_ID,
-      user_id: userId,
-      fullscreen: false,
-      autosize: true,
-      time_frames: TIME_FRAMES,
-      debug: false,
-      studies_overrides: {
-        "moving average.plot.color": "#000000",
-      },
-    };
-
-    const tvWidget = new window.TradingView.widget(widgetOptions);
-    widgetRef.current = tvWidget;
-
-    tvWidget.onChartReady(() => {
-      tvWidget.activeChart().onSymbolChanged().subscribe(null, () => {
-        const newSymbol = tvWidget.activeChart().symbol();
-        localStorage.setItem("currentSymbol", newSymbol);
-      });
-
-      if (!tvWidget.layoutName()) {
-        tvWidget.activeChart().createStudy("Moving Average", false, false, [200]);
-        tvWidget.activeChart().createStudy("Bollinger Bands", false, false, [50]);
-        tvWidget.activeChart().createStudy("MACD");
-      }
-    });
-
-    return () => {
-      if (widgetRef.current) {
-        widgetRef.current.remove();
-        widgetRef.current = null;
-      }
-    };
-  }, [user, theme]);
+  const handleSymbolChange = (newSymbol: string) => {
+    localStorage.setItem("currentSymbol", newSymbol);
+  };
 
   return (
     <div className="sv-page-min-h">
-      <div
-        ref={containerRef}
-        id="tv_chart_container"
-        style={{ height: "calc(100vh - 80px)", margin: "-0.75rem" }}
-      />
+      <div style={{ height: "calc(100vh - 80px)", margin: "-0.75rem" }}>
+        <TvChart symbol={symbol} height="100%" onSymbolChange={handleSymbolChange} />
+      </div>
     </div>
   );
 };
