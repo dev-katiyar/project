@@ -103,7 +103,9 @@ const SignalPill: React.FC<{
       border: `1px solid ${color}33`,
     }}
   >
-    <span style={{ fontSize: "1.5rem", fontWeight: 800, color, lineHeight: 1.1 }}>
+    <span
+      style={{ fontSize: "1.5rem", fontWeight: 800, color, lineHeight: 1.1 }}
+    >
       {count}
     </span>
     <span
@@ -135,7 +137,10 @@ const SignalBar: React.FC<{
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "0.45rem" }}>
       {bars.map(({ label, count, color }) => (
-        <div key={label} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <div
+          key={label}
+          style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+        >
           <span
             style={{
               fontSize: "0.68rem",
@@ -189,7 +194,11 @@ const SignalBar: React.FC<{
 
 function actionBody(row: TechnicalRow) {
   const sev =
-    row.action === "Buy" ? "success" : row.action === "Sell" ? "danger" : "secondary";
+    row.action === "Buy"
+      ? "success"
+      : row.action === "Sell"
+        ? "danger"
+        : "secondary";
   return (
     <Tag
       value={row.action}
@@ -215,11 +224,7 @@ function trendBody(row: TechnicalRow) {
 }
 
 function valueBody(row: TechnicalRow) {
-  return (
-    <span style={{ fontSize: "0.78rem" }}>
-      {fmtVal(row.value)}
-    </span>
-  );
+  return <span style={{ fontSize: "0.78rem" }}>{fmtVal(row.value)}</span>;
 }
 
 function pivotBody(field: keyof PivotRow, color?: string) {
@@ -318,7 +323,6 @@ const StockTechnicalsTab: React.FC<StockTechnicalsTabProps> = ({ symbol }) => {
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="grid">
-
       {/* ── Row 1: Summary cards ──────────────────────────────────────────── */}
 
       {/* Overall rating gauge */}
@@ -336,9 +340,24 @@ const StockTechnicalsTab: React.FC<StockTechnicalsTabProps> = ({ symbol }) => {
               marginTop: "0.85rem",
             }}
           >
-            <SignalPill label="Buy" count={totalBuys} color="var(--sv-gain)" bg="var(--sv-success-bg)" />
-            <SignalPill label="Hold" count={totalHolds} color="var(--sv-text-secondary)" bg="var(--sv-bg-surface)" />
-            <SignalPill label="Sell" count={totalSells} color="var(--sv-loss)" bg="var(--sv-danger-bg)" />
+            <SignalPill
+              label="Buy"
+              count={totalBuys}
+              color="var(--sv-gain)"
+              bg="var(--sv-success-bg)"
+            />
+            <SignalPill
+              label="Hold"
+              count={totalHolds}
+              color="var(--sv-text-secondary)"
+              bg="var(--sv-bg-surface)"
+            />
+            <SignalPill
+              label="Sell"
+              count={totalSells}
+              color="var(--sv-loss)"
+              bg="var(--sv-danger-bg)"
+            />
           </div>
         </SectionCard>
       </div>
@@ -354,9 +373,24 @@ const StockTechnicalsTab: React.FC<StockTechnicalsTabProps> = ({ symbol }) => {
               marginBottom: "1rem",
             }}
           >
-            <SignalPill label="Buy" count={techBuys} color="var(--sv-gain)" bg="var(--sv-success-bg)" />
-            <SignalPill label="Hold" count={techHolds} color="var(--sv-text-secondary)" bg="var(--sv-bg-surface)" />
-            <SignalPill label="Sell" count={techSells} color="var(--sv-loss)" bg="var(--sv-danger-bg)" />
+            <SignalPill
+              label="Buy"
+              count={techBuys}
+              color="var(--sv-gain)"
+              bg="var(--sv-success-bg)"
+            />
+            <SignalPill
+              label="Hold"
+              count={techHolds}
+              color="var(--sv-text-secondary)"
+              bg="var(--sv-bg-surface)"
+            />
+            <SignalPill
+              label="Sell"
+              count={techSells}
+              color="var(--sv-loss)"
+              bg="var(--sv-danger-bg)"
+            />
           </div>
           <SignalBar buys={techBuys} sells={techSells} holds={techHolds} />
           <p
@@ -385,9 +419,24 @@ const StockTechnicalsTab: React.FC<StockTechnicalsTabProps> = ({ symbol }) => {
               marginBottom: "1rem",
             }}
           >
-            <SignalPill label="Buy" count={maBuys} color="var(--sv-gain)" bg="var(--sv-success-bg)" />
-            <SignalPill label="Hold" count={maHolds} color="var(--sv-text-secondary)" bg="var(--sv-bg-surface)" />
-            <SignalPill label="Sell" count={maSells} color="var(--sv-loss)" bg="var(--sv-danger-bg)" />
+            <SignalPill
+              label="Buy"
+              count={maBuys}
+              color="var(--sv-gain)"
+              bg="var(--sv-success-bg)"
+            />
+            <SignalPill
+              label="Hold"
+              count={maHolds}
+              color="var(--sv-text-secondary)"
+              bg="var(--sv-bg-surface)"
+            />
+            <SignalPill
+              label="Sell"
+              count={maSells}
+              color="var(--sv-loss)"
+              bg="var(--sv-danger-bg)"
+            />
           </div>
           <SignalBar buys={maBuys} sells={maSells} holds={maHolds} />
           <p
@@ -399,8 +448,8 @@ const StockTechnicalsTab: React.FC<StockTechnicalsTabProps> = ({ symbol }) => {
               lineHeight: 1.5,
             }}
           >
-            Moving averages (SMA, EMA, WMA) smooth price data to identify
-            trend direction across different time horizons.
+            Moving averages (SMA, EMA, WMA) smooth price data to identify trend
+            direction across different time horizons.
           </p>
         </SectionCard>
       </div>
@@ -409,7 +458,9 @@ const StockTechnicalsTab: React.FC<StockTechnicalsTabProps> = ({ symbol }) => {
 
       {/* Technical Indicators table */}
       <div className="col-12 md:col-6">
-        <SectionCard title={`Technical Indicators — ${techBuys}B · ${techSells}S · ${techHolds}H`}>
+        <SectionCard
+          title={`Technical Indicators — ${techBuys}B · ${techSells}S · ${techHolds}H`}
+        >
           <DataTable
             value={data.technicals}
             size="small"
@@ -418,7 +469,12 @@ const StockTechnicalsTab: React.FC<StockTechnicalsTabProps> = ({ symbol }) => {
             emptyMessage="No data"
             pt={{
               root: { style: { fontSize: "0.78rem" } },
-              header: { style: { background: "var(--sv-bg-surface)", padding: "0.4rem 0.6rem" } },
+              header: {
+                style: {
+                  background: "var(--sv-bg-surface)",
+                  padding: "0.4rem 0.6rem",
+                },
+              },
             }}
           >
             <Column field="name" header="Indicator" style={{ minWidth: 120 }} />
@@ -446,7 +502,9 @@ const StockTechnicalsTab: React.FC<StockTechnicalsTabProps> = ({ symbol }) => {
 
       {/* Moving Average detail table */}
       <div className="col-12 md:col-6">
-        <SectionCard title={`Moving Average Detail — ${maBuys}B · ${maSells}S · ${maHolds}H`}>
+        <SectionCard
+          title={`Moving Average Detail — ${maBuys}B · ${maSells}S · ${maHolds}H`}
+        >
           <DataTable
             value={data.movingAverage}
             size="small"
@@ -455,7 +513,12 @@ const StockTechnicalsTab: React.FC<StockTechnicalsTabProps> = ({ symbol }) => {
             emptyMessage="No data"
             pt={{
               root: { style: { fontSize: "0.78rem" } },
-              header: { style: { background: "var(--sv-bg-surface)", padding: "0.4rem 0.6rem" } },
+              header: {
+                style: {
+                  background: "var(--sv-bg-surface)",
+                  padding: "0.4rem 0.6rem",
+                },
+              },
             }}
           >
             <Column field="name" header="MA" style={{ minWidth: 100 }} />
@@ -502,7 +565,7 @@ const StockTechnicalsTab: React.FC<StockTechnicalsTabProps> = ({ symbol }) => {
             >
               <Column
                 field="name"
-                header="Method"
+                header={<span style={{ display: "block", textAlign: "center" }}>Method</span>}
                 style={{ minWidth: 120, fontWeight: 600 }}
               />
               <Column
@@ -564,11 +627,12 @@ const StockTechnicalsTab: React.FC<StockTechnicalsTabProps> = ({ symbol }) => {
               marginBottom: 0,
             }}
           >
-            S = Support levels (price may bounce up) &nbsp;·&nbsp; R = Resistance levels (price may face selling pressure) &nbsp;·&nbsp; Pivot = key reference price
+            S = Support levels (price may bounce up) &nbsp;·&nbsp; R =
+            Resistance levels (price may face selling pressure) &nbsp;·&nbsp;
+            Pivot = key reference price
           </p>
         </SectionCard>
       </div>
-
     </div>
   );
 };
