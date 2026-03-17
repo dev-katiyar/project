@@ -746,10 +746,12 @@ const MoneyFlowPairPanel: React.FC = () => {
     try {
       const { data } = await api.post("/strategy/riapro-pair", {
         model_inputs: {
+          symbol: s1,
           symbol1: s1,
           symbol2: s2,
           start_date: fmtApiDate(startDate),
           end_date: fmtApiDate(endDate),
+          test_period: 366,
           sample_frequency: freq,
         },
         ria_pro_inputs: {
