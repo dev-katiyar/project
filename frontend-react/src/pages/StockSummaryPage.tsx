@@ -13,6 +13,7 @@ import StockNewsTab from "@/components/stock/StockNewsTab";
 import StockFundamentalsTab from "@/components/stock/StockFundamentalsTab";
 import StockShortInterestTab from "@/components/stock/StockShortInterestTab";
 import StockInsiderTransactionsTab from "@/components/stock/StockInsiderTransactionsTab";
+import StockOptionsTab from "@/components/stock/StockOptionsTab";
 
 // ── Types ───────────────────────────────────────────────────────────────────
 interface SearchResult { symbol: string; name: string }
@@ -157,6 +158,10 @@ const StockSummaryPage: React.FC = () => {
 
           <TabPanel header="Insider Transactions" leftIcon="pi pi-users mr-2">
             <StockInsiderTransactionsTab symbol={symbol} />
+          </TabPanel>
+
+          <TabPanel header="Options" leftIcon="pi pi-chart-line mr-2">
+            <StockOptionsTab symbol={symbol} />
           </TabPanel>
 
           <TabPanel header="News" leftIcon="pi pi-newspaper mr-2">
