@@ -829,22 +829,26 @@ const ScreensCombinedPage: React.FC = () => {
     api
       .post("/screen/preset", body)
       .then((res) => {
+        const trimmedName = savePresetName.trim();
         setShowSaveDialog(false);
         setSavePresetName("");
         setIsNewPreset(false);
         const newId =
           res.data?.preset_id ?? res.data?.id ?? selectedPreset?.preset_id;
-        if (newId) {
-          setSelectedPreset({
-            preset_id: newId,
-            preset_name: savePresetName.trim(),
-          });
-        }
+        const newPreset: PresetSummary = {
+          preset_id: newId,
+          preset_name: trimmedName,
+          values: selectedFilters,
+          sortBy: body.sortBy,
+          limit: body.limit,
+        };
+        setSelectedPreset(newPreset);
         loadPresets();
+        loadFilterData(newId, newPreset);
         toastRef.current?.show({
           severity: "success",
           summary: "Screen saved",
-          detail: `"${savePresetName.trim()}" has been saved.`,
+          detail: `"${trimmedName}" has been saved.`,
           life: 3000,
         });
       })
@@ -865,6 +869,7 @@ const ScreensCombinedPage: React.FC = () => {
     limit,
     selectedPreset,
     loadPresets,
+    loadFilterData,
   ]);
 
   // ── Delete preset ────────────────────────────────────────────────────────
