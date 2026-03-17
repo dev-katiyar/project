@@ -993,10 +993,11 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
         </div>
       )}
 
-      {/* ── Fundamentals tabs ───────────────────────────────────────────────── */}
+      {/* ── Fundamentals tabs + About ───────────────────────────────────────── */}
       {isStock && (
-        <div className="mb-3">
-          <Card>
+        <div className="grid mb-3 align-items-stretch" style={{ margin: 0 }}>
+          <div className="col-12 lg:col-8 p-1" style={{ display: "flex" }}>
+          <Card style={{ flex: 1 }}>
             <TabView pt={{ root: { className: "sv-tabs" } }}>
               <TabPanel header="Business Health" leftIcon="pi pi-heart mr-2">
                 {loading ? (
@@ -1363,38 +1364,40 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
               </TabPanel>
             </TabView>
           </Card>
-        </div>
-      )}
-
-      {/* ── About ───────────────────────────────────────────────────────────── */}
-      {!loading && overview?.longBusinessSummary && (
-        <Card>
-          <div className="flex align-items-center justify-content-between mb-3">
-            <div className="flex align-items-center gap-2">
-              <i
-                className="pi pi-building sv-text-accent"
-                style={{ fontSize: 14 }}
-              />
-              <span className="font-bold text-sm">
-                About {companyName ?? symbol}
-              </span>
-            </div>
-            <Button
-              link
-              label={descExpanded ? "Show less" : "Read more"}
-              onClick={() => setDescExpanded((x) => !x)}
-              className="p-0 text-sm font-semibold"
-            />
           </div>
-          <p
-            className="text-sm text-color-secondary m-0"
-            style={{ lineHeight: 1.8 }}
-          >
-            {descExpanded
-              ? overview.longBusinessSummary
-              : `${overview.longBusinessSummary.slice(0, 380)}…`}
-          </p>
-        </Card>
+
+          {!loading && overview?.longBusinessSummary && (
+            <div className="col-12 lg:col-4 p-1" style={{ display: "flex" }}>
+              <Card style={{ flex: 1 }}>
+                <div className="flex align-items-center justify-content-between mb-3">
+                  <div className="flex align-items-center gap-2">
+                    <i
+                      className="pi pi-building sv-text-accent"
+                      style={{ fontSize: 14 }}
+                    />
+                    <span className="font-bold text-sm">
+                      About {companyName ?? symbol}
+                    </span>
+                  </div>
+                  <Button
+                    link
+                    label={descExpanded ? "Show less" : "Read more"}
+                    onClick={() => setDescExpanded((x) => !x)}
+                    className="p-0 text-sm font-semibold"
+                  />
+                </div>
+                <p
+                  className="text-sm text-color-secondary m-0"
+                  style={{ lineHeight: 1.8 }}
+                >
+                  {descExpanded
+                    ? overview.longBusinessSummary
+                    : `${overview.longBusinessSummary.slice(0, 280)}…`}
+                </p>
+              </Card>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
