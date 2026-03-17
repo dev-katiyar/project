@@ -28,7 +28,7 @@ function fmtPrice(v: any): string {
 function fmtChange(v: any): string {
   const n = parseFloat(v);
   if (isNaN(n)) return "—";
-  return `${n >= 0 ? "+" : ""}${Math.abs(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return `${n >= 0 ? "+" : ""}${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 function fmtPctDecimal(v: any): string {
   const n = parseFloat(v);
@@ -369,7 +369,7 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
               </div>
               <div className="flex align-items-center gap-2 mt-1">
                 <span className="font-bold" style={{ fontSize: 16, color: changeColor }}>
-                  {changePositive ? "+" : ""}{fmtChange(overview.regularMarketChange)}
+                  {fmtChange(overview.regularMarketChange)}
                 </span>
                 <span
                   className="font-semibold border-round px-2 py-1"
