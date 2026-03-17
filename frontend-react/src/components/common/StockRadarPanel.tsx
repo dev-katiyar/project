@@ -653,8 +653,9 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
           key="overview"
           value={data}
           size="small"
-          scrollable
-          scrollHeight="360px"
+          paginator
+          rows={10}
+          rowsPerPageOptions={[10, 25, 50]}
           rowHover
         >
           {frozenSym}
@@ -739,8 +740,9 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
           key="performance"
           value={data}
           size="small"
-          scrollable
-          scrollHeight="360px"
+          paginator
+          rows={10}
+          rowsPerPageOptions={[10, 25, 50]}
           rowHover
           sortField="ytd"
           sortOrder={-1}
@@ -819,8 +821,9 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
           key="technicals"
           value={data}
           size="small"
-          scrollable
-          scrollHeight="360px"
+          paginator
+          rows={10}
+          rowsPerPageOptions={[10, 25, 50]}
           rowHover
           sortField="mom"
           sortOrder={-1}
@@ -913,8 +916,9 @@ const StockRadarPanel: React.FC<StockRadarPanelProps> = ({
           key="fundamentals"
           value={data}
           size="small"
-          scrollable
-          scrollHeight="360px"
+          paginator
+          rows={10}
+          rowsPerPageOptions={[10, 25, 50]}
           rowHover
         >
           {frozenSym}
