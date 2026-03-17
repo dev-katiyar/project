@@ -363,10 +363,16 @@ function StatBar({
         severity={signalSev as "success" | "info" | "warning" | "danger"}
       />
       <Divider layout="vertical" className="m-0" style={{ height: "18px" }} />
-      <i className="pi pi-arrow-up sv-text-gain" style={{ fontSize: "0.8rem" }} />
+      <i
+        className="pi pi-arrow-up sv-text-gain"
+        style={{ fontSize: "0.8rem" }}
+      />
       <span className="text-sm font-semibold sv-text-gain">{buys} Buy</span>
       <Divider layout="vertical" className="m-0" style={{ height: "18px" }} />
-      <i className="pi pi-arrow-down sv-text-loss" style={{ fontSize: "0.8rem" }} />
+      <i
+        className="pi pi-arrow-down sv-text-loss"
+        style={{ fontSize: "0.8rem" }}
+      />
       <span className="text-sm font-semibold sv-text-loss">{sells} Sell</span>
     </div>
   );
@@ -446,7 +452,9 @@ function AdvancedMfParams({
           ] as { label: string; key: keyof typeof DEFAULT_RIA }[]
         ).map((f) => (
           <div key={f.key} className="col-4">
-            <label className="block text-xs mb-1 sv-text-muted">{f.label}</label>
+            <label className="block text-xs mb-1 sv-text-muted">
+              {f.label}
+            </label>
             <InputNumber
               value={riaP[f.key] as number}
               onValueChange={(e) =>
@@ -474,7 +482,9 @@ function AdvancedMfParams({
           ] as { label: string; key: keyof typeof DEFAULT_STOCH }[]
         ).map((f) => (
           <div key={f.key} className="col-4">
-            <label className="block text-xs mb-1 sv-text-muted">{f.label}</label>
+            <label className="block text-xs mb-1 sv-text-muted">
+              {f.label}
+            </label>
             <InputNumber
               value={stochP[f.key] as number}
               onValueChange={(e) =>
@@ -490,7 +500,9 @@ function AdvancedMfParams({
         ))}
         {/* MFI */}
         <div className="col-12 mt-2">
-          <span className="text-xs font-bold uppercase sv-text-accent">MFI</span>
+          <span className="text-xs font-bold uppercase sv-text-accent">
+            MFI
+          </span>
         </div>
         <div className="col-4">
           <label className="block text-xs mb-1 sv-text-muted">Periods</label>
@@ -511,7 +523,9 @@ function AdvancedMfParams({
         </div>
         {/* MACD */}
         <div className="col-12 mt-2">
-          <span className="text-xs font-bold uppercase sv-text-accent">MACD</span>
+          <span className="text-xs font-bold uppercase sv-text-accent">
+            MACD
+          </span>
         </div>
         {(
           [
@@ -521,7 +535,9 @@ function AdvancedMfParams({
           ] as { label: string; key: keyof typeof DEFAULT_MACD }[]
         ).map((f) => (
           <div key={f.key} className="col-4">
-            <label className="block text-xs mb-1 sv-text-muted">{f.label}</label>
+            <label className="block text-xs mb-1 sv-text-muted">
+              {f.label}
+            </label>
             <InputNumber
               value={macdP[f.key] as number}
               onValueChange={(e) =>
@@ -599,11 +615,18 @@ const MoneyFlowPanel: React.FC<{ presetName?: string }> = ({ presetName }) => {
   }, [symbol, startDate, endDate, freq, riaP, stochP, mfiP, macdP]);
 
   const { lastSignal, buys, sells } = useMemo(() => {
-    if (!result || !result.length) return { lastSignal: "Hold", buys: 0, sells: 0 };
+    if (!result || !result.length)
+      return { lastSignal: "Hold", buys: 0, sells: 0 };
     let ls = "Hold";
     for (let i = result.length - 1; i >= 0; i--) {
-      if (result[i].buy_rating > 0) { ls = "Buy"; break; }
-      if (result[i].sell_rating > 0) { ls = "Sell"; break; }
+      if (result[i].buy_rating > 0) {
+        ls = "Buy";
+        break;
+      }
+      if (result[i].sell_rating > 0) {
+        ls = "Sell";
+        break;
+      }
     }
     return {
       lastSignal: ls,
@@ -775,11 +798,18 @@ const MoneyFlowPairPanel: React.FC = () => {
   }, [sym1, sym2, startDate, endDate, freq, riaP, stochP, mfiP, macdP]);
 
   const { lastSignal, buys, sells } = useMemo(() => {
-    if (!result || !result.length) return { lastSignal: "Hold", buys: 0, sells: 0 };
+    if (!result || !result.length)
+      return { lastSignal: "Hold", buys: 0, sells: 0 };
     let ls = "Hold";
     for (let i = result.length - 1; i >= 0; i--) {
-      if (result[i].buy_rating > 0) { ls = "Buy"; break; }
-      if (result[i].sell_rating > 0) { ls = "Sell"; break; }
+      if (result[i].buy_rating > 0) {
+        ls = "Buy";
+        break;
+      }
+      if (result[i].sell_rating > 0) {
+        ls = "Sell";
+        break;
+      }
     }
     return {
       lastSignal: ls,
@@ -885,7 +915,12 @@ const MoneyFlowPairPanel: React.FC = () => {
       {result && !loading && (
         <>
           <StatBar lastSignal={lastSignal} buys={buys} sells={sells} />
-          <SvPairMoneyFlowChart chartData={result} cc={cc} sym1={sym1} sym2={sym2} />
+          <SvPairMoneyFlowChart
+            chartData={result}
+            cc={cc}
+            sym1={sym1}
+            sym2={sym2}
+          />
         </>
       )}
     </div>
@@ -1236,7 +1271,9 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
             </span>
           </div>
           <div className="col-4">
-            <label className="block text-xs mb-1 sv-text-muted">SMA1 Period</label>
+            <label className="block text-xs mb-1 sv-text-muted">
+              SMA1 Period
+            </label>
             <InputNumber
               value={smaP.sma1_period}
               onValueChange={(e) =>
@@ -1253,7 +1290,9 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
             />
           </div>
           <div className="col-4">
-            <label className="block text-xs mb-1 sv-text-muted">SMA2 Period</label>
+            <label className="block text-xs mb-1 sv-text-muted">
+              SMA2 Period
+            </label>
             <InputNumber
               value={smaP.sma2_period}
               onValueChange={(e) =>
@@ -1270,7 +1309,9 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
             />
           </div>
           <div className="col-4">
-            <label className="block text-xs mb-1 sv-text-muted">RSI Period</label>
+            <label className="block text-xs mb-1 sv-text-muted">
+              RSI Period
+            </label>
             <InputNumber
               value={rsiP.rsi_period}
               onValueChange={(e) =>
@@ -1296,7 +1337,9 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
             ] as { label: string; key: keyof typeof DEFAULT_MACD1 }[]
           ).map((f) => (
             <div key={f.key} className="col-4">
-              <label className="block text-xs mb-1 sv-text-muted">{f.label}</label>
+              <label className="block text-xs mb-1 sv-text-muted">
+                {f.label}
+              </label>
               <InputNumber
                 value={macd1P[f.key] as number}
                 onValueChange={(e) =>
@@ -1323,7 +1366,9 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
             ] as { label: string; key: keyof typeof DEFAULT_MACD2 }[]
           ).map((f) => (
             <div key={f.key} className="col-4">
-              <label className="block text-xs mb-1 sv-text-muted">{f.label}</label>
+              <label className="block text-xs mb-1 sv-text-muted">
+                {f.label}
+              </label>
               <InputNumber
                 value={macd2P[f.key] as number}
                 onValueChange={(e) =>
@@ -1683,7 +1728,9 @@ const StrategyBuilderPanel: React.FC<{
           )}
           {stg?.settings?.map((s) => (
             <div key={s.key} className="col-6 md:col-2">
-              <label className="block text-xs mb-1 sv-text-muted">{s.label}</label>
+              <label className="block text-xs mb-1 sv-text-muted">
+                {s.label}
+              </label>
               <InputNumber
                 value={cond.settings[s.key] ?? s.default}
                 onValueChange={(e) =>
@@ -1923,7 +1970,9 @@ const StrategyBuilderPanel: React.FC<{
         modal
       >
         <div className="mb-3">
-          <label className="block mb-1 text-sm sv-text-muted">Strategy Name</label>
+          <label className="block mb-1 text-sm sv-text-muted">
+            Strategy Name
+          </label>
           <InputText
             value={saveName}
             onChange={(e) => setSaveName(e.target.value)}
@@ -1993,10 +2042,13 @@ const WelcomePanel: React.FC<{
     <div>
       <div className="text-center mb-4 pt-4 pb-2 px-3">
         <i className="pi pi-chart-line mb-3 sv-hero-icon sv-text-accent" />
-        <h2 className="m-0 mb-2 font-bold text-color sv-page-title" style={{ fontSize: "1.5rem" }}>
+        <h2
+          className="m-0 mb-2 font-bold text-color sv-page-title"
+          style={{ fontSize: "1.5rem" }}
+        >
           Strategy Dashboard
         </h2>
-        <p className="m-0 text-sm sv-text-muted" style={{ maxWidth: "480px", margin: "0 auto" }}>
+        <p className="m-0 text-sm sv-text-muted" style={{ margin: "0 auto" }}>
           Professional-grade signal analysis. Select a built-in strategy or
           build your own custom signal engine.
         </p>
@@ -2094,7 +2146,11 @@ const WelcomePanel: React.FC<{
             </div>
             <div
               className="font-bold sv-text-gain"
-              style={{ fontSize: "1.8rem", minWidth: "2rem", textAlign: "center" }}
+              style={{
+                fontSize: "1.8rem",
+                minWidth: "2rem",
+                textAlign: "center",
+              }}
             >
               {userCount}
             </div>
@@ -2370,7 +2426,12 @@ const StrategyDashboardPage: React.FC = () => {
                         <Button
                           icon="pi pi-trash"
                           className="p-button-sm p-button-text p-button-danger"
-                          style={{ padding: "4px", width: "26px", height: "26px", flexShrink: 0 }}
+                          style={{
+                            padding: "4px",
+                            width: "26px",
+                            height: "26px",
+                            flexShrink: 0,
+                          }}
                           onClick={(e) => {
                             e.stopPropagation();
                             deletePreset(p.id, p.name);
