@@ -10,14 +10,16 @@ import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { Skeleton } from "primereact/skeleton";
 import { Tag } from "primereact/tag";
+import { Divider } from "primereact/divider";
 import api from "@/services/api";
 import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
+import AssetLineChart from "@/components/common/AssetLineChart";
 
 // ── Chart colour tokens ────────────────────────────────────────────────────────
-const CHART_COLORS: Record<ThemeName, { bg: string; grid: string; text: string; border: string }> = {
-  dark:  { bg: "#121a2e", grid: "#1c2840", text: "#7a8da8", border: "#1c2840" },
-  dim:   { bg: "#1c2945", grid: "#283a5c", text: "#7a92b8", border: "#283a5c" },
-  light: { bg: "#ffffff", grid: "#dfe7f5", text: "#4a5e78", border: "#c8d4ec" },
+const CHART_COLORS: Record<ThemeName, { bg: string; grid: string; text: string }> = {
+  dark:  { bg: "#121a2e", grid: "#1c2840", text: "#7a8da8" },
+  dim:   { bg: "#1c2945", grid: "#283a5c", text: "#7a92b8" },
+  light: { bg: "#ffffff", grid: "#dfe7f5", text: "#4a5e78" },
 };
 
 // ── Formatters ─────────────────────────────────────────────────────────────────
@@ -34,13 +36,11 @@ function fmtChange(v: any): string {
   if (isNaN(n)) return "—";
   return `${n >= 0 ? "+" : ""}${Math.abs(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
-// pctDecimal: value is a decimal (0.05 → "5.00%")
 function fmtPctDecimal(v: any): string {
   const n = parseFloat(v);
   if (isNaN(n)) return "—";
   return `${(n * 100) >= 0 ? "+" : ""}${(n * 100).toFixed(2)}%`;
 }
-// pctDirect: value is already in % form (2.5 → "2.50%")
 function fmtPctDirect(v: any): string {
   const n = parseFloat(v);
   if (isNaN(n)) return "—";
@@ -60,6 +60,17 @@ function fmtDate(ts: any): string {
   if (isNaN(d.getTime())) return "—";
   return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 }
+function timeAgo(dateStr: string): string {
+  try {
+    const d = new Date(dateStr);
+    const diffMs = Date.now() - d.getTime();
+    const h = Math.floor(diffMs / 3600000);
+    if (h < 1) return "just now";
+    if (h < 24) return `${h}h ago`;
+    const days = Math.floor(h / 24);
+    return `${days}d ago`;
+  } catch { return ""; }
+}
 
 // ── Return tile heat-map colour ────────────────────────────────────────────────
 function getReturnTileStyle(value: number, maxAbs: number): React.CSSProperties {
@@ -67,17 +78,17 @@ function getReturnTileStyle(value: number, maxAbs: number): React.CSSProperties 
   const t = Math.min(Math.abs(value) / maxAbs, 1);
   if (value >= 0) {
     return {
-      background: `rgba(34, 197, 94, ${0.18 + t * 0.7})`,
+      background: `rgba(34, 197, 94, ${0.15 + t * 0.72})`,
       color: t > 0.4 ? "#fff" : "var(--sv-text-primary)",
     };
   }
   return {
-    background: `rgba(239, 68, 68, ${0.18 + t * 0.7})`,
+    background: `rgba(239, 68, 68, ${0.15 + t * 0.72})`,
     color: t > 0.4 ? "#fff" : "var(--sv-text-primary)",
   };
 }
 
-// ── Range slider bar ──────────────────────────────────────────────────────────
+// ── Range bar ──────────────────────────────────────────────────────────────────
 const RangeBar: React.FC<{ low: number; high: number; current: number }> = ({ low, high, current }) => {
   const pct = high > low ? Math.min(Math.max((current - low) / (high - low), 0), 1) * 100 : 50;
   return (
@@ -90,12 +101,7 @@ const RangeBar: React.FC<{ low: number; high: number; current: number }> = ({ lo
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 interface SearchResult { symbol: string; name: string }
-
-interface LiveSymbol {
-  companyname: string;
-  asset_type: string;
-}
-
+interface LiveSymbol { companyname: string; asset_type: string }
 interface TechRow {
   symbol: string;
   wtd: number; mtd: number; qtd: number; ytd: number;
@@ -103,6 +109,7 @@ interface TechRow {
   priceChange2Year: number;
   priceChange3Year: number;
 }
+interface NewsItem { title: string; link: string; published: string }
 
 interface OverviewData {
   regularMarketPrice?: number;
@@ -140,6 +147,12 @@ interface OverviewData {
   heldPercentInstitutions?: number;
   sharesShort?: number;
   sharesShortDate?: Date;
+  sharesShortPriorMonth?: number;
+  sharesShortPriorMonthDate?: Date;
+  insiderSharesLast6MonthBought?: number;
+  insiderSharesLast6MonthBoughtCount?: number;
+  insiderSharesLast6MonthSold?: number;
+  insiderSharesLast6MonthSoldCount?: number;
   forwardPE?: number;
   trailingPE?: number;
   pegRatio?: number;
@@ -153,6 +166,7 @@ interface OverviewData {
   revenueLastQuarter?: number;
   revenueLastToLastQuarter?: number;
   revenueLastYear?: number;
+  revenueLastToLastYear?: number;
   revenueCurrentQuarterEstimate?: number;
   revenueNextQuarterEstimate?: number;
   revenueCurrentYearEstimate?: number;
@@ -180,29 +194,93 @@ const RETURN_TILES: Array<{ key: keyof OverviewData; label: string }> = [
 ];
 
 const ASSET_TYPE_SEVERITY: Record<string, "success" | "info" | "warning" | "danger" | "secondary"> = {
-  STOCKS: "success",
-  ETFS: "info",
-  FUNDS: "info",
-  INDEXES: "warning",
-  Crypto: "danger",
-  FUTURE: "secondary",
+  STOCKS: "success", ETFS: "info", FUNDS: "info", INDEXES: "warning", Crypto: "danger", FUTURE: "secondary",
 };
 
-// ── Tiny helpers ───────────────────────────────────────────────────────────────
-const MetricRow: React.FC<{ label: string; value: React.ReactNode }> = ({ label, value }) => (
+// ── Small reusable helpers ─────────────────────────────────────────────────────
+const MetricRow: React.FC<{ label: string; value: React.ReactNode; valueColor?: string }> = ({ label, value, valueColor }) => (
   <div className="flex justify-content-between align-items-center py-2 border-bottom-1 surface-border">
     <span className="text-sm text-color-secondary">{label}</span>
-    <span className="text-sm font-semibold">{value}</span>
+    <span className="text-sm font-semibold" style={valueColor ? { color: valueColor } : undefined}>{value}</span>
   </div>
 );
 
-const StatCard: React.FC<{ label: string; value: React.ReactNode; sub?: string }> = ({ label, value, sub }) => (
+const KpiCard: React.FC<{ icon: string; label: string; value: React.ReactNode; sub?: React.ReactNode }> = ({ icon, label, value, sub }) => (
   <div className="surface-overlay border-1 surface-border border-round-xl p-3 h-full">
-    <div className="sv-info-label text-xs mb-1">{label}</div>
+    <div className="flex align-items-center gap-2 mb-2">
+      <i className={`${icon} sv-text-accent`} style={{ fontSize: 14 }} />
+      <span className="sv-info-label text-xs">{label}</span>
+    </div>
     <div className="text-base font-bold text-color">{value}</div>
     {sub && <div className="text-xs text-color-secondary mt-1">{sub}</div>}
   </div>
 );
+
+// ── News feed ──────────────────────────────────────────────────────────────────
+const NewsFeed: React.FC = () => {
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get<NewsItem[]>("/rss/news")
+      .then(({ data }) => setNews(Array.isArray(data) ? data.slice(0, 20) : []))
+      .catch(() => setNews([]))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-column gap-2 p-2">
+        {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} height="56px" borderRadius="8px" />)}
+      </div>
+    );
+  }
+
+  if (!news.length) {
+    return (
+      <div className="flex flex-column align-items-center justify-content-center gap-2 sv-text-muted" style={{ minHeight: 200 }}>
+        <i className="pi pi-newspaper" style={{ fontSize: 36, opacity: 0.3 }} />
+        <span className="text-sm">No news available</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-column gap-2">
+      {news.map((item, i) => (
+        <a
+          key={i}
+          href={item.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: "none" }}
+        >
+          <div
+            className="surface-overlay border-1 surface-border border-round-lg p-3 flex align-items-start gap-3"
+            style={{ transition: "border-color 0.15s, box-shadow 0.15s", cursor: "pointer" }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLElement).style.borderColor = "var(--sv-accent)";
+              (e.currentTarget as HTMLElement).style.boxShadow = "var(--sv-shadow-sm)";
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLElement).style.borderColor = "";
+              (e.currentTarget as HTMLElement).style.boxShadow = "";
+            }}
+          >
+            <div style={{ width: 3, minHeight: 40, borderRadius: 2, background: "var(--sv-accent)", flexShrink: 0, marginTop: 2 }} />
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-semibold text-color" style={{ lineHeight: 1.4 }}>{item.title}</div>
+              <div className="flex align-items-center gap-2 mt-1">
+                <span className="text-xs sv-text-muted">{timeAgo(item.published)}</span>
+                <i className="pi pi-external-link sv-text-muted" style={{ fontSize: 10 }} />
+              </div>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  );
+};
 
 // ── Page Component ─────────────────────────────────────────────────────────────
 const StockSummaryPage: React.FC = () => {
@@ -215,7 +293,7 @@ const StockSummaryPage: React.FC = () => {
   const [searchText, setSearchText] = useState(initialSymbol);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const searchTimer = useRef<ReturnType<typeof setTimeout>>();
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const [liveSymbol, setLiveSymbol] = useState<LiveSymbol | null>(null);
   const [overview, setOverview] = useState<OverviewData | null>(null);
@@ -263,7 +341,6 @@ const StockSummaryPage: React.FC = () => {
         api.post(`/symbol/model/NA`, sym),
       ]);
 
-      // Live data is keyed by symbol
       const live: LiveSymbol = liveRes.data?.[sym] ?? liveRes.data;
       setLiveSymbol(live);
 
@@ -271,7 +348,10 @@ const StockSummaryPage: React.FC = () => {
       const ov: OverviewData = { ...ovRes.data };
 
       // Convert Unix timestamps → Date
-      for (const field of ["regularMarketTime", "lastDividendDate", "lastSplitDate", "sharesShortDate"] as const) {
+      for (const field of [
+        "regularMarketTime", "lastDividendDate", "lastSplitDate",
+        "sharesShortDate", "sharesShortPriorMonthDate",
+      ] as const) {
         if (ov[field] && typeof ov[field] === "number") {
           (ov as any)[field] = new Date((ov[field] as unknown as number) * 1000);
         }
@@ -318,6 +398,7 @@ const StockSummaryPage: React.FC = () => {
 
   // ── Chart data ─────────────────────────────────────────────────────────────
   const revSrc = revFreq === "yearly" ? overview?.revEarningAnnual : overview?.revEarningQuarterly;
+
   const revChartOpts = useMemo((): Highcharts.Options => ({
     chart: { type: "column", backgroundColor: cc.bg, height: 220, margin: [20, 10, 65, 65], borderRadius: 0 },
     title: { text: undefined },
@@ -328,7 +409,7 @@ const StockSummaryPage: React.FC = () => {
       lineColor: cc.grid, tickColor: cc.grid,
     },
     yAxis: {
-      title: { text: null },
+      title: { text: undefined },
       labels: { style: { color: cc.text, fontSize: "11px" }, formatter() { return fmtLarge(this.value); } },
       gridLineColor: cc.grid,
     },
@@ -352,7 +433,7 @@ const StockSummaryPage: React.FC = () => {
       lineColor: cc.grid, tickColor: cc.grid,
     },
     yAxis: {
-      title: { text: null },
+      title: { text: undefined },
       labels: { style: { color: cc.text, fontSize: "11px" }, formatter() { return `$${(this.value as number).toFixed(2)}`; } },
       gridLineColor: cc.grid,
     },
@@ -373,9 +454,9 @@ const StockSummaryPage: React.FC = () => {
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div>
+
       {/* ── Search / Header bar ─────────────────────────────────────────────── */}
       <div className="surface-card border-bottom-1 surface-border px-4 py-2 flex align-items-center gap-3 flex-wrap">
-        {/* Search input + dropdown */}
         <div style={{ position: "relative" }}>
           <IconField iconPosition="left">
             <InputIcon className="pi pi-search sv-text-muted" />
@@ -386,7 +467,7 @@ const StockSummaryPage: React.FC = () => {
               onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
               placeholder="Search symbol…"
               className="sv-search-input"
-              style={{ width: 260 }}
+              style={{ width: 240 }}
             />
           </IconField>
           {showDropdown && searchResults.length > 0 && (
@@ -409,71 +490,79 @@ const StockSummaryPage: React.FC = () => {
           )}
         </div>
 
-        {/* Symbol label + asset badge */}
         {liveSymbol && (
-          <>
-            <div className="flex align-items-center gap-2">
-              <span className="font-bold text-color sv-page-title" style={{ fontSize: 17, letterSpacing: "0.02em" }}>{symbol}</span>
-              <span className="text-color-secondary" style={{ fontSize: 14 }}>{liveSymbol.companyname}</span>
-            </div>
+          <div className="flex align-items-center gap-2 flex-1 min-w-0">
+            <span className="font-bold text-color" style={{ fontSize: 16, letterSpacing: "0.02em" }}>{symbol}</span>
+            <span className="text-color-secondary text-sm">{liveSymbol.companyname}</span>
             <Tag value={assetType} severity={ASSET_TYPE_SEVERITY[assetType] ?? "secondary"} style={{ fontSize: 11 }} />
-          </>
+          </div>
         )}
         {loading && <i className="pi pi-spin pi-spinner sv-text-accent" style={{ fontSize: 18 }} />}
       </div>
 
-      {/* ── Price hero strip ──────────────────────────────────────────────────── */}
-      <div className="surface-overlay border-bottom-1 surface-border px-4 py-3 flex align-items-start gap-4 flex-wrap">
+      {/* ── Price hero ────────────────────────────────────────────────────────── */}
+      <div className="surface-overlay border-bottom-1 surface-border px-4 py-3">
         {loading ? (
-          <>
-            <Skeleton width="140px" height="48px" />
-            <Skeleton width="140px" height="32px" className="mt-2" />
-            <Skeleton width="300px" height="32px" className="mt-2" />
-          </>
+          <div className="grid" style={{ margin: 0 }}>
+            <div className="col-12 md:col-auto p-2"><Skeleton width="180px" height="60px" /></div>
+            <div className="col-12 md:col p-2"><Skeleton height="60px" /></div>
+          </div>
         ) : overview ? (
-          <>
-            {/* Price + change */}
-            <div>
-              <div className="font-bold text-color sv-page-title" style={{ fontSize: 40, lineHeight: 1 }}>
-                {fmtPrice(overview.regularMarketPrice)}
+          <div className="flex align-items-start gap-4 flex-wrap">
+
+            {/* Price block */}
+            <div style={{ minWidth: 180 }}>
+              <div className="flex align-items-center gap-2">
+                <i
+                  className={changePositive ? "pi pi-arrow-up-right" : "pi pi-arrow-down-right"}
+                  style={{ fontSize: 20, color: changeColor }}
+                />
+                <span className="font-bold text-color" style={{ fontSize: 38, lineHeight: 1, letterSpacing: "-0.01em" }}>
+                  {fmtPrice(overview.regularMarketPrice)}
+                </span>
               </div>
               <div className="flex align-items-center gap-2 mt-1">
-                <span className="font-bold" style={{ fontSize: 18, color: changeColor }}>
+                <span className="font-bold" style={{ fontSize: 16, color: changeColor }}>
                   {changePositive ? "+" : ""}{fmtChange(overview.regularMarketChange)}
                 </span>
-                <span className="font-semibold border-round" style={{
-                  fontSize: 14, padding: "2px 8px",
-                  background: changePositive ? "var(--sv-success-bg)" : "var(--sv-danger-bg)",
-                  color: changeColor,
-                }}>
+                <span
+                  className="font-semibold border-round px-2 py-1"
+                  style={{
+                    fontSize: 13,
+                    background: changePositive ? "var(--sv-success-bg)" : "var(--sv-danger-bg)",
+                    color: changeColor,
+                  }}
+                >
                   {fmtPctDirect(overview.regularMarketChangePercent)}
                 </span>
               </div>
-              <div className="text-xs sv-text-muted mt-1">
-                <i className="pi pi-clock mr-1" />
+              <div className="text-xs sv-text-muted mt-1 flex align-items-center gap-1">
+                <i className="pi pi-clock" style={{ fontSize: 10 }} />
                 {fmtDate(overview.regularMarketTime)}
               </div>
             </div>
 
-            {/* Divider */}
-            <div style={{ width: 1, height: 64, background: "var(--sv-border)", alignSelf: "center" }} />
+            <Divider layout="vertical" style={{ height: 60, alignSelf: "center", margin: "0 4px" }} />
 
-            {/* Quick stats */}
-            <div className="flex gap-4 flex-wrap align-items-center">
+            {/* Quick stats grid */}
+            <div className="grid flex-1" style={{ margin: 0, minWidth: 0 }}>
               {[
                 { label: "Open", value: fmtPrice(overview.regularMarketOpen) },
                 { label: "Prev Close", value: fmtPrice(overview.regularMarketPreviousClose) },
                 { label: "Volume", value: fmtLarge(overview.regularMarketVolume) },
+                { label: "Avg Vol (3M)", value: fmtLarge(overview.averageDailyVolume3Month) },
                 { label: "Mkt Cap", value: `$${fmtLarge(overview.marketCap)}` },
                 { label: "Beta", value: fmtNum(overview.beta) },
+                { label: "Dividend", value: overview.trailingAnnualDividendRate ? `$${fmtNum(overview.trailingAnnualDividendRate)}` : "—" },
+                { label: "Div Yield", value: fmtPctDecimal(overview.trailingAnnualDividendYield) },
               ].map(s => (
-                <div key={s.label}>
-                  <div className="sv-info-label text-xs">{s.label}</div>
-                  <div className="text-sm font-bold mt-1">{s.value}</div>
+                <div key={s.label} className="col-6 md:col-3 lg:col p-2">
+                  <div className="sv-info-label text-xs mb-1">{s.label}</div>
+                  <div className="text-sm font-bold">{s.value}</div>
                 </div>
               ))}
             </div>
-          </>
+          </div>
         ) : error ? (
           <div className="flex align-items-center gap-2 sv-error-text">
             <i className="pi pi-exclamation-triangle" />
@@ -484,21 +573,21 @@ const StockSummaryPage: React.FC = () => {
 
       {/* ── Return tiles ─────────────────────────────────────────────────────── */}
       <div className="surface-ground border-bottom-1 surface-border px-4 py-2">
-        <div className="grid" style={{ margin: 0, gap: 0 }}>
+        <div className="grid" style={{ margin: 0 }}>
           {RETURN_TILES.map(tile => {
             const val = overview?.[tile.key] as number | undefined;
             return (
-              <div key={tile.key} className="col" style={{ padding: "0 4px" }}>
+              <div key={tile.key} className="col" style={{ padding: "0 3px" }}>
                 {loading ? (
-                  <Skeleton height="66px" borderRadius="8px" />
+                  <Skeleton height="64px" borderRadius="8px" />
                 ) : (
                   <div style={{
                     ...getReturnTileStyle(val ?? 0, maxAbsReturn),
-                    borderRadius: 8, padding: "10px 6px", textAlign: "center",
+                    borderRadius: 8, padding: "8px 6px", textAlign: "center",
                     border: "1px solid rgba(255,255,255,0.06)",
                   }}>
                     <div className="sv-info-label" style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.08em" }}>{tile.label}</div>
-                    <div className="font-bold" style={{ fontSize: 18, marginTop: 4, lineHeight: 1 }}>
+                    <div className="font-bold" style={{ fontSize: 17, marginTop: 4, lineHeight: 1 }}>
                       {val !== undefined && !isNaN(val)
                         ? `${val >= 0 ? "+" : ""}${(val * 100).toFixed(1)}%`
                         : "—"}
@@ -515,15 +604,36 @@ const StockSummaryPage: React.FC = () => {
       <div className="px-4 py-3">
         <TabView pt={{ root: { className: "sv-tabs" } }}>
 
-          {/* ── Overview tab ───────────────────────────────────────────────── */}
+          {/* ── Overview tab ─────────────────────────────────────────────────── */}
           <TabPanel header="Overview" leftIcon="pi pi-chart-bar mr-2">
 
-            {/* Day + 52-week ranges */}
+            {/* Performance chart */}
+            <Card className="mb-3">
+              <div className="flex align-items-center gap-2 mb-2">
+                <i className="pi pi-chart-line sv-text-accent" />
+                <span className="font-bold text-sm">Price Performance</span>
+              </div>
+              {loading ? (
+                <Skeleton height="270px" />
+              ) : (
+                <AssetLineChart
+                  symbols={[symbol]}
+                  height={270}
+                  filled
+                  defaultPeriod="1year"
+                />
+              )}
+            </Card>
+
+            {/* Range bars + KPI cards */}
             <div className="grid mb-3" style={{ margin: 0 }}>
               {/* Day range */}
               <div className="col-12 md:col-6 lg:col-4 p-1">
                 <div className="surface-card border-1 surface-border border-round-xl p-3 h-full">
-                  <div className="sv-info-label text-xs mb-1">Day Range</div>
+                  <div className="flex align-items-center gap-2 mb-2">
+                    <i className="pi pi-calendar sv-text-accent" style={{ fontSize: 13 }} />
+                    <span className="sv-info-label text-xs">Day Range</span>
+                  </div>
                   {loading ? <Skeleton height="44px" /> : (
                     <>
                       <RangeBar
@@ -532,8 +642,9 @@ const StockSummaryPage: React.FC = () => {
                         current={overview?.regularMarketPrice ?? 0}
                       />
                       <div className="flex justify-content-between mt-1">
-                        <span className="text-sm text-color-secondary">{fmtPrice(overview?.regularMarketDayLow)}</span>
-                        <span className="text-sm text-color-secondary">{fmtPrice(overview?.regularMarketDayHigh)}</span>
+                        <span className="text-sm sv-loss font-semibold">{fmtPrice(overview?.regularMarketDayLow)}</span>
+                        <span className="text-xs sv-text-muted self-center">{fmtPrice(overview?.regularMarketPrice)}</span>
+                        <span className="text-sm sv-gain font-semibold">{fmtPrice(overview?.regularMarketDayHigh)}</span>
                       </div>
                     </>
                   )}
@@ -543,7 +654,10 @@ const StockSummaryPage: React.FC = () => {
               {/* 52-week range */}
               <div className="col-12 md:col-6 lg:col-4 p-1">
                 <div className="surface-card border-1 surface-border border-round-xl p-3 h-full">
-                  <div className="sv-info-label text-xs mb-1">52-Week Range</div>
+                  <div className="flex align-items-center gap-2 mb-2">
+                    <i className="pi pi-calendar-plus sv-text-accent" style={{ fontSize: 13 }} />
+                    <span className="sv-info-label text-xs">52-Week Range</span>
+                  </div>
                   {loading ? <Skeleton height="44px" /> : (
                     <>
                       <RangeBar
@@ -552,46 +666,45 @@ const StockSummaryPage: React.FC = () => {
                         current={overview?.regularMarketPrice ?? 0}
                       />
                       <div className="flex justify-content-between mt-1">
-                        <span className="text-sm text-color-secondary">{fmtPrice(overview?.fiftyTwoWeekLow)}</span>
-                        <span className="text-sm text-color-secondary">{fmtPrice(overview?.fiftyTwoWeekHigh)}</span>
+                        <span className="text-sm sv-loss font-semibold">{fmtPrice(overview?.fiftyTwoWeekLow)}</span>
+                        <span className="text-xs sv-text-muted self-center">
+                          {overview && overview.fiftyTwoWeekLow && overview.fiftyTwoWeekHigh
+                            ? `${(((overview.regularMarketPrice ?? 0) - overview.fiftyTwoWeekLow) / (overview.fiftyTwoWeekHigh - overview.fiftyTwoWeekLow) * 100).toFixed(0)}% of range`
+                            : ""}
+                        </span>
+                        <span className="text-sm sv-gain font-semibold">{fmtPrice(overview?.fiftyTwoWeekHigh)}</span>
                       </div>
                     </>
                   )}
                 </div>
               </div>
 
-              {/* Extra stat cards */}
+              {/* KPI cards */}
               {[
-                {
-                  label: "Avg Volume (3M)",
-                  value: fmtLarge(overview?.averageDailyVolume3Month),
-                  sub: `Today: ${fmtLarge(overview?.regularMarketVolume)}`,
-                },
-                {
-                  label: "Dividend (TTM)",
-                  value: overview?.trailingAnnualDividendRate ? `$${fmtNum(overview.trailingAnnualDividendRate)}` : "—",
-                  sub: `Yield: ${fmtPctDecimal(overview?.trailingAnnualDividendYield)}`,
-                },
-                {
-                  label: "Shares Outstanding",
-                  value: fmtLarge(overview?.sharesOutstanding),
-                  sub: `Float: ${fmtLarge(overview?.floatShares)}`,
-                },
+                { icon: "pi pi-chart-bar", label: "Avg Volume (3M)", value: fmtLarge(overview?.averageDailyVolume3Month), sub: `Today: ${fmtLarge(overview?.regularMarketVolume)}` },
+                { icon: "pi pi-wallet", label: "Dividend (TTM)", value: overview?.trailingAnnualDividendRate ? `$${fmtNum(overview.trailingAnnualDividendRate)}` : "—", sub: `Yield: ${fmtPctDecimal(overview?.trailingAnnualDividendYield)}` },
+                { icon: "pi pi-users", label: "Shares Outstanding", value: fmtLarge(overview?.sharesOutstanding), sub: `Float: ${fmtLarge(overview?.floatShares)}` },
+                { icon: "pi pi-globe", label: "Market Cap", value: `$${fmtLarge(overview?.marketCap)}`, sub: `Beta: ${fmtNum(overview?.beta)}` },
               ].map(s => (
                 <div key={s.label} className="col-12 md:col-6 lg:col-4 p-1">
-                  {loading ? <Skeleton height="70px" borderRadius="10px" /> : <StatCard label={s.label} value={s.value} sub={s.sub} />}
+                  {loading
+                    ? <Skeleton height="70px" borderRadius="10px" />
+                    : <KpiCard icon={s.icon} label={s.label} value={s.value} sub={s.sub} />
+                  }
                 </div>
               ))}
             </div>
 
-            {/* Revenue & EPS charts (stocks only) */}
+            {/* Revenue & EPS charts */}
             {isStock && (
               <div className="grid mb-3" style={{ margin: 0 }}>
-                {/* Revenue & Earnings */}
                 <div className="col-12 lg:col-6 p-1">
                   <Card>
                     <div className="flex justify-content-between align-items-center mb-2">
-                      <span className="font-bold text-sm">Revenue &amp; Earnings</span>
+                      <div className="flex align-items-center gap-2">
+                        <i className="pi pi-money-bill sv-text-accent" style={{ fontSize: 13 }} />
+                        <span className="font-bold text-sm">Revenue &amp; Earnings</span>
+                      </div>
                       <div className="flex gap-1">
                         {(["quarterly", "yearly"] as const).map(f => (
                           <Button
@@ -612,11 +725,11 @@ const StockSummaryPage: React.FC = () => {
                   </Card>
                 </div>
 
-                {/* EPS */}
                 <div className="col-12 lg:col-6 p-1">
                   <Card>
-                    <div className="flex justify-content-between align-items-center mb-2">
-                      <span className="font-bold text-sm">EPS — Quarterly</span>
+                    <div className="flex align-items-center gap-2 mb-2">
+                      <i className="pi pi-chart-line sv-text-accent" style={{ fontSize: 13 }} />
+                      <span className="font-bold text-sm">Earnings Per Share — Quarterly</span>
                     </div>
                     {loading
                       ? <Skeleton height="220px" />
@@ -629,24 +742,25 @@ const StockSummaryPage: React.FC = () => {
               </div>
             )}
 
-            {/* Metrics inner tabs (stocks only) */}
+            {/* Fundamentals tabs */}
             {isStock && (
               <div className="mb-3">
                 <Card>
                   <TabView pt={{ root: { className: "sv-tabs" } }}>
+
                     {/* Business Health */}
-                    <TabPanel header="Business Health">
-                      {loading ? <Skeleton height="120px" /> : (
+                    <TabPanel header="Business Health" leftIcon="pi pi-heart mr-2">
+                      {loading ? <Skeleton height="130px" /> : (
                         <div className="grid" style={{ margin: 0 }}>
-                          <div className="col-12 md:col-6 pr-4">
+                          <div className="col-12 md:col-6 pr-3">
                             {[
-                              { label: "Gross Margin", value: fmtPctDecimal(overview?.grossMargins) },
-                              { label: "Profit Margin", value: fmtPctDecimal(overview?.profitMargins) },
-                              { label: "Return on Equity", value: fmtPctDecimal(overview?.returnOnEquity) },
-                              { label: "Return on Assets", value: fmtPctDecimal(overview?.returnOnAssets) },
-                            ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
+                              { label: "Gross Margin", value: fmtPctDecimal(overview?.grossMargins), color: parseFloat(String(overview?.grossMargins)) > 0.3 ? "var(--sv-gain)" : undefined },
+                              { label: "Profit Margin", value: fmtPctDecimal(overview?.profitMargins), color: parseFloat(String(overview?.profitMargins)) > 0 ? "var(--sv-gain)" : "var(--sv-loss)" },
+                              { label: "Return on Equity (ROE)", value: fmtPctDecimal(overview?.returnOnEquity), color: parseFloat(String(overview?.returnOnEquity)) > 0 ? "var(--sv-gain)" : "var(--sv-loss)" },
+                              { label: "Return on Assets (ROA)", value: fmtPctDecimal(overview?.returnOnAssets), color: parseFloat(String(overview?.returnOnAssets)) > 0 ? "var(--sv-gain)" : "var(--sv-loss)" },
+                            ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} valueColor={m.color} />)}
                           </div>
-                          <div className="col-12 md:col-6 pl-4">
+                          <div className="col-12 md:col-6 pl-3">
                             {[
                               { label: "Total Debt", value: `$${fmtLarge(overview?.totalDebt)}` },
                               { label: "Debt / Equity", value: fmtNum(overview?.debtToEquity) },
@@ -657,33 +771,60 @@ const StockSummaryPage: React.FC = () => {
                     </TabPanel>
 
                     {/* Stock Stats */}
-                    <TabPanel header="Stock Stats">
-                      {loading ? <Skeleton height="120px" /> : (
+                    <TabPanel header="Stock Stats" leftIcon="pi pi-chart-pie mr-2">
+                      {loading ? <Skeleton height="180px" /> : (
                         <div className="grid" style={{ margin: 0 }}>
-                          <div className="col-12 md:col-6 pr-4">
+                          <div className="col-12 md:col-6 pr-3">
                             {[
                               { label: "Shares Outstanding", value: fmtLarge(overview?.sharesOutstanding) },
                               { label: "Float Shares", value: fmtLarge(overview?.floatShares) },
-                              { label: "Insider Holdings %", value: fmtPctDecimal(overview?.heldPercentInsiders) },
+                              { label: "Insider Holdings", value: fmtPctDecimal(overview?.heldPercentInsiders) },
+                              { label: "Institutional Holdings", value: fmtPctDecimal(overview?.heldPercentInstitutions) },
                             ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
                           </div>
-                          <div className="col-12 md:col-6 pl-4">
+                          <div className="col-12 md:col-6 pl-3">
                             {[
-                              { label: "Institutional Holdings %", value: fmtPctDecimal(overview?.heldPercentInstitutions) },
-                              { label: "Shares Short", value: fmtLarge(overview?.sharesShort) },
-                              { label: "Short Report Date", value: fmtDate(overview?.sharesShortDate) },
-                            ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
+                              {
+                                label: overview?.sharesShortDate
+                                  ? `Shares Short (${fmtDate(overview.sharesShortDate)})`
+                                  : "Shares Short",
+                                value: fmtLarge(overview?.sharesShort),
+                              },
+                              {
+                                label: overview?.sharesShortPriorMonthDate
+                                  ? `Shares Short Prior Month (${fmtDate(overview.sharesShortPriorMonthDate)})`
+                                  : "Shares Short Prior Month",
+                                value: fmtLarge(overview?.sharesShortPriorMonth),
+                              },
+                              {
+                                label: overview?.insiderSharesLast6MonthBoughtCount
+                                  ? `Insider Bought (${overview.insiderSharesLast6MonthBoughtCount} txn, 6M)`
+                                  : "Insider Bought (6M)",
+                                value: fmtLarge(overview?.insiderSharesLast6MonthBought),
+                                color: "var(--sv-gain)",
+                              },
+                              {
+                                label: overview?.insiderSharesLast6MonthSoldCount
+                                  ? `Insider Sold (${overview.insiderSharesLast6MonthSoldCount} txn, 6M)`
+                                  : "Insider Sold (6M)",
+                                value: fmtLarge(overview?.insiderSharesLast6MonthSold),
+                                color: "var(--sv-loss)",
+                              },
+                            ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} valueColor={(m as any).color} />)}
                           </div>
                         </div>
                       )}
                     </TabPanel>
 
                     {/* Earnings */}
-                    <TabPanel header="Earnings">
-                      {loading ? <Skeleton height="160px" /> : (
+                    <TabPanel header="Earnings" leftIcon="pi pi-dollar mr-2">
+                      {loading ? <Skeleton height="200px" /> : (
                         <div className="grid" style={{ margin: 0 }}>
-                          <div className="col-12 md:col-6 pr-4">
-                            <div className="sv-info-label text-xs font-bold mb-2">Actual</div>
+                          <div className="col-12 md:col-6 pr-3">
+                            <div className="sv-info-label text-xs font-bold mb-2 flex align-items-center gap-1">
+                              <i className="pi pi-check-circle" style={{ fontSize: 11 }} />
+                              Actual
+                            </div>
                             {[
                               { label: "EPS — Last Quarter", value: fmtPrice(overview?.epsLastQuarter) },
                               { label: "EPS — Prior Quarter", value: fmtPrice(overview?.epsLastToLastQuarter) },
@@ -691,17 +832,22 @@ const StockSummaryPage: React.FC = () => {
                               { label: "Revenue — Last Quarter", value: `$${fmtLarge(overview?.revenueLastQuarter)}` },
                               { label: "Revenue — Prior Quarter", value: `$${fmtLarge(overview?.revenueLastToLastQuarter)}` },
                               { label: "Revenue — Last Year", value: `$${fmtLarge(overview?.revenueLastYear)}` },
+                              { label: "Revenue — Prior Year", value: `$${fmtLarge(overview?.revenueLastToLastYear)}` },
                             ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
                           </div>
-                          <div className="col-12 md:col-6 pl-4">
-                            <div className="sv-info-label text-xs font-bold mb-2">Estimates</div>
+                          <div className="col-12 md:col-6 pl-3">
+                            <div className="sv-info-label text-xs font-bold mb-2 flex align-items-center gap-1">
+                              <i className="pi pi-calendar" style={{ fontSize: 11 }} />
+                              Estimates
+                            </div>
                             {[
-                              { label: "EPS — Current Quarter Est.", value: fmtPrice(overview?.epsCurrentQuarterEstimate) },
-                              { label: "EPS — Next Quarter Est.", value: fmtPrice(overview?.epsNextQuarterEstimate) },
-                              { label: "EPS — Current Year Est.", value: fmtPrice(overview?.epsCurrentYearEstimate) },
-                              { label: "Revenue — Current Quarter Est.", value: `$${fmtLarge(overview?.revenueCurrentQuarterEstimate)}` },
-                              { label: "Revenue — Next Quarter Est.", value: `$${fmtLarge(overview?.revenueNextQuarterEstimate)}` },
-                              { label: "Revenue — Current Year Est.", value: `$${fmtLarge(overview?.revenueCurrentYearEstimate)}` },
+                              { label: "EPS — Current Quarter", value: fmtPrice(overview?.epsCurrentQuarterEstimate) },
+                              { label: "EPS — Next Quarter", value: fmtPrice(overview?.epsNextQuarterEstimate) },
+                              { label: "EPS — Current Year", value: fmtPrice(overview?.epsCurrentYearEstimate) },
+                              { label: "Revenue — Current Quarter", value: `$${fmtLarge(overview?.revenueCurrentQuarterEstimate)}` },
+                              { label: "Revenue — Next Quarter", value: `$${fmtLarge(overview?.revenueNextQuarterEstimate)}` },
+                              { label: "Revenue — Current Year", value: `$${fmtLarge(overview?.revenueCurrentYearEstimate)}` },
+                              { label: "Revenue — Next Year", value: `$${fmtLarge(overview?.revenueNextYearEstimate)}` },
                             ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
                           </div>
                         </div>
@@ -709,16 +855,16 @@ const StockSummaryPage: React.FC = () => {
                     </TabPanel>
 
                     {/* Valuation */}
-                    <TabPanel header="Valuation">
+                    <TabPanel header="Valuation" leftIcon="pi pi-tag mr-2">
                       {loading ? <Skeleton height="100px" /> : (
                         <div className="grid" style={{ margin: 0 }}>
-                          <div className="col-12 md:col-6 pr-4">
+                          <div className="col-12 md:col-6 pr-3">
                             {[
                               { label: "Forward P/E", value: fmtNum(overview?.forwardPE) },
                               { label: "Trailing P/E", value: fmtNum(overview?.trailingPE) },
                             ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
                           </div>
-                          <div className="col-12 md:col-6 pl-4">
+                          <div className="col-12 md:col-6 pl-3">
                             {[
                               { label: "PEG Ratio", value: fmtNum(overview?.pegRatio) },
                               { label: "Price / Book", value: fmtNum(overview?.priceToBook) },
@@ -729,10 +875,10 @@ const StockSummaryPage: React.FC = () => {
                     </TabPanel>
 
                     {/* Dividends & Splits */}
-                    <TabPanel header="Dividends & Splits">
-                      {loading ? <Skeleton height="140px" /> : (
+                    <TabPanel header="Dividends & Splits" leftIcon="pi pi-percentage mr-2">
+                      {loading ? <Skeleton height="160px" /> : (
                         <div className="grid" style={{ margin: 0 }}>
-                          <div className="col-12 md:col-6 pr-4">
+                          <div className="col-12 md:col-6 pr-3">
                             {[
                               { label: "Dividend (TTM)", value: `$${fmtNum(overview?.trailingAnnualDividendRate)}` },
                               { label: "Dividend Yield (TTM)", value: fmtPctDecimal(overview?.trailingAnnualDividendYield) },
@@ -741,7 +887,7 @@ const StockSummaryPage: React.FC = () => {
                               { label: "5Y Avg Dividend Yield", value: fmtPctDirect(overview?.fiveYearAvgDividendYield) },
                             ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
                           </div>
-                          <div className="col-12 md:col-6 pl-4">
+                          <div className="col-12 md:col-6 pl-3">
                             {[
                               { label: "Forward Dividend", value: `$${fmtNum(overview?.dividendRateForward)}` },
                               { label: "Forward Yield", value: fmtPctDecimal(overview?.dividendYieldForward) },
@@ -752,19 +898,20 @@ const StockSummaryPage: React.FC = () => {
                         </div>
                       )}
                     </TabPanel>
+
                   </TabView>
                 </Card>
               </div>
             )}
 
-            {/* Company description */}
+            {/* About */}
             {!loading && overview?.longBusinessSummary && (
               <Card>
-                <div className="flex align-items-center justify-content-between mb-2">
-                  <span className="font-bold text-sm">
-                    <i className="pi pi-building mr-2 sv-text-accent" />
-                    About {liveSymbol?.companyname}
-                  </span>
+                <div className="flex align-items-center justify-content-between mb-3">
+                  <div className="flex align-items-center gap-2">
+                    <i className="pi pi-building sv-text-accent" style={{ fontSize: 14 }} />
+                    <span className="font-bold text-sm">About {liveSymbol?.companyname}</span>
+                  </div>
                   <Button
                     link
                     label={descExpanded ? "Show less" : "Read more"}
@@ -772,16 +919,16 @@ const StockSummaryPage: React.FC = () => {
                     className="p-0 text-sm font-semibold"
                   />
                 </div>
-                <p className="text-sm text-color-secondary m-0" style={{ lineHeight: 1.75 }}>
+                <p className="text-sm text-color-secondary m-0" style={{ lineHeight: 1.8 }}>
                   {descExpanded
                     ? overview.longBusinessSummary
-                    : `${overview.longBusinessSummary.slice(0, 320)}…`}
+                    : `${overview.longBusinessSummary.slice(0, 380)}…`}
                 </p>
               </Card>
             )}
           </TabPanel>
 
-          {/* ── Live Chart tab ─────────────────────────────────────────────── */}
+          {/* ── Live Chart tab ────────────────────────────────────────────────── */}
           <TabPanel header="Live Chart" leftIcon="pi pi-chart-line mr-2">
             <div className="border-1 surface-border border-round-xl overflow-hidden" style={{ width: "100%", height: 620 }}>
               <iframe
@@ -796,12 +943,13 @@ const StockSummaryPage: React.FC = () => {
             </div>
           </TabPanel>
 
-          {/* ── News tab ───────────────────────────────────────────────────── */}
+          {/* ── News tab ──────────────────────────────────────────────────────── */}
           <TabPanel header="News" leftIcon="pi pi-newspaper mr-2">
-            <div className="flex flex-column align-items-center justify-content-center gap-3 sv-text-muted" style={{ minHeight: 240 }}>
-              <i className="pi pi-newspaper" style={{ fontSize: 40, opacity: 0.35 }} />
-              <span className="text-sm">News feed coming soon for <strong className="text-color">{symbol}</strong></span>
+            <div className="flex align-items-center gap-2 mb-3">
+              <i className="pi pi-newspaper sv-text-accent" />
+              <span className="font-bold text-sm">Market News</span>
             </div>
+            <NewsFeed />
           </TabPanel>
 
         </TabView>
