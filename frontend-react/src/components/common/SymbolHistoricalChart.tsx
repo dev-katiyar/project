@@ -228,6 +228,9 @@ const SymbolHistoricalChart: React.FC<SymbolHistoricalChartProps> = ({
       yAxis: {
         title: { text: undefined },
         gridLineColor: ct.grid,
+        lineColor: ct.grid,
+        lineWidth: 1,
+        tickColor: ct.grid,
         labels: { style: { color: ct.label, fontSize: "9px" } },
       },
       series: validSymbols.map((sym, i): Highcharts.SeriesAreaOptions => {
