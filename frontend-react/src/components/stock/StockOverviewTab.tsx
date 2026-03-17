@@ -519,112 +519,112 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
     <div>
       {/* ── Price hero + returns ────────────────────────────────────────────── */}
       <div
-        className="surface-overlay border-1 surface-border border-round-xl px-3 pt-3 pb-2 mb-3"
+        className="surface-overlay border-1 surface-border border-round-xl px-3 pt-3 pb-3 mb-3"
         style={{ boxShadow: "var(--sv-shadow-md)" }}
       >
         {loading ? (
-          <div className="grid" style={{ margin: 0 }}>
-            <div className="col-12 md:col-auto p-2">
-              <Skeleton width="180px" height="60px" />
+          <div className="flex flex-column gap-3">
+            <div className="flex gap-4">
+              <Skeleton width="190px" height="72px" />
+              <Skeleton height="72px" className="flex-1" />
             </div>
-            <div className="col-12 md:col p-2">
-              <Skeleton height="60px" />
-            </div>
-            <div className="col-12 p-2 mt-1">
-              <Skeleton height="52px" />
-            </div>
+            <Skeleton height="48px" />
+            <Skeleton height="44px" />
           </div>
         ) : overview ? (
-          <div className="flex align-items-stretch gap-4 flex-wrap">
-            {/* Price block */}
-            <div style={{ minWidth: 180 }}>
-              <div className="flex align-items-center gap-2">
-                <i
-                  className={
-                    changePositive
-                      ? "pi pi-arrow-up-right"
-                      : "pi pi-arrow-down-right"
-                  }
-                  style={{ fontSize: 20, color: changeColor }}
-                />
-                <span
-                  className="font-bold text-color"
-                  style={{
-                    fontSize: 38,
-                    lineHeight: 1,
-                    letterSpacing: "-0.01em",
-                  }}
-                >
-                  {fmtPrice(overview.regularMarketPrice)}
-                </span>
-              </div>
-              <div className="flex align-items-center gap-2 mt-1">
-                <span
-                  className="font-bold"
-                  style={{ fontSize: 16, color: changeColor }}
-                >
-                  {fmtChange(overview.regularMarketChange)}
-                </span>
-                <span
-                  className="font-semibold border-round px-2 py-1"
-                  style={{
-                    fontSize: 13,
-                    background: changePositive
-                      ? "var(--sv-success-bg)"
-                      : "var(--sv-danger-bg)",
-                    color: changeColor,
-                  }}
-                >
-                  {fmtPctDirect(overview.regularMarketChangePercent)}
-                </span>
-              </div>
-              <div className="text-xs sv-text-muted mt-1 flex align-items-center gap-1">
-                <i className="pi pi-clock" style={{ fontSize: 10 }} />
-                {fmtDateTime(overview.regularMarketTime)}
-              </div>
-            </div>
+          <div className="flex flex-column gap-3">
 
-            <div
-              style={{
-                width: 1,
-                alignSelf: "stretch",
-                background: "var(--sv-border)",
-                margin: "0 4px",
-              }}
-            />
+            {/* ── Row 1: Price + today's stats ── */}
+            <div className="flex align-items-stretch gap-4 flex-wrap">
+              {/* Price block */}
+              <div style={{ minWidth: 185 }}>
+                <div className="flex align-items-center gap-2">
+                  <i
+                    className={changePositive ? "pi pi-arrow-up-right" : "pi pi-arrow-down-right"}
+                    style={{ fontSize: 20, color: changeColor }}
+                  />
+                  <span
+                    className="font-bold text-color"
+                    style={{ fontSize: 40, lineHeight: 1, letterSpacing: "-0.02em" }}
+                  >
+                    {fmtPrice(overview.regularMarketPrice)}
+                  </span>
+                </div>
+                <div className="flex align-items-center gap-2 mt-1">
+                  <span className="font-bold" style={{ fontSize: 16, color: changeColor }}>
+                    {fmtChange(overview.regularMarketChange)}
+                  </span>
+                  <span
+                    className="font-semibold border-round px-2 py-1"
+                    style={{
+                      fontSize: 13,
+                      background: changePositive ? "var(--sv-success-bg)" : "var(--sv-danger-bg)",
+                      color: changeColor,
+                    }}
+                  >
+                    {fmtPctDirect(overview.regularMarketChangePercent)}
+                  </span>
+                </div>
+                {/* 52W high context — very useful for retail investors */}
+                {overview.fiftyTwoWeekHigh && overview.regularMarketPrice ? (
+                  <div className="mt-1">
+                    <span
+                      className="border-round px-2"
+                      style={{
+                        fontSize: 11,
+                        background: "var(--sv-border-light, var(--sv-bg-card))",
+                        color: "var(--sv-text-secondary)",
+                        border: "1px solid var(--sv-border)",
+                      }}
+                    >
+                      {`${(((overview.regularMarketPrice - overview.fiftyTwoWeekHigh) / overview.fiftyTwoWeekHigh) * 100).toFixed(1)}% vs 52W High`}
+                    </span>
+                  </div>
+                ) : null}
+                <div className="text-xs sv-text-muted mt-1 flex align-items-center gap-1">
+                  <i className="pi pi-clock" style={{ fontSize: 10 }} />
+                  {fmtDateTime(overview.regularMarketTime)}
+                </div>
+              </div>
 
-            {/* Right column: quick stats + returns */}
-            <div
-              className="flex flex-column flex-1 gap-2"
-              style={{ minWidth: 0 }}
-            >
-              {/* Quick stats */}
-              <div className="flex flex-wrap gap-2 align-items-stretch">
+              <div style={{ width: 1, alignSelf: "stretch", background: "var(--sv-border)", margin: "0 4px" }} />
+
+              {/* Stats chips — Open, Prev Close, Volume (with avg), Mkt Cap, Beta (with label), Dividend (with yield) */}
+              <div className="flex flex-wrap gap-2 align-items-stretch flex-1" style={{ minWidth: 0 }}>
                 {[
                   {
                     label: "Open",
                     value: fmtPrice(overview.regularMarketOpen),
                     icon: "pi-chart-line",
+                    sub: undefined as string | undefined,
                   },
                   {
                     label: "Prev Close",
                     value: fmtPrice(overview.regularMarketPreviousClose),
                     icon: "pi-history",
+                    sub: undefined,
                   },
                   {
                     label: "Volume",
                     value: fmtLarge(overview.regularMarketVolume),
                     icon: "pi-chart-bar",
+                    sub: overview.averageDailyVolume3Month
+                      ? `Avg ${fmtLarge(overview.averageDailyVolume3Month)}`
+                      : undefined,
                   },
                   {
                     label: "Mkt Cap",
                     value: `$${fmtLarge(overview.marketCap)}`,
                     icon: "pi-building",
+                    sub: undefined,
                   },
                   {
                     label: "Beta",
                     value: fmtNum(overview.beta),
                     icon: "pi-sliders-h",
+                    sub: overview.beta !== undefined && !isNaN(overview.beta)
+                      ? overview.beta > 1.5 ? "High volatility" : overview.beta < 0.7 ? "Low volatility" : "Moderate"
+                      : undefined,
                   },
                   {
                     label: "Dividend",
@@ -632,11 +632,9 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
                       ? `$${fmtNum(overview.trailingAnnualDividendRate)}`
                       : "—",
                     icon: "pi-dollar",
-                  },
-                  {
-                    label: "Div Yield",
-                    value: fmtPctDecimal(overview.trailingAnnualDividendYield),
-                    icon: "pi-percentage",
+                    sub: overview.trailingAnnualDividendYield
+                      ? `${fmtPctDecimal(overview.trailingAnnualDividendYield)} yield`
+                      : undefined,
                   },
                 ].map((s) => (
                   <div
@@ -650,30 +648,24 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
                     }}
                   >
                     <div className="flex align-items-center gap-1 mb-1">
-                      <i
-                        className={`pi ${s.icon}`}
-                        style={{
-                          fontSize: 9,
-                          color: "var(--sv-accent)",
-                          opacity: 0.8,
-                        }}
-                      />
-                      <span className="sv-info-label" style={{ fontSize: 10 }}>
-                        {s.label}
-                      </span>
+                      <i className={`pi ${s.icon}`} style={{ fontSize: 9, color: "var(--sv-accent)", opacity: 0.8 }} />
+                      <span className="sv-info-label" style={{ fontSize: 10 }}>{s.label}</span>
                     </div>
-                    <div
-                      className="font-bold text-color"
-                      style={{ fontSize: 13 }}
-                    >
-                      {s.value}
-                    </div>
+                    <div className="font-bold text-color" style={{ fontSize: 13 }}>{s.value}</div>
+                    {s.sub && (
+                      <div style={{ fontSize: 10, color: "var(--sv-text-secondary)", marginTop: 1 }}>{s.sub}</div>
+                    )}
                   </div>
                 ))}
               </div>
+            </div>
 
-              {/* Returns tiles */}
-              <div className="flex gap-2 align-items-stretch">
+            {/* ── Row 2: Returns heatmap ── */}
+            <div>
+              <div className="sv-info-label mb-2" style={{ fontSize: 10, letterSpacing: "0.08em" }}>
+                PRICE RETURNS
+              </div>
+              <div className="flex gap-2">
                 {RETURN_TILES.map((tile) => {
                   const val = overview?.[tile.key] as number | undefined;
                   const tileStyle = getReturnTileStyle(val ?? 0, maxAbsReturn);
@@ -684,32 +676,14 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
                         style={{
                           ...tileStyle,
                           borderRadius: 8,
-                          padding: "6px 4px",
-                          height: "100%",
+                          padding: "9px 4px",
                           border: `1px solid ${tileStyle.color === "#fff" ? "rgba(255,255,255,0.18)" : "var(--sv-border)"}`,
                         }}
                       >
-                        <div
-                          style={{
-                            fontSize: 9,
-                            fontWeight: 800,
-                            letterSpacing: "0.08em",
-                            color: "inherit",
-                            opacity: 0.75,
-                            textTransform: "uppercase",
-                          }}
-                        >
+                        <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.08em", color: "inherit", opacity: 0.75, textTransform: "uppercase" }}>
                           {tile.label}
                         </div>
-                        <div
-                          className="font-bold"
-                          style={{
-                            fontSize: 14,
-                            marginTop: 3,
-                            lineHeight: 1,
-                            color: "inherit",
-                          }}
-                        >
+                        <div className="font-bold" style={{ fontSize: 15, marginTop: 3, lineHeight: 1, color: "inherit" }}>
                           {val !== undefined && !isNaN(val)
                             ? `${val >= 0 ? "+" : ""}${val.toFixed(2)}%`
                             : "—"}
@@ -719,66 +693,67 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
                   );
                 })}
               </div>
+            </div>
 
-              {/* Range bars */}
-              <div className="flex gap-2">
-                {/* Day Range */}
-                <div
-                  className="flex-1 border-1 border-round-lg px-3 py-2"
-                  style={{ borderColor: "var(--sv-border)", background: "var(--sv-border-light, var(--sv-bg-card))" }}
-                >
-                  <div className="flex align-items-center gap-1 mb-2">
-                    <i className="pi pi-sun sv-text-accent" style={{ fontSize: 9 }} />
-                    <span className="sv-info-label" style={{ fontSize: 10 }}>Day Range</span>
-                  </div>
-                  <RangeBar
-                    low={overview?.regularMarketDayLow ?? 0}
-                    high={overview?.regularMarketDayHigh ?? 0}
-                    current={overview?.regularMarketPrice ?? 0}
-                  />
-                  <div className="flex justify-content-between mt-1">
-                    <span className="sv-loss font-semibold" style={{ fontSize: 11 }}>
-                      {fmtPrice(overview?.regularMarketDayLow)}
-                    </span>
-                    <span className="sv-text-muted" style={{ fontSize: 10 }}>
-                      {fmtPrice(overview?.regularMarketPrice)}
-                    </span>
-                    <span className="sv-gain font-semibold" style={{ fontSize: 11 }}>
-                      {fmtPrice(overview?.regularMarketDayHigh)}
-                    </span>
-                  </div>
+            {/* ── Row 3: Range bars ── */}
+            <div className="flex gap-2">
+              {/* Day Range */}
+              <div
+                className="flex-1 border-1 border-round-lg px-3 py-2"
+                style={{ borderColor: "var(--sv-border)", background: "var(--sv-border-light, var(--sv-bg-card))" }}
+              >
+                <div className="flex align-items-center gap-1 mb-2">
+                  <i className="pi pi-sun sv-text-accent" style={{ fontSize: 9 }} />
+                  <span className="sv-info-label" style={{ fontSize: 10 }}>Day Range</span>
                 </div>
+                <RangeBar
+                  low={overview?.regularMarketDayLow ?? 0}
+                  high={overview?.regularMarketDayHigh ?? 0}
+                  current={overview?.regularMarketPrice ?? 0}
+                />
+                <div className="flex justify-content-between mt-1">
+                  <span className="sv-loss font-semibold" style={{ fontSize: 11 }}>
+                    {fmtPrice(overview?.regularMarketDayLow)}
+                  </span>
+                  <span className="sv-text-muted" style={{ fontSize: 10 }}>
+                    {fmtPrice(overview?.regularMarketPrice)}
+                  </span>
+                  <span className="sv-gain font-semibold" style={{ fontSize: 11 }}>
+                    {fmtPrice(overview?.regularMarketDayHigh)}
+                  </span>
+                </div>
+              </div>
 
-                {/* 52-Week Range */}
-                <div
-                  className="flex-1 border-1 border-round-lg px-3 py-2"
-                  style={{ borderColor: "var(--sv-border)", background: "var(--sv-border-light, var(--sv-bg-card))" }}
-                >
-                  <div className="flex align-items-center gap-1 mb-2">
-                    <i className="pi pi-calendar sv-text-accent" style={{ fontSize: 9 }} />
-                    <span className="sv-info-label" style={{ fontSize: 10 }}>52-Week Range</span>
-                  </div>
-                  <RangeBar
-                    low={overview?.fiftyTwoWeekLow ?? 0}
-                    high={overview?.fiftyTwoWeekHigh ?? 0}
-                    current={overview?.regularMarketPrice ?? 0}
-                  />
-                  <div className="flex justify-content-between mt-1">
-                    <span className="sv-loss font-semibold" style={{ fontSize: 11 }}>
-                      {fmtPrice(overview?.fiftyTwoWeekLow)}
-                    </span>
-                    <span className="sv-text-muted" style={{ fontSize: 10 }}>
-                      {overview?.fiftyTwoWeekLow && overview?.fiftyTwoWeekHigh
-                        ? `${((((overview.regularMarketPrice ?? 0) - overview.fiftyTwoWeekLow) / (overview.fiftyTwoWeekHigh - overview.fiftyTwoWeekLow)) * 100).toFixed(0)}% of range`
-                        : ""}
-                    </span>
-                    <span className="sv-gain font-semibold" style={{ fontSize: 11 }}>
-                      {fmtPrice(overview?.fiftyTwoWeekHigh)}
-                    </span>
-                  </div>
+              {/* 52-Week Range */}
+              <div
+                className="flex-1 border-1 border-round-lg px-3 py-2"
+                style={{ borderColor: "var(--sv-border)", background: "var(--sv-border-light, var(--sv-bg-card))" }}
+              >
+                <div className="flex align-items-center gap-1 mb-2">
+                  <i className="pi pi-calendar sv-text-accent" style={{ fontSize: 9 }} />
+                  <span className="sv-info-label" style={{ fontSize: 10 }}>52-Week Range</span>
+                </div>
+                <RangeBar
+                  low={overview?.fiftyTwoWeekLow ?? 0}
+                  high={overview?.fiftyTwoWeekHigh ?? 0}
+                  current={overview?.regularMarketPrice ?? 0}
+                />
+                <div className="flex justify-content-between mt-1">
+                  <span className="sv-loss font-semibold" style={{ fontSize: 11 }}>
+                    {fmtPrice(overview?.fiftyTwoWeekLow)}
+                  </span>
+                  <span className="sv-text-muted" style={{ fontSize: 10 }}>
+                    {overview?.fiftyTwoWeekLow && overview?.fiftyTwoWeekHigh
+                      ? `${((((overview.regularMarketPrice ?? 0) - overview.fiftyTwoWeekLow) / (overview.fiftyTwoWeekHigh - overview.fiftyTwoWeekLow)) * 100).toFixed(0)}% of range`
+                      : ""}
+                  </span>
+                  <span className="sv-gain font-semibold" style={{ fontSize: 11 }}>
+                    {fmtPrice(overview?.fiftyTwoWeekHigh)}
+                  </span>
                 </div>
               </div>
             </div>
+
           </div>
         ) : null}
       </div>
