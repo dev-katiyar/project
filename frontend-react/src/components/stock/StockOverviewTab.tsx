@@ -393,15 +393,26 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
       chart: {
         type: "column",
         backgroundColor: cc.bg,
-        height: 220,
-        margin: [20, 10, 65, 65],
+        height: 260,
+        margin: [10, 10, 100, 65],
         borderRadius: 0,
       },
       title: { text: undefined },
       legend: {
         enabled: true,
         itemStyle: { color: cc.text, fontSize: "11px" },
-        align: "left",
+        align: "center",
+        verticalAlign: "bottom",
+        layout: "horizontal",
+        itemDistance: 32,
+        symbolRadius: 4,
+        margin: 6,
+        useHTML: true,
+        labelFormatter() {
+          const first = revSrc?.[0]?.date?.slice(0, 7) ?? "";
+          const last = revSrc?.[revSrc.length - 1]?.date?.slice(0, 7) ?? "";
+          return `${this.name} <span style="opacity:0.6;font-size:10px">${first} – ${last}</span>`;
+        },
       },
       xAxis: {
         categories: revSrc?.map((r) => r.date.slice(0, 7)) ?? [],
@@ -458,8 +469,8 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
       chart: {
         type: "column",
         backgroundColor: cc.bg,
-        height: 220,
-        margin: [20, 10, 65, 60],
+        height: 260,
+        margin: [10, 10, 65, 60],
         borderRadius: 0,
       },
       title: { text: undefined },
@@ -527,13 +538,23 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
             {/* Row 1: price block | stat chips + return tiles */}
             <div className="flex align-items-stretch gap-2">
               {/* Price block */}
-              <div className="flex flex-column gap-2 justify-content-center" style={{ minWidth: 170 }}>
+              <div
+                className="flex flex-column gap-2 justify-content-center"
+                style={{ minWidth: 170 }}
+              >
                 <Skeleton height="40px" width="150px" />
                 <Skeleton height="20px" width="120px" />
                 <Skeleton height="16px" width="100px" />
               </div>
               {/* Divider */}
-              <div style={{ width: 1, alignSelf: "stretch", background: "var(--sv-border)", margin: "0 2px" }} />
+              <div
+                style={{
+                  width: 1,
+                  alignSelf: "stretch",
+                  background: "var(--sv-border)",
+                  margin: "0 2px",
+                }}
+              />
               {/* Right: stat chips + return tiles */}
               <div className="flex flex-column gap-2 w-full">
                 <div className="flex gap-2">
@@ -818,7 +839,8 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
                     {fmtPrice(overview?.regularMarketDayLow)}
                   </span>
                   <span className="sv-text-muted" style={{ fontSize: 10 }}>
-                    {overview?.regularMarketDayLow && overview?.regularMarketDayHigh
+                    {overview?.regularMarketDayLow &&
+                    overview?.regularMarketDayHigh
                       ? `${((((overview.regularMarketPrice ?? 0) - overview.regularMarketDayLow) / (overview.regularMarketDayHigh - overview.regularMarketDayLow)) * 100).toFixed(0)}% of range`
                       : ""}
                   </span>
@@ -896,57 +918,11 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
         )}
       </Card>
 
-      {/* ── KPI cards ───────────────────────────────────────────────────────── */}
-      <div className="grid mb-3" style={{ margin: 0 }}>
-        {/* KPI cards */}
-        {[
-          {
-            icon: "pi pi-chart-bar",
-            label: "Avg Volume (3M)",
-            value: fmtLarge(overview?.averageDailyVolume3Month),
-            sub: `Today: ${fmtLarge(overview?.regularMarketVolume)}`,
-          },
-          {
-            icon: "pi pi-wallet",
-            label: "Dividend (TTM)",
-            value: overview?.trailingAnnualDividendRate
-              ? `$${fmtNum(overview.trailingAnnualDividendRate)}`
-              : "—",
-            sub: `Yield: ${fmtPctDecimal(overview?.trailingAnnualDividendYield)}`,
-          },
-          {
-            icon: "pi pi-users",
-            label: "Shares Outstanding",
-            value: fmtLarge(overview?.sharesOutstanding),
-            sub: `Float: ${fmtLarge(overview?.floatShares)}`,
-          },
-          {
-            icon: "pi pi-globe",
-            label: "Market Cap",
-            value: `$${fmtLarge(overview?.marketCap)}`,
-            sub: `Beta: ${fmtNum(overview?.beta)}`,
-          },
-        ].map((s) => (
-          <div key={s.label} className="col-12 md:col-6 lg:col-4 p-1">
-            {loading ? (
-              <Skeleton height="70px" borderRadius="10px" />
-            ) : (
-              <KpiCard
-                icon={s.icon}
-                label={s.label}
-                value={s.value}
-                sub={s.sub}
-              />
-            )}
-          </div>
-        ))}
-      </div>
-
       {/* ── Revenue & EPS charts ────────────────────────────────────────────── */}
       {isStock && (
-        <div className="grid mb-3" style={{ margin: 0 }}>
-          <div className="col-12 lg:col-6 p-1">
-            <Card>
+        <div className="grid mb-3 align-items-stretch" style={{ margin: 0 }}>
+          <div className="col-12 lg:col-6 p-1" style={{ display: "flex" }}>
+            <Card style={{ flex: 1 }}>
               <div className="flex justify-content-between align-items-center mb-2">
                 <div className="flex align-items-center gap-2">
                   <i
@@ -962,7 +938,7 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
                     <Button
                       key={f}
                       onClick={() => setRevFreq(f)}
-                      label={f === "quarterly" ? "Q" : "A"}
+                      label={f === "quarterly" ? "Quarterly" : "Annual"}
                       className={`sv-option-btn${revFreq === f ? " active" : ""}`}
                     />
                   ))}
@@ -986,8 +962,8 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
             </Card>
           </div>
 
-          <div className="col-12 lg:col-6 p-1">
-            <Card>
+          <div className="col-12 lg:col-6 p-1" style={{ display: "flex" }}>
+            <Card style={{ flex: 1 }}>
               <div className="flex align-items-center gap-2 mb-2">
                 <i
                   className="pi pi-chart-line sv-text-accent"
