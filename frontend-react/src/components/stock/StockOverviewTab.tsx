@@ -347,18 +347,19 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
   return (
     <div>
 
-      {/* ── Price hero ─────────────────────────────────────────────────────── */}
+      {/* ── Price hero + returns ────────────────────────────────────────────── */}
       <div
-        className="surface-overlay border-1 surface-border border-round-xl px-3 py-3 mb-3"
+        className="surface-overlay border-1 surface-border border-round-xl px-3 pt-3 pb-2 mb-3"
         style={{ boxShadow: "var(--sv-shadow-md)" }}
       >
         {loading ? (
           <div className="grid" style={{ margin: 0 }}>
             <div className="col-12 md:col-auto p-2"><Skeleton width="180px" height="60px" /></div>
             <div className="col-12 md:col p-2"><Skeleton height="60px" /></div>
+            <div className="col-12 p-2 mt-1"><Skeleton height="52px" /></div>
           </div>
         ) : overview ? (
-          <div className="flex align-items-start gap-4 flex-wrap">
+          <div className="flex align-items-stretch gap-4 flex-wrap">
             {/* Price block */}
             <div style={{ minWidth: 180 }}>
               <div className="flex align-items-center gap-2">
@@ -393,69 +394,66 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
 
             <div style={{ width: 1, alignSelf: "stretch", background: "var(--sv-border)", margin: "0 4px" }} />
 
-            {/* Quick stats grid */}
-            <div className="flex flex-wrap flex-1 gap-2 align-content-center align-items-stretch" style={{ minWidth: 0 }}>
-              {[
-                { label: "Open",       value: fmtPrice(overview.regularMarketOpen),             icon: "pi-chart-line" },
-                { label: "Prev Close", value: fmtPrice(overview.regularMarketPreviousClose),     icon: "pi-history" },
-                { label: "Volume",     value: fmtLarge(overview.regularMarketVolume),            icon: "pi-chart-bar" },
-                { label: "Mkt Cap",    value: `$${fmtLarge(overview.marketCap)}`,               icon: "pi-building" },
-                { label: "Beta",       value: fmtNum(overview.beta),                             icon: "pi-sliders-h" },
-                { label: "Dividend",   value: overview.trailingAnnualDividendRate ? `$${fmtNum(overview.trailingAnnualDividendRate)}` : "—", icon: "pi-dollar" },
-                { label: "Div Yield",  value: fmtPctDecimal(overview.trailingAnnualDividendYield), icon: "pi-percentage" },
-              ].map(s => (
-                <div
-                  key={s.label}
-                  className="flex flex-column justify-content-center border-1 border-round-lg px-3 py-2"
-                  style={{
-                    minWidth: 90,
-                    flex: "1 1 90px",
-                    borderColor: "var(--sv-border)",
-                    background: "var(--sv-border-light, var(--sv-bg-card))",
-                  }}
-                >
-                  <div className="flex align-items-center gap-1 mb-1">
-                    <i
-                      className={`pi ${s.icon}`}
-                      style={{ fontSize: 9, color: "var(--sv-accent)", opacity: 0.8 }}
-                    />
-                    <span className="sv-info-label" style={{ fontSize: 10 }}>{s.label}</span>
+            {/* Right column: quick stats + returns */}
+            <div className="flex flex-column flex-1 gap-2" style={{ minWidth: 0 }}>
+              {/* Quick stats */}
+              <div className="flex flex-wrap gap-2 align-items-stretch">
+                {[
+                  { label: "Open",       value: fmtPrice(overview.regularMarketOpen),             icon: "pi-chart-line" },
+                  { label: "Prev Close", value: fmtPrice(overview.regularMarketPreviousClose),     icon: "pi-history" },
+                  { label: "Volume",     value: fmtLarge(overview.regularMarketVolume),            icon: "pi-chart-bar" },
+                  { label: "Mkt Cap",    value: `$${fmtLarge(overview.marketCap)}`,               icon: "pi-building" },
+                  { label: "Beta",       value: fmtNum(overview.beta),                             icon: "pi-sliders-h" },
+                  { label: "Dividend",   value: overview.trailingAnnualDividendRate ? `$${fmtNum(overview.trailingAnnualDividendRate)}` : "—", icon: "pi-dollar" },
+                  { label: "Div Yield",  value: fmtPctDecimal(overview.trailingAnnualDividendYield), icon: "pi-percentage" },
+                ].map(s => (
+                  <div
+                    key={s.label}
+                    className="flex flex-column justify-content-center border-1 border-round-lg px-3 py-2"
+                    style={{
+                      minWidth: 90,
+                      flex: "1 1 90px",
+                      borderColor: "var(--sv-border)",
+                      background: "var(--sv-border-light, var(--sv-bg-card))",
+                    }}
+                  >
+                    <div className="flex align-items-center gap-1 mb-1">
+                      <i
+                        className={`pi ${s.icon}`}
+                        style={{ fontSize: 9, color: "var(--sv-accent)", opacity: 0.8 }}
+                      />
+                      <span className="sv-info-label" style={{ fontSize: 10 }}>{s.label}</span>
+                    </div>
+                    <div className="font-bold text-color" style={{ fontSize: 13 }}>{s.value}</div>
                   </div>
-                  <div className="font-bold text-color" style={{ fontSize: 13 }}>{s.value}</div>
-                </div>
-              ))}
+                ))}
+              </div>
+
+              {/* Returns tiles */}
+              <div className="flex gap-2">
+                {RETURN_TILES.map(tile => {
+                  const val = overview?.[tile.key] as number | undefined;
+                  return (
+                    <div key={tile.key} style={{ flex: "1 1 0", minWidth: 0 }}>
+                      <div style={{
+                        ...getReturnTileStyle(val ?? 0, maxAbsReturn),
+                        borderRadius: 8, padding: "6px 4px", textAlign: "center",
+                        border: "1px solid rgba(255,255,255,0.06)",
+                      }}>
+                        <div className="sv-info-label" style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.08em" }}>{tile.label}</div>
+                        <div className="font-bold" style={{ fontSize: 14, marginTop: 3, lineHeight: 1 }}>
+                          {val !== undefined && !isNaN(val)
+                            ? `${val >= 0 ? "+" : ""}${(val * 100).toFixed(1)}%`
+                            : "—"}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         ) : null}
-      </div>
-
-      {/* ── Total returns tiles ─────────────────────────────────────────────── */}
-      <div className="surface-ground border-bottom-1 surface-border px-3 py-2 mb-3">
-        <div className="grid" style={{ margin: 0 }}>
-          {RETURN_TILES.map(tile => {
-            const val = overview?.[tile.key] as number | undefined;
-            return (
-              <div key={tile.key} className="col" style={{ padding: "0 3px" }}>
-                {loading ? (
-                  <Skeleton height="64px" borderRadius="8px" />
-                ) : (
-                  <div style={{
-                    ...getReturnTileStyle(val ?? 0, maxAbsReturn),
-                    borderRadius: 8, padding: "8px 6px", textAlign: "center",
-                    border: "1px solid rgba(255,255,255,0.06)",
-                  }}>
-                    <div className="sv-info-label" style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.08em" }}>{tile.label}</div>
-                    <div className="font-bold" style={{ fontSize: 17, marginTop: 4, lineHeight: 1 }}>
-                      {val !== undefined && !isNaN(val)
-                        ? `${val >= 0 ? "+" : ""}${(val * 100).toFixed(1)}%`
-                        : "—"}
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
       </div>
 
       {/* ── Performance chart ───────────────────────────────────────────────── */}
