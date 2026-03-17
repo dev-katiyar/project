@@ -565,6 +565,12 @@ const ScreensCombinedPage: React.FC = () => {
   const [filterError, setFilterError] = useState("");
   const [hasScanned, setHasScanned] = useState(false);
 
+  // ── Detail view presets (all presets for sidebar) ─────────────────────────
+  const [detailSvPresets, setDetailSvPresets] = useState<PresetSummary[]>([]);
+  const [detailUserPresets, setDetailUserPresets] = useState<PresetSummary[]>([]);
+  const [detailPresetsLoading, setDetailPresetsLoading] = useState(false);
+  const [autoRunPending, setAutoRunPending] = useState(false);
+
   // ── Dialog state ─────────────────────────────────────────────────────────
   const [editingFilter, setEditingFilter] = useState<ScreenFilter | null>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
@@ -591,6 +597,39 @@ const ScreensCombinedPage: React.FC = () => {
   useEffect(() => {
     loadPresets();
   }, [loadPresets]);
+
+  // ── Load all presets for detail sidebar ──────────────────────────────────
+
+  const loadDetailPresets = useCallback(
+    (onLoaded?: (sv: PresetSummary[], user: PresetSummary[]) => void) => {
+      setDetailPresetsLoading(true);
+      Promise.all([
+        api.get("/screen/model/preset").then((r) => r.data),
+        api.get("/screen/preset").then((r) => r.data),
+      ])
+        .then(([sv, user]) => {
+          const normalize = (raw: unknown[]): PresetSummary[] =>
+            raw.map((p: any) => ({
+              ...p,
+              preset_id: p.preset_id ?? p._id ?? p.id ?? String(Math.random()),
+              preset_name: p.preset_name ?? p.name ?? "Untitled",
+            }));
+
+          const svList = normalize(
+            Array.isArray(sv) ? sv : Array.isArray(sv?.preset_data) ? sv.preset_data : []
+          );
+          const userList = normalize(
+            Array.isArray(user) ? user : Array.isArray(user?.preset_data) ? user.preset_data : []
+          );
+          setDetailSvPresets(svList);
+          setDetailUserPresets(userList);
+          if (onLoaded) onLoaded(svList, userList);
+        })
+        .catch(() => {})
+        .finally(() => setDetailPresetsLoading(false));
+    },
+    []
+  );
 
   // ── Load filter data for a preset ────────────────────────────────────────
 
@@ -671,9 +710,10 @@ const ScreensCombinedPage: React.FC = () => {
       setSelectedPreset(preset);
       setIsNewPreset(false);
       setView("detail");
+      loadDetailPresets();
       loadFilterData(preset.preset_id, preset);
     },
-    [loadFilterData]
+    [loadFilterData, loadDetailPresets]
   );
 
   // ── Create new screen ────────────────────────────────────────────────────
@@ -686,8 +726,9 @@ const ScreensCombinedPage: React.FC = () => {
     setSelectedPreset(newPreset);
     setIsNewPreset(true);
     setView("detail");
+    loadDetailPresets();
     loadFilterData(newPreset.preset_id);
-  }, [loadFilterData]);
+  }, [loadFilterData, loadDetailPresets]);
 
   // ── Back to overview ─────────────────────────────────────────────────────
 
@@ -699,7 +740,35 @@ const ScreensCombinedPage: React.FC = () => {
     setScannedSymbols([]);
     setScanMsg("");
     setHasScanned(false);
+    setDetailSvPresets([]);
+    setDetailUserPresets([]);
+    setAutoRunPending(false);
   }, []);
+
+  // ── Show All Screens (navigates to detail, auto-selects first preset) ───────
+
+  const handleShowAll = useCallback(() => {
+    setIsNewPreset(false);
+    setView("detail");
+    loadDetailPresets((svList, userList) => {
+      const firstPreset = svList[0] ?? userList[0];
+      if (firstPreset) {
+        setSelectedPreset(firstPreset);
+        loadFilterData(firstPreset.preset_id);
+        setAutoRunPending(true);
+      }
+    });
+  }, [loadDetailPresets, loadFilterData]);
+
+  // ── Auto-run scan once filter data finishes loading ──────────────────────
+
+  useEffect(() => {
+    if (autoRunPending && !filterDataLoading) {
+      setAutoRunPending(false);
+      runScan();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoRunPending, filterDataLoading]);
 
   // ── Derived: remaining (un-added) filters ─────────────────────────────────
 
@@ -904,7 +973,22 @@ const ScreensCombinedPage: React.FC = () => {
     <div>
       {/* SV Screens */}
       <div className="mb-5">
-        <SectionHeader isSv title="SimpleVisor Screens" />
+        <SectionHeader
+          isSv
+          title="SimpleVisor Screens"
+          action={
+            svPresets?.preset_data?.length ? (
+              <Button
+                label="View All"
+                icon="pi pi-list"
+                size="small"
+                text
+                onClick={handleShowAll}
+                style={{ fontSize: "0.78rem", color: "var(--sv-accent)" }}
+              />
+            ) : undefined
+          }
+        />
         {presetsLoading ? (
           <div className="grid">
             {Array.from({ length: 3 }).map((_, i) => (
@@ -923,7 +1007,7 @@ const ScreensCombinedPage: React.FC = () => {
           </Panel>
         ) : (
           <div className="grid">
-            {svPresets.preset_data.map((p) => (
+            {svPresets.preset_data.slice(0, 9).map((p) => (
               <div key={p.preset_id} className="col-12 md:col-6 lg:col-4 p-2">
                 <PresetCard preset={p} isSv onRun={handleRunScreen} />
               </div>
@@ -937,12 +1021,24 @@ const ScreensCombinedPage: React.FC = () => {
         <SectionHeader
           title="My Screens"
           action={
-            <Button
-              label="New Screen"
-              icon="pi pi-plus"
-              size="small"
-              onClick={handleNewScreen}
-            />
+            <div className="flex gap-2">
+              {(userPresets?.preset_data?.length ?? 0) > 0 && (
+                <Button
+                  label="View All"
+                  icon="pi pi-list"
+                  size="small"
+                  text
+                  onClick={handleShowAll}
+                  style={{ fontSize: "0.78rem", color: "var(--sv-accent)" }}
+                />
+              )}
+              <Button
+                label="New Screen"
+                icon="pi pi-plus"
+                size="small"
+                onClick={handleNewScreen}
+              />
+            </div>
           }
         />
         {presetsLoading ? (
@@ -963,7 +1059,7 @@ const ScreensCombinedPage: React.FC = () => {
           </Panel>
         ) : (
           <div className="grid">
-            {userPresets.preset_data.map((p) => (
+            {userPresets.preset_data.slice(0, 9).map((p) => (
               <div key={p.preset_id} className="col-12 md:col-6 lg:col-4 p-2">
                 <PresetCard preset={p} onRun={handleRunScreen} />
               </div>
@@ -1001,13 +1097,13 @@ const ScreensCombinedPage: React.FC = () => {
           </span>
         </div>
         <div className="p-1 pb-0">
-          {presetsLoading
+          {detailPresetsLoading
             ? Array.from({ length: 3 }).map((_, i) => (
                 <Skeleton key={i} height="28px" borderRadius="0.35rem" className="mb-1" />
               ))
-            : svPresets?.preset_data?.map((p) => (
+            : detailSvPresets.map((p, i) => (
                 <SidebarItem
-                  key={p.preset_id}
+                  key={p.preset_id ?? i}
                   preset={p}
                   selected={selectedPreset?.preset_id === p.preset_id}
                   isSv
@@ -1034,13 +1130,13 @@ const ScreensCombinedPage: React.FC = () => {
           />
         </div>
         <div className="p-1 pb-2">
-          {presetsLoading ? (
+          {detailPresetsLoading ? (
             <Skeleton height="28px" borderRadius="0.35rem" />
           ) : (
             <>
-              {userPresets?.preset_data?.map((p) => (
+              {detailUserPresets.map((p, i) => (
                 <SidebarItem
-                  key={p.preset_id}
+                  key={p.preset_id ?? i}
                   preset={p}
                   selected={selectedPreset?.preset_id === p.preset_id}
                   onSelect={() => handleRunScreen(p)}
@@ -1053,7 +1149,7 @@ const ScreensCombinedPage: React.FC = () => {
                   onSelect={() => {}}
                 />
               )}
-              {!userPresets?.preset_data?.length && !isNewPreset && (
+              {!detailUserPresets.length && !isNewPreset && (
                 <div
                   className="px-3 py-2 text-sm sv-text-muted"
                   style={{ fontStyle: "italic" }}
