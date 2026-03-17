@@ -6,6 +6,8 @@ import { TabView, TabPanel } from "primereact/tabview";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { IconField } from "primereact/iconfield";
+import { InputIcon } from "primereact/inputicon";
 import { Skeleton } from "primereact/skeleton";
 import { Tag } from "primereact/tag";
 import api from "@/services/api";
@@ -375,8 +377,8 @@ const StockSummaryPage: React.FC = () => {
       <div className="surface-card border-bottom-1 surface-border px-4 py-2 flex align-items-center gap-3 flex-wrap">
         {/* Search input + dropdown */}
         <div style={{ position: "relative" }}>
-          <span className="p-input-icon-left" style={{ display: "block" }}>
-            <i className="pi pi-search sv-text-muted" />
+          <IconField iconPosition="left">
+            <InputIcon className="pi pi-search sv-text-muted" />
             <InputText
               value={searchText}
               onChange={e => handleSearchInput(e.target.value)}
@@ -386,7 +388,7 @@ const StockSummaryPage: React.FC = () => {
               className="sv-search-input"
               style={{ width: 260 }}
             />
-          </span>
+          </IconField>
           {showDropdown && searchResults.length > 0 && (
             <div
               className="surface-overlay border-1 surface-border border-round-xl shadow-3"
