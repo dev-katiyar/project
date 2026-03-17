@@ -710,6 +710,7 @@ const ScreensCombinedPage: React.FC = () => {
       setSelectedPreset(preset);
       setIsNewPreset(false);
       setView("detail");
+      setAutoRunPending(true);
       loadDetailPresets();
       loadFilterData(preset.preset_id, preset);
     },
@@ -912,7 +913,9 @@ const ScreensCombinedPage: React.FC = () => {
           limit: body.limit,
         };
         setSelectedPreset(newPreset);
+        setAutoRunPending(true);
         loadPresets();
+        loadDetailPresets();
         loadFilterData(newId, newPreset);
         toastRef.current?.show({
           severity: "success",
@@ -939,6 +942,7 @@ const ScreensCombinedPage: React.FC = () => {
     selectedPreset,
     loadPresets,
     loadFilterData,
+    loadDetailPresets,
   ]);
 
   // ── Delete preset ────────────────────────────────────────────────────────
