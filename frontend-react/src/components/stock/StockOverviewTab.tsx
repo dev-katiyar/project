@@ -63,17 +63,17 @@ function fmtDateTime(ts: any): string {
 
 // ── Return tile heat-map colour ─────────────────────────────────────────────
 function getReturnTileStyle(value: number, maxAbs: number): React.CSSProperties {
-  if (isNaN(value) || maxAbs === 0) return { background: "var(--sv-bg-card)" };
+  if (isNaN(value) || maxAbs === 0) return { background: "var(--sv-bg-card)", color: "var(--sv-text-primary)" };
   const t = Math.min(Math.abs(value) / maxAbs, 1);
   if (value >= 0) {
     return {
-      background: `rgba(34, 197, 94, ${0.15 + t * 0.72})`,
-      color: t > 0.4 ? "#fff" : "var(--sv-text-primary)",
+      background: `rgba(34, 197, 94, ${0.22 + t * 0.65})`,
+      color: t > 0.25 ? "#fff" : "var(--sv-gain)",
     };
   }
   return {
-    background: `rgba(239, 68, 68, ${0.15 + t * 0.72})`,
-    color: t > 0.4 ? "#fff" : "var(--sv-text-primary)",
+    background: `rgba(239, 68, 68, ${0.22 + t * 0.65})`,
+    color: t > 0.25 ? "#fff" : "var(--sv-loss)",
   };
 }
 
@@ -430,18 +430,26 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
               </div>
 
               {/* Returns tiles */}
-              <div className="flex gap-2">
+              <div className="flex gap-2 align-items-stretch">
                 {RETURN_TILES.map(tile => {
                   const val = overview?.[tile.key] as number | undefined;
+                  const tileStyle = getReturnTileStyle(val ?? 0, maxAbsReturn);
                   return (
                     <div key={tile.key} style={{ flex: "1 1 0", minWidth: 0 }}>
-                      <div style={{
-                        ...getReturnTileStyle(val ?? 0, maxAbsReturn),
-                        borderRadius: 8, padding: "6px 4px", textAlign: "center",
-                        border: "1px solid rgba(255,255,255,0.06)",
-                      }}>
-                        <div className="sv-info-label" style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.08em" }}>{tile.label}</div>
-                        <div className="font-bold" style={{ fontSize: 14, marginTop: 3, lineHeight: 1 }}>
+                      <div
+                        className="flex flex-column align-items-center justify-content-center"
+                        style={{
+                          ...tileStyle,
+                          borderRadius: 8,
+                          padding: "6px 4px",
+                          height: "100%",
+                          border: `1px solid ${tileStyle.color === "#fff" ? "rgba(255,255,255,0.18)" : "var(--sv-border)"}`,
+                        }}
+                      >
+                        <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.08em", color: "inherit", opacity: 0.75, textTransform: "uppercase" }}>
+                          {tile.label}
+                        </div>
+                        <div className="font-bold" style={{ fontSize: 14, marginTop: 3, lineHeight: 1, color: "inherit" }}>
                           {val !== undefined && !isNaN(val)
                             ? `${val >= 0 ? "+" : ""}${(val * 100).toFixed(1)}%`
                             : "—"}
