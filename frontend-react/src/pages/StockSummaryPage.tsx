@@ -8,6 +8,7 @@ import { Tag } from "primereact/tag";
 import api from "@/services/api";
 import StockOverviewTab from "@/components/stock/StockOverviewTab";
 import StockChartTab from "@/components/stock/StockChartTab";
+import StockTechnicalsTab from "@/components/stock/StockTechnicalsTab";
 import StockNewsTab from "@/components/stock/StockNewsTab";
 
 // ── Types ───────────────────────────────────────────────────────────────────
@@ -137,6 +138,10 @@ const StockSummaryPage: React.FC = () => {
 
           <TabPanel header="Chart" leftIcon="pi pi-chart-line mr-2">
             <StockChartTab symbol={symbol} />
+          </TabPanel>
+
+          <TabPanel header="Technicals" leftIcon="pi pi-sliders-h mr-2">
+            <StockTechnicalsTab symbol={symbol} />
           </TabPanel>
 
           <TabPanel header="News" leftIcon="pi pi-newspaper mr-2">
