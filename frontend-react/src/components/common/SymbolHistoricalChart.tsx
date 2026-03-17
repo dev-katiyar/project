@@ -19,7 +19,7 @@ interface ChartTheme {
 const CHART_THEME: Record<ThemeName, ChartTheme> = {
   dark: {
     bg: "transparent",
-    grid: "#1c2840",
+    grid: "#243554",
     label: "#7a8da8",
     tooltipBg: "#0d1220",
     tooltipBorder: "#1c2840",
