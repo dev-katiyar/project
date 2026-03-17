@@ -216,7 +216,7 @@ function trendBody(row: TechnicalRow) {
 
 function valueBody(row: TechnicalRow) {
   return (
-    <span style={{ fontFamily: "monospace", fontSize: "0.78rem" }}>
+    <span style={{ fontSize: "0.78rem" }}>
       {fmtVal(row.value)}
     </span>
   );
@@ -228,7 +228,6 @@ function pivotBody(field: keyof PivotRow, color?: string) {
     return (
       <span
         style={{
-          fontFamily: "monospace",
           fontSize: "0.75rem",
           color: color ?? "inherit",
         }}
