@@ -348,7 +348,10 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
     <div>
 
       {/* ── Price hero ─────────────────────────────────────────────────────── */}
-      <div className="surface-overlay border-bottom-1 surface-border px-3 py-3 mb-3">
+      <div
+        className="surface-overlay border-1 surface-border border-round-xl px-3 py-3 mb-3"
+        style={{ boxShadow: "var(--sv-shadow-md)" }}
+      >
         {loading ? (
           <div className="grid" style={{ margin: 0 }}>
             <div className="col-12 md:col-auto p-2"><Skeleton width="180px" height="60px" /></div>
@@ -391,20 +394,34 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
             <div style={{ width: 1, alignSelf: "stretch", background: "var(--sv-border)", margin: "0 4px" }} />
 
             {/* Quick stats grid */}
-            <div className="grid flex-1" style={{ margin: 0, minWidth: 0 }}>
+            <div className="flex flex-wrap flex-1 gap-2 align-content-center align-items-stretch" style={{ minWidth: 0 }}>
               {[
-                { label: "Open",        value: fmtPrice(overview.regularMarketOpen) },
-                { label: "Prev Close",  value: fmtPrice(overview.regularMarketPreviousClose) },
-                { label: "Volume",      value: fmtLarge(overview.regularMarketVolume) },
-                { label: "Avg Vol 3M",  value: fmtLarge(overview.averageDailyVolume3Month) },
-                { label: "Mkt Cap",     value: `$${fmtLarge(overview.marketCap)}` },
-                { label: "Beta",        value: fmtNum(overview.beta) },
-                { label: "Dividend",    value: overview.trailingAnnualDividendRate ? `$${fmtNum(overview.trailingAnnualDividendRate)}` : "—" },
-                { label: "Div Yield",   value: fmtPctDecimal(overview.trailingAnnualDividendYield) },
+                { label: "Open",       value: fmtPrice(overview.regularMarketOpen),             icon: "pi-chart-line" },
+                { label: "Prev Close", value: fmtPrice(overview.regularMarketPreviousClose),     icon: "pi-history" },
+                { label: "Volume",     value: fmtLarge(overview.regularMarketVolume),            icon: "pi-chart-bar" },
+                { label: "Mkt Cap",    value: `$${fmtLarge(overview.marketCap)}`,               icon: "pi-building" },
+                { label: "Beta",       value: fmtNum(overview.beta),                             icon: "pi-sliders-h" },
+                { label: "Dividend",   value: overview.trailingAnnualDividendRate ? `$${fmtNum(overview.trailingAnnualDividendRate)}` : "—", icon: "pi-dollar" },
+                { label: "Div Yield",  value: fmtPctDecimal(overview.trailingAnnualDividendYield), icon: "pi-percentage" },
               ].map(s => (
-                <div key={s.label} className="col-6 md:col-3 lg:col p-2">
-                  <div className="sv-info-label text-xs mb-1">{s.label}</div>
-                  <div className="text-sm font-bold">{s.value}</div>
+                <div
+                  key={s.label}
+                  className="flex flex-column justify-content-center border-1 border-round-lg px-3 py-2"
+                  style={{
+                    minWidth: 90,
+                    flex: "1 1 90px",
+                    borderColor: "var(--sv-border)",
+                    background: "var(--sv-border-light, var(--sv-bg-card))",
+                  }}
+                >
+                  <div className="flex align-items-center gap-1 mb-1">
+                    <i
+                      className={`pi ${s.icon}`}
+                      style={{ fontSize: 9, color: "var(--sv-accent)", opacity: 0.8 }}
+                    />
+                    <span className="sv-info-label" style={{ fontSize: 10 }}>{s.label}</span>
+                  </div>
+                  <div className="font-bold text-color" style={{ fontSize: 13 }}>{s.value}</div>
                 </div>
               ))}
             </div>
