@@ -4,6 +4,7 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { TabView, TabPanel } from "primereact/tabview";
 import { Card } from "primereact/card";
+import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Skeleton } from "primereact/skeleton";
 import { Tag } from "primereact/tag";
@@ -187,18 +188,17 @@ const ASSET_TYPE_SEVERITY: Record<string, "success" | "info" | "warning" | "dang
 
 // ── Tiny helpers ───────────────────────────────────────────────────────────────
 const MetricRow: React.FC<{ label: string; value: React.ReactNode }> = ({ label, value }) => (
-  <div className="flex justify-content-between align-items-center py-2"
-    style={{ borderBottom: "1px solid var(--sv-border-light)" }}>
-    <span style={{ color: "var(--sv-text-secondary)", fontSize: 13 }}>{label}</span>
-    <span style={{ fontWeight: 600, fontSize: 13 }}>{value}</span>
+  <div className="flex justify-content-between align-items-center py-2 border-bottom-1 surface-border">
+    <span className="text-sm text-color-secondary">{label}</span>
+    <span className="text-sm font-semibold">{value}</span>
   </div>
 );
 
 const StatCard: React.FC<{ label: string; value: React.ReactNode; sub?: string }> = ({ label, value, sub }) => (
-  <div style={{ padding: "12px 14px", background: "var(--sv-bg-surface)", borderRadius: 10, border: "1px solid var(--sv-border)", height: "100%" }}>
-    <div style={{ fontSize: 10, color: "var(--sv-text-muted)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>{label}</div>
-    <div style={{ fontSize: 15, fontWeight: 700, color: "var(--sv-text-primary)" }}>{value}</div>
-    {sub && <div style={{ fontSize: 11, color: "var(--sv-text-secondary)", marginTop: 3 }}>{sub}</div>}
+  <div className="surface-overlay border-1 surface-border border-round-xl p-3 h-full">
+    <div className="sv-info-label text-xs mb-1">{label}</div>
+    <div className="text-base font-bold text-color">{value}</div>
+    {sub && <div className="text-xs text-color-secondary mt-1">{sub}</div>}
   </div>
 );
 
@@ -372,39 +372,35 @@ const StockSummaryPage: React.FC = () => {
   return (
     <div>
       {/* ── Search / Header bar ─────────────────────────────────────────────── */}
-      <div
-        style={{ background: "var(--sv-bg-card)", borderBottom: "1px solid var(--sv-border)", padding: "10px 20px" }}
-        className="flex align-items-center gap-3 flex-wrap"
-      >
+      <div className="surface-card border-bottom-1 surface-border px-4 py-2 flex align-items-center gap-3 flex-wrap">
         {/* Search input + dropdown */}
         <div style={{ position: "relative" }}>
           <span className="p-input-icon-left" style={{ display: "block" }}>
-            <i className="pi pi-search" style={{ color: "var(--sv-text-muted)" }} />
+            <i className="pi pi-search sv-text-muted" />
             <InputText
               value={searchText}
               onChange={e => handleSearchInput(e.target.value)}
               onKeyDown={e => { if (e.key === "Enter" && searchText) selectSymbol(searchText); }}
               onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
               placeholder="Search symbol…"
-              style={{ width: 260, background: "var(--sv-bg-input)", border: "1px solid var(--sv-border)", color: "var(--sv-text-primary)" }}
+              className="sv-search-input"
+              style={{ width: 260 }}
             />
           </span>
           {showDropdown && searchResults.length > 0 && (
-            <div style={{
-              position: "absolute", top: "calc(100% + 4px)", left: 0, width: 320,
-              background: "var(--sv-bg-surface)", border: "1px solid var(--sv-border)",
-              borderRadius: 10, boxShadow: "var(--sv-shadow-md)", zIndex: 1000,
-              maxHeight: 300, overflowY: "auto",
-            }}>
+            <div
+              className="surface-overlay border-1 surface-border border-round-xl shadow-3"
+              style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, width: 320, zIndex: 1000, maxHeight: 300, overflowY: "auto" }}
+            >
               {searchResults.map(r => (
                 <div
                   key={r.symbol}
                   onMouseDown={() => selectSymbol(r.symbol)}
-                  className="flex align-items-center gap-2 sv-dropdown-item"
-                  style={{ padding: "9px 14px", cursor: "pointer", borderBottom: "1px solid var(--sv-border-light)" }}
+                  className="sv-dropdown-item flex align-items-center gap-2"
+                  style={{ borderBottom: "1px solid var(--sv-border-light)" }}
                 >
-                  <span style={{ fontWeight: 700, minWidth: 60, color: "var(--sv-accent)" }}>{r.symbol}</span>
-                  <span style={{ fontSize: 12, color: "var(--sv-text-secondary)" }}>{r.name}</span>
+                  <span className="font-bold sv-text-accent sv-min-w-60">{r.symbol}</span>
+                  <span className="text-xs text-color-secondary">{r.name}</span>
                 </div>
               ))}
             </div>
@@ -415,46 +411,43 @@ const StockSummaryPage: React.FC = () => {
         {liveSymbol && (
           <>
             <div className="flex align-items-center gap-2">
-              <span style={{ fontWeight: 800, fontSize: 17, color: "var(--sv-text-primary)", letterSpacing: "0.02em" }}>{symbol}</span>
-              <span style={{ color: "var(--sv-text-secondary)", fontSize: 14 }}>{liveSymbol.companyname}</span>
+              <span className="font-bold text-color sv-page-title" style={{ fontSize: 17, letterSpacing: "0.02em" }}>{symbol}</span>
+              <span className="text-color-secondary" style={{ fontSize: 14 }}>{liveSymbol.companyname}</span>
             </div>
             <Tag value={assetType} severity={ASSET_TYPE_SEVERITY[assetType] ?? "secondary"} style={{ fontSize: 11 }} />
           </>
         )}
-        {loading && <i className="pi pi-spin pi-spinner" style={{ color: "var(--sv-accent)", fontSize: 18 }} />}
+        {loading && <i className="pi pi-spin pi-spinner sv-text-accent" style={{ fontSize: 18 }} />}
       </div>
 
       {/* ── Price hero strip ──────────────────────────────────────────────────── */}
-      <div
-        style={{ background: "var(--sv-bg-surface)", borderBottom: "1px solid var(--sv-border)", padding: "16px 20px" }}
-        className="flex align-items-start gap-4 flex-wrap"
-      >
+      <div className="surface-overlay border-bottom-1 surface-border px-4 py-3 flex align-items-start gap-4 flex-wrap">
         {loading ? (
           <>
             <Skeleton width="140px" height="48px" />
-            <Skeleton width="140px" height="32px" style={{ marginTop: 8 }} />
-            <Skeleton width="300px" height="32px" style={{ marginTop: 8 }} />
+            <Skeleton width="140px" height="32px" className="mt-2" />
+            <Skeleton width="300px" height="32px" className="mt-2" />
           </>
         ) : overview ? (
           <>
             {/* Price + change */}
             <div>
-              <div style={{ fontSize: 40, fontWeight: 900, lineHeight: 1, color: "var(--sv-text-primary)", letterSpacing: "-0.02em" }}>
+              <div className="font-bold text-color sv-page-title" style={{ fontSize: 40, lineHeight: 1 }}>
                 {fmtPrice(overview.regularMarketPrice)}
               </div>
               <div className="flex align-items-center gap-2 mt-1">
-                <span style={{ fontSize: 18, fontWeight: 700, color: changeColor }}>
+                <span className="font-bold" style={{ fontSize: 18, color: changeColor }}>
                   {changePositive ? "+" : ""}{fmtChange(overview.regularMarketChange)}
                 </span>
-                <span style={{
-                  fontSize: 14, fontWeight: 600, padding: "2px 8px", borderRadius: 6,
+                <span className="font-semibold border-round" style={{
+                  fontSize: 14, padding: "2px 8px",
                   background: changePositive ? "var(--sv-success-bg)" : "var(--sv-danger-bg)",
                   color: changeColor,
                 }}>
                   {fmtPctDirect(overview.regularMarketChangePercent)}
                 </span>
               </div>
-              <div style={{ fontSize: 11, color: "var(--sv-text-muted)", marginTop: 4 }}>
+              <div className="text-xs sv-text-muted mt-1">
                 <i className="pi pi-clock mr-1" />
                 {fmtDate(overview.regularMarketTime)}
               </div>
@@ -464,7 +457,7 @@ const StockSummaryPage: React.FC = () => {
             <div style={{ width: 1, height: 64, background: "var(--sv-border)", alignSelf: "center" }} />
 
             {/* Quick stats */}
-            <div className="flex gap-4 flex-wrap" style={{ alignSelf: "center" }}>
+            <div className="flex gap-4 flex-wrap align-items-center">
               {[
                 { label: "Open", value: fmtPrice(overview.regularMarketOpen) },
                 { label: "Prev Close", value: fmtPrice(overview.regularMarketPreviousClose) },
@@ -473,14 +466,14 @@ const StockSummaryPage: React.FC = () => {
                 { label: "Beta", value: fmtNum(overview.beta) },
               ].map(s => (
                 <div key={s.label}>
-                  <div style={{ fontSize: 10, color: "var(--sv-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.label}</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, marginTop: 2 }}>{s.value}</div>
+                  <div className="sv-info-label text-xs">{s.label}</div>
+                  <div className="text-sm font-bold mt-1">{s.value}</div>
                 </div>
               ))}
             </div>
           </>
         ) : error ? (
-          <div className="flex align-items-center gap-2" style={{ color: "var(--sv-danger)" }}>
+          <div className="flex align-items-center gap-2 sv-error-text">
             <i className="pi pi-exclamation-triangle" />
             <span>{error}</span>
           </div>
@@ -488,7 +481,7 @@ const StockSummaryPage: React.FC = () => {
       </div>
 
       {/* ── Return tiles ─────────────────────────────────────────────────────── */}
-      <div style={{ background: "var(--sv-bg-body)", borderBottom: "1px solid var(--sv-border)", padding: "10px 20px" }}>
+      <div className="surface-ground border-bottom-1 surface-border px-4 py-2">
         <div className="grid" style={{ margin: 0, gap: 0 }}>
           {RETURN_TILES.map(tile => {
             const val = overview?.[tile.key] as number | undefined;
@@ -502,8 +495,8 @@ const StockSummaryPage: React.FC = () => {
                     borderRadius: 8, padding: "10px 6px", textAlign: "center",
                     border: "1px solid rgba(255,255,255,0.06)",
                   }}>
-                    <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", opacity: 0.75 }}>{tile.label}</div>
-                    <div style={{ fontSize: 18, fontWeight: 900, marginTop: 4, lineHeight: 1 }}>
+                    <div className="sv-info-label" style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.08em" }}>{tile.label}</div>
+                    <div className="font-bold" style={{ fontSize: 18, marginTop: 4, lineHeight: 1 }}>
                       {val !== undefined && !isNaN(val)
                         ? `${val >= 0 ? "+" : ""}${(val * 100).toFixed(1)}%`
                         : "—"}
@@ -517,8 +510,8 @@ const StockSummaryPage: React.FC = () => {
       </div>
 
       {/* ── Main tab panel ─────────────────────────────────────────────────── */}
-      <div style={{ padding: "16px 20px" }}>
-        <TabView>
+      <div className="px-4 py-3">
+        <TabView pt={{ root: { className: "sv-tabs" } }}>
 
           {/* ── Overview tab ───────────────────────────────────────────────── */}
           <TabPanel header="Overview" leftIcon="pi pi-chart-bar mr-2">
@@ -526,9 +519,9 @@ const StockSummaryPage: React.FC = () => {
             {/* Day + 52-week ranges */}
             <div className="grid mb-3" style={{ margin: 0 }}>
               {/* Day range */}
-              <div className="col-12 md:col-6 lg:col-4" style={{ padding: 4 }}>
-                <div style={{ padding: "14px 16px", background: "var(--sv-bg-card)", borderRadius: 10, border: "1px solid var(--sv-border)", height: "100%" }}>
-                  <div style={{ fontSize: 10, color: "var(--sv-text-muted)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Day Range</div>
+              <div className="col-12 md:col-6 lg:col-4 p-1">
+                <div className="surface-card border-1 surface-border border-round-xl p-3 h-full">
+                  <div className="sv-info-label text-xs mb-1">Day Range</div>
                   {loading ? <Skeleton height="44px" /> : (
                     <>
                       <RangeBar
@@ -537,8 +530,8 @@ const StockSummaryPage: React.FC = () => {
                         current={overview?.regularMarketPrice ?? 0}
                       />
                       <div className="flex justify-content-between mt-1">
-                        <span style={{ fontSize: 12, color: "var(--sv-text-secondary)" }}>{fmtPrice(overview?.regularMarketDayLow)}</span>
-                        <span style={{ fontSize: 12, color: "var(--sv-text-secondary)" }}>{fmtPrice(overview?.regularMarketDayHigh)}</span>
+                        <span className="text-sm text-color-secondary">{fmtPrice(overview?.regularMarketDayLow)}</span>
+                        <span className="text-sm text-color-secondary">{fmtPrice(overview?.regularMarketDayHigh)}</span>
                       </div>
                     </>
                   )}
@@ -546,9 +539,9 @@ const StockSummaryPage: React.FC = () => {
               </div>
 
               {/* 52-week range */}
-              <div className="col-12 md:col-6 lg:col-4" style={{ padding: 4 }}>
-                <div style={{ padding: "14px 16px", background: "var(--sv-bg-card)", borderRadius: 10, border: "1px solid var(--sv-border)", height: "100%" }}>
-                  <div style={{ fontSize: 10, color: "var(--sv-text-muted)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>52-Week Range</div>
+              <div className="col-12 md:col-6 lg:col-4 p-1">
+                <div className="surface-card border-1 surface-border border-round-xl p-3 h-full">
+                  <div className="sv-info-label text-xs mb-1">52-Week Range</div>
                   {loading ? <Skeleton height="44px" /> : (
                     <>
                       <RangeBar
@@ -557,8 +550,8 @@ const StockSummaryPage: React.FC = () => {
                         current={overview?.regularMarketPrice ?? 0}
                       />
                       <div className="flex justify-content-between mt-1">
-                        <span style={{ fontSize: 12, color: "var(--sv-text-secondary)" }}>{fmtPrice(overview?.fiftyTwoWeekLow)}</span>
-                        <span style={{ fontSize: 12, color: "var(--sv-text-secondary)" }}>{fmtPrice(overview?.fiftyTwoWeekHigh)}</span>
+                        <span className="text-sm text-color-secondary">{fmtPrice(overview?.fiftyTwoWeekLow)}</span>
+                        <span className="text-sm text-color-secondary">{fmtPrice(overview?.fiftyTwoWeekHigh)}</span>
                       </div>
                     </>
                   )}
@@ -583,7 +576,7 @@ const StockSummaryPage: React.FC = () => {
                   sub: `Float: ${fmtLarge(overview?.floatShares)}`,
                 },
               ].map(s => (
-                <div key={s.label} className="col-12 md:col-6 lg:col-4" style={{ padding: 4 }}>
+                <div key={s.label} className="col-12 md:col-6 lg:col-4 p-1">
                   {loading ? <Skeleton height="70px" borderRadius="10px" /> : <StatCard label={s.label} value={s.value} sub={s.sub} />}
                 </div>
               ))}
@@ -593,25 +586,18 @@ const StockSummaryPage: React.FC = () => {
             {isStock && (
               <div className="grid mb-3" style={{ margin: 0 }}>
                 {/* Revenue & Earnings */}
-                <div className="col-12 lg:col-6" style={{ padding: 4 }}>
+                <div className="col-12 lg:col-6 p-1">
                   <Card>
                     <div className="flex justify-content-between align-items-center mb-2">
-                      <span style={{ fontWeight: 700, fontSize: 14 }}>Revenue &amp; Earnings</span>
+                      <span className="font-bold text-sm">Revenue &amp; Earnings</span>
                       <div className="flex gap-1">
                         {(["quarterly", "yearly"] as const).map(f => (
-                          <button
+                          <Button
                             key={f}
                             onClick={() => setRevFreq(f)}
-                            style={{
-                              padding: "3px 12px", borderRadius: 6,
-                              border: `1px solid ${revFreq === f ? "var(--sv-accent)" : "var(--sv-border)"}`,
-                              background: revFreq === f ? "var(--sv-accent)" : "transparent",
-                              color: revFreq === f ? "var(--sv-text-inverse)" : "var(--sv-text-secondary)",
-                              cursor: "pointer", fontSize: 11, fontWeight: 700,
-                            }}
-                          >
-                            {f === "quarterly" ? "Q" : "A"}
-                          </button>
+                            label={f === "quarterly" ? "Q" : "A"}
+                            className={`sv-option-btn${revFreq === f ? " active" : ""}`}
+                          />
                         ))}
                       </div>
                     </div>
@@ -619,22 +605,22 @@ const StockSummaryPage: React.FC = () => {
                       ? <Skeleton height="220px" />
                       : revSrc?.length
                         ? <HighchartsReact highcharts={Highcharts} options={revChartOpts} />
-                        : <div style={{ height: 220, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--sv-text-muted)", fontSize: 13 }}>No data available</div>
+                        : <div className="flex align-items-center justify-content-center text-sm sv-text-muted" style={{ height: 220 }}>No data available</div>
                     }
                   </Card>
                 </div>
 
                 {/* EPS */}
-                <div className="col-12 lg:col-6" style={{ padding: 4 }}>
+                <div className="col-12 lg:col-6 p-1">
                   <Card>
                     <div className="flex justify-content-between align-items-center mb-2">
-                      <span style={{ fontWeight: 700, fontSize: 14 }}>EPS — Quarterly</span>
+                      <span className="font-bold text-sm">EPS — Quarterly</span>
                     </div>
                     {loading
                       ? <Skeleton height="220px" />
                       : epsSrc?.length
                         ? <HighchartsReact highcharts={Highcharts} options={epsChartOpts} />
-                        : <div style={{ height: 220, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--sv-text-muted)", fontSize: 13 }}>No data available</div>
+                        : <div className="flex align-items-center justify-content-center text-sm sv-text-muted" style={{ height: 220 }}>No data available</div>
                     }
                   </Card>
                 </div>
@@ -645,12 +631,12 @@ const StockSummaryPage: React.FC = () => {
             {isStock && (
               <div className="mb-3">
                 <Card>
-                  <TabView>
+                  <TabView pt={{ root: { className: "sv-tabs" } }}>
                     {/* Business Health */}
                     <TabPanel header="Business Health">
                       {loading ? <Skeleton height="120px" /> : (
                         <div className="grid" style={{ margin: 0 }}>
-                          <div className="col-12 md:col-6" style={{ paddingRight: 24 }}>
+                          <div className="col-12 md:col-6 pr-4">
                             {[
                               { label: "Gross Margin", value: fmtPctDecimal(overview?.grossMargins) },
                               { label: "Profit Margin", value: fmtPctDecimal(overview?.profitMargins) },
@@ -658,7 +644,7 @@ const StockSummaryPage: React.FC = () => {
                               { label: "Return on Assets", value: fmtPctDecimal(overview?.returnOnAssets) },
                             ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
                           </div>
-                          <div className="col-12 md:col-6" style={{ paddingLeft: 24 }}>
+                          <div className="col-12 md:col-6 pl-4">
                             {[
                               { label: "Total Debt", value: `$${fmtLarge(overview?.totalDebt)}` },
                               { label: "Debt / Equity", value: fmtNum(overview?.debtToEquity) },
@@ -672,14 +658,14 @@ const StockSummaryPage: React.FC = () => {
                     <TabPanel header="Stock Stats">
                       {loading ? <Skeleton height="120px" /> : (
                         <div className="grid" style={{ margin: 0 }}>
-                          <div className="col-12 md:col-6" style={{ paddingRight: 24 }}>
+                          <div className="col-12 md:col-6 pr-4">
                             {[
                               { label: "Shares Outstanding", value: fmtLarge(overview?.sharesOutstanding) },
                               { label: "Float Shares", value: fmtLarge(overview?.floatShares) },
                               { label: "Insider Holdings %", value: fmtPctDecimal(overview?.heldPercentInsiders) },
                             ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
                           </div>
-                          <div className="col-12 md:col-6" style={{ paddingLeft: 24 }}>
+                          <div className="col-12 md:col-6 pl-4">
                             {[
                               { label: "Institutional Holdings %", value: fmtPctDecimal(overview?.heldPercentInstitutions) },
                               { label: "Shares Short", value: fmtLarge(overview?.sharesShort) },
@@ -694,8 +680,8 @@ const StockSummaryPage: React.FC = () => {
                     <TabPanel header="Earnings">
                       {loading ? <Skeleton height="160px" /> : (
                         <div className="grid" style={{ margin: 0 }}>
-                          <div className="col-12 md:col-6" style={{ paddingRight: 24 }}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: "var(--sv-text-muted)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8 }}>Actual</div>
+                          <div className="col-12 md:col-6 pr-4">
+                            <div className="sv-info-label text-xs font-bold mb-2">Actual</div>
                             {[
                               { label: "EPS — Last Quarter", value: fmtPrice(overview?.epsLastQuarter) },
                               { label: "EPS — Prior Quarter", value: fmtPrice(overview?.epsLastToLastQuarter) },
@@ -705,8 +691,8 @@ const StockSummaryPage: React.FC = () => {
                               { label: "Revenue — Last Year", value: `$${fmtLarge(overview?.revenueLastYear)}` },
                             ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
                           </div>
-                          <div className="col-12 md:col-6" style={{ paddingLeft: 24 }}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: "var(--sv-text-muted)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8 }}>Estimates</div>
+                          <div className="col-12 md:col-6 pl-4">
+                            <div className="sv-info-label text-xs font-bold mb-2">Estimates</div>
                             {[
                               { label: "EPS — Current Quarter Est.", value: fmtPrice(overview?.epsCurrentQuarterEstimate) },
                               { label: "EPS — Next Quarter Est.", value: fmtPrice(overview?.epsNextQuarterEstimate) },
@@ -724,13 +710,13 @@ const StockSummaryPage: React.FC = () => {
                     <TabPanel header="Valuation">
                       {loading ? <Skeleton height="100px" /> : (
                         <div className="grid" style={{ margin: 0 }}>
-                          <div className="col-12 md:col-6" style={{ paddingRight: 24 }}>
+                          <div className="col-12 md:col-6 pr-4">
                             {[
                               { label: "Forward P/E", value: fmtNum(overview?.forwardPE) },
                               { label: "Trailing P/E", value: fmtNum(overview?.trailingPE) },
                             ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
                           </div>
-                          <div className="col-12 md:col-6" style={{ paddingLeft: 24 }}>
+                          <div className="col-12 md:col-6 pl-4">
                             {[
                               { label: "PEG Ratio", value: fmtNum(overview?.pegRatio) },
                               { label: "Price / Book", value: fmtNum(overview?.priceToBook) },
@@ -744,7 +730,7 @@ const StockSummaryPage: React.FC = () => {
                     <TabPanel header="Dividends & Splits">
                       {loading ? <Skeleton height="140px" /> : (
                         <div className="grid" style={{ margin: 0 }}>
-                          <div className="col-12 md:col-6" style={{ paddingRight: 24 }}>
+                          <div className="col-12 md:col-6 pr-4">
                             {[
                               { label: "Dividend (TTM)", value: `$${fmtNum(overview?.trailingAnnualDividendRate)}` },
                               { label: "Dividend Yield (TTM)", value: fmtPctDecimal(overview?.trailingAnnualDividendYield) },
@@ -753,7 +739,7 @@ const StockSummaryPage: React.FC = () => {
                               { label: "5Y Avg Dividend Yield", value: fmtPctDirect(overview?.fiveYearAvgDividendYield) },
                             ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
                           </div>
-                          <div className="col-12 md:col-6" style={{ paddingLeft: 24 }}>
+                          <div className="col-12 md:col-6 pl-4">
                             {[
                               { label: "Forward Dividend", value: `$${fmtNum(overview?.dividendRateForward)}` },
                               { label: "Forward Yield", value: fmtPctDecimal(overview?.dividendYieldForward) },
@@ -773,18 +759,18 @@ const StockSummaryPage: React.FC = () => {
             {!loading && overview?.longBusinessSummary && (
               <Card>
                 <div className="flex align-items-center justify-content-between mb-2">
-                  <span style={{ fontWeight: 700, fontSize: 14 }}>
-                    <i className="pi pi-building mr-2" style={{ color: "var(--sv-accent)" }} />
+                  <span className="font-bold text-sm">
+                    <i className="pi pi-building mr-2 sv-text-accent" />
                     About {liveSymbol?.companyname}
                   </span>
-                  <button
+                  <Button
+                    link
+                    label={descExpanded ? "Show less" : "Read more"}
                     onClick={() => setDescExpanded(x => !x)}
-                    style={{ background: "none", border: "none", color: "var(--sv-accent)", cursor: "pointer", fontSize: 12, fontWeight: 600 }}
-                  >
-                    {descExpanded ? "Show less" : "Read more"}
-                  </button>
+                    className="p-0 text-sm font-semibold"
+                  />
                 </div>
-                <p style={{ color: "var(--sv-text-secondary)", lineHeight: 1.75, fontSize: 13, margin: 0 }}>
+                <p className="text-sm text-color-secondary m-0" style={{ lineHeight: 1.75 }}>
                   {descExpanded
                     ? overview.longBusinessSummary
                     : `${overview.longBusinessSummary.slice(0, 320)}…`}
@@ -795,7 +781,7 @@ const StockSummaryPage: React.FC = () => {
 
           {/* ── Live Chart tab ─────────────────────────────────────────────── */}
           <TabPanel header="Live Chart" leftIcon="pi pi-chart-line mr-2">
-            <div style={{ width: "100%", height: 620, borderRadius: 10, overflow: "hidden", border: "1px solid var(--sv-border)" }}>
+            <div className="border-1 surface-border border-round-xl overflow-hidden" style={{ width: "100%", height: 620 }}>
               <iframe
                 key={`${symbol}-${theme}`}
                 src={tvSrc}
@@ -810,12 +796,9 @@ const StockSummaryPage: React.FC = () => {
 
           {/* ── News tab ───────────────────────────────────────────────────── */}
           <TabPanel header="News" leftIcon="pi pi-newspaper mr-2">
-            <div
-              className="flex flex-column align-items-center justify-content-center gap-3"
-              style={{ minHeight: 240, color: "var(--sv-text-muted)" }}
-            >
+            <div className="flex flex-column align-items-center justify-content-center gap-3 sv-text-muted" style={{ minHeight: 240 }}>
               <i className="pi pi-newspaper" style={{ fontSize: 40, opacity: 0.35 }} />
-              <span style={{ fontSize: 14 }}>News feed coming soon for <strong style={{ color: "var(--sv-text-primary)" }}>{symbol}</strong></span>
+              <span className="text-sm">News feed coming soon for <strong className="text-color">{symbol}</strong></span>
             </div>
           </TabPanel>
 
