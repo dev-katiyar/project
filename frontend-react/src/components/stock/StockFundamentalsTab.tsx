@@ -127,8 +127,8 @@ const METRIC_PATH: Record<string, { path: string[]; yCol: string }> = {
   endPeriodCashFlow:                      { path: ["Financials", "Cash_Flow"],                             yCol: "endPeriodCashFlow"                      },
 };
 
-// Metrics that only have flat arrays (no quarterly/annual sub-key)
-const FLAT_METRICS = new Set(["Earnings", "Dividends", "outstandingShares"]);
+// All metrics use frequency sub-keys (quarterly/annual) — none are flat arrays
+const FLAT_METRICS = new Set<string>();
 
 type Frequency = "quarterly" | "annual";
 type Period = "3year" | "10year" | "20year";
