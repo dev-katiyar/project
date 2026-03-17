@@ -231,14 +231,15 @@ function pivotBody(field: keyof PivotRow, color?: string) {
   return (row: PivotRow) => {
     const val = row[field] as number;
     return (
-      <span
+      <div
         style={{
           fontSize: "0.75rem",
           color: color ?? "inherit",
+          textAlign: "left",
         }}
       >
         {val ? val.toFixed(2) : "—"}
-      </span>
+      </div>
     );
   };
 }
@@ -565,57 +566,89 @@ const StockTechnicalsTab: React.FC<StockTechnicalsTabProps> = ({ symbol }) => {
             >
               <Column
                 field="name"
-                header={<span style={{ display: "block", textAlign: "center" }}>Method</span>}
+                header={
+                  <span style={{ display: "block", textAlign: "center" }}>
+                    Method
+                  </span>
+                }
                 style={{ minWidth: 120, fontWeight: 600 }}
               />
               <Column
                 field="s3"
                 header="S3"
                 body={pivotBody("s3", "var(--sv-loss)")}
-                headerStyle={{ color: "var(--sv-loss)", textAlign: "right" }}
-                style={{ textAlign: "right" }}
+                pt={{
+                  headerCell: {
+                    style: { textAlign: "right", color: "var(--sv-loss)" },
+                  },
+                  bodyCell: { style: { textAlign: "right" } },
+                }}
               />
               <Column
                 field="s2"
                 header="S2"
                 body={pivotBody("s2", "var(--sv-loss)")}
-                headerStyle={{ color: "var(--sv-loss)", textAlign: "right" }}
-                style={{ textAlign: "right" }}
+                pt={{
+                  headerCell: {
+                    style: { textAlign: "right", color: "var(--sv-loss)" },
+                  },
+                  bodyCell: { style: { textAlign: "right" } },
+                }}
               />
               <Column
                 field="s1"
                 header="S1"
                 body={pivotBody("s1", "var(--sv-loss)")}
-                headerStyle={{ color: "var(--sv-loss)", textAlign: "right" }}
-                style={{ textAlign: "right" }}
+                pt={{
+                  headerCell: {
+                    style: { textAlign: "right", color: "var(--sv-loss)" },
+                  },
+                  bodyCell: { style: { textAlign: "right" } },
+                }}
               />
               <Column
                 field="p"
                 header="Pivot"
                 body={pivotBody("p")}
-                headerStyle={{ textAlign: "center", fontWeight: 800 }}
-                style={{ textAlign: "center", fontWeight: 700 }}
+                pt={{
+                  headerCell: {
+                    style: { textAlign: "center", fontWeight: 800 },
+                  },
+                  bodyCell: { style: { textAlign: "center", fontWeight: 700 } },
+                }}
               />
               <Column
                 field="r1"
                 header="R1"
                 body={pivotBody("r1", "var(--sv-gain)")}
-                headerStyle={{ color: "var(--sv-gain)", textAlign: "right" }}
-                style={{ textAlign: "right" }}
+                pt={{
+                  headerCell: {
+                    style: { textAlign: "right", color: "var(--sv-gain)" },
+                  },
+                  bodyCell: { style: { textAlign: "right" } },
+                }}
               />
               <Column
                 field="r2"
                 header="R2"
                 body={pivotBody("r2", "var(--sv-gain)")}
-                headerStyle={{ color: "var(--sv-gain)", textAlign: "right" }}
-                style={{ textAlign: "right" }}
+                pt={{
+                  headerCell: {
+                    style: { textAlign: "right", color: "var(--sv-gain)" },
+                  },
+                  bodyCell: { style: { textAlign: "right" } },
+                }}
               />
               <Column
                 field="r3"
                 header="R3"
                 body={pivotBody("r3", "var(--sv-gain)")}
-                headerStyle={{ color: "var(--sv-gain)", textAlign: "right" }}
-                style={{ textAlign: "right" }}
+                pt={{
+                  headerCell: {
+                    style: { textAlign: "right", color: "var(--sv-gain)" },
+                  },
+                  bodyCell: { style: { textAlign: "right" } },
+                }}
               />
             </DataTable>
           </div>
