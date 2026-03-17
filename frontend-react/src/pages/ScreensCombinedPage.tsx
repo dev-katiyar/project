@@ -198,11 +198,17 @@ const EmptyState: React.FC<{ icon: string; title: string; body?: string }> = ({
 }) => (
   <div className="flex flex-column align-items-center justify-content-center text-center p-5 gap-3 sv-text-muted">
     <i className={`pi ${icon}`} style={{ fontSize: "2.5rem", opacity: 0.18 }} />
-    <div className="font-bold text-sm" style={{ color: "var(--sv-text-secondary)" }}>
+    <div
+      className="font-bold text-sm"
+      style={{ color: "var(--sv-text-secondary)" }}
+    >
       {title}
     </div>
     {body && (
-      <p className="m-0 text-sm" style={{ maxWidth: "28rem", lineHeight: 1.65 }}>
+      <p
+        className="m-0 text-sm"
+        style={{ maxWidth: "28rem", lineHeight: 1.65 }}
+      >
         {body}
       </p>
     )}
@@ -266,11 +272,20 @@ const PresetCard: React.FC<{
     {/* Symbol rows */}
     <div className="flex-1">
       {!preset.preset_top_symbols?.length ? (
-        <div className="p-3 text-sm sv-text-muted" style={{ fontStyle: "italic" }}>
+        <div
+          className="p-3 text-sm sv-text-muted"
+          style={{ fontStyle: "italic" }}
+        >
           Run screen to populate results
         </div>
       ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.79rem" }}>
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            fontSize: "0.79rem",
+          }}
+        >
           <thead>
             <tr style={{ background: "var(--sv-bg-surface)" }}>
               <th style={{ ...thS, textAlign: "left" }}>Symbol</th>
@@ -282,9 +297,14 @@ const PresetCard: React.FC<{
             {preset.preset_top_symbols.slice(0, 5).map((row, i) => (
               <tr
                 key={row.symbol}
-                style={{ background: i % 2 ? "var(--sv-bg-surface)" : "transparent" }}
+                style={{
+                  background: i % 2 ? "var(--sv-bg-surface)" : "transparent",
+                }}
               >
-                <td style={{ ...tdS, fontWeight: 700, letterSpacing: "0.03em" }} className="sv-text-accent">
+                <td
+                  style={{ ...tdS, fontWeight: 700, letterSpacing: "0.03em" }}
+                  className="sv-text-accent"
+                >
                   {row.symbol}
                 </td>
                 <td style={{ ...tdS, textAlign: "right" }}>
@@ -292,7 +312,9 @@ const PresetCard: React.FC<{
                 </td>
                 <td
                   style={{ ...tdS, textAlign: "right", fontWeight: 600 }}
-                  className={row.priceChange >= 0 ? "sv-text-gain" : "sv-text-loss"}
+                  className={
+                    row.priceChange >= 0 ? "sv-text-gain" : "sv-text-loss"
+                  }
                 >
                   {fmtChg(row.priceChange)} ({fmtPct(row.priceChangePct)})
                 </td>
@@ -345,7 +367,11 @@ const FilterChip: React.FC<{
     <button onClick={onEdit} title="Edit filter" className="sv-chip-btn">
       <i className="pi pi-pencil" style={{ fontSize: "0.58rem" }} />
     </button>
-    <button onClick={onRemove} title="Remove filter" className="sv-chip-btn remove">
+    <button
+      onClick={onRemove}
+      title="Remove filter"
+      className="sv-chip-btn remove"
+    >
       <i className="pi pi-times" style={{ fontSize: "0.58rem" }} />
     </button>
   </div>
@@ -392,8 +418,14 @@ const FilterEditor: React.FC<{
             className="flex justify-content-between font-bold mb-4"
             style={{ fontSize: "0.9rem", color: "var(--sv-text-primary)" }}
           >
-            <span>{sliderVals[0]}{local.range_text ? ` ${local.range_text}` : ""}</span>
-            <span>{sliderVals[1]}{local.range_text ? ` ${local.range_text}` : ""}</span>
+            <span>
+              {sliderVals[0]}
+              {local.range_text ? ` ${local.range_text}` : ""}
+            </span>
+            <span>
+              {sliderVals[1]}
+              {local.range_text ? ` ${local.range_text}` : ""}
+            </span>
           </div>
         </div>
       )}
@@ -423,9 +455,7 @@ const FilterEditor: React.FC<{
           options={local.display_values ?? []}
           optionLabel="name"
           optionValue="id"
-          onChange={(e) =>
-            setLocal((p) => ({ ...p, selected_value: e.value }))
-          }
+          onChange={(e) => setLocal((p) => ({ ...p, selected_value: e.value }))}
           className="w-full mb-3"
           placeholder="Select options…"
           filter
@@ -477,7 +507,6 @@ const FilterEditor: React.FC<{
   );
 };
 
-
 // ─────────────────────────────────────────────────────────────────────────────
 // SectionHeader — reusable section title row
 // ─────────────────────────────────────────────────────────────────────────────
@@ -511,7 +540,10 @@ const SectionHeader: React.FC<{
     >
       {title}
     </h2>
-    <div className="flex-1" style={{ height: "1px", background: "var(--sv-border)" }} />
+    <div
+      className="flex-1"
+      style={{ height: "1px", background: "var(--sv-border)" }}
+    />
     {action}
   </div>
 );
@@ -525,7 +557,10 @@ const Panel: React.FC<{
   className?: string;
   style?: React.CSSProperties;
 }> = ({ children, className, style }) => (
-  <div className={`sv-data-card${className ? ` ${className}` : ""}`} style={style}>
+  <div
+    className={`sv-data-card${className ? ` ${className}` : ""}`}
+    style={style}
+  >
     {children}
   </div>
 );
@@ -546,7 +581,9 @@ const ScreensCombinedPage: React.FC = () => {
 
   // ── View state ───────────────────────────────────────────────────────────
   const [view, setView] = useState<"overview" | "detail">("overview");
-  const [selectedPreset, setSelectedPreset] = useState<PresetSummary | null>(null);
+  const [selectedPreset, setSelectedPreset] = useState<PresetSummary | null>(
+    null,
+  );
   const [isNewPreset, setIsNewPreset] = useState(false);
 
   // ── Filter state ─────────────────────────────────────────────────────────
@@ -567,7 +604,9 @@ const ScreensCombinedPage: React.FC = () => {
 
   // ── Detail view presets (all presets for sidebar) ─────────────────────────
   const [detailSvPresets, setDetailSvPresets] = useState<PresetSummary[]>([]);
-  const [detailUserPresets, setDetailUserPresets] = useState<PresetSummary[]>([]);
+  const [detailUserPresets, setDetailUserPresets] = useState<PresetSummary[]>(
+    [],
+  );
   const [detailPresetsLoading, setDetailPresetsLoading] = useState(false);
   const [autoRunPending, setAutoRunPending] = useState(false);
 
@@ -616,10 +655,18 @@ const ScreensCombinedPage: React.FC = () => {
             }));
 
           const svList = normalize(
-            Array.isArray(sv) ? sv : Array.isArray(sv?.preset_data) ? sv.preset_data : []
+            Array.isArray(sv)
+              ? sv
+              : Array.isArray(sv?.preset_data)
+                ? sv.preset_data
+                : [],
           );
           const userList = normalize(
-            Array.isArray(user) ? user : Array.isArray(user?.preset_data) ? user.preset_data : []
+            Array.isArray(user)
+              ? user
+              : Array.isArray(user?.preset_data)
+                ? user.preset_data
+                : [],
           );
           setDetailSvPresets(svList);
           setDetailUserPresets(userList);
@@ -628,7 +675,7 @@ const ScreensCombinedPage: React.FC = () => {
         .catch(() => {})
         .finally(() => setDetailPresetsLoading(false));
     },
-    []
+    [],
   );
 
   // ── Load filter data for a preset ────────────────────────────────────────
@@ -647,10 +694,9 @@ const ScreensCombinedPage: React.FC = () => {
 
       const isNew = presetId.startsWith("new_");
 
-      const fetchPreset =
-        existingPresetData
-          ? Promise.resolve(existingPresetData)
-          : isNew
+      const fetchPreset = existingPresetData
+        ? Promise.resolve(existingPresetData)
+        : isNew
           ? Promise.resolve(null)
           : api.get(`/screen/preset/data/${presetId}`).then((r) => r.data);
 
@@ -667,7 +713,10 @@ const ScreensCombinedPage: React.FC = () => {
           const filters = rawFilters.map((f) => {
             const c = deepClone(f);
             if (c.type === "slider" && c.slider_values) {
-              c.selected_slider_values = [...c.slider_values] as [number, number];
+              c.selected_slider_values = [...c.slider_values] as [
+                number,
+                number,
+              ];
             }
             if (c.type === "dropdown") {
               c.selected_value = c.multiple ? [] : DEFAULT_ID;
@@ -700,7 +749,7 @@ const ScreensCombinedPage: React.FC = () => {
         .catch(() => {})
         .finally(() => setFilterDataLoading(false));
     },
-    []
+    [],
   );
 
   // ── Run / Open a screen preset ───────────────────────────────────────────
@@ -714,7 +763,7 @@ const ScreensCombinedPage: React.FC = () => {
       loadDetailPresets();
       loadFilterData(preset.preset_id, preset);
     },
-    [loadFilterData, loadDetailPresets]
+    [loadFilterData, loadDetailPresets],
   );
 
   // ── Create new screen ────────────────────────────────────────────────────
@@ -787,7 +836,7 @@ const ScreensCombinedPage: React.FC = () => {
   const handleRemoveFilter = useCallback((filterName: string) => {
     setSelectedFilters((prev) => prev.filter((f) => f.name !== filterName));
     setAllFilters((prev) =>
-      prev.map((f) => (f.name === filterName ? resetFilter(f) : f))
+      prev.map((f) => (f.name === filterName ? resetFilter(f) : f)),
     );
   }, []);
 
@@ -798,10 +847,10 @@ const ScreensCombinedPage: React.FC = () => {
 
   const handleApplyFilterEdit = useCallback((updated: ScreenFilter) => {
     setSelectedFilters((prev) =>
-      prev.map((f) => (f.name === updated.name ? updated : f))
+      prev.map((f) => (f.name === updated.name ? updated : f)),
     );
     setAllFilters((prev) =>
-      prev.map((f) => (f.name === updated.name ? updated : f))
+      prev.map((f) => (f.name === updated.name ? updated : f)),
     );
     setShowEditDialog(false);
     setEditingFilter(null);
@@ -835,11 +884,11 @@ const ScreensCombinedPage: React.FC = () => {
         const symbols: string[] = Array.isArray(raw)
           ? raw
           : Array.isArray(raw?.symbols)
-          ? raw.symbols
-          : [];
+            ? raw.symbols
+            : [];
         setScannedSymbols(symbols);
         setScanMsg(
-          `${symbols.length} ticker${symbols.length !== 1 ? "s" : ""} found`
+          `${symbols.length} ticker${symbols.length !== 1 ? "s" : ""} found`,
         );
         setHasScanned(true);
       })
@@ -867,7 +916,15 @@ const ScreensCombinedPage: React.FC = () => {
       .then(() => loadPresets())
       .catch(() => {})
       .finally(() => setSaveLoading(false));
-  }, [selectedPreset, isNewPreset, selectedFilters, sortBy, sortOrder, limit, loadPresets]);
+  }, [
+    selectedPreset,
+    isNewPreset,
+    selectedFilters,
+    sortBy,
+    sortOrder,
+    limit,
+    loadPresets,
+  ]);
 
   // ── Save as new ──────────────────────────────────────────────────────────
 
@@ -966,7 +1023,7 @@ const ScreensCombinedPage: React.FC = () => {
         },
       });
     },
-    [selectedPreset, isNewPreset, handleBack, loadPresets]
+    [selectedPreset, isNewPreset, handleBack, loadPresets],
   );
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -1103,7 +1160,12 @@ const ScreensCombinedPage: React.FC = () => {
         <div className="p-1 pb-0">
           {detailPresetsLoading
             ? Array.from({ length: 3 }).map((_, i) => (
-                <Skeleton key={i} height="28px" borderRadius="0.35rem" className="mb-1" />
+                <Skeleton
+                  key={i}
+                  height="28px"
+                  borderRadius="0.35rem"
+                  className="mb-1"
+                />
               ))
             : detailSvPresets.map((p, i) => (
                 <SidebarItem
@@ -1173,14 +1235,22 @@ const ScreensCombinedPage: React.FC = () => {
           <div className="flex align-items-center gap-3">
             <Button
               icon="pi pi-arrow-left"
-              label="All Screens"
+              label="Screens Overview"
               text
               size="small"
               onClick={handleBack}
-              style={{ color: "var(--sv-accent)", fontWeight: 600, fontSize: "0.82rem", padding: 0 }}
+              style={{
+                color: "var(--sv-accent)",
+                fontWeight: 600,
+                fontSize: "0.82rem",
+                padding: 0,
+              }}
             />
             <span style={{ color: "var(--sv-border-light)" }}>|</span>
-            <div className="font-bold" style={{ fontSize: "1rem", color: "var(--sv-text-primary)" }}>
+            <div
+              className="font-bold"
+              style={{ fontSize: "1rem", color: "var(--sv-text-primary)" }}
+            >
               {isNewPreset ? "New Screen" : selectedPreset?.preset_name}
             </div>
           </div>
@@ -1287,7 +1357,12 @@ const ScreensCombinedPage: React.FC = () => {
           >
             {filterDataLoading ? (
               Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} width="120px" height="30px" borderRadius="1rem" />
+                <Skeleton
+                  key={i}
+                  width="120px"
+                  height="30px"
+                  borderRadius="1rem"
+                />
               ))
             ) : selectedFilters.length > 0 ? (
               selectedFilters.map((f) => (
@@ -1299,8 +1374,12 @@ const ScreensCombinedPage: React.FC = () => {
                 />
               ))
             ) : (
-              <span className="text-sm sv-text-muted" style={{ fontStyle: "italic" }}>
-                No filters applied — showing all stocks · Use "+ Add Filter" to narrow results
+              <span
+                className="text-sm sv-text-muted"
+                style={{ fontStyle: "italic" }}
+              >
+                No filters applied — showing all stocks · Use "+ Add Filter" to
+                narrow results
               </span>
             )}
           </div>
@@ -1318,12 +1397,17 @@ const ScreensCombinedPage: React.FC = () => {
             className="flex justify-content-between align-items-center mt-3 pt-3"
             style={{ borderTop: "1px solid var(--sv-border-light)" }}
           >
-            <div className="flex align-items-center gap-2 text-sm" style={{ color: "var(--sv-text-secondary)" }}>
+            <div
+              className="flex align-items-center gap-2 text-sm"
+              style={{ color: "var(--sv-text-secondary)" }}
+            >
               {scanMsg && (
                 <>
                   <i className="pi pi-chart-bar sv-text-accent" />
                   <span>
-                    <strong className="sv-text-accent">{scanMsg.split(" ")[0]}</strong>{" "}
+                    <strong className="sv-text-accent">
+                      {scanMsg.split(" ")[0]}
+                    </strong>{" "}
                     {scanMsg.split(" ").slice(1).join(" ")}
                   </span>
                 </>
@@ -1466,7 +1550,11 @@ const ScreensCombinedPage: React.FC = () => {
         draggable={false}
         footer={
           <div className="flex justify-content-end gap-2">
-            <Button label="Cancel" text onClick={() => setShowSaveDialog(false)} />
+            <Button
+              label="Cancel"
+              text
+              onClick={() => setShowSaveDialog(false)}
+            />
             <Button
               label="Save"
               icon="pi pi-save"
