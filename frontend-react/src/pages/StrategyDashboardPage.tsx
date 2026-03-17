@@ -350,42 +350,18 @@ function StatBar({
         ? "danger"
         : "warning";
   return (
-    <div
-      className="flex align-items-center gap-3 mb-3 p-2 border-round"
-      style={{
-        background: "var(--sv-bg-surface)",
-        border: "1px solid var(--sv-border)",
-      }}
-    >
-      <span className="text-sm" style={{ color: "var(--sv-text-muted)" }}>
-        Last Signal:
-      </span>
+    <div className="flex align-items-center gap-3 mb-3 p-2 border-round sv-data-card">
+      <span className="text-sm sv-text-muted">Last Signal:</span>
       <Tag
         value={lastSignal}
         severity={signalSev as "success" | "info" | "warning" | "danger"}
       />
       <Divider layout="vertical" className="m-0" style={{ height: "18px" }} />
-      <i
-        className="pi pi-arrow-up"
-        style={{ color: "var(--sv-gain)", fontSize: "0.8rem" }}
-      />
-      <span
-        className="text-sm font-semibold"
-        style={{ color: "var(--sv-gain)" }}
-      >
-        {buys} Buy
-      </span>
+      <i className="pi pi-arrow-up sv-text-gain" style={{ fontSize: "0.8rem" }} />
+      <span className="text-sm font-semibold sv-text-gain">{buys} Buy</span>
       <Divider layout="vertical" className="m-0" style={{ height: "18px" }} />
-      <i
-        className="pi pi-arrow-down"
-        style={{ color: "var(--sv-loss)", fontSize: "0.8rem" }}
-      />
-      <span
-        className="text-sm font-semibold"
-        style={{ color: "var(--sv-loss)" }}
-      >
-        {sells} Sell
-      </span>
+      <i className="pi pi-arrow-down sv-text-loss" style={{ fontSize: "0.8rem" }} />
+      <span className="text-sm font-semibold sv-text-loss">{sells} Sell</span>
     </div>
   );
 }
@@ -404,19 +380,7 @@ function RecentChips({
         <span
           key={sym}
           onClick={() => onSelect(sym)}
-          className="cursor-pointer border-round px-2 py-1 text-xs font-semibold"
-          style={{
-            background: "var(--sv-accent-bg)",
-            color: "var(--sv-accent)",
-            border: "1px solid var(--sv-accent)",
-            transition: "opacity .15s",
-          }}
-          onMouseEnter={(e) =>
-            ((e.currentTarget as HTMLElement).style.opacity = "0.75")
-          }
-          onMouseLeave={(e) =>
-            ((e.currentTarget as HTMLElement).style.opacity = "1")
-          }
+          className="sv-symbol-chip cursor-pointer"
         >
           {sym}
         </span>
@@ -452,10 +416,7 @@ function AdvancedMfParams({
   return (
     <Panel
       header={
-        <span
-          className="text-sm font-semibold"
-          style={{ color: "var(--sv-text-secondary)" }}
-        >
+        <span className="text-sm font-semibold text-color-secondary">
           Advanced Parameters
         </span>
       }
@@ -463,19 +424,11 @@ function AdvancedMfParams({
       collapsed={!open}
       onToggle={(e) => setOpen(!e.value)}
       className="mb-3"
-      style={{
-        background: "var(--sv-bg-surface)",
-        border: "1px solid var(--sv-border)",
-        borderRadius: "10px",
-      }}
     >
       <div className="grid">
         {/* SV MF */}
         <div className="col-12">
-          <span
-            className="text-xs font-bold uppercase tracking-wide"
-            style={{ color: "var(--sv-accent)" }}
-          >
+          <span className="text-xs font-bold uppercase sv-text-accent">
             SV Money Flow
           </span>
         </div>
@@ -487,12 +440,7 @@ function AdvancedMfParams({
           ] as { label: string; key: keyof typeof DEFAULT_RIA }[]
         ).map((f) => (
           <div key={f.key} className="col-4">
-            <label
-              className="block text-xs mb-1"
-              style={{ color: "var(--sv-text-muted)" }}
-            >
-              {f.label}
-            </label>
+            <label className="block text-xs mb-1 sv-text-muted">{f.label}</label>
             <InputNumber
               value={riaP[f.key] as number}
               onValueChange={(e) =>
@@ -508,10 +456,7 @@ function AdvancedMfParams({
         ))}
         {/* Stochastic */}
         <div className="col-12 mt-2">
-          <span
-            className="text-xs font-bold uppercase"
-            style={{ color: "var(--sv-accent)" }}
-          >
+          <span className="text-xs font-bold uppercase sv-text-accent">
             Stochastic
           </span>
         </div>
@@ -523,12 +468,7 @@ function AdvancedMfParams({
           ] as { label: string; key: keyof typeof DEFAULT_STOCH }[]
         ).map((f) => (
           <div key={f.key} className="col-4">
-            <label
-              className="block text-xs mb-1"
-              style={{ color: "var(--sv-text-muted)" }}
-            >
-              {f.label}
-            </label>
+            <label className="block text-xs mb-1 sv-text-muted">{f.label}</label>
             <InputNumber
               value={stochP[f.key] as number}
               onValueChange={(e) =>
@@ -544,20 +484,10 @@ function AdvancedMfParams({
         ))}
         {/* MFI */}
         <div className="col-12 mt-2">
-          <span
-            className="text-xs font-bold uppercase"
-            style={{ color: "var(--sv-accent)" }}
-          >
-            MFI
-          </span>
+          <span className="text-xs font-bold uppercase sv-text-accent">MFI</span>
         </div>
         <div className="col-4">
-          <label
-            className="block text-xs mb-1"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            Periods
-          </label>
+          <label className="block text-xs mb-1 sv-text-muted">Periods</label>
           <InputNumber
             value={mfiP.mfi_num_of_periods}
             onValueChange={(e) =>
@@ -575,12 +505,7 @@ function AdvancedMfParams({
         </div>
         {/* MACD */}
         <div className="col-12 mt-2">
-          <span
-            className="text-xs font-bold uppercase"
-            style={{ color: "var(--sv-accent)" }}
-          >
-            MACD
-          </span>
+          <span className="text-xs font-bold uppercase sv-text-accent">MACD</span>
         </div>
         {(
           [
@@ -590,12 +515,7 @@ function AdvancedMfParams({
           ] as { label: string; key: keyof typeof DEFAULT_MACD }[]
         ).map((f) => (
           <div key={f.key} className="col-4">
-            <label
-              className="block text-xs mb-1"
-              style={{ color: "var(--sv-text-muted)" }}
-            >
-              {f.label}
-            </label>
+            <label className="block text-xs mb-1 sv-text-muted">{f.label}</label>
             <InputNumber
               value={macdP[f.key] as number}
               onValueChange={(e) =>
@@ -857,23 +777,15 @@ const MoneyFlowPanel: React.FC<{ presetName?: string }> = ({ presetName }) => {
     <div>
       {presetName && (
         <div className="flex align-items-center gap-2 mb-3">
-          <i className="pi pi-bookmark" style={{ color: "var(--sv-accent)" }} />
-          <span
-            className="font-semibold text-sm"
-            style={{ color: "var(--sv-text-secondary)" }}
-          >
+          <i className="pi pi-bookmark sv-text-accent" />
+          <span className="font-semibold text-sm text-color-secondary">
             {presetName}
           </span>
         </div>
       )}
       <div className="grid mb-2">
         <div className="col-12 md:col-4">
-          <label
-            className="block mb-1 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            Symbol
-          </label>
+          <label className="block mb-1 text-sm sv-text-muted">Symbol</label>
           <InputText
             value={symbol}
             onChange={(e) => setSymbol(e.target.value.toUpperCase())}
@@ -884,12 +796,7 @@ const MoneyFlowPanel: React.FC<{ presetName?: string }> = ({ presetName }) => {
           <RecentChips items={recent} onSelect={setSymbol} />
         </div>
         <div className="col-12 md:col-3">
-          <label
-            className="block mb-1 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            Start Date
-          </label>
+          <label className="block mb-1 text-sm sv-text-muted">Start Date</label>
           <Calendar
             value={startDate}
             onChange={(e) => setStartDate(e.value as Date)}
@@ -899,12 +806,7 @@ const MoneyFlowPanel: React.FC<{ presetName?: string }> = ({ presetName }) => {
           />
         </div>
         <div className="col-12 md:col-3">
-          <label
-            className="block mb-1 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            End Date
-          </label>
+          <label className="block mb-1 text-sm sv-text-muted">End Date</label>
           <Calendar
             value={endDate}
             onChange={(e) => setEndDate(e.value as Date)}
@@ -914,12 +816,7 @@ const MoneyFlowPanel: React.FC<{ presetName?: string }> = ({ presetName }) => {
           />
         </div>
         <div className="col-12 md:col-2">
-          <label
-            className="block mb-1 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            Frequency
-          </label>
+          <label className="block mb-1 text-sm sv-text-muted">Frequency</label>
           <SelectButton
             value={freq}
             onChange={(e) => setFreq(e.value)}
@@ -944,12 +841,7 @@ const MoneyFlowPanel: React.FC<{ presetName?: string }> = ({ presetName }) => {
           icon="pi pi-play"
           onClick={run}
           loading={loading}
-          className="p-button-sm"
-          style={{
-            background: "var(--sv-accent)",
-            border: "none",
-            fontWeight: 600,
-          }}
+          className="p-button-sm p-button-primary"
         />
         <Button
           label="Reset Params"
@@ -964,14 +856,7 @@ const MoneyFlowPanel: React.FC<{ presetName?: string }> = ({ presetName }) => {
         />
       </div>
       {error && (
-        <div
-          className="mb-3 p-3 border-round flex align-items-center gap-2"
-          style={{
-            background: "rgba(239,68,68,.1)",
-            border: "1px solid rgba(239,68,68,.3)",
-            color: "#fca5a5",
-          }}
-        >
+        <div className="mb-3 p-3 border-round flex align-items-center gap-2 sv-alert-error">
           <i className="pi pi-exclamation-triangle" />
           <span className="text-sm">{error}</span>
         </div>
@@ -981,12 +866,8 @@ const MoneyFlowPanel: React.FC<{ presetName?: string }> = ({ presetName }) => {
         <>
           <StatBar lastSignal={lastSignal} buys={buys} sells={sells} />
           <div
-            style={{
-              background: cc.bg,
-              borderRadius: "10px",
-              overflow: "hidden",
-              boxShadow: "var(--sv-shadow-md)",
-            }}
+            className="border-round-lg overflow-hidden"
+            style={{ background: cc.bg, boxShadow: "var(--sv-shadow-md)" }}
           >
             <HighchartsReact highcharts={Highcharts} options={chartOptions} />
           </div>
@@ -1238,12 +1119,7 @@ const MoneyFlowPairPanel: React.FC = () => {
     <div>
       <div className="grid mb-2">
         <div className="col-12 md:col-3">
-          <label
-            className="block mb-1 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            Symbol 1
-          </label>
+          <label className="block mb-1 text-sm sv-text-muted">Symbol 1</label>
           <InputText
             value={sym1}
             onChange={(e) => setSym1(e.target.value.toUpperCase())}
@@ -1251,12 +1127,7 @@ const MoneyFlowPairPanel: React.FC = () => {
           />
         </div>
         <div className="col-12 md:col-3">
-          <label
-            className="block mb-1 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            Symbol 2
-          </label>
+          <label className="block mb-1 text-sm sv-text-muted">Symbol 2</label>
           <InputText
             value={sym2}
             onChange={(e) => setSym2(e.target.value.toUpperCase())}
@@ -1264,12 +1135,7 @@ const MoneyFlowPairPanel: React.FC = () => {
           />
         </div>
         <div className="col-12 md:col-2">
-          <label
-            className="block mb-1 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            Start Date
-          </label>
+          <label className="block mb-1 text-sm sv-text-muted">Start Date</label>
           <Calendar
             value={startDate}
             onChange={(e) => setStartDate(e.value as Date)}
@@ -1279,12 +1145,7 @@ const MoneyFlowPairPanel: React.FC = () => {
           />
         </div>
         <div className="col-12 md:col-2">
-          <label
-            className="block mb-1 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            End Date
-          </label>
+          <label className="block mb-1 text-sm sv-text-muted">End Date</label>
           <Calendar
             value={endDate}
             onChange={(e) => setEndDate(e.value as Date)}
@@ -1294,12 +1155,7 @@ const MoneyFlowPairPanel: React.FC = () => {
           />
         </div>
         <div className="col-12 md:col-2">
-          <label
-            className="block mb-1 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            Frequency
-          </label>
+          <label className="block mb-1 text-sm sv-text-muted">Frequency</label>
           <SelectButton
             value={freq}
             onChange={(e) => setFreq(e.value)}
@@ -1310,10 +1166,7 @@ const MoneyFlowPairPanel: React.FC = () => {
       </div>
       {recentPairs.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-2">
-          <span
-            className="text-xs mr-1"
-            style={{ color: "var(--sv-text-muted)", alignSelf: "center" }}
-          >
+          <span className="text-xs mr-1 sv-text-muted align-self-center">
             Recent:
           </span>
           {recentPairs.slice(0, 6).map((p) => (
@@ -1323,12 +1176,7 @@ const MoneyFlowPairPanel: React.FC = () => {
                 setSym1(p.sym1);
                 setSym2(p.sym2);
               }}
-              className="cursor-pointer border-round px-2 py-1 text-xs font-semibold"
-              style={{
-                background: "var(--sv-accent-bg)",
-                color: "var(--sv-accent)",
-                border: "1px solid var(--sv-accent)",
-              }}
+              className="sv-symbol-chip cursor-pointer"
             >
               {p.sym1}/{p.sym2}
             </span>
@@ -1351,23 +1199,11 @@ const MoneyFlowPairPanel: React.FC = () => {
           icon="pi pi-play"
           onClick={run}
           loading={loading}
-          className="p-button-sm"
-          style={{
-            background: "var(--sv-accent)",
-            border: "none",
-            fontWeight: 600,
-          }}
+          className="p-button-sm p-button-primary"
         />
       </div>
       {error && (
-        <div
-          className="mb-3 p-3 border-round flex align-items-center gap-2"
-          style={{
-            background: "rgba(239,68,68,.1)",
-            border: "1px solid rgba(239,68,68,.3)",
-            color: "#fca5a5",
-          }}
-        >
+        <div className="mb-3 p-3 border-round flex align-items-center gap-2 sv-alert-error">
           <i className="pi pi-exclamation-triangle" />
           <span className="text-sm">{error}</span>
         </div>
@@ -1377,12 +1213,8 @@ const MoneyFlowPairPanel: React.FC = () => {
         <>
           <StatBar lastSignal={lastSignal} buys={buys} sells={sells} />
           <div
-            style={{
-              background: cc.bg,
-              borderRadius: "10px",
-              overflow: "hidden",
-              boxShadow: "var(--sv-shadow-md)",
-            }}
+            className="border-round-lg overflow-hidden"
+            style={{ background: cc.bg, boxShadow: "var(--sv-shadow-md)" }}
           >
             <HighchartsReact highcharts={Highcharts} options={chartOptions} />
           </div>
@@ -1676,12 +1508,7 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
     <div>
       <div className="grid mb-2">
         <div className="col-12 md:col-4">
-          <label
-            className="block mb-1 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            Symbol
-          </label>
+          <label className="block mb-1 text-sm sv-text-muted">Symbol</label>
           <InputText
             value={symbol}
             onChange={(e) => setSymbol(e.target.value.toUpperCase())}
@@ -1691,12 +1518,7 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
           <RecentChips items={recent} onSelect={(s) => setSymbol(s)} />
         </div>
         <div className="col-12 md:col-3">
-          <label
-            className="block mb-1 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            Start Date
-          </label>
+          <label className="block mb-1 text-sm sv-text-muted">Start Date</label>
           <Calendar
             value={startDate}
             onChange={(e) => setStartDate(e.value as Date)}
@@ -1706,12 +1528,7 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
           />
         </div>
         <div className="col-12 md:col-3">
-          <label
-            className="block mb-1 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            End Date
-          </label>
+          <label className="block mb-1 text-sm sv-text-muted">End Date</label>
           <Calendar
             value={endDate}
             onChange={(e) => setEndDate(e.value as Date)}
@@ -1724,23 +1541,18 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
           <Tag
             value="Weekly"
             icon="pi pi-calendar"
+            className="w-full justify-content-center p-2"
             style={{
               background: "var(--sv-accent-bg)",
               color: "var(--sv-accent)",
               border: "1px solid var(--sv-accent)",
-              width: "100%",
-              justifyContent: "center",
-              padding: ".6rem",
             }}
           />
         </div>
       </div>
       <Panel
         header={
-          <span
-            className="text-sm font-semibold"
-            style={{ color: "var(--sv-text-secondary)" }}
-          >
+          <span className="text-sm font-semibold text-color-secondary">
             Advanced Parameters
           </span>
         }
@@ -1748,28 +1560,15 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
         collapsed={!advOpen}
         onToggle={(e) => setAdvOpen(!e.value)}
         className="mb-3"
-        style={{
-          background: "var(--sv-bg-surface)",
-          border: "1px solid var(--sv-border)",
-          borderRadius: "10px",
-        }}
       >
         <div className="grid">
           <div className="col-12">
-            <span
-              className="text-xs font-bold uppercase"
-              style={{ color: "var(--sv-accent)" }}
-            >
+            <span className="text-xs font-bold uppercase sv-text-accent">
               Moving Averages
             </span>
           </div>
           <div className="col-4">
-            <label
-              className="block text-xs mb-1"
-              style={{ color: "var(--sv-text-muted)" }}
-            >
-              SMA1 Period
-            </label>
+            <label className="block text-xs mb-1 sv-text-muted">SMA1 Period</label>
             <InputNumber
               value={smaP.sma1_period}
               onValueChange={(e) =>
@@ -1786,12 +1585,7 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
             />
           </div>
           <div className="col-4">
-            <label
-              className="block text-xs mb-1"
-              style={{ color: "var(--sv-text-muted)" }}
-            >
-              SMA2 Period
-            </label>
+            <label className="block text-xs mb-1 sv-text-muted">SMA2 Period</label>
             <InputNumber
               value={smaP.sma2_period}
               onValueChange={(e) =>
@@ -1808,12 +1602,7 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
             />
           </div>
           <div className="col-4">
-            <label
-              className="block text-xs mb-1"
-              style={{ color: "var(--sv-text-muted)" }}
-            >
-              RSI Period
-            </label>
+            <label className="block text-xs mb-1 sv-text-muted">RSI Period</label>
             <InputNumber
               value={rsiP.rsi_period}
               onValueChange={(e) =>
@@ -1827,10 +1616,7 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
             />
           </div>
           <div className="col-12 mt-2">
-            <span
-              className="text-xs font-bold uppercase"
-              style={{ color: "var(--sv-accent)" }}
-            >
+            <span className="text-xs font-bold uppercase sv-text-accent">
               MACD 1
             </span>
           </div>
@@ -1842,12 +1628,7 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
             ] as { label: string; key: keyof typeof DEFAULT_MACD1 }[]
           ).map((f) => (
             <div key={f.key} className="col-4">
-              <label
-                className="block text-xs mb-1"
-                style={{ color: "var(--sv-text-muted)" }}
-              >
-                {f.label}
-              </label>
+              <label className="block text-xs mb-1 sv-text-muted">{f.label}</label>
               <InputNumber
                 value={macd1P[f.key] as number}
                 onValueChange={(e) =>
@@ -1862,10 +1643,7 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
             </div>
           ))}
           <div className="col-12 mt-2">
-            <span
-              className="text-xs font-bold uppercase"
-              style={{ color: "var(--sv-accent)" }}
-            >
+            <span className="text-xs font-bold uppercase sv-text-accent">
               MACD 2
             </span>
           </div>
@@ -1877,12 +1655,7 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
             ] as { label: string; key: keyof typeof DEFAULT_MACD2 }[]
           ).map((f) => (
             <div key={f.key} className="col-4">
-              <label
-                className="block text-xs mb-1"
-                style={{ color: "var(--sv-text-muted)" }}
-              >
-                {f.label}
-              </label>
+              <label className="block text-xs mb-1 sv-text-muted">{f.label}</label>
               <InputNumber
                 value={macd2P[f.key] as number}
                 onValueChange={(e) =>
@@ -1904,23 +1677,11 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
           icon="pi pi-play"
           onClick={() => run()}
           loading={loading}
-          className="p-button-sm"
-          style={{
-            background: "var(--sv-accent)",
-            border: "none",
-            fontWeight: 600,
-          }}
+          className="p-button-sm p-button-primary"
         />
       </div>
       {error && (
-        <div
-          className="mb-3 p-3 border-round flex align-items-center gap-2"
-          style={{
-            background: "rgba(239,68,68,.1)",
-            border: "1px solid rgba(239,68,68,.3)",
-            color: "#fca5a5",
-          }}
-        >
+        <div className="mb-3 p-3 border-round flex align-items-center gap-2 sv-alert-error">
           <i className="pi pi-exclamation-triangle" />
           <span className="text-sm">{error}</span>
         </div>
@@ -1930,12 +1691,8 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
         <>
           <StatBar lastSignal={lastSignal} buys={buys} sells={sells} />
           <div
-            style={{
-              background: cc.bg,
-              borderRadius: "10px",
-              overflow: "hidden",
-              boxShadow: "var(--sv-shadow-md)",
-            }}
+            className="border-round-lg overflow-hidden"
+            style={{ background: cc.bg, boxShadow: "var(--sv-shadow-md)" }}
           >
             <HighchartsReact highcharts={Highcharts} options={chartOptions} />
           </div>
@@ -2258,12 +2015,7 @@ const StrategyBuilderPanel: React.FC<{
           )}
           {stg?.settings?.map((s) => (
             <div key={s.key} className="col-6 md:col-2">
-              <label
-                className="block text-xs mb-1"
-                style={{ color: "var(--sv-text-muted)" }}
-              >
-                {s.label}
-              </label>
+              <label className="block text-xs mb-1 sv-text-muted">{s.label}</label>
               <InputNumber
                 value={cond.settings[s.key] ?? s.default}
                 onValueChange={(e) =>
@@ -2299,12 +2051,7 @@ const StrategyBuilderPanel: React.FC<{
       <Toast ref={toastRef} position="top-right" />
       <div className="grid mb-3">
         <div className="col-12 md:col-4">
-          <label
-            className="block mb-1 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            Symbol
-          </label>
+          <label className="block mb-1 text-sm sv-text-muted">Symbol</label>
           <InputText
             value={symbol}
             onChange={(e) => setSymbol(e.target.value.toUpperCase())}
@@ -2313,12 +2060,7 @@ const StrategyBuilderPanel: React.FC<{
           <RecentChips items={recent} onSelect={setSymbol} />
         </div>
         <div className="col-12 md:col-4">
-          <label
-            className="block mb-1 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            Start Date
-          </label>
+          <label className="block mb-1 text-sm sv-text-muted">Start Date</label>
           <Calendar
             value={startDate}
             onChange={(e) => setStartDate(e.value as Date)}
@@ -2328,12 +2070,7 @@ const StrategyBuilderPanel: React.FC<{
           />
         </div>
         <div className="col-12 md:col-4">
-          <label
-            className="block mb-1 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            End Date
-          </label>
+          <label className="block mb-1 text-sm sv-text-muted">End Date</label>
           <Calendar
             value={endDate}
             onChange={(e) => setEndDate(e.value as Date)}
@@ -2349,14 +2086,11 @@ const StrategyBuilderPanel: React.FC<{
         className="mb-3 p-3 border-round"
         style={{
           background: "var(--sv-bg-surface)",
-          border: "1px solid rgba(34,197,94,.2)",
+          border: "1px solid var(--sv-success-bg)",
         }}
       >
         <div className="flex align-items-center justify-content-between mb-2">
-          <span
-            className="font-semibold text-sm"
-            style={{ color: "var(--sv-gain)" }}
-          >
+          <span className="font-semibold text-sm sv-text-gain">
             <i className="pi pi-arrow-up mr-1" />
             Buy Conditions
           </span>
@@ -2368,10 +2102,7 @@ const StrategyBuilderPanel: React.FC<{
           />
         </div>
         {buyConds.length === 0 && (
-          <div
-            className="text-center py-2 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
+          <div className="text-center py-2 text-sm sv-text-muted">
             No buy conditions. Click "Add Buy Condition" to start building.
           </div>
         )}
@@ -2383,14 +2114,11 @@ const StrategyBuilderPanel: React.FC<{
         className="mb-3 p-3 border-round"
         style={{
           background: "var(--sv-bg-surface)",
-          border: "1px solid rgba(239,68,68,.2)",
+          border: "1px solid var(--sv-danger-bg)",
         }}
       >
         <div className="flex align-items-center justify-content-between mb-2">
-          <span
-            className="font-semibold text-sm"
-            style={{ color: "var(--sv-loss)" }}
-          >
+          <span className="font-semibold text-sm sv-text-loss">
             <i className="pi pi-arrow-down mr-1" />
             Sell Conditions
           </span>
@@ -2402,10 +2130,7 @@ const StrategyBuilderPanel: React.FC<{
           />
         </div>
         {sellConds.length === 0 && (
-          <div
-            className="text-center py-2 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
+          <div className="text-center py-2 text-sm sv-text-muted">
             No sell conditions. Click "Add Sell Condition" to start building.
           </div>
         )}
@@ -2418,12 +2143,7 @@ const StrategyBuilderPanel: React.FC<{
           icon="pi pi-play"
           onClick={run}
           loading={loading}
-          className="p-button-sm"
-          style={{
-            background: "var(--sv-accent)",
-            border: "none",
-            fontWeight: 600,
-          }}
+          className="p-button-sm p-button-primary"
         />
         <Button
           label="Save Strategy"
@@ -2434,14 +2154,7 @@ const StrategyBuilderPanel: React.FC<{
       </div>
 
       {error && (
-        <div
-          className="mb-3 p-3 border-round flex align-items-center gap-2"
-          style={{
-            background: "rgba(239,68,68,.1)",
-            border: "1px solid rgba(239,68,68,.3)",
-            color: "#fca5a5",
-          }}
-        >
+        <div className="mb-3 p-3 border-round flex align-items-center gap-2 sv-alert-error">
           <i className="pi pi-exclamation-triangle" />
           <span className="text-sm">{error}</span>
         </div>
@@ -2463,11 +2176,8 @@ const StrategyBuilderPanel: React.FC<{
               }
             >
               <div
-                style={{
-                  background: cc.bg,
-                  borderRadius: "10px",
-                  overflow: "hidden",
-                }}
+                className="border-round-lg overflow-hidden"
+                style={{ background: cc.bg }}
               >
                 <HighchartsReact
                   highcharts={Highcharts}
@@ -2491,7 +2201,7 @@ const StrategyBuilderPanel: React.FC<{
                 size="small"
                 scrollable
                 scrollHeight="500px"
-                style={{ fontSize: "0.82rem" }}
+                className="text-sm"
               >
                 <Column
                   field="date"
@@ -2514,7 +2224,7 @@ const StrategyBuilderPanel: React.FC<{
                     row.buy > 0 ? (
                       <Tag value={String(row.buy)} severity="success" />
                     ) : (
-                      <span style={{ color: "var(--sv-text-muted)" }}>-</span>
+                      <span className="sv-text-muted">-</span>
                     )
                   }
                 />
@@ -2527,7 +2237,7 @@ const StrategyBuilderPanel: React.FC<{
                     row.sell > 0 ? (
                       <Tag value={String(row.sell)} severity="danger" />
                     ) : (
-                      <span style={{ color: "var(--sv-text-muted)" }}>-</span>
+                      <span className="sv-text-muted">-</span>
                     )
                   }
                 />
@@ -2545,12 +2255,7 @@ const StrategyBuilderPanel: React.FC<{
         modal
       >
         <div className="mb-3">
-          <label
-            className="block mb-1 text-sm"
-            style={{ color: "var(--sv-text-muted)" }}
-          >
-            Strategy Name
-          </label>
+          <label className="block mb-1 text-sm sv-text-muted">Strategy Name</label>
           <InputText
             value={saveName}
             onChange={(e) => setSaveName(e.target.value)}
@@ -2568,11 +2273,10 @@ const StrategyBuilderPanel: React.FC<{
           <Button
             label="Save"
             icon="pi pi-save"
-            className="p-button-sm"
+            className="p-button-sm p-button-primary"
             onClick={savePreset}
             loading={saving}
             disabled={!saveName.trim()}
-            style={{ background: "var(--sv-accent)", border: "none" }}
           />
         </div>
       </Dialog>
@@ -2619,29 +2323,12 @@ const WelcomePanel: React.FC<{
 
   return (
     <div>
-      <div className="text-center mb-4" style={{ padding: "2rem 1rem 1rem" }}>
-        <i
-          className="pi pi-chart-line mb-3"
-          style={{ color: "var(--sv-accent)", fontSize: "2.8rem" }}
-        />
-        <h2
-          className="m-0 mb-2 font-bold"
-          style={{
-            color: "var(--sv-text-primary)",
-            fontSize: "1.5rem",
-            letterSpacing: "-.02em",
-          }}
-        >
+      <div className="text-center mb-4 pt-4 pb-2 px-3">
+        <i className="pi pi-chart-line mb-3 sv-hero-icon sv-text-accent" />
+        <h2 className="m-0 mb-2 font-bold text-color sv-page-title" style={{ fontSize: "1.5rem" }}>
           Strategy Dashboard
         </h2>
-        <p
-          className="m-0 text-sm"
-          style={{
-            color: "var(--sv-text-muted)",
-            maxWidth: "480px",
-            margin: "0 auto",
-          }}
-        >
+        <p className="m-0 text-sm sv-text-muted" style={{ maxWidth: "480px", margin: "0 auto" }}>
           Professional-grade signal analysis. Select a built-in strategy or
           build your own custom signal engine.
         </p>
@@ -2651,22 +2338,10 @@ const WelcomePanel: React.FC<{
         {cards.map((c) => (
           <div key={c.id} className="col-12 md:col-4">
             <div
-              className="border-round-lg p-4 h-full flex flex-column"
+              className="sv-feature-card border-round-lg p-4 h-full flex flex-column"
               style={{
                 background: c.grad,
                 border: `1px solid ${c.accent}30`,
-                transition: "all .2s",
-                cursor: "default",
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.boxShadow = `0 8px 32px ${c.accent}22`;
-                el.style.transform = "translateY(-2px)";
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.boxShadow = "none";
-                el.style.transform = "none";
               }}
             >
               <div className="flex align-items-center gap-2 mb-3">
@@ -2680,26 +2355,13 @@ const WelcomePanel: React.FC<{
                   />
                 </div>
                 <div>
-                  <div
-                    className="font-bold text-sm"
-                    style={{ color: "var(--sv-text-primary)" }}
-                  >
-                    {c.name}
-                  </div>
-                  <div
-                    className="text-xs"
-                    style={{ color: "var(--sv-text-muted)" }}
-                  >
-                    {c.sub}
-                  </div>
+                  <div className="font-bold text-sm text-color">{c.name}</div>
+                  <div className="text-xs sv-text-muted">{c.sub}</div>
                 </div>
               </div>
               <p
-                className="text-sm flex-grow-1 mb-3 m-0"
-                style={{
-                  color: "var(--sv-text-secondary)",
-                  lineHeight: "1.55",
-                }}
+                className="text-sm flex-grow-1 mb-3 m-0 text-color-secondary"
+                style={{ lineHeight: "1.55" }}
               >
                 {c.desc}
               </p>
@@ -2722,41 +2384,15 @@ const WelcomePanel: React.FC<{
 
       <div className="grid">
         <div className="col-12 md:col-6">
-          <div
-            className="border-round-lg p-4 flex align-items-center gap-3"
-            style={{
-              background: "var(--sv-bg-surface)",
-              border: "1px solid var(--sv-border)",
-              transition: "box-shadow .2s",
-            }}
-            onMouseEnter={(e) =>
-              ((e.currentTarget as HTMLElement).style.boxShadow =
-                "var(--sv-shadow-md)")
-            }
-            onMouseLeave={(e) =>
-              ((e.currentTarget as HTMLElement).style.boxShadow = "none")
-            }
-          >
-            <div
-              className="border-round p-3"
-              style={{ background: "var(--sv-accent-bg)", flexShrink: 0 }}
-            >
-              <i
-                className="pi pi-cog"
-                style={{ color: "var(--sv-accent)", fontSize: "1.3rem" }}
-              />
+          <div className="sv-data-card sv-preset-card border-round-lg p-4 flex align-items-center gap-3">
+            <div className="sv-icon-badge border-round p-3 flex-shrink-0">
+              <i className="pi pi-cog" style={{ fontSize: "1.3rem" }} />
             </div>
             <div className="flex-grow-1">
-              <div
-                className="font-bold mb-1"
-                style={{ color: "var(--sv-text-primary)" }}
-              >
+              <div className="font-bold mb-1 text-color">
                 Custom Strategy Builder
               </div>
-              <div
-                className="text-sm"
-                style={{ color: "var(--sv-text-muted)" }}
-              >
+              <div className="text-sm sv-text-muted">
                 Combine technical indicators to build and backtest your own
                 strategy
               </div>
@@ -2765,55 +2401,32 @@ const WelcomePanel: React.FC<{
               label="Build"
               icon="pi pi-plus"
               className="p-button-sm p-button-outlined"
-              style={{
-                borderColor: "var(--sv-accent)",
-                color: "var(--sv-accent)",
-              }}
               onClick={onNew}
             />
           </div>
         </div>
         <div className="col-12 md:col-6">
-          <div
-            className="border-round-lg p-4 flex align-items-center gap-3"
-            style={{
-              background: "var(--sv-bg-surface)",
-              border: "1px solid var(--sv-border)",
-            }}
-          >
+          <div className="sv-data-card border-round-lg p-4 flex align-items-center gap-3">
             <div
-              className="border-round p-3"
-              style={{ background: "rgba(34,197,94,.1)", flexShrink: 0 }}
+              className="border-round p-3 flex-shrink-0"
+              style={{ background: "var(--sv-success-bg)" }}
             >
               <i
-                className="pi pi-bookmark"
-                style={{ color: "var(--sv-success)", fontSize: "1.3rem" }}
+                className="pi pi-bookmark sv-text-gain"
+                style={{ fontSize: "1.3rem" }}
               />
             </div>
             <div className="flex-grow-1">
-              <div
-                className="font-bold mb-1"
-                style={{ color: "var(--sv-text-primary)" }}
-              >
-                Saved Strategies
-              </div>
-              <div
-                className="text-sm"
-                style={{ color: "var(--sv-text-muted)" }}
-              >
+              <div className="font-bold mb-1 text-color">Saved Strategies</div>
+              <div className="text-sm sv-text-muted">
                 {userCount > 0
                   ? `${userCount} saved ${userCount === 1 ? "strategy" : "strategies"} in your library`
                   : "No saved strategies yet. Start building!"}
               </div>
             </div>
             <div
-              className="font-bold"
-              style={{
-                color: "var(--sv-success)",
-                fontSize: "1.8rem",
-                minWidth: "2rem",
-                textAlign: "center",
-              }}
+              className="font-bold sv-text-gain"
+              style={{ fontSize: "1.8rem", minWidth: "2rem", textAlign: "center" }}
             >
               {userCount}
             </div>
@@ -2930,11 +2543,8 @@ const StrategyDashboardPage: React.FC = () => {
 
   return (
     <div
-      style={{
-        minHeight: "100vh",
-        background: "var(--sv-bg-card)",
-        padding: "1.5rem",
-      }}
+      className="p-4"
+      style={{ minHeight: "100vh", background: "var(--sv-bg-card)" }}
     >
       <Toast ref={toast} position="top-right" />
       <ConfirmDialog />
@@ -2943,43 +2553,27 @@ const StrategyDashboardPage: React.FC = () => {
           icon={sidebarOpen ? "pi pi-chevron-left" : "pi pi-bars"}
           className="p-button-sm p-button-text"
           onClick={() => setSidebarOpen((v) => !v)}
-          style={{ color: "var(--sv-text-muted)" }}
           tooltip={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
           tooltipOptions={{ position: "right" }}
         />
-        <i className="pi pi-chart-bar" style={{ color: "var(--sv-accent)" }} />
-        <span
-          className="font-bold"
-          style={{ color: "var(--sv-text-primary)", fontSize: "1.1rem" }}
-        >
+        <i className="pi pi-chart-bar sv-text-accent" />
+        <span className="font-bold text-color" style={{ fontSize: "1.1rem" }}>
           {getPanelTitle()}
         </span>
       </div>
-      <div className="grid" style={{ gap: 0, alignItems: "flex-start" }}>
+      <div className="grid align-items-start" style={{ gap: 0 }}>
         {sidebarOpen && (
-          <div className="col-12 md:col-3" style={{ paddingRight: ".75rem" }}>
+          <div className="col-12 md:col-3 pr-3">
             <div
-              className="border-round-lg"
-              style={{
-                background: "var(--sv-bg-surface)",
-                border: "1px solid var(--sv-border)",
-                boxShadow: "var(--sv-shadow-md)",
-                overflow: "hidden",
-                position: "sticky",
-                top: "1rem",
-              }}
+              className="sv-data-card border-round-lg overflow-hidden"
+              style={{ position: "sticky", top: "1rem" }}
             >
+              {/* SV Strategies section */}
               <div
                 className="p-3 pb-2"
                 style={{ borderBottom: "1px solid var(--sv-border)" }}
               >
-                <span
-                  className="text-xs font-bold uppercase"
-                  style={{
-                    color: "var(--sv-text-muted)",
-                    letterSpacing: ".1em",
-                  }}
-                >
+                <span className="text-xs font-bold uppercase sv-info-label">
                   SV Strategies
                 </span>
               </div>
@@ -2988,30 +2582,11 @@ const StrategyDashboardPage: React.FC = () => {
                 return (
                   <div
                     key={s.id}
-                    className="flex align-items-center gap-2 p-3 cursor-pointer"
-                    style={{
-                      borderLeft: active
-                        ? "3px solid var(--sv-accent)"
-                        : "3px solid transparent",
-                      background: active
-                        ? "var(--sv-accent-bg)"
-                        : "transparent",
-                      transition: "all .15s",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!active)
-                        (e.currentTarget as HTMLElement).style.background =
-                          "rgba(255,255,255,.04)";
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!active)
-                        (e.currentTarget as HTMLElement).style.background =
-                          "transparent";
-                    }}
+                    className={`sv-sidebar-item flex align-items-center gap-2${active ? " active" : ""}`}
                     onClick={() => selectSvStrategy(s.id)}
                   >
                     <div
-                      className="border-round flex align-items-center justify-content-center"
+                      className="border-round flex align-items-center justify-content-center flex-shrink-0"
                       style={{
                         background: active
                           ? "var(--sv-accent)"
@@ -3029,26 +2604,16 @@ const StrategyDashboardPage: React.FC = () => {
                       />
                     </div>
                     <div className="overflow-hidden">
-                      <div
-                        className="text-sm font-semibold white-space-nowrap overflow-hidden text-overflow-ellipsis"
-                        style={{
-                          color: active
-                            ? "var(--sv-accent)"
-                            : "var(--sv-text-primary)",
-                        }}
-                      >
+                      <div className="text-sm font-semibold white-space-nowrap overflow-hidden text-overflow-ellipsis">
                         {s.name}
                       </div>
-                      <div
-                        className="text-xs"
-                        style={{ color: "var(--sv-text-muted)" }}
-                      >
-                        {s.subtitle}
-                      </div>
+                      <div className="text-xs sv-text-muted">{s.subtitle}</div>
                     </div>
                   </div>
                 );
               })}
+
+              {/* My Strategies section */}
               <div
                 className="p-3 pb-2"
                 style={{
@@ -3058,26 +2623,19 @@ const StrategyDashboardPage: React.FC = () => {
                 }}
               >
                 <div className="flex align-items-center justify-content-between">
-                  <span
-                    className="text-xs font-bold uppercase"
-                    style={{
-                      color: "var(--sv-text-muted)",
-                      letterSpacing: ".1em",
-                    }}
-                  >
+                  <span className="text-xs font-bold uppercase sv-info-label">
                     My Strategies
                   </span>
                   {userPresets.length > 0 && (
-                    <span
-                      className="text-xs font-bold px-2"
+                    <Tag
+                      value={String(userPresets.length)}
+                      className="border-round-xl"
                       style={{
                         background: "var(--sv-accent-bg)",
                         color: "var(--sv-accent)",
-                        borderRadius: "10px",
+                        fontSize: "0.7rem",
                       }}
-                    >
-                      {userPresets.length}
-                    </span>
+                    />
                   )}
                 </div>
               </div>
@@ -3093,10 +2651,7 @@ const StrategyDashboardPage: React.FC = () => {
                     ))}
                   </div>
                 ) : userPresets.length === 0 ? (
-                  <div
-                    className="p-3 text-center text-xs"
-                    style={{ color: "var(--sv-text-muted)" }}
-                  >
+                  <div className="p-3 text-center text-xs sv-text-muted">
                     No saved strategies yet.
                   </div>
                 ) : (
@@ -3112,30 +2667,19 @@ const StrategyDashboardPage: React.FC = () => {
                             ? "3px solid var(--sv-warning)"
                             : "3px solid transparent",
                           background: active
-                            ? "rgba(245,158,11,.08)"
+                            ? "var(--sv-warning-bg)"
                             : "transparent",
                           transition: "all .15s",
-                        }}
-                        onMouseEnter={(e) => {
-                          if (!active)
-                            (e.currentTarget as HTMLElement).style.background =
-                              "rgba(255,255,255,.04)";
-                        }}
-                        onMouseLeave={(e) => {
-                          if (!active)
-                            (e.currentTarget as HTMLElement).style.background =
-                              "transparent";
                         }}
                         onClick={() => selectUserPreset(p)}
                       >
                         <i
-                          className="pi pi-bookmark"
+                          className="pi pi-bookmark flex-shrink-0"
                           style={{
                             color: active
                               ? "var(--sv-warning)"
                               : "var(--sv-text-muted)",
                             fontSize: ".85rem",
-                            flexShrink: 0,
                           }}
                         />
                         <div className="flex-grow-1 overflow-hidden">
@@ -3150,10 +2694,7 @@ const StrategyDashboardPage: React.FC = () => {
                             {p.name}
                           </div>
                           {p.symbol && (
-                            <div
-                              className="text-xs"
-                              style={{ color: "var(--sv-text-muted)" }}
-                            >
+                            <div className="text-xs sv-text-muted">
                               {p.symbol}
                             </div>
                           )}
@@ -3161,12 +2702,7 @@ const StrategyDashboardPage: React.FC = () => {
                         <Button
                           icon="pi pi-trash"
                           className="p-button-sm p-button-text p-button-danger"
-                          style={{
-                            padding: "4px",
-                            width: "26px",
-                            height: "26px",
-                            flexShrink: 0,
-                          }}
+                          style={{ padding: "4px", width: "26px", height: "26px", flexShrink: 0 }}
                           onClick={(e) => {
                             e.stopPropagation();
                             deletePreset(p.id, p.name);
@@ -3187,11 +2723,6 @@ const StrategyDashboardPage: React.FC = () => {
                   label="New Strategy"
                   icon="pi pi-plus"
                   className="p-button-sm w-full p-button-outlined"
-                  style={{
-                    borderColor: "var(--sv-accent)",
-                    color: "var(--sv-accent)",
-                    fontWeight: 600,
-                  }}
                   onClick={() => {
                     setSelectedId("__new__");
                     setSelectedPreset(null);
@@ -3204,13 +2735,8 @@ const StrategyDashboardPage: React.FC = () => {
         {/* Main content */}
         <div className={sidebarOpen ? "col-12 md:col-9" : "col-12"}>
           <div
-            className="border-round-lg p-4"
-            style={{
-              background: "var(--sv-bg-card)",
-              border: "1px solid var(--sv-border)",
-              boxShadow: "var(--sv-shadow-lg)",
-              minHeight: "80vh",
-            }}
+            className="sv-data-card border-round-lg p-4"
+            style={{ minHeight: "80vh" }}
           >
             {renderMainPanel()}
           </div>
