@@ -226,14 +226,16 @@ const DEFAULT_STOCH = {
   stoch_num_of_periods: 12,
   stoch_smoothening_ema_period: 26,
   stoch_trigger_ema_period: 9,
-  stoch_condition_buy_below: 20,
-  stoch_condition_sell_above: 80,
+  stoch_buy_sell_weight: 2,
+  stoch_buy_trigger_diff_cross: 0,
+  stoch_sell_trigger_diff_cross: 0,
 };
-const DEFAULT_MFI = { mfi_num_of_periods: 14 };
+const DEFAULT_MFI = { mfi_num_of_periods: 14, mfi_buy_sell_weight: 1 };
 const DEFAULT_MACD = {
-  macd_slow_ema_period: 26,
-  macd_fast_ema_period: 12,
+  macd_slow_period: 26,
+  macd_fast_period: 12,
   macd_trigger_period: 9,
+  macd_buy_sell_weight: 1,
 };
 const DEFAULT_SMA = { sma1_period: 13, sma2_period: 34 };
 const DEFAULT_MACD1 = {
@@ -512,8 +514,8 @@ function AdvancedMfParams({
         </div>
         {(
           [
-            { label: "Slow EMA", key: "macd_slow_ema_period" },
-            { label: "Fast EMA", key: "macd_fast_ema_period" },
+            { label: "Slow EMA", key: "macd_slow_period" },
+            { label: "Fast EMA", key: "macd_fast_period" },
             { label: "Trigger", key: "macd_trigger_period" },
           ] as { label: string; key: keyof typeof DEFAULT_MACD }[]
         ).map((f) => (
@@ -570,8 +572,11 @@ const MoneyFlowPanel: React.FC<{ presetName?: string }> = ({ presetName }) => {
       const { data } = await api.post("/strategy/riapro", {
         model_inputs: {
           symbol: sym,
+          symbol1: sym,
+          symbol2: "SPY",
           start_date: fmtApiDate(startDate),
           end_date: fmtApiDate(endDate),
+          test_period: 366,
           sample_frequency: freq,
         },
         ria_pro_inputs: {
