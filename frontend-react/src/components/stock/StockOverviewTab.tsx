@@ -7,7 +7,7 @@ import { Skeleton } from "primereact/skeleton";
 import { TabView, TabPanel } from "primereact/tabview";
 import api from "@/services/api";
 import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
-import AssetLineChart from "@/components/common/AssetLineChart";
+import SymbolHistoricalChart from "@/components/common/SymbolHistoricalChart";
 
 // ── Chart colour tokens ─────────────────────────────────────────────────────
 const CHART_COLORS: Record<
@@ -733,8 +733,8 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
         {loading ? (
           <Skeleton height="270px" />
         ) : (
-          <AssetLineChart
-            symbols={[symbol]}
+          <SymbolHistoricalChart
+            symbols={[symbol, "^GSPC"]}
             height={270}
             filled
             defaultPeriod="1year"
