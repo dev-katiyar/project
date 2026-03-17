@@ -3,6 +3,7 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { Skeleton } from "primereact/skeleton";
 import api from "@/services/api";
+import FairValueChart from "@/components/stock/FairValueChart";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -538,6 +539,14 @@ const StockFundamentalsTab: React.FC<StockFundamentalsTabProps> = ({ symbol }) =
       {!loading && !error && fundamentals && (
         <QuickStatsRow fundamentals={fundamentals} frequency={frequency} period={period} />
       )}
+
+      {/* ── Fair Value ───────────────────────────────────────────────────────── */}
+      <div className="sv-data-card p-3">
+        <div style={{ fontSize: "0.68rem", fontWeight: 700, color: "var(--sv-text-muted)", textTransform: "uppercase", letterSpacing: "0.09em", marginBottom: "0.75rem" }}>
+          Fair Value Estimate
+        </div>
+        <FairValueChart symbol={symbol} />
+      </div>
     </div>
   );
 };
