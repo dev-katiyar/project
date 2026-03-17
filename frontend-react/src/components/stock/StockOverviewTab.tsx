@@ -10,20 +10,30 @@ import { useTheme, type ThemeName } from "@/contexts/ThemeContext";
 import AssetLineChart from "@/components/common/AssetLineChart";
 
 // ── Chart colour tokens ─────────────────────────────────────────────────────
-const CHART_COLORS: Record<ThemeName, { bg: string; grid: string; text: string }> = {
-  dark:  { bg: "#121a2e", grid: "#1c2840", text: "#7a8da8" },
-  dim:   { bg: "#1c2945", grid: "#283a5c", text: "#7a92b8" },
+const CHART_COLORS: Record<
+  ThemeName,
+  { bg: string; grid: string; text: string }
+> = {
+  dark: { bg: "#121a2e", grid: "#1c2840", text: "#7a8da8" },
+  dim: { bg: "#1c2945", grid: "#283a5c", text: "#7a92b8" },
   light: { bg: "#ffffff", grid: "#dfe7f5", text: "#4a5e78" },
 };
 
 // ── Formatters ──────────────────────────────────────────────────────────────
 function fmtNum(v: any, d = 2): string {
   const n = parseFloat(v);
-  return isNaN(n) ? "—" : n.toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d });
+  return isNaN(n)
+    ? "—"
+    : n.toLocaleString(undefined, {
+        minimumFractionDigits: d,
+        maximumFractionDigits: d,
+      });
 }
 function fmtPrice(v: any): string {
   const n = parseFloat(v);
-  return isNaN(n) ? "—" : `$${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return isNaN(n)
+    ? "—"
+    : `$${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 function fmtChange(v: any): string {
   const n = parseFloat(v);
@@ -33,7 +43,7 @@ function fmtChange(v: any): string {
 function fmtPctDecimal(v: any): string {
   const n = parseFloat(v);
   if (isNaN(n)) return "—";
-  return `${(n * 100) >= 0 ? "+" : ""}${(n * 100).toFixed(2)}%`;
+  return `${n * 100 >= 0 ? "+" : ""}${(n * 100).toFixed(2)}%`;
 }
 function fmtPctDirect(v: any): string {
   const n = parseFloat(v);
@@ -44,26 +54,40 @@ function fmtLarge(v: any): string {
   const n = parseFloat(v);
   if (isNaN(n)) return "—";
   if (Math.abs(n) >= 1e12) return `${(n / 1e12).toFixed(2)}T`;
-  if (Math.abs(n) >= 1e9)  return `${(n / 1e9).toFixed(2)}B`;
-  if (Math.abs(n) >= 1e6)  return `${(n / 1e6).toFixed(2)}M`;
+  if (Math.abs(n) >= 1e9) return `${(n / 1e9).toFixed(2)}B`;
+  if (Math.abs(n) >= 1e6) return `${(n / 1e6).toFixed(2)}M`;
   return n.toLocaleString();
 }
 function fmtDate(ts: any): string {
   if (!ts) return "—";
   const d = ts instanceof Date ? ts : new Date(ts);
   if (isNaN(d.getTime())) return "—";
-  return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+  return d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 }
 function fmtDateTime(ts: any): string {
   if (!ts) return "—";
   const d = ts instanceof Date ? ts : new Date(ts);
   if (isNaN(d.getTime())) return "—";
-  return d.toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+  return d.toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
 }
 
 // ── Return tile heat-map colour ─────────────────────────────────────────────
-function getReturnTileStyle(value: number, maxAbs: number): React.CSSProperties {
-  if (isNaN(value) || maxAbs === 0) return { background: "var(--sv-bg-card)", color: "var(--sv-text-primary)" };
+function getReturnTileStyle(
+  value: number,
+  maxAbs: number,
+): React.CSSProperties {
+  if (isNaN(value) || maxAbs === 0)
+    return { background: "var(--sv-bg-card)", color: "var(--sv-text-primary)" };
   const t = Math.min(Math.abs(value) / maxAbs, 1);
   if (value >= 0) {
     return {
@@ -80,7 +104,10 @@ function getReturnTileStyle(value: number, maxAbs: number): React.CSSProperties 
 // ── Types ───────────────────────────────────────────────────────────────────
 interface TechRow {
   symbol: string;
-  wtd: number; mtd: number; qtd: number; ytd: number;
+  wtd: number;
+  mtd: number;
+  qtd: number;
+  ytd: number;
   change_oneyearbeforedate_pct: number;
   priceChange2Year: number;
   priceChange3Year: number;
@@ -148,34 +175,55 @@ export interface OverviewData {
   revenueNextYearEstimate?: number;
   longBusinessSummary?: string;
   revEarningAnnual?: Array<{ date: string; revenue: number; earnings: number }>;
-  revEarningQuarterly?: Array<{ date: string; revenue: number; earnings: number }>;
+  revEarningQuarterly?: Array<{
+    date: string;
+    revenue: number;
+    earnings: number;
+  }>;
   epsQuarterly?: Array<{ date: string; epsActual: number }>;
   // merged from tech data
-  wtd?: number; mtd?: number; qtd?: number; ytd?: number;
+  wtd?: number;
+  mtd?: number;
+  qtd?: number;
+  ytd?: number;
   change_oneyearbeforedate_pct?: number;
   priceChange2Year?: number;
   priceChange3Year?: number;
 }
 
 const RETURN_TILES: Array<{ key: keyof OverviewData; label: string }> = [
-  { key: "wtd",                        label: "WTD"    },
-  { key: "mtd",                        label: "MTD"    },
-  { key: "qtd",                        label: "QTD"    },
-  { key: "ytd",                        label: "YTD"    },
+  { key: "wtd", label: "WTD" },
+  { key: "mtd", label: "MTD" },
+  { key: "qtd", label: "QTD" },
+  { key: "ytd", label: "YTD" },
   { key: "change_oneyearbeforedate_pct", label: "1 Year" },
-  { key: "priceChange2Year",           label: "2 Year" },
-  { key: "priceChange3Year",           label: "3 Year" },
+  { key: "priceChange2Year", label: "2 Year" },
+  { key: "priceChange3Year", label: "3 Year" },
 ];
 
 // ── Small reusable sub-components ───────────────────────────────────────────
-const MetricRow: React.FC<{ label: string; value: React.ReactNode; valueColor?: string }> = ({ label, value, valueColor }) => (
+const MetricRow: React.FC<{
+  label: string;
+  value: React.ReactNode;
+  valueColor?: string;
+}> = ({ label, value, valueColor }) => (
   <div className="flex justify-content-between align-items-center py-2 border-bottom-1 surface-border">
     <span className="text-sm text-color-secondary">{label}</span>
-    <span className="text-sm font-semibold" style={valueColor ? { color: valueColor } : undefined}>{value}</span>
+    <span
+      className="text-sm font-semibold"
+      style={valueColor ? { color: valueColor } : undefined}
+    >
+      {value}
+    </span>
   </div>
 );
 
-const KpiCard: React.FC<{ icon: string; label: string; value: React.ReactNode; sub?: React.ReactNode }> = ({ icon, label, value, sub }) => (
+const KpiCard: React.FC<{
+  icon: string;
+  label: string;
+  value: React.ReactNode;
+  sub?: React.ReactNode;
+}> = ({ icon, label, value, sub }) => (
   <div className="surface-overlay border-1 surface-border border-round-xl p-3 h-full">
     <div className="flex align-items-center gap-2 mb-2">
       <i className={`${icon} sv-text-accent`} style={{ fontSize: 14 }} />
@@ -186,12 +234,51 @@ const KpiCard: React.FC<{ icon: string; label: string; value: React.ReactNode; s
   </div>
 );
 
-const RangeBar: React.FC<{ low: number; high: number; current: number }> = ({ low, high, current }) => {
-  const pct = high > low ? Math.min(Math.max((current - low) / (high - low), 0), 1) * 100 : 50;
+const RangeBar: React.FC<{ low: number; high: number; current: number }> = ({
+  low,
+  high,
+  current,
+}) => {
+  const pct =
+    high > low
+      ? Math.min(Math.max((current - low) / (high - low), 0), 1) * 100
+      : 50;
   return (
-    <div style={{ position: "relative", height: 6, borderRadius: 4, background: "var(--sv-border)", margin: "6px 0 4px" }}>
-      <div style={{ position: "absolute", left: 0, width: `${pct}%`, top: 0, bottom: 0, borderRadius: 4, background: "var(--sv-accent)", opacity: 0.45 }} />
-      <div style={{ position: "absolute", left: `${pct}%`, top: "50%", transform: "translate(-50%,-50%)", width: 13, height: 13, borderRadius: "50%", background: "var(--sv-accent)", border: "2px solid var(--sv-bg-card)", zIndex: 1 }} />
+    <div
+      style={{
+        position: "relative",
+        height: 6,
+        borderRadius: 4,
+        background: "var(--sv-border)",
+        margin: "6px 0 4px",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          width: `${pct}%`,
+          top: 0,
+          bottom: 0,
+          borderRadius: 4,
+          background: "var(--sv-accent)",
+          opacity: 0.45,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          left: `${pct}%`,
+          top: "50%",
+          transform: "translate(-50%,-50%)",
+          width: 13,
+          height: 13,
+          borderRadius: "50%",
+          background: "var(--sv-accent)",
+          border: "2px solid var(--sv-bg-card)",
+          zIndex: 1,
+        }}
+      />
     </div>
   );
 };
@@ -204,7 +291,11 @@ interface StockOverviewTabProps {
 }
 
 // ── Component ───────────────────────────────────────────────────────────────
-const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName, assetType }) => {
+const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
+  symbol,
+  companyName,
+  assetType,
+}) => {
   const { theme } = useTheme();
   const cc = CHART_COLORS[theme];
 
@@ -230,16 +321,21 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
 
       // Convert Unix timestamps → Date
       for (const field of [
-        "regularMarketTime", "lastDividendDate", "lastSplitDate",
-        "sharesShortDate", "sharesShortPriorMonthDate",
+        "regularMarketTime",
+        "lastDividendDate",
+        "lastSplitDate",
+        "sharesShortDate",
+        "sharesShortPriorMonthDate",
       ] as const) {
         if (ov[field] && typeof ov[field] === "number") {
-          (ov as any)[field] = new Date((ov[field] as unknown as number) * 1000);
+          (ov as any)[field] = new Date(
+            (ov[field] as unknown as number) * 1000,
+          );
         }
       }
 
       // Merge returns from tech data
-      const tech = (techRes.data as TechRow[])?.find(t => t.symbol === sym);
+      const tech = (techRes.data as TechRow[])?.find((t) => t.symbol === sym);
       if (tech) {
         ov.wtd = tech.wtd;
         ov.mtd = tech.mtd;
@@ -266,72 +362,147 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
   // ── Derived values ────────────────────────────────────────────────────────
   const maxAbsReturn = useMemo(() => {
     if (!overview) return 1;
-    const vals = RETURN_TILES
-      .map(t => overview[t.key] as number | undefined)
-      .filter((v): v is number => v !== undefined && !isNaN(v));
+    const vals = RETURN_TILES.map(
+      (t) => overview[t.key] as number | undefined,
+    ).filter((v): v is number => v !== undefined && !isNaN(v));
     if (!vals.length) return 1;
-    return Math.max(Math.abs(Math.min(...vals)), Math.abs(Math.max(...vals)), 0.01);
+    return Math.max(
+      Math.abs(Math.min(...vals)),
+      Math.abs(Math.max(...vals)),
+      0.01,
+    );
   }, [overview]);
 
   const isStock = (assetType ?? "STOCKS") === "STOCKS";
   const changePositive = (overview?.regularMarketChange ?? 0) >= 0;
-  const changeColor = overview?.regularMarketChange !== undefined
-    ? (changePositive ? "var(--sv-gain)" : "var(--sv-loss)")
-    : "var(--sv-text-secondary)";
+  const changeColor =
+    overview?.regularMarketChange !== undefined
+      ? changePositive
+        ? "var(--sv-gain)"
+        : "var(--sv-loss)"
+      : "var(--sv-text-secondary)";
 
   // ── Chart options ─────────────────────────────────────────────────────────
-  const revSrc = revFreq === "yearly" ? overview?.revEarningAnnual : overview?.revEarningQuarterly;
+  const revSrc =
+    revFreq === "yearly"
+      ? overview?.revEarningAnnual
+      : overview?.revEarningQuarterly;
 
-  const revChartOpts = useMemo((): Highcharts.Options => ({
-    chart: { type: "column", backgroundColor: cc.bg, height: 220, margin: [20, 10, 65, 65], borderRadius: 0 },
-    title: { text: undefined },
-    legend: { enabled: true, itemStyle: { color: cc.text, fontSize: "11px" }, align: "left" },
-    xAxis: {
-      categories: revSrc?.map(r => r.date.slice(0, 7)) ?? [],
-      labels: { style: { color: cc.text, fontSize: "10px" }, rotation: -45 },
-      lineColor: cc.grid, tickColor: cc.grid,
-    },
-    yAxis: {
+  const revChartOpts = useMemo(
+    (): Highcharts.Options => ({
+      chart: {
+        type: "column",
+        backgroundColor: cc.bg,
+        height: 220,
+        margin: [20, 10, 65, 65],
+        borderRadius: 0,
+      },
       title: { text: undefined },
-      labels: { style: { color: cc.text, fontSize: "11px" }, formatter() { return fmtLarge(this.value); } },
-      gridLineColor: cc.grid,
-    },
-    series: [
-      { type: "column", name: "Revenue",  data: revSrc?.map(r => r.revenue)  ?? [], color: "#3b82f6" },
-      { type: "column", name: "Earnings", data: revSrc?.map(r => r.earnings) ?? [], color: "#22c55e" },
-    ],
-    plotOptions: { column: { borderWidth: 0, borderRadius: 3, groupPadding: 0.08 } },
-    tooltip: { shared: true, formatter() { return this.points?.map(p => `<b>${p.series.name}</b>: $${fmtLarge(p.y)}`).join("<br/>") ?? ""; } },
-    credits: { enabled: false },
-    accessibility: { enabled: false },
-  }), [revSrc, cc]);
+      legend: {
+        enabled: true,
+        itemStyle: { color: cc.text, fontSize: "11px" },
+        align: "left",
+      },
+      xAxis: {
+        categories: revSrc?.map((r) => r.date.slice(0, 7)) ?? [],
+        labels: { style: { color: cc.text, fontSize: "10px" }, rotation: -45 },
+        lineColor: cc.grid,
+        tickColor: cc.grid,
+      },
+      yAxis: {
+        title: { text: undefined },
+        labels: {
+          style: { color: cc.text, fontSize: "11px" },
+          formatter() {
+            return fmtLarge(this.value);
+          },
+        },
+        gridLineColor: cc.grid,
+      },
+      series: [
+        {
+          type: "column",
+          name: "Revenue",
+          data: revSrc?.map((r) => r.revenue) ?? [],
+          color: "#3b82f6",
+        },
+        {
+          type: "column",
+          name: "Earnings",
+          data: revSrc?.map((r) => r.earnings) ?? [],
+          color: "#22c55e",
+        },
+      ],
+      plotOptions: {
+        column: { borderWidth: 0, borderRadius: 3, groupPadding: 0.08 },
+      },
+      tooltip: {
+        shared: true,
+        formatter() {
+          return (
+            this.points
+              ?.map((p) => `<b>${p.series.name}</b>: $${fmtLarge(p.y)}`)
+              .join("<br/>") ?? ""
+          );
+        },
+      },
+      credits: { enabled: false },
+      accessibility: { enabled: false },
+    }),
+    [revSrc, cc],
+  );
 
   const epsSrc = overview?.epsQuarterly;
-  const epsChartOpts = useMemo((): Highcharts.Options => ({
-    chart: { type: "column", backgroundColor: cc.bg, height: 220, margin: [20, 10, 65, 60], borderRadius: 0 },
-    title: { text: undefined },
-    legend: { enabled: false },
-    xAxis: {
-      categories: epsSrc?.map(r => r.date.slice(0, 7)) ?? [],
-      labels: { style: { color: cc.text, fontSize: "10px" }, rotation: -45 },
-      lineColor: cc.grid, tickColor: cc.grid,
-    },
-    yAxis: {
+  const epsChartOpts = useMemo(
+    (): Highcharts.Options => ({
+      chart: {
+        type: "column",
+        backgroundColor: cc.bg,
+        height: 220,
+        margin: [20, 10, 65, 60],
+        borderRadius: 0,
+      },
       title: { text: undefined },
-      labels: { style: { color: cc.text, fontSize: "11px" }, formatter() { return `$${(this.value as number).toFixed(2)}`; } },
-      gridLineColor: cc.grid,
-    },
-    series: [{
-      type: "column",
-      name: "EPS",
-      data: epsSrc?.map(r => ({ y: r.epsActual, color: r.epsActual >= 0 ? "#22c55e" : "#ef4444" })) ?? [],
-      borderWidth: 0,
-      borderRadius: 3,
-    }],
-    tooltip: { formatter() { return `<b>EPS</b>: $${(this.y as number).toFixed(2)}`; } },
-    credits: { enabled: false },
-    accessibility: { enabled: false },
-  }), [epsSrc, cc]);
+      legend: { enabled: false },
+      xAxis: {
+        categories: epsSrc?.map((r) => r.date.slice(0, 7)) ?? [],
+        labels: { style: { color: cc.text, fontSize: "10px" }, rotation: -45 },
+        lineColor: cc.grid,
+        tickColor: cc.grid,
+      },
+      yAxis: {
+        title: { text: undefined },
+        labels: {
+          style: { color: cc.text, fontSize: "11px" },
+          formatter() {
+            return `$${(this.value as number).toFixed(2)}`;
+          },
+        },
+        gridLineColor: cc.grid,
+      },
+      series: [
+        {
+          type: "column",
+          name: "EPS",
+          data:
+            epsSrc?.map((r) => ({
+              y: r.epsActual,
+              color: r.epsActual >= 0 ? "#22c55e" : "#ef4444",
+            })) ?? [],
+          borderWidth: 0,
+          borderRadius: 3,
+        },
+      ],
+      tooltip: {
+        formatter() {
+          return `<b>EPS</b>: $${(this.y as number).toFixed(2)}`;
+        },
+      },
+      credits: { enabled: false },
+      accessibility: { enabled: false },
+    }),
+    [epsSrc, cc],
+  );
 
   // ── Error state ───────────────────────────────────────────────────────────
   if (error) {
@@ -346,7 +517,6 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div>
-
       {/* ── Price hero + returns ────────────────────────────────────────────── */}
       <div
         className="surface-overlay border-1 surface-border border-round-xl px-3 pt-3 pb-2 mb-3"
@@ -354,9 +524,15 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
       >
         {loading ? (
           <div className="grid" style={{ margin: 0 }}>
-            <div className="col-12 md:col-auto p-2"><Skeleton width="180px" height="60px" /></div>
-            <div className="col-12 md:col p-2"><Skeleton height="60px" /></div>
-            <div className="col-12 p-2 mt-1"><Skeleton height="52px" /></div>
+            <div className="col-12 md:col-auto p-2">
+              <Skeleton width="180px" height="60px" />
+            </div>
+            <div className="col-12 md:col p-2">
+              <Skeleton height="60px" />
+            </div>
+            <div className="col-12 p-2 mt-1">
+              <Skeleton height="52px" />
+            </div>
           </div>
         ) : overview ? (
           <div className="flex align-items-stretch gap-4 flex-wrap">
@@ -364,22 +540,38 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
             <div style={{ minWidth: 180 }}>
               <div className="flex align-items-center gap-2">
                 <i
-                  className={changePositive ? "pi pi-arrow-up-right" : "pi pi-arrow-down-right"}
+                  className={
+                    changePositive
+                      ? "pi pi-arrow-up-right"
+                      : "pi pi-arrow-down-right"
+                  }
                   style={{ fontSize: 20, color: changeColor }}
                 />
-                <span className="font-bold text-color" style={{ fontSize: 38, lineHeight: 1, letterSpacing: "-0.01em" }}>
+                <span
+                  className="font-bold text-color"
+                  style={{
+                    fontSize: 38,
+                    lineHeight: 1,
+                    letterSpacing: "-0.01em",
+                  }}
+                >
                   {fmtPrice(overview.regularMarketPrice)}
                 </span>
               </div>
               <div className="flex align-items-center gap-2 mt-1">
-                <span className="font-bold" style={{ fontSize: 16, color: changeColor }}>
+                <span
+                  className="font-bold"
+                  style={{ fontSize: 16, color: changeColor }}
+                >
                   {fmtChange(overview.regularMarketChange)}
                 </span>
                 <span
                   className="font-semibold border-round px-2 py-1"
                   style={{
                     fontSize: 13,
-                    background: changePositive ? "var(--sv-success-bg)" : "var(--sv-danger-bg)",
+                    background: changePositive
+                      ? "var(--sv-success-bg)"
+                      : "var(--sv-danger-bg)",
                     color: changeColor,
                   }}
                 >
@@ -392,21 +584,61 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
               </div>
             </div>
 
-            <div style={{ width: 1, alignSelf: "stretch", background: "var(--sv-border)", margin: "0 4px" }} />
+            <div
+              style={{
+                width: 1,
+                alignSelf: "stretch",
+                background: "var(--sv-border)",
+                margin: "0 4px",
+              }}
+            />
 
             {/* Right column: quick stats + returns */}
-            <div className="flex flex-column flex-1 gap-2" style={{ minWidth: 0 }}>
+            <div
+              className="flex flex-column flex-1 gap-2"
+              style={{ minWidth: 0 }}
+            >
               {/* Quick stats */}
               <div className="flex flex-wrap gap-2 align-items-stretch">
                 {[
-                  { label: "Open",       value: fmtPrice(overview.regularMarketOpen),             icon: "pi-chart-line" },
-                  { label: "Prev Close", value: fmtPrice(overview.regularMarketPreviousClose),     icon: "pi-history" },
-                  { label: "Volume",     value: fmtLarge(overview.regularMarketVolume),            icon: "pi-chart-bar" },
-                  { label: "Mkt Cap",    value: `$${fmtLarge(overview.marketCap)}`,               icon: "pi-building" },
-                  { label: "Beta",       value: fmtNum(overview.beta),                             icon: "pi-sliders-h" },
-                  { label: "Dividend",   value: overview.trailingAnnualDividendRate ? `$${fmtNum(overview.trailingAnnualDividendRate)}` : "—", icon: "pi-dollar" },
-                  { label: "Div Yield",  value: fmtPctDecimal(overview.trailingAnnualDividendYield), icon: "pi-percentage" },
-                ].map(s => (
+                  {
+                    label: "Open",
+                    value: fmtPrice(overview.regularMarketOpen),
+                    icon: "pi-chart-line",
+                  },
+                  {
+                    label: "Prev Close",
+                    value: fmtPrice(overview.regularMarketPreviousClose),
+                    icon: "pi-history",
+                  },
+                  {
+                    label: "Volume",
+                    value: fmtLarge(overview.regularMarketVolume),
+                    icon: "pi-chart-bar",
+                  },
+                  {
+                    label: "Mkt Cap",
+                    value: `$${fmtLarge(overview.marketCap)}`,
+                    icon: "pi-building",
+                  },
+                  {
+                    label: "Beta",
+                    value: fmtNum(overview.beta),
+                    icon: "pi-sliders-h",
+                  },
+                  {
+                    label: "Dividend",
+                    value: overview.trailingAnnualDividendRate
+                      ? `$${fmtNum(overview.trailingAnnualDividendRate)}`
+                      : "—",
+                    icon: "pi-dollar",
+                  },
+                  {
+                    label: "Div Yield",
+                    value: fmtPctDecimal(overview.trailingAnnualDividendYield),
+                    icon: "pi-percentage",
+                  },
+                ].map((s) => (
                   <div
                     key={s.label}
                     className="flex flex-column justify-content-center border-1 border-round-lg px-3 py-2"
@@ -420,18 +652,29 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
                     <div className="flex align-items-center gap-1 mb-1">
                       <i
                         className={`pi ${s.icon}`}
-                        style={{ fontSize: 9, color: "var(--sv-accent)", opacity: 0.8 }}
+                        style={{
+                          fontSize: 9,
+                          color: "var(--sv-accent)",
+                          opacity: 0.8,
+                        }}
                       />
-                      <span className="sv-info-label" style={{ fontSize: 10 }}>{s.label}</span>
+                      <span className="sv-info-label" style={{ fontSize: 10 }}>
+                        {s.label}
+                      </span>
                     </div>
-                    <div className="font-bold text-color" style={{ fontSize: 13 }}>{s.value}</div>
+                    <div
+                      className="font-bold text-color"
+                      style={{ fontSize: 13 }}
+                    >
+                      {s.value}
+                    </div>
                   </div>
                 ))}
               </div>
 
               {/* Returns tiles */}
               <div className="flex gap-2 align-items-stretch">
-                {RETURN_TILES.map(tile => {
+                {RETURN_TILES.map((tile) => {
                   const val = overview?.[tile.key] as number | undefined;
                   const tileStyle = getReturnTileStyle(val ?? 0, maxAbsReturn);
                   return (
@@ -446,12 +689,29 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
                           border: `1px solid ${tileStyle.color === "#fff" ? "rgba(255,255,255,0.18)" : "var(--sv-border)"}`,
                         }}
                       >
-                        <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.08em", color: "inherit", opacity: 0.75, textTransform: "uppercase" }}>
+                        <div
+                          style={{
+                            fontSize: 9,
+                            fontWeight: 800,
+                            letterSpacing: "0.08em",
+                            color: "inherit",
+                            opacity: 0.75,
+                            textTransform: "uppercase",
+                          }}
+                        >
                           {tile.label}
                         </div>
-                        <div className="font-bold" style={{ fontSize: 14, marginTop: 3, lineHeight: 1, color: "inherit" }}>
+                        <div
+                          className="font-bold"
+                          style={{
+                            fontSize: 14,
+                            marginTop: 3,
+                            lineHeight: 1,
+                            color: "inherit",
+                          }}
+                        >
                           {val !== undefined && !isNaN(val)
-                            ? `${val >= 0 ? "+" : ""}${(val * 100).toFixed(1)}%`
+                            ? `${val >= 0 ? "+" : ""}${val.toFixed(2)}%`
                             : "—"}
                         </div>
                       </div>
@@ -473,7 +733,12 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
         {loading ? (
           <Skeleton height="270px" />
         ) : (
-          <AssetLineChart symbols={[symbol]} height={270} filled defaultPeriod="1year" />
+          <AssetLineChart
+            symbols={[symbol]}
+            height={270}
+            filled
+            defaultPeriod="1year"
+          />
         )}
       </Card>
 
@@ -483,10 +748,15 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
         <div className="col-12 md:col-6 lg:col-4 p-1">
           <div className="surface-card border-1 surface-border border-round-xl p-3 h-full">
             <div className="flex align-items-center gap-2 mb-2">
-              <i className="pi pi-calendar sv-text-accent" style={{ fontSize: 13 }} />
+              <i
+                className="pi pi-calendar sv-text-accent"
+                style={{ fontSize: 13 }}
+              />
               <span className="sv-info-label text-xs">Day Range</span>
             </div>
-            {loading ? <Skeleton height="44px" /> : (
+            {loading ? (
+              <Skeleton height="44px" />
+            ) : (
               <>
                 <RangeBar
                   low={overview?.regularMarketDayLow ?? 0}
@@ -494,9 +764,15 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
                   current={overview?.regularMarketPrice ?? 0}
                 />
                 <div className="flex justify-content-between mt-1">
-                  <span className="text-sm sv-loss font-semibold">{fmtPrice(overview?.regularMarketDayLow)}</span>
-                  <span className="text-xs sv-text-muted self-center">{fmtPrice(overview?.regularMarketPrice)}</span>
-                  <span className="text-sm sv-gain font-semibold">{fmtPrice(overview?.regularMarketDayHigh)}</span>
+                  <span className="text-sm sv-loss font-semibold">
+                    {fmtPrice(overview?.regularMarketDayLow)}
+                  </span>
+                  <span className="text-xs sv-text-muted self-center">
+                    {fmtPrice(overview?.regularMarketPrice)}
+                  </span>
+                  <span className="text-sm sv-gain font-semibold">
+                    {fmtPrice(overview?.regularMarketDayHigh)}
+                  </span>
                 </div>
               </>
             )}
@@ -507,10 +783,15 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
         <div className="col-12 md:col-6 lg:col-4 p-1">
           <div className="surface-card border-1 surface-border border-round-xl p-3 h-full">
             <div className="flex align-items-center gap-2 mb-2">
-              <i className="pi pi-calendar-plus sv-text-accent" style={{ fontSize: 13 }} />
+              <i
+                className="pi pi-calendar-plus sv-text-accent"
+                style={{ fontSize: 13 }}
+              />
               <span className="sv-info-label text-xs">52-Week Range</span>
             </div>
-            {loading ? <Skeleton height="44px" /> : (
+            {loading ? (
+              <Skeleton height="44px" />
+            ) : (
               <>
                 <RangeBar
                   low={overview?.fiftyTwoWeekLow ?? 0}
@@ -518,13 +799,17 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
                   current={overview?.regularMarketPrice ?? 0}
                 />
                 <div className="flex justify-content-between mt-1">
-                  <span className="text-sm sv-loss font-semibold">{fmtPrice(overview?.fiftyTwoWeekLow)}</span>
+                  <span className="text-sm sv-loss font-semibold">
+                    {fmtPrice(overview?.fiftyTwoWeekLow)}
+                  </span>
                   <span className="text-xs sv-text-muted self-center">
                     {overview?.fiftyTwoWeekLow && overview?.fiftyTwoWeekHigh
-                      ? `${(((overview.regularMarketPrice ?? 0) - overview.fiftyTwoWeekLow) / (overview.fiftyTwoWeekHigh - overview.fiftyTwoWeekLow) * 100).toFixed(0)}% of range`
+                      ? `${((((overview.regularMarketPrice ?? 0) - overview.fiftyTwoWeekLow) / (overview.fiftyTwoWeekHigh - overview.fiftyTwoWeekLow)) * 100).toFixed(0)}% of range`
                       : ""}
                   </span>
-                  <span className="text-sm sv-gain font-semibold">{fmtPrice(overview?.fiftyTwoWeekHigh)}</span>
+                  <span className="text-sm sv-gain font-semibold">
+                    {fmtPrice(overview?.fiftyTwoWeekHigh)}
+                  </span>
                 </div>
               </>
             )}
@@ -533,16 +818,44 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
 
         {/* KPI cards */}
         {[
-          { icon: "pi pi-chart-bar", label: "Avg Volume (3M)",     value: fmtLarge(overview?.averageDailyVolume3Month), sub: `Today: ${fmtLarge(overview?.regularMarketVolume)}` },
-          { icon: "pi pi-wallet",    label: "Dividend (TTM)",       value: overview?.trailingAnnualDividendRate ? `$${fmtNum(overview.trailingAnnualDividendRate)}` : "—", sub: `Yield: ${fmtPctDecimal(overview?.trailingAnnualDividendYield)}` },
-          { icon: "pi pi-users",     label: "Shares Outstanding",   value: fmtLarge(overview?.sharesOutstanding), sub: `Float: ${fmtLarge(overview?.floatShares)}` },
-          { icon: "pi pi-globe",     label: "Market Cap",           value: `$${fmtLarge(overview?.marketCap)}`, sub: `Beta: ${fmtNum(overview?.beta)}` },
-        ].map(s => (
+          {
+            icon: "pi pi-chart-bar",
+            label: "Avg Volume (3M)",
+            value: fmtLarge(overview?.averageDailyVolume3Month),
+            sub: `Today: ${fmtLarge(overview?.regularMarketVolume)}`,
+          },
+          {
+            icon: "pi pi-wallet",
+            label: "Dividend (TTM)",
+            value: overview?.trailingAnnualDividendRate
+              ? `$${fmtNum(overview.trailingAnnualDividendRate)}`
+              : "—",
+            sub: `Yield: ${fmtPctDecimal(overview?.trailingAnnualDividendYield)}`,
+          },
+          {
+            icon: "pi pi-users",
+            label: "Shares Outstanding",
+            value: fmtLarge(overview?.sharesOutstanding),
+            sub: `Float: ${fmtLarge(overview?.floatShares)}`,
+          },
+          {
+            icon: "pi pi-globe",
+            label: "Market Cap",
+            value: `$${fmtLarge(overview?.marketCap)}`,
+            sub: `Beta: ${fmtNum(overview?.beta)}`,
+          },
+        ].map((s) => (
           <div key={s.label} className="col-12 md:col-6 lg:col-4 p-1">
-            {loading
-              ? <Skeleton height="70px" borderRadius="10px" />
-              : <KpiCard icon={s.icon} label={s.label} value={s.value} sub={s.sub} />
-            }
+            {loading ? (
+              <Skeleton height="70px" borderRadius="10px" />
+            ) : (
+              <KpiCard
+                icon={s.icon}
+                label={s.label}
+                value={s.value}
+                sub={s.sub}
+              />
+            )}
           </div>
         ))}
       </div>
@@ -554,11 +867,16 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
             <Card>
               <div className="flex justify-content-between align-items-center mb-2">
                 <div className="flex align-items-center gap-2">
-                  <i className="pi pi-money-bill sv-text-accent" style={{ fontSize: 13 }} />
-                  <span className="font-bold text-sm">Revenue &amp; Earnings</span>
+                  <i
+                    className="pi pi-money-bill sv-text-accent"
+                    style={{ fontSize: 13 }}
+                  />
+                  <span className="font-bold text-sm">
+                    Revenue &amp; Earnings
+                  </span>
                 </div>
                 <div className="flex gap-1">
-                  {(["quarterly", "yearly"] as const).map(f => (
+                  {(["quarterly", "yearly"] as const).map((f) => (
                     <Button
                       key={f}
                       onClick={() => setRevFreq(f)}
@@ -568,27 +886,50 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
                   ))}
                 </div>
               </div>
-              {loading
-                ? <Skeleton height="220px" />
-                : revSrc?.length
-                  ? <HighchartsReact highcharts={Highcharts} options={revChartOpts} />
-                  : <div className="flex align-items-center justify-content-center text-sm sv-text-muted" style={{ height: 220 }}>No data available</div>
-              }
+              {loading ? (
+                <Skeleton height="220px" />
+              ) : revSrc?.length ? (
+                <HighchartsReact
+                  highcharts={Highcharts}
+                  options={revChartOpts}
+                />
+              ) : (
+                <div
+                  className="flex align-items-center justify-content-center text-sm sv-text-muted"
+                  style={{ height: 220 }}
+                >
+                  No data available
+                </div>
+              )}
             </Card>
           </div>
 
           <div className="col-12 lg:col-6 p-1">
             <Card>
               <div className="flex align-items-center gap-2 mb-2">
-                <i className="pi pi-chart-line sv-text-accent" style={{ fontSize: 13 }} />
-                <span className="font-bold text-sm">Earnings Per Share — Quarterly</span>
+                <i
+                  className="pi pi-chart-line sv-text-accent"
+                  style={{ fontSize: 13 }}
+                />
+                <span className="font-bold text-sm">
+                  Earnings Per Share — Quarterly
+                </span>
               </div>
-              {loading
-                ? <Skeleton height="220px" />
-                : epsSrc?.length
-                  ? <HighchartsReact highcharts={Highcharts} options={epsChartOpts} />
-                  : <div className="flex align-items-center justify-content-center text-sm sv-text-muted" style={{ height: 220 }}>No data available</div>
-              }
+              {loading ? (
+                <Skeleton height="220px" />
+              ) : epsSrc?.length ? (
+                <HighchartsReact
+                  highcharts={Highcharts}
+                  options={epsChartOpts}
+                />
+              ) : (
+                <div
+                  className="flex align-items-center justify-content-center text-sm sv-text-muted"
+                  style={{ height: 220 }}
+                >
+                  No data available
+                </div>
+              )}
             </Card>
           </div>
         </div>
@@ -599,129 +940,369 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
         <div className="mb-3">
           <Card>
             <TabView pt={{ root: { className: "sv-tabs" } }}>
-
               <TabPanel header="Business Health" leftIcon="pi pi-heart mr-2">
-                {loading ? <Skeleton height="130px" /> : (
+                {loading ? (
+                  <Skeleton height="130px" />
+                ) : (
                   <div className="grid" style={{ margin: 0 }}>
                     <div className="col-12 md:col-6 pr-3">
                       {[
-                        { label: "Gross Margin",         value: fmtPctDecimal(overview?.grossMargins),   color: parseFloat(String(overview?.grossMargins)) > 0.3 ? "var(--sv-gain)" : undefined },
-                        { label: "Profit Margin",        value: fmtPctDecimal(overview?.profitMargins),  color: parseFloat(String(overview?.profitMargins)) > 0 ? "var(--sv-gain)" : "var(--sv-loss)" },
-                        { label: "Return on Equity (ROE)", value: fmtPctDecimal(overview?.returnOnEquity), color: parseFloat(String(overview?.returnOnEquity)) > 0 ? "var(--sv-gain)" : "var(--sv-loss)" },
-                        { label: "Return on Assets (ROA)", value: fmtPctDecimal(overview?.returnOnAssets), color: parseFloat(String(overview?.returnOnAssets)) > 0 ? "var(--sv-gain)" : "var(--sv-loss)" },
-                      ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} valueColor={m.color} />)}
+                        {
+                          label: "Gross Margin",
+                          value: fmtPctDecimal(overview?.grossMargins),
+                          color:
+                            parseFloat(String(overview?.grossMargins)) > 0.3
+                              ? "var(--sv-gain)"
+                              : undefined,
+                        },
+                        {
+                          label: "Profit Margin",
+                          value: fmtPctDecimal(overview?.profitMargins),
+                          color:
+                            parseFloat(String(overview?.profitMargins)) > 0
+                              ? "var(--sv-gain)"
+                              : "var(--sv-loss)",
+                        },
+                        {
+                          label: "Return on Equity (ROE)",
+                          value: fmtPctDecimal(overview?.returnOnEquity),
+                          color:
+                            parseFloat(String(overview?.returnOnEquity)) > 0
+                              ? "var(--sv-gain)"
+                              : "var(--sv-loss)",
+                        },
+                        {
+                          label: "Return on Assets (ROA)",
+                          value: fmtPctDecimal(overview?.returnOnAssets),
+                          color:
+                            parseFloat(String(overview?.returnOnAssets)) > 0
+                              ? "var(--sv-gain)"
+                              : "var(--sv-loss)",
+                        },
+                      ].map((m) => (
+                        <MetricRow
+                          key={m.label}
+                          label={m.label}
+                          value={m.value}
+                          valueColor={m.color}
+                        />
+                      ))}
                     </div>
                     <div className="col-12 md:col-6 pl-3">
                       {[
-                        { label: "Total Debt",   value: `$${fmtLarge(overview?.totalDebt)}` },
-                        { label: "Debt / Equity", value: fmtNum(overview?.debtToEquity) },
-                      ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
+                        {
+                          label: "Total Debt",
+                          value: `$${fmtLarge(overview?.totalDebt)}`,
+                        },
+                        {
+                          label: "Debt / Equity",
+                          value: fmtNum(overview?.debtToEquity),
+                        },
+                      ].map((m) => (
+                        <MetricRow
+                          key={m.label}
+                          label={m.label}
+                          value={m.value}
+                        />
+                      ))}
                     </div>
                   </div>
                 )}
               </TabPanel>
 
               <TabPanel header="Stock Stats" leftIcon="pi pi-chart-pie mr-2">
-                {loading ? <Skeleton height="180px" /> : (
+                {loading ? (
+                  <Skeleton height="180px" />
+                ) : (
                   <div className="grid" style={{ margin: 0 }}>
                     <div className="col-12 md:col-6 pr-3">
                       {[
-                        { label: "Shares Outstanding",    value: fmtLarge(overview?.sharesOutstanding) },
-                        { label: "Float Shares",          value: fmtLarge(overview?.floatShares) },
-                        { label: "Insider Holdings",      value: fmtPctDecimal(overview?.heldPercentInsiders) },
-                        { label: "Institutional Holdings", value: fmtPctDecimal(overview?.heldPercentInstitutions) },
-                      ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
+                        {
+                          label: "Shares Outstanding",
+                          value: fmtLarge(overview?.sharesOutstanding),
+                        },
+                        {
+                          label: "Float Shares",
+                          value: fmtLarge(overview?.floatShares),
+                        },
+                        {
+                          label: "Insider Holdings",
+                          value: fmtPctDecimal(overview?.heldPercentInsiders),
+                        },
+                        {
+                          label: "Institutional Holdings",
+                          value: fmtPctDecimal(
+                            overview?.heldPercentInstitutions,
+                          ),
+                        },
+                      ].map((m) => (
+                        <MetricRow
+                          key={m.label}
+                          label={m.label}
+                          value={m.value}
+                        />
+                      ))}
                     </div>
                     <div className="col-12 md:col-6 pl-3">
                       {[
-                        { label: overview?.sharesShortDate ? `Shares Short (${fmtDate(overview.sharesShortDate)})` : "Shares Short", value: fmtLarge(overview?.sharesShort) },
-                        { label: overview?.sharesShortPriorMonthDate ? `Shares Short Prior Month (${fmtDate(overview.sharesShortPriorMonthDate)})` : "Shares Short Prior Month", value: fmtLarge(overview?.sharesShortPriorMonth) },
-                        { label: overview?.insiderSharesLast6MonthBoughtCount ? `Insider Bought (${overview.insiderSharesLast6MonthBoughtCount} txn, 6M)` : "Insider Bought (6M)", value: fmtLarge(overview?.insiderSharesLast6MonthBought), color: "var(--sv-gain)" },
-                        { label: overview?.insiderSharesLast6MonthSoldCount ? `Insider Sold (${overview.insiderSharesLast6MonthSoldCount} txn, 6M)` : "Insider Sold (6M)", value: fmtLarge(overview?.insiderSharesLast6MonthSold), color: "var(--sv-loss)" },
-                      ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} valueColor={(m as any).color} />)}
+                        {
+                          label: overview?.sharesShortDate
+                            ? `Shares Short (${fmtDate(overview.sharesShortDate)})`
+                            : "Shares Short",
+                          value: fmtLarge(overview?.sharesShort),
+                        },
+                        {
+                          label: overview?.sharesShortPriorMonthDate
+                            ? `Shares Short Prior Month (${fmtDate(overview.sharesShortPriorMonthDate)})`
+                            : "Shares Short Prior Month",
+                          value: fmtLarge(overview?.sharesShortPriorMonth),
+                        },
+                        {
+                          label: overview?.insiderSharesLast6MonthBoughtCount
+                            ? `Insider Bought (${overview.insiderSharesLast6MonthBoughtCount} txn, 6M)`
+                            : "Insider Bought (6M)",
+                          value: fmtLarge(
+                            overview?.insiderSharesLast6MonthBought,
+                          ),
+                          color: "var(--sv-gain)",
+                        },
+                        {
+                          label: overview?.insiderSharesLast6MonthSoldCount
+                            ? `Insider Sold (${overview.insiderSharesLast6MonthSoldCount} txn, 6M)`
+                            : "Insider Sold (6M)",
+                          value: fmtLarge(
+                            overview?.insiderSharesLast6MonthSold,
+                          ),
+                          color: "var(--sv-loss)",
+                        },
+                      ].map((m) => (
+                        <MetricRow
+                          key={m.label}
+                          label={m.label}
+                          value={m.value}
+                          valueColor={(m as any).color}
+                        />
+                      ))}
                     </div>
                   </div>
                 )}
               </TabPanel>
 
               <TabPanel header="Earnings" leftIcon="pi pi-dollar mr-2">
-                {loading ? <Skeleton height="200px" /> : (
+                {loading ? (
+                  <Skeleton height="200px" />
+                ) : (
                   <div className="grid" style={{ margin: 0 }}>
                     <div className="col-12 md:col-6 pr-3">
                       <div className="sv-info-label text-xs font-bold mb-2 flex align-items-center gap-1">
-                        <i className="pi pi-check-circle" style={{ fontSize: 11 }} /> Actual
+                        <i
+                          className="pi pi-check-circle"
+                          style={{ fontSize: 11 }}
+                        />{" "}
+                        Actual
                       </div>
                       {[
-                        { label: "EPS — Last Quarter",  value: fmtPrice(overview?.epsLastQuarter) },
-                        { label: "EPS — Prior Quarter", value: fmtPrice(overview?.epsLastToLastQuarter) },
-                        { label: "EPS — Last Year",     value: fmtPrice(overview?.epsLastYearActual) },
-                        { label: "Revenue — Last Quarter",  value: `$${fmtLarge(overview?.revenueLastQuarter)}` },
-                        { label: "Revenue — Prior Quarter", value: `$${fmtLarge(overview?.revenueLastToLastQuarter)}` },
-                        { label: "Revenue — Last Year",     value: `$${fmtLarge(overview?.revenueLastYear)}` },
-                        { label: "Revenue — Prior Year",    value: `$${fmtLarge(overview?.revenueLastToLastYear)}` },
-                      ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
+                        {
+                          label: "EPS — Last Quarter",
+                          value: fmtPrice(overview?.epsLastQuarter),
+                        },
+                        {
+                          label: "EPS — Prior Quarter",
+                          value: fmtPrice(overview?.epsLastToLastQuarter),
+                        },
+                        {
+                          label: "EPS — Last Year",
+                          value: fmtPrice(overview?.epsLastYearActual),
+                        },
+                        {
+                          label: "Revenue — Last Quarter",
+                          value: `$${fmtLarge(overview?.revenueLastQuarter)}`,
+                        },
+                        {
+                          label: "Revenue — Prior Quarter",
+                          value: `$${fmtLarge(overview?.revenueLastToLastQuarter)}`,
+                        },
+                        {
+                          label: "Revenue — Last Year",
+                          value: `$${fmtLarge(overview?.revenueLastYear)}`,
+                        },
+                        {
+                          label: "Revenue — Prior Year",
+                          value: `$${fmtLarge(overview?.revenueLastToLastYear)}`,
+                        },
+                      ].map((m) => (
+                        <MetricRow
+                          key={m.label}
+                          label={m.label}
+                          value={m.value}
+                        />
+                      ))}
                     </div>
                     <div className="col-12 md:col-6 pl-3">
                       <div className="sv-info-label text-xs font-bold mb-2 flex align-items-center gap-1">
-                        <i className="pi pi-calendar" style={{ fontSize: 11 }} /> Estimates
+                        <i
+                          className="pi pi-calendar"
+                          style={{ fontSize: 11 }}
+                        />{" "}
+                        Estimates
                       </div>
                       {[
-                        { label: "EPS — Current Quarter",     value: fmtPrice(overview?.epsCurrentQuarterEstimate) },
-                        { label: "EPS — Next Quarter",        value: fmtPrice(overview?.epsNextQuarterEstimate) },
-                        { label: "EPS — Current Year",        value: fmtPrice(overview?.epsCurrentYearEstimate) },
-                        { label: "Revenue — Current Quarter", value: `$${fmtLarge(overview?.revenueCurrentQuarterEstimate)}` },
-                        { label: "Revenue — Next Quarter",    value: `$${fmtLarge(overview?.revenueNextQuarterEstimate)}` },
-                        { label: "Revenue — Current Year",    value: `$${fmtLarge(overview?.revenueCurrentYearEstimate)}` },
-                        { label: "Revenue — Next Year",       value: `$${fmtLarge(overview?.revenueNextYearEstimate)}` },
-                      ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
+                        {
+                          label: "EPS — Current Quarter",
+                          value: fmtPrice(overview?.epsCurrentQuarterEstimate),
+                        },
+                        {
+                          label: "EPS — Next Quarter",
+                          value: fmtPrice(overview?.epsNextQuarterEstimate),
+                        },
+                        {
+                          label: "EPS — Current Year",
+                          value: fmtPrice(overview?.epsCurrentYearEstimate),
+                        },
+                        {
+                          label: "Revenue — Current Quarter",
+                          value: `$${fmtLarge(overview?.revenueCurrentQuarterEstimate)}`,
+                        },
+                        {
+                          label: "Revenue — Next Quarter",
+                          value: `$${fmtLarge(overview?.revenueNextQuarterEstimate)}`,
+                        },
+                        {
+                          label: "Revenue — Current Year",
+                          value: `$${fmtLarge(overview?.revenueCurrentYearEstimate)}`,
+                        },
+                        {
+                          label: "Revenue — Next Year",
+                          value: `$${fmtLarge(overview?.revenueNextYearEstimate)}`,
+                        },
+                      ].map((m) => (
+                        <MetricRow
+                          key={m.label}
+                          label={m.label}
+                          value={m.value}
+                        />
+                      ))}
                     </div>
                   </div>
                 )}
               </TabPanel>
 
               <TabPanel header="Valuation" leftIcon="pi pi-tag mr-2">
-                {loading ? <Skeleton height="100px" /> : (
+                {loading ? (
+                  <Skeleton height="100px" />
+                ) : (
                   <div className="grid" style={{ margin: 0 }}>
                     <div className="col-12 md:col-6 pr-3">
                       {[
-                        { label: "Forward P/E",  value: fmtNum(overview?.forwardPE) },
-                        { label: "Trailing P/E", value: fmtNum(overview?.trailingPE) },
-                      ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
+                        {
+                          label: "Forward P/E",
+                          value: fmtNum(overview?.forwardPE),
+                        },
+                        {
+                          label: "Trailing P/E",
+                          value: fmtNum(overview?.trailingPE),
+                        },
+                      ].map((m) => (
+                        <MetricRow
+                          key={m.label}
+                          label={m.label}
+                          value={m.value}
+                        />
+                      ))}
                     </div>
                     <div className="col-12 md:col-6 pl-3">
                       {[
-                        { label: "PEG Ratio",   value: fmtNum(overview?.pegRatio) },
-                        { label: "Price / Book", value: fmtNum(overview?.priceToBook) },
-                      ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
+                        {
+                          label: "PEG Ratio",
+                          value: fmtNum(overview?.pegRatio),
+                        },
+                        {
+                          label: "Price / Book",
+                          value: fmtNum(overview?.priceToBook),
+                        },
+                      ].map((m) => (
+                        <MetricRow
+                          key={m.label}
+                          label={m.label}
+                          value={m.value}
+                        />
+                      ))}
                     </div>
                   </div>
                 )}
               </TabPanel>
 
-              <TabPanel header="Dividends & Splits" leftIcon="pi pi-percentage mr-2">
-                {loading ? <Skeleton height="160px" /> : (
+              <TabPanel
+                header="Dividends & Splits"
+                leftIcon="pi pi-percentage mr-2"
+              >
+                {loading ? (
+                  <Skeleton height="160px" />
+                ) : (
                   <div className="grid" style={{ margin: 0 }}>
                     <div className="col-12 md:col-6 pr-3">
                       {[
-                        { label: "Dividend (TTM)",       value: `$${fmtNum(overview?.trailingAnnualDividendRate)}` },
-                        { label: "Dividend Yield (TTM)", value: fmtPctDecimal(overview?.trailingAnnualDividendYield) },
-                        { label: "Last Dividend",        value: `$${fmtNum(overview?.lastDividendValue)}` },
-                        { label: "Last Dividend Date",   value: fmtDate(overview?.lastDividendDate) },
-                        { label: "5Y Avg Dividend Yield", value: fmtPctDirect(overview?.fiveYearAvgDividendYield) },
-                      ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
+                        {
+                          label: "Dividend (TTM)",
+                          value: `$${fmtNum(overview?.trailingAnnualDividendRate)}`,
+                        },
+                        {
+                          label: "Dividend Yield (TTM)",
+                          value: fmtPctDecimal(
+                            overview?.trailingAnnualDividendYield,
+                          ),
+                        },
+                        {
+                          label: "Last Dividend",
+                          value: `$${fmtNum(overview?.lastDividendValue)}`,
+                        },
+                        {
+                          label: "Last Dividend Date",
+                          value: fmtDate(overview?.lastDividendDate),
+                        },
+                        {
+                          label: "5Y Avg Dividend Yield",
+                          value: fmtPctDirect(
+                            overview?.fiveYearAvgDividendYield,
+                          ),
+                        },
+                      ].map((m) => (
+                        <MetricRow
+                          key={m.label}
+                          label={m.label}
+                          value={m.value}
+                        />
+                      ))}
                     </div>
                     <div className="col-12 md:col-6 pl-3">
                       {[
-                        { label: "Forward Dividend", value: `$${fmtNum(overview?.dividendRateForward)}` },
-                        { label: "Forward Yield",    value: fmtPctDecimal(overview?.dividendYieldForward) },
-                        { label: "Last Split Factor", value: overview?.lastSplitFactor ?? "—" },
-                        { label: "Last Split Date",   value: fmtDate(overview?.lastSplitDate) },
-                      ].map(m => <MetricRow key={m.label} label={m.label} value={m.value} />)}
+                        {
+                          label: "Forward Dividend",
+                          value: `$${fmtNum(overview?.dividendRateForward)}`,
+                        },
+                        {
+                          label: "Forward Yield",
+                          value: fmtPctDecimal(overview?.dividendYieldForward),
+                        },
+                        {
+                          label: "Last Split Factor",
+                          value: overview?.lastSplitFactor ?? "—",
+                        },
+                        {
+                          label: "Last Split Date",
+                          value: fmtDate(overview?.lastSplitDate),
+                        },
+                      ].map((m) => (
+                        <MetricRow
+                          key={m.label}
+                          label={m.label}
+                          value={m.value}
+                        />
+                      ))}
                     </div>
                   </div>
                 )}
               </TabPanel>
-
             </TabView>
           </Card>
         </div>
@@ -732,24 +1313,31 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
         <Card>
           <div className="flex align-items-center justify-content-between mb-3">
             <div className="flex align-items-center gap-2">
-              <i className="pi pi-building sv-text-accent" style={{ fontSize: 14 }} />
-              <span className="font-bold text-sm">About {companyName ?? symbol}</span>
+              <i
+                className="pi pi-building sv-text-accent"
+                style={{ fontSize: 14 }}
+              />
+              <span className="font-bold text-sm">
+                About {companyName ?? symbol}
+              </span>
             </div>
             <Button
               link
               label={descExpanded ? "Show less" : "Read more"}
-              onClick={() => setDescExpanded(x => !x)}
+              onClick={() => setDescExpanded((x) => !x)}
               className="p-0 text-sm font-semibold"
             />
           </div>
-          <p className="text-sm text-color-secondary m-0" style={{ lineHeight: 1.8 }}>
+          <p
+            className="text-sm text-color-secondary m-0"
+            style={{ lineHeight: 1.8 }}
+          >
             {descExpanded
               ? overview.longBusinessSummary
               : `${overview.longBusinessSummary.slice(0, 380)}…`}
           </p>
         </Card>
       )}
-
     </div>
   );
 };
