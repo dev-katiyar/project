@@ -84,6 +84,7 @@ const StockNewsTab: React.FC<StockNewsTabProps> = ({ symbol }) => {
               <div className="text-sm font-semibold text-color" style={{ lineHeight: 1.4 }}>{item.title}</div>
               <div className="flex align-items-center gap-2 mt-1">
                 <span className="text-xs sv-text-muted">{timeAgo(item.published)}</span>
+                <span className="text-xs sv-text-muted">· {new Date(item.published).toLocaleString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}</span>
                 <i className="pi pi-external-link sv-text-muted" style={{ fontSize: 10 }} />
               </div>
             </div>
