@@ -54,6 +54,12 @@ function fmtDate(ts: any): string {
   if (isNaN(d.getTime())) return "—";
   return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 }
+function fmtDateTime(ts: any): string {
+  if (!ts) return "—";
+  const d = ts instanceof Date ? ts : new Date(ts);
+  if (isNaN(d.getTime())) return "—";
+  return d.toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+}
 
 // ── Return tile heat-map colour ─────────────────────────────────────────────
 function getReturnTileStyle(value: number, maxAbs: number): React.CSSProperties {
@@ -378,7 +384,7 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({ symbol, companyName
               </div>
               <div className="text-xs sv-text-muted mt-1 flex align-items-center gap-1">
                 <i className="pi pi-clock" style={{ fontSize: 10 }} />
-                {fmtDate(overview.regularMarketTime)}
+                {fmtDateTime(overview.regularMarketTime)}
               </div>
             </div>
 
