@@ -28,6 +28,7 @@ import HighchartsReact from "highcharts-react-official";
 import SvMoneyFlowChart, {
   type MfRowResult,
 } from "@/components/strategy/SvMoneyFlowChart";
+import SvPairMoneyFlowChart from "@/components/strategy/SvPairMoneyFlowChart";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -728,7 +729,7 @@ const MoneyFlowPairPanel: React.FC = () => {
   const [macdP, setMacdP] = useState({ ...DEFAULT_MACD });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<MfResult | null>(null);
+  const [result, setResult] = useState<MfRowResult[] | null>(null);
   const [recentPairs, setRecentPairs] =
     useState<{ sym1: string; sym2: string }[]>(getRecentPairs);
   const freqOpts = [
@@ -771,180 +772,17 @@ const MoneyFlowPairPanel: React.FC = () => {
     }
   }, [sym1, sym2, startDate, endDate, freq, riaP, stochP, mfiP, macdP]);
 
-  const chartOptions = useMemo((): Highcharts.Options => {
-    if (!result) return {};
-    const ts = result.date.map((d) => new Date(d).getTime());
-    const base = buildBaseChartOptions(cc);
-    const sigs = buildSignalSeries(
-      result.date,
-      result.close,
-      result.buy_rating,
-      result.sell_rating,
-    );
-    const lbl = `${sym1.toUpperCase()}/${sym2.toUpperCase()} Ratio`;
-    return {
-      ...base,
-      chart: { ...base.chart, height: 600 },
-      title: { text: lbl, style: { color: cc.text, fontSize: "13px" } },
-      xAxis: {
-        type: "datetime",
-        crosshair: true,
-        gridLineColor: cc.grid,
-        lineColor: cc.border,
-        tickColor: cc.border,
-        labels: { style: { color: cc.text } },
-      },
-      yAxis: [
-        {
-          top: "0%",
-          height: "38%",
-          offset: 0,
-          gridLineColor: cc.grid,
-          lineColor: cc.border,
-          labels: { style: { color: cc.text } },
-          title: { text: "" },
-        },
-        {
-          top: "40%",
-          height: "18%",
-          offset: 0,
-          gridLineColor: cc.grid,
-          lineColor: cc.border,
-          labels: { style: { color: cc.text } },
-          title: { text: "" },
-          plotLines: [{ value: 0, color: cc.border, width: 1 }],
-        },
-        {
-          top: "60%",
-          height: "18%",
-          offset: 0,
-          gridLineColor: cc.grid,
-          lineColor: cc.border,
-          labels: { style: { color: cc.text } },
-          title: { text: "" },
-          plotLines: [{ value: 0, color: cc.border, width: 1 }],
-        },
-        {
-          top: "80%",
-          height: "18%",
-          offset: 0,
-          gridLineColor: cc.grid,
-          lineColor: cc.border,
-          labels: { style: { color: cc.text } },
-          title: { text: "" },
-          plotLines: [{ value: 0, color: cc.border, width: 1 }],
-        },
-      ] as Highcharts.YAxisOptions[],
-      series: [
-        {
-          type: "line",
-          name: lbl,
-          data: ts.map((t, i) => [t, result.close[i]]),
-          yAxis: 0,
-          color: "#60a5fa",
-          lineWidth: 1.5,
-          zIndex: 5,
-        },
-        ...sigs,
-        {
-          type: "line",
-          name: "SV MF",
-          data: ts.map((t, i) => [t, result.ria[i]]),
-          yAxis: 1,
-          color: "#dd7612",
-          lineWidth: 1.5,
-        },
-        {
-          type: "line",
-          name: "SV MF Signal",
-          data: ts.map((t, i) => [t, result.ria_trigger[i]]),
-          yAxis: 1,
-          color: "#782ca8",
-          lineWidth: 1.5,
-        },
-        {
-          type: "column",
-          name: "SV MF Diff",
-          data: ts.map((t, i) => ({
-            x: t,
-            y: result.ria_diff[i],
-            color: result.ria_diff[i] >= 0 ? "#22c55e" : "#ef4444",
-          })),
-          yAxis: 1,
-        },
-        {
-          type: "line",
-          name: "MACD",
-          data: ts.map((t, i) => [t, result.macd[i]]),
-          yAxis: 2,
-          color: "#38bdf8",
-          lineWidth: 1.5,
-        },
-        {
-          type: "line",
-          name: "MACD Signal",
-          data: ts.map((t, i) => [t, result.macd_trigger[i]]),
-          yAxis: 2,
-          color: "#fb923c",
-          lineWidth: 1.5,
-        },
-        {
-          type: "column",
-          name: "MACD Diff",
-          data: ts.map((t, i) => ({
-            x: t,
-            y: result.macd_diff[i],
-            color: result.macd_diff[i] >= 0 ? "#22c55e" : "#ef4444",
-          })),
-          yAxis: 2,
-        },
-        {
-          type: "line",
-          name: "Stoch",
-          data: ts.map((t, i) => [t, result.stoch[i]]),
-          yAxis: 3,
-          color: "#a78bfa",
-          lineWidth: 1.5,
-        },
-        {
-          type: "line",
-          name: "Stoch Signal",
-          data: ts.map((t, i) => [t, result.stoch_trigger[i]]),
-          yAxis: 3,
-          color: "#f472b6",
-          lineWidth: 1.5,
-        },
-        {
-          type: "column",
-          name: "Stoch Diff",
-          data: ts.map((t, i) => ({
-            x: t,
-            y: result.stoch_diff[i],
-            color: result.stoch_diff[i] >= 0 ? "#22c55e" : "#ef4444",
-          })),
-          yAxis: 3,
-        },
-      ] as Highcharts.SeriesOptionsType[],
-    };
-  }, [result, cc, sym1, sym2]);
-
   const { lastSignal, buys, sells } = useMemo(() => {
-    if (!result) return { lastSignal: "Hold", buys: 0, sells: 0 };
+    if (!result || !result.length) return { lastSignal: "Hold", buys: 0, sells: 0 };
     let ls = "Hold";
-    for (let i = result.buy_rating.length - 1; i >= 0; i--) {
-      if (result.buy_rating[i] > 0) {
-        ls = "Buy";
-        break;
-      }
-      if (result.sell_rating[i] > 0) {
-        ls = "Sell";
-        break;
-      }
+    for (let i = result.length - 1; i >= 0; i--) {
+      if (result[i].buy_rating > 0) { ls = "Buy"; break; }
+      if (result[i].sell_rating > 0) { ls = "Sell"; break; }
     }
     return {
       lastSignal: ls,
-      buys: result.buy_rating.filter((v) => v > 0).length,
-      sells: result.sell_rating.filter((v) => v > 0).length,
+      buys: result.filter((r) => r.buy_rating > 0).length,
+      sells: result.filter((r) => r.sell_rating > 0).length,
     };
   }, [result]);
 
@@ -1045,12 +883,7 @@ const MoneyFlowPairPanel: React.FC = () => {
       {result && !loading && (
         <>
           <StatBar lastSignal={lastSignal} buys={buys} sells={sells} />
-          <div
-            className="border-round-lg overflow-hidden"
-            style={{ background: cc.bg, boxShadow: "var(--sv-shadow-md)" }}
-          >
-            <HighchartsReact highcharts={Highcharts} options={chartOptions} />
-          </div>
+          <SvPairMoneyFlowChart chartData={result} cc={cc} sym1={sym1} sym2={sym2} />
         </>
       )}
     </div>
