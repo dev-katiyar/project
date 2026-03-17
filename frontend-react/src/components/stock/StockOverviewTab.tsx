@@ -589,8 +589,17 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
 
               <div style={{ width: 1, alignSelf: "stretch", background: "var(--sv-border)", margin: "0 4px" }} />
 
-              {/* Stats chips — Open, Prev Close, Volume (with avg), Mkt Cap, Beta (with label), Dividend (with yield) */}
-              <div className="flex flex-wrap gap-2 align-items-stretch flex-1" style={{ minWidth: 0 }}>
+              {/* Stats chips — 2×3 grid so chips are compact and content-height */}
+              <div
+                className="flex-1"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3, 1fr)",
+                  gap: 8,
+                  minWidth: 0,
+                  alignContent: "start",
+                }}
+              >
                 {[
                   {
                     label: "Open",
@@ -623,7 +632,7 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
                     value: fmtNum(overview.beta),
                     icon: "pi-sliders-h",
                     sub: overview.beta !== undefined && !isNaN(overview.beta)
-                      ? overview.beta > 1.5 ? "High volatility" : overview.beta < 0.7 ? "Low volatility" : "Moderate"
+                      ? overview.beta > 1.5 ? "High vol" : overview.beta < 0.7 ? "Low vol" : "Moderate"
                       : undefined,
                   },
                   {
@@ -639,10 +648,8 @@ const StockOverviewTab: React.FC<StockOverviewTabProps> = ({
                 ].map((s) => (
                   <div
                     key={s.label}
-                    className="flex flex-column justify-content-center border-1 border-round-lg px-3 py-2"
+                    className="border-1 border-round-lg px-3 py-2"
                     style={{
-                      minWidth: 90,
-                      flex: "1 1 90px",
                       borderColor: "var(--sv-border)",
                       background: "var(--sv-border-light, var(--sv-bg-card))",
                     }}
