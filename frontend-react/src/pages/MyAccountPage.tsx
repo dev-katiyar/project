@@ -253,66 +253,26 @@ const MyAccountPage: React.FC = () => {
         <TabView
           activeIndex={activeTab}
           onTabChange={(e) => setActiveTab(e.index)}
-          className="sv-account-tabs"
+          pt={{ root: { className: "sv-tabs" } }}
         >
-          {/* Subscription */}
-          <TabPanel
-            header={
-              <span className="flex align-items-center gap-2">
-                <i className="pi pi-credit-card" />
-                <span>Subscription</span>
-              </span>
-            }
-          >
+          <TabPanel header="Subscription" leftIcon="pi pi-credit-card mr-2">
             <SubscriptionTab />
           </TabPanel>
 
-          {/* Account Info */}
-          <TabPanel
-            header={
-              <span className="flex align-items-center gap-2">
-                <i className="pi pi-user" />
-                <span>Account Info</span>
-              </span>
-            }
-          >
+          <TabPanel header="Account Info" leftIcon="pi pi-user mr-2">
             <AccountInfoTab {...tabProps} />
           </TabPanel>
 
-          {/* Risk Profile */}
-          <TabPanel
-            header={
-              <span className="flex align-items-center gap-2">
-                <i className="pi pi-chart-pie" />
-                <span>Risk Profile</span>
-              </span>
-            }
-          >
+          <TabPanel header="Risk Profile" leftIcon="pi pi-chart-pie mr-2">
             <RiskProfileTab {...tabProps} />
           </TabPanel>
 
-          {/* Notifications */}
-          <TabPanel
-            header={
-              <span className="flex align-items-center gap-2">
-                <i className="pi pi-bell" />
-                <span>Notifications</span>
-              </span>
-            }
-          >
+          <TabPanel header="Notifications" leftIcon="pi pi-bell mr-2">
             <NotificationsTab userData={userData} />
           </TabPanel>
 
-          {/* Admin (conditional) */}
           {isAdmin && (
-            <TabPanel
-              header={
-                <span className="flex align-items-center gap-2">
-                  <i className="pi pi-cog" />
-                  <span>Admin</span>
-                </span>
-              }
-            >
+            <TabPanel header="Admin" leftIcon="pi pi-cog mr-2">
               <AdminSettingsTab />
             </TabPanel>
           )}
