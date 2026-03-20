@@ -206,41 +206,6 @@ const MyAccountPage: React.FC = () => {
                 </>
               )}
             </div>
-
-            {/* Quick stats */}
-            <div className="hidden md:flex gap-4">
-              {[
-                {
-                  icon: "pi-user",
-                  label: user?.username || "—",
-                  hint: "Username",
-                },
-                {
-                  icon: "pi-calendar",
-                  label: planLabel(userData.subscriptionId),
-                  hint: "Plan",
-                },
-              ].map(({ icon, label, hint }) => (
-                <div key={hint} className="text-center">
-                  <i
-                    className={`pi ${icon} block mb-1`}
-                    style={{ color: "var(--sv-accent)", fontSize: "1.1rem" }}
-                  />
-                  <div
-                    className="font-bold text-white text-sm"
-                    style={{ lineHeight: 1.2 }}
-                  >
-                    {label}
-                  </div>
-                  <div
-                    className="text-xs opacity-60 text-white"
-                    style={{ lineHeight: 1.2 }}
-                  >
-                    {hint}
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
