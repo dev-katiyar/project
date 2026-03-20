@@ -1,61 +1,322 @@
-import React from "react";
-import { Divider } from "primereact/divider";
-import { Button } from "primereact/button";
+import React, { useState, useEffect, useRef } from "react";
+import api from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
+import { TabView, TabPanel } from "primereact/tabview";
+import { Toast } from "primereact/toast";
+import { Skeleton } from "primereact/skeleton";
+import { Tag } from "primereact/tag";
+import SubscriptionTab from "@/components/account/SubscriptionTab";
+import AccountInfoTab from "@/components/account/AccountInfoTab";
+import type { UserProfileData } from "@/components/account/AccountInfoTab";
+import RiskProfileTab from "@/components/account/RiskProfileTab";
+import NotificationsTab from "@/components/account/NotificationsTab";
+import AdminSettingsTab from "@/components/account/AdminSettingsTab";
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+const getInitials = (first?: string, last?: string, username?: string) => {
+  if (first && last) return `${first[0]}${last[0]}`.toUpperCase();
+  if (first) return first.slice(0, 2).toUpperCase();
+  if (username) return username.slice(0, 2).toUpperCase();
+  return "U";
+};
+
+const planLabel = (subId?: number) => {
+  const map: Record<number, string> = {
+    1: "Basic",
+    2: "Standard",
+    3: "TPA Subscriber",
+    4: "TPA Premium",
+    5: "TPA Elite",
+  };
+  return map[subId ?? 0] || "Free";
+};
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 const MyAccountPage: React.FC = () => {
   const { user } = useAuth();
+  const toast = useRef<Toast>(null);
+
+  const [userData, setUserData] = useState<UserProfileData>({});
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
+
+  // ─── Load ──────────────────────────────────────────────────────────────────
+
+  useEffect(() => {
+    loadAll();
+  }, []);
+
+  const loadAll = async () => {
+    setLoadingProfile(true);
+    try {
+      const [adminRes, profileRes] = await Promise.all([
+        api.get("/user/isAdmin").catch(() => ({ data: { userType: 0 } })),
+        api.get("/user/subscription"),
+      ]);
+      setIsAdmin(adminRes.data?.userType === 1);
+      setUserData({
+        ...profileRes.data,
+        age: profileRes.data?.age?.toString(),
+      });
+    } catch {
+      toast.current?.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to load profile data",
+      });
+    } finally {
+      setLoadingProfile(false);
+    }
+  };
+
+  const discardChanges = () => loadAll();
+
+  // ─── Field change ──────────────────────────────────────────────────────────
+
+  const handleChange = (field: keyof UserProfileData, value: string) => {
+    setUserData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // ─── Save ──────────────────────────────────────────────────────────────────
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await api.post("/user/subscription", {
+        userData,
+        action: "update",
+      });
+      toast.current?.show({
+        severity: "success",
+        summary: "Saved",
+        detail: "Your profile has been updated",
+        life: 2000,
+      });
+    } catch {
+      toast.current?.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to save changes",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // ─── Derived display values ────────────────────────────────────────────────
+
+  const initials = getInitials(
+    userData.firstName,
+    userData.lastName,
+    user?.username,
+  );
+
+  const displayName =
+    userData.firstName && userData.lastName
+      ? `${userData.firstName} ${userData.lastName}`
+      : user?.username || "User";
+
+  const tabProps = {
+    userData,
+    loading: loadingProfile,
+    onChange: handleChange,
+    onSave: handleSave,
+    onDiscard: discardChanges,
+    saving,
+  };
+
+  // ─── Render ────────────────────────────────────────────────────────────────
 
   return (
     <div>
-      {/* ── Hero ── */}
-      <div className="sv-hero text-center px-4 py-7 overflow-hidden relative">
-        <div className="relative z-1">
-          <i className="pi pi-user block mb-3 sv-hero-icon" />
-          <h1 className="text-white font-bold mt-0 mb-2 sv-hero-heading">
-            My Account
-          </h1>
-          <p className="mt-0 text-lg sv-hero-subtitle">
-            Manage your profile, preferences, and subscription.
-          </p>
+      <Toast ref={toast} />
+
+      {/* ── Profile Hero ────────────────────────────────────────────────────── */}
+      <div
+        className="sv-hero px-4 py-5 overflow-hidden relative"
+        style={{ minHeight: "auto" }}
+      >
+        <div className="relative z-1 sv-content-medium mx-auto">
+          <div className="flex align-items-center gap-4 flex-wrap">
+            {/* Avatar */}
+            <div
+              className="flex align-items-center justify-content-center border-circle flex-shrink-0 font-bold text-xl"
+              style={{
+                width: 72,
+                height: 72,
+                background: "var(--sv-accent-gradient)",
+                color: "var(--sv-text-inverse)",
+                boxShadow: "var(--sv-shadow-glow)",
+                letterSpacing: "0.05em",
+              }}
+            >
+              {loadingProfile ? (
+                <i className="pi pi-user" style={{ fontSize: "1.4rem" }} />
+              ) : (
+                initials
+              )}
+            </div>
+
+            {/* Name & meta */}
+            <div className="flex-1">
+              {loadingProfile ? (
+                <>
+                  <Skeleton
+                    height="28px"
+                    width="200px"
+                    className="mb-2"
+                    style={{ background: "rgba(255,255,255,0.15)" }}
+                  />
+                  <Skeleton
+                    height="18px"
+                    width="140px"
+                    style={{ background: "rgba(255,255,255,0.1)" }}
+                  />
+                </>
+              ) : (
+                <>
+                  <h1 className="text-white font-bold mt-0 mb-1 sv-hero-heading">
+                    {displayName}
+                  </h1>
+                  <div className="flex align-items-center gap-2 flex-wrap">
+                    {userData.emailAddress && (
+                      <span className="sv-hero-subtitle text-sm">
+                        <i className="pi pi-envelope mr-1 opacity-70" />
+                        {userData.emailAddress}
+                      </span>
+                    )}
+                    <Tag
+                      value={planLabel(userData.subscriptionId)}
+                      style={{
+                        background: "var(--sv-accent-gradient)",
+                        color: "var(--sv-text-inverse)",
+                        fontSize: "0.72rem",
+                        fontWeight: 700,
+                      }}
+                    />
+                    {user?.hasActiveSubscription && (
+                      <Tag
+                        value="Active"
+                        severity="success"
+                        style={{ fontSize: "0.72rem" }}
+                      />
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Quick stats */}
+            <div className="hidden md:flex gap-4">
+              {[
+                {
+                  icon: "pi-user",
+                  label: user?.username || "—",
+                  hint: "Username",
+                },
+                {
+                  icon: "pi-calendar",
+                  label: planLabel(userData.subscriptionId),
+                  hint: "Plan",
+                },
+              ].map(({ icon, label, hint }) => (
+                <div key={hint} className="text-center">
+                  <i
+                    className={`pi ${icon} block mb-1`}
+                    style={{ color: "var(--sv-accent)", fontSize: "1.1rem" }}
+                  />
+                  <div
+                    className="font-bold text-white text-sm"
+                    style={{ lineHeight: 1.2 }}
+                  >
+                    {label}
+                  </div>
+                  <div
+                    className="text-xs opacity-60 text-white"
+                    style={{ lineHeight: 1.2 }}
+                  >
+                    {hint}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* ── Body ── */}
-      <div className="mx-auto px-3 py-5 sv-content-medium">
-        <div className="surface-card border-1 surface-border border-round-xl p-5 shadow-4 text-center">
-          <i
-            className="pi pi-wrench mb-4"
-            style={{ fontSize: "3rem", color: "var(--primary-color)" }}
-          />
-          <h2 className="mt-0 mb-2 font-bold text-xl">Coming Soon</h2>
-          <p className="mt-0 mb-4 text-color-secondary line-height-3">
-            Account management is currently under construction. Soon you'll be
-            able to update your profile, change your password, manage billing,
-            and customize your notification preferences here.
-          </p>
+      {/* ── TabView Body ─────────────────────────────────────────────────────── */}
+      <div className="mx-auto px-3 py-4 sv-content-medium">
+        <TabView
+          activeIndex={activeTab}
+          onTabChange={(e) => setActiveTab(e.index)}
+          className="sv-account-tabs"
+        >
+          {/* Subscription */}
+          <TabPanel
+            header={
+              <span className="flex align-items-center gap-2">
+                <i className="pi pi-credit-card" />
+                <span>Subscription</span>
+              </span>
+            }
+          >
+            <SubscriptionTab userData={userData} />
+          </TabPanel>
 
-          {user && (
-            <>
-              <Divider />
-              <div className="flex flex-column align-items-center gap-2 text-sm text-color-secondary">
-                <span>
-                  Signed in as <strong>{user.username}</strong>
+          {/* Account Info */}
+          <TabPanel
+            header={
+              <span className="flex align-items-center gap-2">
+                <i className="pi pi-user" />
+                <span>Account Info</span>
+              </span>
+            }
+          >
+            <AccountInfoTab {...tabProps} />
+          </TabPanel>
+
+          {/* Risk Profile */}
+          <TabPanel
+            header={
+              <span className="flex align-items-center gap-2">
+                <i className="pi pi-chart-pie" />
+                <span>Risk Profile</span>
+              </span>
+            }
+          >
+            <RiskProfileTab {...tabProps} />
+          </TabPanel>
+
+          {/* Notifications */}
+          <TabPanel
+            header={
+              <span className="flex align-items-center gap-2">
+                <i className="pi pi-bell" />
+                <span>Notifications</span>
+              </span>
+            }
+          >
+            <NotificationsTab userData={userData} />
+          </TabPanel>
+
+          {/* Admin (conditional) */}
+          {isAdmin && (
+            <TabPanel
+              header={
+                <span className="flex align-items-center gap-2">
+                  <i className="pi pi-cog" />
+                  <span>Admin</span>
                 </span>
-                {user.email && <span>{user.email}</span>}
-              </div>
-            </>
+              }
+            >
+              <AdminSettingsTab />
+            </TabPanel>
           )}
-
-          <Divider />
-
-          <Button
-            label="Contact Support"
-            icon="pi pi-envelope"
-            className="p-button-outlined"
-            onClick={() => (window.location.href = "/contact-us")}
-          />
-        </div>
+        </TabView>
       </div>
     </div>
   );
