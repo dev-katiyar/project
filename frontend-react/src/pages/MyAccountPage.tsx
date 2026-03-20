@@ -264,7 +264,7 @@ const MyAccountPage: React.FC = () => {
               </span>
             }
           >
-            <SubscriptionTab userData={userData} />
+            <SubscriptionTab />
           </TabPanel>
 
           {/* Account Info */}
