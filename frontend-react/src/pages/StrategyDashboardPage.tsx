@@ -29,6 +29,9 @@ import SvMoneyFlowChart, {
   type MfRowResult,
 } from "@/components/strategy/SvMoneyFlowChart";
 import SvPairMoneyFlowChart from "@/components/strategy/SvPairMoneyFlowChart";
+import SvWeeklyMoneyFlowChart, {
+  type WeeklyMfRowResult,
+} from "@/components/strategy/SvWeeklyMoneyFlowChart";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -56,22 +59,6 @@ interface MfResult {
   macd: number[];
   macd_trigger: number[];
   macd_diff: number[];
-  buy_rating: number[];
-  sell_rating: number[];
-}
-interface WeeklyResult {
-  date: string[];
-  close: number[];
-  sma13: number[];
-  sma34: number[];
-  sma_diff: number[];
-  macd1: number[];
-  macd1_trigger: number[];
-  macd1_diff: number[];
-  macd2: number[];
-  macd2_trigger: number[];
-  macd2_diff: number[];
-  rsi14: number[];
   buy_rating: number[];
   sell_rating: number[];
 }
@@ -946,7 +933,7 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
   const [rsiP, setRsiP] = useState({ ...DEFAULT_RSI });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<WeeklyResult | null>(null);
+  const [result, setResult] = useState<WeeklyMfRowResult[] | null>(null);
   const [recent, setRecent] = useState<string[]>(getRecentSymbols);
   const [advOpen, setAdvOpen] = useState(false);
 
@@ -965,14 +952,34 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
             sample_frequency: "weeks",
           },
           ria_pro_inputs: {
-            sma_inputs: smaP,
+            sma_inputs: {
+              sma1_num_of_period: smaP.sma1_period,
+              sma2_num_of_period: smaP.sma2_period,
+              sma_buy_sell_weight: 1,
+              label: `WMA(${smaP.sma1_period}) & WMA(${smaP.sma2_period})`,
+            },
             ria_inputs: riaP,
             stoch_inputs: stochP,
             mfi_inputs: mfiP,
             macd_inputs: DEFAULT_MACD,
-            macd1_inputs: macd1P,
-            macd2_inputs: macd2P,
-            rsi_inputs: rsiP,
+            macd1_inputs: {
+              macd_slow_period: macd1P.macd_slow_ema_period,
+              macd_fast_period: macd1P.macd_fast_ema_period,
+              macd_trigger_period: macd1P.macd_trigger_period,
+              macd_buy_sell_weight: 1,
+              label: `MACD(${macd1P.macd_fast_ema_period},${macd1P.macd_slow_ema_period},${macd1P.macd_trigger_period})`,
+            },
+            macd2_inputs: {
+              macd_slow_period: macd2P.macd_slow_ema_period,
+              macd_fast_period: macd2P.macd_fast_ema_period,
+              macd_trigger_period: macd2P.macd_trigger_period,
+              macd_buy_sell_weight: 1,
+              label: `MACD(${macd2P.macd_fast_ema_period},${macd2P.macd_slow_ema_period},${macd2P.macd_trigger_period})`,
+            },
+            rsi_inputs: {
+              rsi_period: rsiP.rsi_period,
+              macd_buy_sell_weight: 1,
+            },
           },
         });
         setResult(data);
@@ -1005,205 +1012,24 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
     run("SPY");
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const chartOptions = useMemo((): Highcharts.Options => {
-    if (!result) return {};
-    const ts = result.date.map((d) => new Date(d).getTime());
-    const base = buildBaseChartOptions(cc);
-    const sigs = buildSignalSeries(
-      result.date,
-      result.close,
-      result.buy_rating,
-      result.sell_rating,
-    );
-    const lbl = `${symbol.toUpperCase()} Weekly Close`;
-    const sma1lbl = `WMA(${smaP.sma1_period})`;
-    const sma2lbl = `WMA(${smaP.sma2_period})`;
-    const rsilbl = `RSI(${rsiP.rsi_period})`;
-    return {
-      ...base,
-      chart: { ...base.chart, height: 650 },
-      xAxis: {
-        type: "datetime",
-        crosshair: true,
-        gridLineColor: cc.grid,
-        lineColor: cc.border,
-        tickColor: cc.border,
-        labels: { style: { color: cc.text } },
-      },
-      yAxis: [
-        {
-          top: "0%",
-          height: "33%",
-          offset: 0,
-          gridLineColor: cc.grid,
-          lineColor: cc.border,
-          labels: { style: { color: cc.text } },
-          title: { text: "" },
-        },
-        {
-          top: "35%",
-          height: "15%",
-          offset: 0,
-          gridLineColor: cc.grid,
-          lineColor: cc.border,
-          labels: { style: { color: cc.text } },
-          title: { text: "" },
-          plotLines: [{ value: 0, color: cc.border, width: 1 }],
-        },
-        {
-          top: "52%",
-          height: "14%",
-          offset: 0,
-          gridLineColor: cc.grid,
-          lineColor: cc.border,
-          labels: { style: { color: cc.text } },
-          title: { text: "" },
-          plotLines: [{ value: 0, color: cc.border, width: 1 }],
-        },
-        {
-          top: "68%",
-          height: "14%",
-          offset: 0,
-          gridLineColor: cc.grid,
-          lineColor: cc.border,
-          labels: { style: { color: cc.text } },
-          title: { text: "" },
-          plotLines: [{ value: 0, color: cc.border, width: 1 }],
-        },
-        {
-          top: "84%",
-          height: "14%",
-          offset: 0,
-          min: 0,
-          max: 100,
-          gridLineColor: cc.grid,
-          lineColor: cc.border,
-          labels: { style: { color: cc.text } },
-          title: { text: "" },
-          plotLines: [
-            { value: 30, color: "#22c55e", width: 1, dashStyle: "Dash" as any },
-            { value: 70, color: "#ef4444", width: 1, dashStyle: "Dash" as any },
-          ],
-        },
-      ] as Highcharts.YAxisOptions[],
-      series: [
-        {
-          type: "line",
-          name: lbl,
-          data: ts.map((t, i) => [t, result.close[i]]),
-          yAxis: 0,
-          color: "#60a5fa",
-          lineWidth: 1.5,
-          zIndex: 5,
-        },
-        ...sigs,
-        {
-          type: "line",
-          name: sma1lbl,
-          data: ts.map((t, i) => [t, result.sma13[i]]),
-          yAxis: 0,
-          color: "#f59e0b",
-          lineWidth: 1.5,
-        },
-        {
-          type: "line",
-          name: sma2lbl,
-          data: ts.map((t, i) => [t, result.sma34[i]]),
-          yAxis: 0,
-          color: "#06b6d4",
-          lineWidth: 1.5,
-        },
-        {
-          type: "column",
-          name: "SMA Diff",
-          data: ts.map((t, i) => ({
-            x: t,
-            y: result.sma_diff[i],
-            color: result.sma_diff[i] >= 0 ? "#22c55e" : "#ef4444",
-          })),
-          yAxis: 1,
-        },
-        {
-          type: "line",
-          name: "MACD1",
-          data: ts.map((t, i) => [t, result.macd1[i]]),
-          yAxis: 2,
-          color: "#38bdf8",
-          lineWidth: 1.5,
-        },
-        {
-          type: "line",
-          name: "MACD1 Signal",
-          data: ts.map((t, i) => [t, result.macd1_trigger[i]]),
-          yAxis: 2,
-          color: "#fb923c",
-          lineWidth: 1.5,
-        },
-        {
-          type: "column",
-          name: "MACD1 Diff",
-          data: ts.map((t, i) => ({
-            x: t,
-            y: result.macd1_diff[i],
-            color: result.macd1_diff[i] >= 0 ? "#22c55e" : "#ef4444",
-          })),
-          yAxis: 2,
-        },
-        {
-          type: "line",
-          name: "MACD2",
-          data: ts.map((t, i) => [t, result.macd2[i]]),
-          yAxis: 3,
-          color: "#a78bfa",
-          lineWidth: 1.5,
-        },
-        {
-          type: "line",
-          name: "MACD2 Signal",
-          data: ts.map((t, i) => [t, result.macd2_trigger[i]]),
-          yAxis: 3,
-          color: "#f472b6",
-          lineWidth: 1.5,
-        },
-        {
-          type: "column",
-          name: "MACD2 Diff",
-          data: ts.map((t, i) => ({
-            x: t,
-            y: result.macd2_diff[i],
-            color: result.macd2_diff[i] >= 0 ? "#22c55e" : "#ef4444",
-          })),
-          yAxis: 3,
-        },
-        {
-          type: "line",
-          name: rsilbl,
-          data: ts.map((t, i) => [t, result.rsi14[i]]),
-          yAxis: 4,
-          color: "#34d399",
-          lineWidth: 1.5,
-        },
-      ] as Highcharts.SeriesOptionsType[],
-    };
-  }, [result, cc, symbol, smaP, rsiP]);
-
   const { lastSignal, buys, sells } = useMemo(() => {
-    if (!result) return { lastSignal: "Hold", buys: 0, sells: 0 };
+    if (!result || !result.length)
+      return { lastSignal: "Hold", buys: 0, sells: 0 };
     let ls = "Hold";
-    for (let i = result.buy_rating.length - 1; i >= 0; i--) {
-      if (result.buy_rating[i] > 0) {
+    for (let i = result.length - 1; i >= 0; i--) {
+      if (result[i].buy_rating > 0) {
         ls = "Buy";
         break;
       }
-      if (result.sell_rating[i] > 0) {
+      if (result[i].sell_rating > 0) {
         ls = "Sell";
         break;
       }
     }
     return {
       lastSignal: ls,
-      buys: result.buy_rating.filter((v) => v > 0).length,
-      sells: result.sell_rating.filter((v) => v > 0).length,
+      buys: result.filter((r) => r.buy_rating > 0).length,
+      sells: result.filter((r) => r.sell_rating > 0).length,
     };
   }, [result]);
 
@@ -1272,7 +1098,7 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
           </div>
           <div className="col-4">
             <label className="block text-xs mb-1 sv-text-muted">
-              SMA1 Period
+              WMA1 Period
             </label>
             <InputNumber
               value={smaP.sma1_period}
@@ -1291,7 +1117,7 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
           </div>
           <div className="col-4">
             <label className="block text-xs mb-1 sv-text-muted">
-              SMA2 Period
+              WMA2 Period
             </label>
             <InputNumber
               value={smaP.sma2_period}
@@ -1399,16 +1225,17 @@ const MoneyFlowWeeklyPanel: React.FC = () => {
           <span className="text-sm">{error}</span>
         </div>
       )}
-      {loading && <Skeleton height="620px" className="border-round-lg" />}
+      {loading && <Skeleton height="1200px" className="border-round-lg" />}
       {result && !loading && (
         <>
           <StatBar lastSignal={lastSignal} buys={buys} sells={sells} />
-          <div
-            className="border-round-lg overflow-hidden"
-            style={{ background: cc.bg, boxShadow: "var(--sv-shadow-md)" }}
-          >
-            <HighchartsReact highcharts={Highcharts} options={chartOptions} />
-          </div>
+          <SvWeeklyMoneyFlowChart
+            chartData={result}
+            cc={cc}
+            sma1Period={smaP.sma1_period}
+            sma2Period={smaP.sma2_period}
+            rsiPeriod={rsiP.rsi_period}
+          />
         </>
       )}
     </div>
