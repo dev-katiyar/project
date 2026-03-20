@@ -13,7 +13,6 @@ interface EmailPrefs {
   sv_robo_trade_alerts: boolean;
   user_symbol_alerts: boolean;
   blog_alerts: boolean;
-  tpa_blog_alerts: boolean;
   weekly_reports: boolean;
 }
 
@@ -27,9 +26,6 @@ interface SmsPrefs {
   phone: string;
 }
 
-interface NotificationsTabProps {
-  userData?: any;
-}
 
 const defaultEmailPrefs: EmailPrefs = {
   daily_portfolio_mails: false,
@@ -37,7 +33,6 @@ const defaultEmailPrefs: EmailPrefs = {
   sv_robo_trade_alerts: false,
   user_symbol_alerts: false,
   blog_alerts: false,
-  tpa_blog_alerts: false,
   weekly_reports: false,
 };
 
@@ -50,8 +45,6 @@ const defaultSmsPrefs: SmsPrefs = {
   weekly_reports: false,
   phone: "",
 };
-
-const isTpaMember = (subId?: number) => [3, 4, 5].includes(subId ?? 0);
 
 // ── Reusable pref row ─────────────────────────────────────────────────────────
 
@@ -106,7 +99,7 @@ const PrefRow: React.FC<PrefRowProps> = ({
 
 // ── Main Component ────────────────────────────────────────────────────────────
 
-const NotificationsTab: React.FC<NotificationsTabProps> = ({ userData }) => {
+const NotificationsTab: React.FC = () => {
   const toast = useRef<Toast>(null);
   const [emailPrefs, setEmailPrefs] = useState<EmailPrefs>(defaultEmailPrefs);
   const [smsPrefs, setSmsPrefs] = useState<SmsPrefs>(defaultSmsPrefs);
@@ -286,15 +279,7 @@ const NotificationsTab: React.FC<NotificationsTabProps> = ({ userData }) => {
                   checked={emailPrefs.weekly_reports}
                   onChange={setEmail("weekly_reports")}
                 />
-                {!isTpaMember(userData?.subscriptionId) && (
-                  <PrefRow
-                    icon="pi-star"
-                    label="TPA Blog Alerts"
-                    description="Exclusive TPA subscriber content"
-                    checked={emailPrefs.tpa_blog_alerts}
-                    onChange={setEmail("tpa_blog_alerts")}
-                  />
-                )}
+
               </div>
 
               <Divider className="my-3" />

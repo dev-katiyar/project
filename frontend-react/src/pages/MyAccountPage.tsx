@@ -23,11 +23,8 @@ const getInitials = (first?: string, last?: string, username?: string) => {
 
 const planLabel = (subId?: number) => {
   const map: Record<number, string> = {
-    1: "Basic",
-    2: "Standard",
-    3: "TPA Subscriber",
-    4: "TPA Premium",
-    5: "TPA Elite",
+    1: "SimpleVisor Monthly",
+    2: "SimpleVisor Annual",
   };
   return map[subId ?? 0] || "Free";
 };
@@ -268,7 +265,7 @@ const MyAccountPage: React.FC = () => {
           </TabPanel>
 
           <TabPanel header="Notifications" leftIcon="pi pi-bell mr-2">
-            <NotificationsTab userData={userData} />
+            <NotificationsTab />
           </TabPanel>
 
           {isAdmin && (
