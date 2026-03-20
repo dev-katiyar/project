@@ -206,6 +206,17 @@ a:hover {
   transform: translateX(-50%) translateY(0);
 }
 
+/* Right-aligned variant — used for the user avatar menu */
+.sv-user-menu-panel {
+  left: auto;
+  right: 0;
+  transform: translateY(-6px);
+  min-width: 220px;
+}
+.sv-user-menu-panel.open {
+  transform: translateY(0);
+}
+
 /* ======================================================================
    Mobile menu — fixed positioning + slide animation
    ====================================================================== */

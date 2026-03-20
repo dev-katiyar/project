@@ -50,6 +50,7 @@ const RealTimeCommentaryPage = lazy(
 const NewsletterPage = lazy(() => import("@/pages/NewsletterPage"));
 const LatestInsightsPage = lazy(() => import("@/pages/LatestInsightsPage"));
 const SectorPulsePage = lazy(() => import("@/pages/SectorPulsePage"));
+const MyAccountPage = lazy(() => import("@/pages/MyAccountPage"));
 
 // --------------- Loading fallback ---------------
 const PageLoader: React.FC = () => (
@@ -169,6 +170,7 @@ const router = createBrowserRouter([
         path: "symbol-search/:searchText",
         element: withProtection(<NotFoundPage />),
       },
+      { path: "my-account", element: withProtection(<MyAccountPage />) },
       { path: "profile", element: withProtection(<NotFoundPage />) },
       {
         path: "portfolio-integration",

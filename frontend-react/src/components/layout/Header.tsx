@@ -5,6 +5,7 @@ import { useTheme, ThemeName } from "@/contexts/ThemeContext";
 import { Avatar } from "primereact/avatar";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { Divider } from "primereact/divider";
 
 import logoOnDark from "@/assets/brand/simplevisor-horizontal-light-lg.svg";
 import logoOnLight from "@/assets/brand/simplevisor-horizontal-color@3x.png";
@@ -276,13 +277,27 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
   const [searchText, setSearchText] = useState("");
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
-  /* Close both on route change */
+  /* Close all menus on route change */
   useEffect(() => {
     setMobileOpen(false);
     setOpenDropdown(null);
+    setUserMenuOpen(false);
   }, [location.pathname]);
+
+  /* Close user menu when clicking outside */
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   /* Cleanup on unmount */
   useEffect(() => {
@@ -413,13 +428,65 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
             />
 
             {isAuthenticated ? (
-              <Avatar
-                label={userInitial}
-                shape="circle"
-                onClick={handleLogout}
-                title={`${user?.username} — click to sign out`}
-                className="sv-avatar cursor-pointer"
-              />
+              <div className="relative" ref={userMenuRef}>
+                <Avatar
+                  label={userInitial}
+                  shape="circle"
+                  onClick={() => setUserMenuOpen((prev) => !prev)}
+                  title={user?.username}
+                  className="sv-avatar cursor-pointer"
+                />
+                <div
+                  className={`sv-dropdown-panel sv-user-menu-panel sv-dropdown-panel-border surface-overlay border-round-lg shadow-3 p-1${userMenuOpen ? " open" : ""}`}
+                >
+                  <div className="px-3 py-2 text-sm font-semibold text-color-secondary border-bottom-1 surface-border mb-1">
+                    {user?.username}
+                  </div>
+
+                  <Link
+                    to="/my-account"
+                    className="sv-dropdown-item flex align-items-center gap-2 py-2 px-3 border-round text-sm no-underline"
+                  >
+                    <i className="pi pi-user" /> My Account
+                  </Link>
+
+                  <Divider className="my-1" />
+
+                  <a
+                    href="https://realinvestmentadvice.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="sv-dropdown-item flex align-items-center gap-2 py-2 px-3 border-round text-sm no-underline"
+                  >
+                    <i className="pi pi-question-circle" /> Ask A Question
+                  </a>
+
+                  <Link
+                    to="/contact-us"
+                    className="sv-dropdown-item flex align-items-center gap-2 py-2 px-3 border-round text-sm no-underline"
+                  >
+                    <i className="pi pi-envelope" /> Contact Us
+                  </Link>
+
+                  <a
+                    href="https://realinvestmentadvice.com/connect-with-us/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="sv-dropdown-item flex align-items-center gap-2 py-2 px-3 border-round text-sm no-underline"
+                  >
+                    <i className="pi pi-calendar" /> Schedule An Appointment
+                  </a>
+
+                  <Divider className="my-1" />
+
+                  <button
+                    className="sv-dropdown-item flex align-items-center gap-2 py-2 px-3 border-round text-sm w-full text-left"
+                    onClick={handleLogout}
+                  >
+                    <i className="pi pi-sign-out" /> Log Out
+                  </button>
+                </div>
+              </div>
             ) : (
               <Button
                 label="Start Free Trial"
