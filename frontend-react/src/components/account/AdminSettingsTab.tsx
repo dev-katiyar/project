@@ -2,24 +2,23 @@ import React, { useState, useRef } from "react";
 import api from "@/services/api";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import { Divider } from "primereact/divider";
+
+const PLACEHOLDER = 'Click "Generate Temp Pass" to create';
 
 const AdminSettingsTab: React.FC = () => {
   const toast = useRef<Toast>(null);
   const [tempPass, setTempPass] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
   const [generating, setGenerating] = useState(false);
 
   const generateTempPass = async () => {
+    setTempPass("");
+    setMessage("");
     setGenerating(true);
     try {
       const { data } = await api.get("/login/create_temp_stock");
-      setTempPass(data.password || data.temp_pass || data.tempPass || "");
-      toast.current?.show({
-        severity: "success",
-        summary: "Generated",
-        detail: "Temporary password created (valid for 1 hour)",
-        life: 3000,
-      });
+      setTempPass(data.temp_password || "");
+      setMessage(data.message || "");
     } catch {
       toast.current?.show({
         severity: "error",
@@ -37,8 +36,8 @@ const AdminSettingsTab: React.FC = () => {
     toast.current?.show({
       severity: "success",
       summary: "Copied",
-      detail: "Temporary password copied to clipboard",
-      life: 1500,
+      detail: "Temp password copied to clipboard",
+      life: 1200,
     });
   };
 
@@ -46,107 +45,57 @@ const AdminSettingsTab: React.FC = () => {
     <>
       <Toast ref={toast} />
       <div className="grid">
-        <div className="col-12 md:col-6">
+        <div className="col-12">
           <div
-            className="p-4 border-round-xl"
+            className="p-3 border-round"
             style={{
               background: "var(--sv-bg-card)",
               border: "1px solid var(--sv-border)",
             }}
           >
-            {/* Header */}
-            <div className="flex align-items-center gap-3 mb-4">
-              <div
-                className="flex align-items-center justify-content-center border-circle flex-shrink-0"
-                style={{
-                  width: 44,
-                  height: 44,
-                  background: "var(--sv-warning-bg)",
-                }}
+            <div className="font-bold text-xl mb-2" style={{ color: "var(--sv-text-primary)" }}>
+              Generate Test User Passwords
+            </div>
+            <hr style={{ margin: "0.5rem 0", borderColor: "var(--sv-border)" }} />
+
+            <div className="mt-3 mb-2 text-sm" style={{ color: "var(--sv-text-secondary)" }}>
+              This is temp password generator for test users. This is valid for 1 hour only.
+              Create a new one each time it expires or is lost.
+            </div>
+
+            <div className="flex align-items-center gap-4 flex-wrap mt-3">
+              <span className="font-semibold" style={{ color: "var(--sv-text-secondary)" }}>
+                Temp Pass:
+              </span>
+              <span
+                className="font-bold font-mono"
+                style={{ color: tempPass ? "var(--sv-text-primary)" : "var(--sv-text-muted)" }}
               >
-                <i
-                  className="pi pi-cog"
-                  style={{ color: "var(--sv-warning)", fontSize: "1.1rem" }}
-                />
-              </div>
-              <div>
-                <div
-                  className="font-bold text-lg"
-                  style={{ color: "var(--sv-text-primary)" }}
-                >
-                  Test User Access
-                </div>
-                <div
-                  className="text-sm"
-                  style={{ color: "var(--sv-text-secondary)" }}
-                >
-                  Generate temporary passwords for test users
-                </div>
-              </div>
-            </div>
-
-            {/* Temp password display */}
-            <label
-              className="block text-sm font-semibold mb-2"
-              style={{ color: "var(--sv-text-secondary)" }}
-            >
-              <i
-                className="pi pi-key mr-2"
-                style={{ color: "var(--sv-warning)" }}
-              />
-              Temporary Password
-            </label>
-            <div
-              className="mb-3 p-3 border-round-lg font-mono text-sm"
-              style={{
-                background: "var(--sv-bg-surface)",
-                border: "1px solid var(--sv-border)",
-                color: tempPass
-                  ? "var(--sv-text-primary)"
-                  : "var(--sv-text-muted)",
-                minHeight: 48,
-                wordBreak: "break-all",
-              }}
-            >
-              {tempPass || 'Click "Generate Temp Password" to create one'}
-            </div>
-
-            <div className="flex gap-2">
+                {tempPass || PLACEHOLDER}
+              </span>
               <Button
-                label="Generate Temp Password"
-                icon="pi pi-refresh"
-                size="small"
-                outlined
-                loading={generating}
-                onClick={generateTempPass}
-              />
-              <Button
-                label="Copy"
+                label="Copy Temp Pass"
                 icon="pi pi-copy"
+                className="p-button-rounded p-button-success"
                 size="small"
-                severity="secondary"
-                outlined
                 disabled={!tempPass}
                 onClick={copyTempPass}
               />
+              <Button
+                label="Generate Temp Pass"
+                icon="pi pi-refresh"
+                className="p-button-rounded"
+                size="small"
+                loading={generating}
+                onClick={generateTempPass}
+              />
             </div>
 
-            <Divider />
-
-            <div
-              className="text-sm p-3 border-round-lg flex align-items-start gap-2"
-              style={{
-                background: "var(--sv-warning-bg)",
-                border: "1px solid var(--sv-warning)",
-                color: "var(--sv-warning)",
-              }}
-            >
-              <i className="pi pi-exclamation-triangle flex-shrink-0 mt-1" />
-              <span>
-                Temporary passwords are valid for 1 hour. Share only with
-                authorized test users and never in public channels.
-              </span>
-            </div>
+            {message && (
+              <div className="mt-2 text-sm text-center" style={{ color: "var(--sv-success)" }}>
+                {message}
+              </div>
+            )}
           </div>
         </div>
       </div>
