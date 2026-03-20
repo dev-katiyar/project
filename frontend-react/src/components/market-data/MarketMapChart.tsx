@@ -200,10 +200,10 @@ const MarketMapChart: React.FC<MarketMapChartProps> = ({
       },
       series: [
         {
-          type: "treemap" as any,
+          type: "treemap",
           name: "Back",
           layoutAlgorithm: "squarified",
-          allowDrillToNode: true as any,
+          allowDrillToNode: true,
           animationLimit: 1000,
           dataLabels: {
             enabled: true,
@@ -229,7 +229,7 @@ const MarketMapChart: React.FC<MarketMapChartProps> = ({
             },
           ] as any,
           data: [...sectorPoints, ...stockPoints],
-        },
+        } as any,
       ],
       tooltip: {
         backgroundColor: ct.tooltipBg,

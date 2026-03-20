@@ -1,0 +1,16 @@
+# Build docker image for SimpleVisor Pro frontend (test deployment at /pro/ path)
+#
+# Usage:
+#   docker compose -f docker-compose.build-pro.yml build
+#   docker compose -f docker-compose.build-pro.yml push   # if using ECR
+#
+# The built image is what you reference in the main docker-compose.yml
+# as the frontend-pro service.
+
+services:
+  frontend-pro:
+    build:
+      context: ./frontend-react
+      dockerfile: Dockerfile
+    image: 174121684253.dkr.ecr.us-east-2.amazonaws.com/svrepoecr:sv_frontend_pro_${TAG:-latest}
+    container_name: sv_frontend_pro
