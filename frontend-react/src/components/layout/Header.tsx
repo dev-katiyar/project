@@ -358,6 +358,14 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
                 Home
               </NavLink>
               <NavLink
+                to="/contact-us"
+                className={({ isActive }) =>
+                  `sv-nav-link py-2 px-3 border-round text-sm font-medium${isActive ? " active" : ""}`
+                }
+              >
+                Contact
+              </NavLink>
+              <NavLink
                 to="/login"
                 className={({ isActive }) =>
                   `sv-nav-link py-2 px-3 border-round text-sm font-medium${isActive ? " active" : ""}`
