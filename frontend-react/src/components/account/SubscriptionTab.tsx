@@ -5,6 +5,10 @@ import { Skeleton } from "primereact/skeleton";
 import { Tag } from "primereact/tag";
 import { Toast } from "primereact/toast";
 import { Message } from "primereact/message";
+import { Dialog } from "primereact/dialog";
+import { RadioButton } from "primereact/radiobutton";
+import { Checkbox } from "primereact/checkbox";
+import { InputTextarea } from "primereact/inputtextarea";
 
 interface UserSubscriptionData {
   stripe_user_id?: string;
@@ -30,6 +34,16 @@ interface CardInfo {
   last4?: string;
   exp_year?: number;
   exp_month?: number;
+}
+
+interface SubscriptionPlan {
+  id: string | number;
+  name: string;
+}
+
+interface ExitReason {
+  id: number;
+  description: string;
 }
 
 const fmtAmount = (amount?: number) => {
@@ -102,9 +116,37 @@ const SubscriptionTab: React.FC = () => {
   const [apiKey, setApiKey] = useState<string>("");
   const [generatingKey, setGeneratingKey] = useState(false);
 
+  // Plan dialog
+  const [showPlanDialog, setShowPlanDialog] = useState(false);
+  const [actionType, setActionType] = useState<string>("");
+  const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
+  const [selectedPlanId, setSelectedPlanId] = useState<string | number | null>(null);
+  const [planLoading, setPlanLoading] = useState(false);
+
+  // Unsubscribe dialog
+  const [showUnsubscribeDialog, setShowUnsubscribeDialog] = useState(false);
+  const [exitReasons, setExitReasons] = useState<ExitReason[]>([{ id: 1, description: "Other" }]);
+  const [selectedReasonIds, setSelectedReasonIds] = useState<number[]>([]);
+  const [exitFeedback, setExitFeedback] = useState("");
+  const [unsubscribeLoading, setUnsubscribeLoading] = useState(false);
+
+  // Change card dialog
+  const [showCardDialog, setShowCardDialog] = useState(false);
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpMonth, setCardExpMonth] = useState("");
+  const [cardExpYear, setCardExpYear] = useState("");
+  const [cardCvc, setCardCvc] = useState("");
+  const [cardAgreed, setCardAgreed] = useState(false);
+  const [cardUpdateLoading, setCardUpdateLoading] = useState(false);
+  const [cardUpdateMessage, setCardUpdateMessage] = useState("");
+
   useEffect(() => {
     loadSubscriptionData();
     loadCardInfo();
+    // Initialize Stripe publishable key
+    if (window.Stripe) {
+      window.Stripe.setPublishableKey(import.meta.env.VITE_STRIPE_KEY as string);
+    }
   }, []);
 
   const loadSubscriptionData = async () => {
@@ -114,7 +156,6 @@ const SubscriptionTab: React.FC = () => {
       const user: UserSubscriptionData = data;
       setSubUserData(user);
 
-      // Mask the stored API key
       if (user.api_key) {
         setApiKey("*".repeat(84));
       }
@@ -134,7 +175,6 @@ const SubscriptionTab: React.FC = () => {
       }
 
       if (stripeId) {
-        // Fetch Stripe subscription details
         try {
           const { data: stripeRes } = await api.get("/user/subscription-details");
           if (stripeRes?.data?.subscription) {
@@ -191,6 +231,127 @@ const SubscriptionTab: React.FC = () => {
     toast.current?.show({ severity: "success", summary: "Copied", detail: "API key copied to clipboard", life: 1500 });
   };
 
+  // ── Plan dialog ──────────────────────────────────────────────────────────
+
+  const openPlanDialog = async (action: string) => {
+    setActionType(action);
+    setSelectedPlanId(subUserData?.subscriptionId ?? null);
+    setShowPlanDialog(true);
+    if (plans.length === 0) {
+      try {
+        const { data } = await api.get("/subscriptions/all");
+        setPlans(Array.isArray(data) ? data : []);
+      } catch {
+        /* non-critical */
+      }
+    }
+  };
+
+  const confirmPlanChange = async () => {
+    if (!selectedPlanId) return;
+    setPlanLoading(true);
+    try {
+      const { data } = await api.post("/user/subscription", { action: actionType, subscriptionId: selectedPlanId });
+      setShowPlanDialog(false);
+      toast.current?.show({ severity: "success", summary: "Success", detail: data?.message || "Subscription updated", life: 2500 });
+      loadSubscriptionData();
+    } catch {
+      toast.current?.show({ severity: "error", summary: "Error", detail: "Failed to update subscription" });
+    } finally {
+      setPlanLoading(false);
+    }
+  };
+
+  // ── Unsubscribe dialog ───────────────────────────────────────────────────
+
+  const openUnsubscribeDialog = async () => {
+    setSelectedReasonIds([]);
+    setExitFeedback("");
+    setShowUnsubscribeDialog(true);
+    try {
+      const { data } = await api.get("/user/exit-reasons");
+      if (data?.data) setExitReasons(data.data);
+    } catch {
+      setExitReasons([{ id: 1, description: "Other" }]);
+    }
+  };
+
+  const confirmUnsubscribe = async () => {
+    setUnsubscribeLoading(true);
+    try {
+      const { data } = await api.post("/user/subscription", {
+        action: "unsubscribe",
+        exitFeedback: {
+          userId: subUserData?.userId,
+          selUserExitReasons: selectedReasonIds.map((id) => ({ id })),
+          feedback: exitFeedback,
+        },
+      });
+      setShowUnsubscribeDialog(false);
+      toast.current?.show({ severity: "info", summary: "Unsubscribed", detail: data?.message || "You have been unsubscribed", life: 3000 });
+      loadSubscriptionData();
+    } catch {
+      toast.current?.show({ severity: "error", summary: "Error", detail: "Failed to cancel subscription" });
+    } finally {
+      setUnsubscribeLoading(false);
+    }
+  };
+
+  // ── Update card dialog ───────────────────────────────────────────────────
+
+  const openCardDialog = () => {
+    setCardNumber("");
+    setCardExpMonth("");
+    setCardExpYear("");
+    setCardCvc("");
+    setCardAgreed(false);
+    setCardUpdateMessage("");
+    setShowCardDialog(true);
+  };
+
+  const isCardFormValid = () =>
+    cardNumber.replace(/\s/g, "").length >= 13 &&
+    cardExpMonth.length === 2 &&
+    cardExpYear.length === 4 &&
+    cardCvc.length >= 3 &&
+    cardAgreed;
+
+  const submitCardUpdate = () => {
+    if (!isCardFormValid()) return;
+    setCardUpdateLoading(true);
+    setCardUpdateMessage("Securing card details with payment provider...");
+
+    window.Stripe.createToken(
+      {
+        number: cardNumber.replace(/\s/g, ""),
+        exp_month: cardExpMonth,
+        exp_year: cardExpYear,
+        cvc: cardCvc,
+      },
+      async (status, response) => {
+        if (status !== 200 || response.error) {
+          setCardUpdateMessage(response.error?.message || "Card tokenization failed. Please check your card details.");
+          setCardUpdateLoading(false);
+          return;
+        }
+        setCardUpdateMessage("Card details secured. Updating...");
+        try {
+          const { data } = await api.post("/user/update_creditcard", { card_id: response.id });
+          setCardUpdateMessage(data?.message || "Card updated successfully.");
+          toast.current?.show({ severity: "success", summary: "Updated", detail: data?.message || "Card updated", life: 2500 });
+          setShowCardDialog(false);
+          loadCardInfo();
+        } catch {
+          setCardUpdateMessage("Failed to update card. Please try again.");
+        } finally {
+          setCardUpdateLoading(false);
+        }
+      },
+    );
+  };
+
+  // ── Derived state ────────────────────────────────────────────────────────
+
   const today = new Date();
   const cardExpiringThisMonth =
     cardInfo &&
@@ -210,6 +371,7 @@ const SubscriptionTab: React.FC = () => {
   return (
     <>
       <Toast ref={toast} />
+
       <div className="flex flex-column gap-3">
 
         {/* ── Current Plan ──────────────────────────────────────────── */}
@@ -287,12 +449,30 @@ const SubscriptionTab: React.FC = () => {
                   <div className="flex gap-2 mt-4 flex-wrap">
                     {!isCancelled && (
                       <>
-                        <Button label="Change Plan" icon="pi pi-sync" size="small" severity="success" />
-                        <Button label="Cancel Subscription" icon="pi pi-times" size="small" outlined />
+                        <Button
+                          label="Change Plan"
+                          icon="pi pi-sync"
+                          size="small"
+                          severity="success"
+                          onClick={() => openPlanDialog("changeSubscription")}
+                        />
+                        <Button
+                          label="Cancel Subscription"
+                          icon="pi pi-times"
+                          size="small"
+                          outlined
+                          onClick={openUnsubscribeDialog}
+                        />
                       </>
                     )}
                     {isCancelled && (
-                      <Button label="Subscribe" icon="pi pi-check" size="small" severity="success" />
+                      <Button
+                        label="Subscribe"
+                        icon="pi pi-check"
+                        size="small"
+                        severity="success"
+                        onClick={() => openPlanDialog("subscribe")}
+                      />
                     )}
                   </div>
                 </>
@@ -325,7 +505,7 @@ const SubscriptionTab: React.FC = () => {
                         {cardInfo.brand}: **** {cardInfo.last4}
                       </span>
                     </div>
-                    <Button label="Update Card" icon="pi pi-pencil" size="small" outlined />
+                    <Button label="Update Card" icon="pi pi-pencil" size="small" outlined onClick={openCardDialog} />
                   </div>
 
                   {cardExpiringThisMonth && (
@@ -359,7 +539,7 @@ const SubscriptionTab: React.FC = () => {
             </SectionCard>
           </div>
 
-          {/* ── API Key (only for users with api_created_at) ─────────── */}
+          {/* ── API Key ─────────────────────────────────────────────── */}
           {subUserData?.api_created_at && (
             <div className="col-12 md:col-6">
               <SectionCard
@@ -415,6 +595,240 @@ const SubscriptionTab: React.FC = () => {
         </div>
 
       </div>
+
+      {/* ── Plan Selection Dialog ──────────────────────────────────── */}
+      <Dialog
+        header="Select Subscription Plan"
+        visible={showPlanDialog}
+        modal
+        style={{ width: "30rem" }}
+        onHide={() => setShowPlanDialog(false)}
+        footer={
+          <div className="flex gap-2 justify-content-end">
+            <Button label="Cancel" icon="pi pi-times" severity="secondary" outlined onClick={() => setShowPlanDialog(false)} />
+            <Button
+              label="Select Plan"
+              icon="pi pi-check"
+              severity="success"
+              loading={planLoading}
+              disabled={!selectedPlanId}
+              onClick={confirmPlanChange}
+            />
+          </div>
+        }
+      >
+        <div className="flex flex-column gap-3 pt-2">
+          {plans.length === 0 ? (
+            <Skeleton height="60px" />
+          ) : (
+            plans.map((plan) => (
+              <div
+                key={plan.id}
+                className="flex align-items-center gap-3 p-3 border-round-lg cursor-pointer"
+                style={{
+                  border: `1px solid ${selectedPlanId === plan.id ? "var(--sv-accent)" : "var(--sv-border)"}`,
+                  background: selectedPlanId === plan.id ? "var(--sv-accent-bg)" : "transparent",
+                }}
+                onClick={() => setSelectedPlanId(plan.id)}
+              >
+                <RadioButton
+                  inputId={String(plan.id)}
+                  value={plan.id}
+                  checked={selectedPlanId === plan.id}
+                  onChange={(e) => setSelectedPlanId(e.value)}
+                />
+                <label htmlFor={String(plan.id)} className="cursor-pointer font-semibold">{plan.name}</label>
+              </div>
+            ))
+          )}
+        </div>
+      </Dialog>
+
+      {/* ── Unsubscribe Dialog ─────────────────────────────────────── */}
+      <Dialog
+        header="Unsubscribe from SimpleVisor?"
+        visible={showUnsubscribeDialog}
+        modal
+        style={{ width: "min(600px, 95vw)" }}
+        onHide={() => setShowUnsubscribeDialog(false)}
+        footer={
+          <div className="flex gap-2 justify-content-end">
+            <Button
+              label="Nevermind, keep my account"
+              icon="pi pi-heart"
+              severity="success"
+              onClick={() => setShowUnsubscribeDialog(false)}
+            />
+            <Button
+              label="Yes, Cancel"
+              icon="pi pi-times"
+              severity="danger"
+              outlined
+              loading={unsubscribeLoading}
+              disabled={selectedReasonIds.length === 0 || !exitFeedback.trim()}
+              onClick={confirmUnsubscribe}
+            />
+          </div>
+        }
+      >
+        <div className="flex flex-column gap-3 pt-2">
+          <h3 className="mt-0 mb-1">We're sorry to see you go!</h3>
+          <p className="mt-0 mb-2 font-semibold" style={{ color: "var(--sv-text-secondary)" }}>
+            Please let us know why you're unsubscribing. Your feedback helps us improve. This won't affect your cancellation.
+          </p>
+
+          <div>
+            <div className="font-semibold mb-2">
+              Exit Reason <span style={{ color: "var(--sv-danger, red)" }}>*</span>
+            </div>
+            <div className="flex flex-column gap-2 pl-2">
+              {exitReasons.map((reason) => (
+                <div key={reason.id} className="flex align-items-center gap-2">
+                  <Checkbox
+                    inputId={`reason-${reason.id}`}
+                    value={reason.id}
+                    checked={selectedReasonIds.includes(reason.id)}
+                    onChange={(e) => {
+                      setSelectedReasonIds((prev) =>
+                        e.checked ? [...prev, reason.id] : prev.filter((id) => id !== reason.id),
+                      );
+                    }}
+                  />
+                  <label htmlFor={`reason-${reason.id}`}>{reason.description}</label>
+                </div>
+              ))}
+            </div>
+            {selectedReasonIds.length === 0 && (
+              <small className="text-red-500">Please select at least one reason.</small>
+            )}
+          </div>
+
+          <div className="flex flex-column gap-1">
+            <label htmlFor="exitFeedback" className="font-semibold">
+              Feedback <span style={{ color: "var(--sv-danger, red)" }}>*</span>
+            </label>
+            <InputTextarea
+              id="exitFeedback"
+              rows={4}
+              value={exitFeedback}
+              onChange={(e) => setExitFeedback(e.target.value)}
+              placeholder="Please share any additional feedback..."
+              className="w-full"
+            />
+            {!exitFeedback.trim() && (
+              <small className="text-red-500">Please add some feedback.</small>
+            )}
+          </div>
+        </div>
+      </Dialog>
+
+      {/* ── Update Card Dialog ─────────────────────────────────────── */}
+      <Dialog
+        header="Update Payment Card"
+        visible={showCardDialog}
+        modal
+        style={{ width: "min(480px, 95vw)" }}
+        onHide={() => !cardUpdateLoading && setShowCardDialog(false)}
+        footer={
+          <div className="flex gap-2 justify-content-end">
+            <Button
+              label="Cancel"
+              icon="pi pi-times"
+              severity="secondary"
+              outlined
+              disabled={cardUpdateLoading}
+              onClick={() => setShowCardDialog(false)}
+            />
+            <Button
+              label="Submit"
+              icon="pi pi-check"
+              severity="info"
+              loading={cardUpdateLoading}
+              disabled={!isCardFormValid()}
+              onClick={submitCardUpdate}
+            />
+          </div>
+        }
+      >
+        <div className="flex flex-column gap-3 pt-2">
+          <div>
+            <label className="block text-sm font-semibold mb-1">Card Number <span style={{ color: "var(--sv-danger, red)" }}>*</span></label>
+            <input
+              type="text"
+              className="sv-card-field"
+              placeholder="1234 5678 9012 3456"
+              value={cardNumber}
+              maxLength={19}
+              onChange={(e) => {
+                const raw = e.target.value.replace(/\D/g, "").slice(0, 16);
+                setCardNumber(raw.replace(/(.{4})/g, "$1 ").trim());
+              }}
+            />
+          </div>
+
+          <div className="grid">
+            <div className="col-4">
+              <label className="block text-sm font-semibold mb-1">Exp Month <span style={{ color: "var(--sv-danger, red)" }}>*</span></label>
+              <input
+                type="text"
+                className="sv-card-field"
+                placeholder="MM"
+                value={cardExpMonth}
+                maxLength={2}
+                onChange={(e) => setCardExpMonth(e.target.value.replace(/\D/g, "").slice(0, 2))}
+              />
+            </div>
+            <div className="col-4">
+              <label className="block text-sm font-semibold mb-1">Exp Year <span style={{ color: "var(--sv-danger, red)" }}>*</span></label>
+              <input
+                type="text"
+                className="sv-card-field"
+                placeholder="YYYY"
+                value={cardExpYear}
+                maxLength={4}
+                onChange={(e) => setCardExpYear(e.target.value.replace(/\D/g, "").slice(0, 4))}
+              />
+            </div>
+            <div className="col-4">
+              <label className="block text-sm font-semibold mb-1">CVC <span style={{ color: "var(--sv-danger, red)" }}>*</span></label>
+              <input
+                type="text"
+                className="sv-card-field"
+                placeholder="123"
+                value={cardCvc}
+                maxLength={4}
+                onChange={(e) => setCardCvc(e.target.value.replace(/\D/g, "").slice(0, 4))}
+              />
+            </div>
+          </div>
+
+          <div className="flex align-items-start gap-2">
+            <Checkbox
+              inputId="cardAgreement"
+              checked={cardAgreed}
+              onChange={(e) => setCardAgreed(!!e.checked)}
+            />
+            <label htmlFor="cardAgreement" className="text-sm" style={{ color: "var(--sv-text-secondary)" }}>
+              You must read and agree to our{" "}
+              <a href="/agreement" target="_blank" style={{ color: "var(--sv-accent)" }}>Subscriber Agreement</a>{" "}
+              to become a subscriber. Your subscription will renew automatically unless cancelled prior to renewal.
+            </label>
+          </div>
+
+          {cardUpdateMessage && (
+            <Message
+              severity={cardUpdateMessage.toLowerCase().includes("fail") || cardUpdateMessage.toLowerCase().includes("error") ? "error" : "info"}
+              text={cardUpdateMessage}
+              className="w-full"
+            />
+          )}
+
+          <p className="text-xs mb-0 flex align-items-center gap-1" style={{ color: "var(--sv-text-muted)" }}>
+            <i className="pi pi-lock" />
+            Your payment info is encrypted and processed securely via Stripe.
+          </p>
+        </div>
+      </Dialog>
     </>
   );
 };
