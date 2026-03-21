@@ -71,144 +71,147 @@ const withProtection = (element: React.ReactNode) => (
 );
 
 // --------------- Router ---------------
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Layout />,
-    children: [
-      // -------- Public routes --------
-      { index: true, element: withSuspense(<HomePage />) },
-      { path: "login", element: withSuspense(<LoginPage />) },
-      { path: "signup", element: withSuspense(<RegisterPage />) },
-      {
-        path: "forgot-password",
-        element: withSuspense(<ForgotPasswordPage />),
-      },
-      { path: "reset-password", element: withSuspense(<ResetPasswordPage />) },
-      { path: "faq", element: withSuspense(<NotFoundPage />) }, // TODO
-      { path: "contact-us", element: withSuspense(<ContactPage />) },
-      { path: "terms", element: withSuspense(<TermsPage />) },
-      { path: "weekly-report", element: withSuspense(<NotFoundPage />) }, // TODO
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <Layout />,
+      children: [
+        // -------- Public routes --------
+        { index: true, element: withSuspense(<HomePage />) },
+        { path: "login", element: withSuspense(<LoginPage />) },
+        { path: "signup", element: withSuspense(<RegisterPage />) },
+        {
+          path: "forgot-password",
+          element: withSuspense(<ForgotPasswordPage />),
+        },
+        { path: "reset-password", element: withSuspense(<ResetPasswordPage />) },
+        { path: "faq", element: withSuspense(<NotFoundPage />) }, // TODO
+        { path: "contact-us", element: withSuspense(<ContactPage />) },
+        { path: "terms", element: withSuspense(<TermsPage />) },
+        { path: "weekly-report", element: withSuspense(<NotFoundPage />) }, // TODO
 
-      // -------- Authenticated routes --------
-      { path: "dashboard", element: withSuspense(<DashboardPage />) },
-      { path: "majormarkets", element: withProtection(<MajorMarketsPage />) },
-      { path: "markets", element: withProtection(<BroadMarketsPage />) },
-      { path: "snp-sectors", element: withProtection(<NotFoundPage />) },
-      {
-        path: "marketinternals",
-        element: withProtection(<MarketInternalsPage />),
-      },
-      { path: "holdingsmap", element: withProtection(<HoldingsMapPage />) },
-      { path: "movers", element: withProtection(<MarketMoversPage />) },
-      { path: "sector-pulse", element: withProtection(<SectorPulsePage />) },
-      { path: "overview-stock", element: withProtection(<StockSummaryPage />) },
-      { path: "tvcharts", element: withProtection(<TvChartsPage />) },
-      { path: "stock-analysis", element: withProtection(<NotFoundPage />) },
-      { path: "watchlist", element: withProtection(<WatchlistPage />) },
-      { path: "alerts", element: withProtection(<AlertsPage />) },
-      {
-        path: "portfolioscombined",
-        element: withProtection(<PortfoliosCombinedPage />),
-      },
-      {
-        path: "portfolioscombined/:selPortType/:selPortId",
-        element: withProtection(<PortfoliosCombinedPage />),
-      },
-      { path: "aixgb-portfolios", element: withProtection(<NotFoundPage />) },
-      { path: "linkedportfolio", element: withProtection(<NotFoundPage />) },
-      {
-        path: "screenscombined",
-        element: withProtection(<ScreensCombinedPage />),
-      },
-      { path: "options", element: withProtection(<NotFoundPage />) },
-      {
-        path: "super-investor",
-        element: withProtection(<SuperInvestorPage />),
-      },
-      {
-        path: "super-investor/:code",
-        element: withProtection(<SuperInvestorPage />),
-      },
-      {
-        path: "factor-analysis",
-        element: withProtection(<FactorAnalysisPage />),
-      },
-      {
-        path: "risk-range-report",
-        element: withProtection(<RiskRangeReportPage />),
-      },
-      {
-        path: "credit-spead",
-        element: withProtection(<CreditSpreadReportPage />),
-      },
-      { path: "backtesting", element: withProtection(<NotFoundPage />) },
-      {
-        path: "relative-absolute-analysis-sectors",
-        element: withProtection(<RelativeAbsoluteSectorsPage />),
-      },
-      {
-        path: "absolute-analysis-sectors",
-        element: withProtection(<NotFoundPage />),
-      },
-      { path: "anomaly-spy", element: withProtection(<NotFoundPage />) },
-      { path: "trade-signal-spy", element: withProtection(<NotFoundPage />) },
-      { path: "ai-tools", element: withProtection(<AiToolsPage />) },
-      { path: "ai-tools/:symbol", element: withProtection(<AiToolsPage />) },
-      { path: "ai-dashbaord", element: withProtection(<AiDashboardPage />) },
-      {
-        path: "ai-models/:modelKey",
-        element: withProtection(<NotFoundPage />),
-      },
-      { path: "ai-regime-charts", element: withProtection(<NotFoundPage />) },
-      {
-        path: "strategy-dashboard",
-        element: withProtection(<StrategyDashboardPage />),
-      },
-      { path: "sv-ideas", element: withProtection(<NotFoundPage />) },
-      {
-        path: "symbol-search/:searchText",
-        element: withProtection(<NotFoundPage />),
-      },
-      { path: "my-account", element: withProtection(<MyAccountPage />) },
-      { path: "profile", element: withProtection(<NotFoundPage />) },
-      {
-        path: "portfolio-integration",
-        element: withProtection(<NotFoundPage />),
-      },
-      {
-        path: "insights/latest-insights",
-        element: withProtection(<LatestInsightsPage />),
-      },
-      {
-        path: "commentary/diary",
-        element: withProtection(<TradingDiaryPage />),
-      },
-      {
-        path: "commentary/videos",
-        element: withProtection(<CommentaryVideosPage />),
-      },
-      {
-        path: "commentary/recent-ria",
-        element: withProtection(<RecentRIAPage />),
-      },
-      {
-        path: "commentary/real-time",
-        element: withProtection(<RealTimeCommentaryPage />),
-      },
-      {
-        path: "commentary/newsletter",
-        element: withProtection(<NewsletterPage />),
-      },
-      { path: "news-rss", element: withProtection(<NotFoundPage />) },
-      { path: "admin", element: withProtection(<NotFoundPage />) },
-      { path: "admin-data", element: withProtection(<NotFoundPage />) },
-      { path: "admin-dashboard", element: withProtection(<NotFoundPage />) },
+        // -------- Authenticated routes --------
+        { path: "dashboard", element: withSuspense(<DashboardPage />) },
+        { path: "majormarkets", element: withProtection(<MajorMarketsPage />) },
+        { path: "markets", element: withProtection(<BroadMarketsPage />) },
+        { path: "snp-sectors", element: withProtection(<NotFoundPage />) },
+        {
+          path: "marketinternals",
+          element: withProtection(<MarketInternalsPage />),
+        },
+        { path: "holdingsmap", element: withProtection(<HoldingsMapPage />) },
+        { path: "movers", element: withProtection(<MarketMoversPage />) },
+        { path: "sector-pulse", element: withProtection(<SectorPulsePage />) },
+        { path: "overview-stock", element: withProtection(<StockSummaryPage />) },
+        { path: "tvcharts", element: withProtection(<TvChartsPage />) },
+        { path: "stock-analysis", element: withProtection(<NotFoundPage />) },
+        { path: "watchlist", element: withProtection(<WatchlistPage />) },
+        { path: "alerts", element: withProtection(<AlertsPage />) },
+        {
+          path: "portfolioscombined",
+          element: withProtection(<PortfoliosCombinedPage />),
+        },
+        {
+          path: "portfolioscombined/:selPortType/:selPortId",
+          element: withProtection(<PortfoliosCombinedPage />),
+        },
+        { path: "aixgb-portfolios", element: withProtection(<NotFoundPage />) },
+        { path: "linkedportfolio", element: withProtection(<NotFoundPage />) },
+        {
+          path: "screenscombined",
+          element: withProtection(<ScreensCombinedPage />),
+        },
+        { path: "options", element: withProtection(<NotFoundPage />) },
+        {
+          path: "super-investor",
+          element: withProtection(<SuperInvestorPage />),
+        },
+        {
+          path: "super-investor/:code",
+          element: withProtection(<SuperInvestorPage />),
+        },
+        {
+          path: "factor-analysis",
+          element: withProtection(<FactorAnalysisPage />),
+        },
+        {
+          path: "risk-range-report",
+          element: withProtection(<RiskRangeReportPage />),
+        },
+        {
+          path: "credit-spead",
+          element: withProtection(<CreditSpreadReportPage />),
+        },
+        { path: "backtesting", element: withProtection(<NotFoundPage />) },
+        {
+          path: "relative-absolute-analysis-sectors",
+          element: withProtection(<RelativeAbsoluteSectorsPage />),
+        },
+        {
+          path: "absolute-analysis-sectors",
+          element: withProtection(<NotFoundPage />),
+        },
+        { path: "anomaly-spy", element: withProtection(<NotFoundPage />) },
+        { path: "trade-signal-spy", element: withProtection(<NotFoundPage />) },
+        { path: "ai-tools", element: withProtection(<AiToolsPage />) },
+        { path: "ai-tools/:symbol", element: withProtection(<AiToolsPage />) },
+        { path: "ai-dashbaord", element: withProtection(<AiDashboardPage />) },
+        {
+          path: "ai-models/:modelKey",
+          element: withProtection(<NotFoundPage />),
+        },
+        { path: "ai-regime-charts", element: withProtection(<NotFoundPage />) },
+        {
+          path: "strategy-dashboard",
+          element: withProtection(<StrategyDashboardPage />),
+        },
+        { path: "sv-ideas", element: withProtection(<NotFoundPage />) },
+        {
+          path: "symbol-search/:searchText",
+          element: withProtection(<NotFoundPage />),
+        },
+        { path: "my-account", element: withProtection(<MyAccountPage />) },
+        { path: "profile", element: withProtection(<NotFoundPage />) },
+        {
+          path: "portfolio-integration",
+          element: withProtection(<NotFoundPage />),
+        },
+        {
+          path: "insights/latest-insights",
+          element: withProtection(<LatestInsightsPage />),
+        },
+        {
+          path: "commentary/diary",
+          element: withProtection(<TradingDiaryPage />),
+        },
+        {
+          path: "commentary/videos",
+          element: withProtection(<CommentaryVideosPage />),
+        },
+        {
+          path: "commentary/recent-ria",
+          element: withProtection(<RecentRIAPage />),
+        },
+        {
+          path: "commentary/real-time",
+          element: withProtection(<RealTimeCommentaryPage />),
+        },
+        {
+          path: "commentary/newsletter",
+          element: withProtection(<NewsletterPage />),
+        },
+        { path: "news-rss", element: withProtection(<NotFoundPage />) },
+        { path: "admin", element: withProtection(<NotFoundPage />) },
+        { path: "admin-data", element: withProtection(<NotFoundPage />) },
+        { path: "admin-dashboard", element: withProtection(<NotFoundPage />) },
 
-      // -------- Catch-all --------
-      { path: "*", element: withSuspense(<NotFoundPage />) },
-    ],
-  },
-]);
+        // -------- Catch-all --------
+        { path: "*", element: withSuspense(<NotFoundPage />) },
+      ],
+    },
+  ],
+  { basename: "/pro" },
+);
 
 export default router;
