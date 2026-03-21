@@ -68,7 +68,7 @@ const SvPairMoneyFlowChart: React.FC<SvPairMoneyFlowChartProps> = ({
 
     // ── Tick helpers ─────────────────────────────────────────────────────────
 
-    const symTickPositioner = function (this: Highcharts.Axis): number[] {
+    const symTickPositioner = function (this: Highcharts.Axis & { dataMax?: number; dataMin?: number }): number[] {
       const max = Math.max(
         Math.abs(this.dataMax ?? 0),
         Math.abs(this.dataMin ?? 0),
@@ -77,7 +77,7 @@ const SvPairMoneyFlowChart: React.FC<SvPairMoneyFlowChartProps> = ({
       return [-maxInt, 0, maxInt];
     };
 
-    const ratioTickPositioner = function (this: Highcharts.Axis): number[] {
+    const ratioTickPositioner = function (this: Highcharts.Axis & { dataMax?: number; dataMin?: number }): number[] {
       const positions: number[] = [];
       let tick = Math.floor((this.dataMin ?? 0) * 100) / 100;
       const range = (this.dataMax ?? 0) - (this.dataMin ?? 0);
@@ -258,7 +258,7 @@ const SvPairMoneyFlowChart: React.FC<SvPairMoneyFlowChartProps> = ({
           opposite: true,
           tickPositions: [-50, 0, 50],
         },
-      ] as Highcharts.YAxisOptions[],
+      ] as unknown as Highcharts.YAxisOptions[],
 
       tooltip: {
         backgroundColor: cc.tooltip,
@@ -270,7 +270,7 @@ const SvPairMoneyFlowChart: React.FC<SvPairMoneyFlowChartProps> = ({
         split: true,
         xDateFormat: "%b %d, %Y",
         style: { color: cc.text, fontSize: "11px" },
-        formatter: function (this: Highcharts.TooltipFormatterContextObject) {
+        formatter: function (this: any) {
           const idx = this.x as number;
           if (idx >= 0 && idx < chartData.length) {
             return chartData[idx].date;

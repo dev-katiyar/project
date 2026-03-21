@@ -99,7 +99,7 @@ const SvMoneyFlowChart: React.FC<SvMoneyFlowChartProps> = ({
 
     // ── Tick helper ────────────────────────────────────────────────────────
     const symTickPositioner = function (
-      this: Highcharts.Axis,
+      this: Highcharts.Axis & { dataMax?: number; dataMin?: number },
     ): number[] {
       const max = Math.max(
         Math.abs(this.dataMax ?? 0),
@@ -156,7 +156,7 @@ const SvMoneyFlowChart: React.FC<SvMoneyFlowChartProps> = ({
           lineWidth: 2,
           lineColor: cc.border,
           gridLineColor: cc.grid,
-          tickPositioner: function (this: Highcharts.Axis) {
+          tickPositioner: function (this: Highcharts.Axis & { dataMax?: number; dataMin?: number }) {
             const positions: number[] = [];
             let tick = Math.floor(this.dataMin ?? 0);
             const range = (this.dataMax ?? 0) - (this.dataMin ?? 0);
@@ -234,7 +234,7 @@ const SvMoneyFlowChart: React.FC<SvMoneyFlowChartProps> = ({
           lineColor: cc.border,
           gridLineColor: cc.grid,
           plotLines: [{ value: 0, color: cc.border, width: 1 }],
-          tickPositioner: function (this: Highcharts.Axis) {
+          tickPositioner: function (this: Highcharts.Axis & { dataMax?: number; dataMin?: number }) {
             const rawMax = Math.max(
               Math.abs(this.dataMax ?? 0),
               Math.abs(this.dataMin ?? 0),
@@ -283,7 +283,7 @@ const SvMoneyFlowChart: React.FC<SvMoneyFlowChartProps> = ({
           opposite: true,
           tickPositions: [-50, 0, 50],
         },
-      ] as Highcharts.YAxisOptions[],
+      ] as unknown as Highcharts.YAxisOptions[],
 
       tooltip: {
         backgroundColor: cc.tooltip,
@@ -295,7 +295,7 @@ const SvMoneyFlowChart: React.FC<SvMoneyFlowChartProps> = ({
         split: true,
         xDateFormat: "%b %d, %Y",
         style: { color: cc.text, fontSize: "11px" },
-        formatter: function (this: Highcharts.TooltipFormatterContextObject) {
+        formatter: function (this: any) {
           const idx = this.x as number;
           if (idx >= 0 && idx < chartData.length) {
             return chartData[idx].date;
