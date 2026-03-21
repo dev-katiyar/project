@@ -12,5 +12,5 @@ services:
     build:
       context: ./frontend-react
       dockerfile: Dockerfile
-    image: 174121684253.dkr.ecr.us-east-2.amazonaws.com/svrepoecr:sv_frontend_pro_${TAG:-latest}
-    container_name: sv_frontend_pro
+    image: sv_app-frontend_pro
+    container_name: sv_app-frontend_pro
