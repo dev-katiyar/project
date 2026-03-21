@@ -247,7 +247,7 @@ const StockInsiderTransactionsTab: React.FC<StockInsiderTransactionsTabProps> = 
         backgroundColor: "var(--surface-overlay)",
         borderColor: "var(--sv-border)",
         style: { color: "var(--text-color)", fontSize: "12px" },
-        formatter(this: Highcharts.TooltipFormatterContextObject) {
+        formatter(this: any) {
           const pts = this.points ?? [];
           let s = `<b>${this.x}</b><br/>`;
           for (const p of pts) {

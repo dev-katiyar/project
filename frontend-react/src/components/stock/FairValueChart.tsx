@@ -158,7 +158,7 @@ const FairValueChart: React.FC<Props> = ({ symbol }) => {
         plotBands,
         plotLines,
         gridLineWidth: 0,
-        title: { text: null },
+        title: { text: undefined },
         labels: { enabled: false },
       },
       plotOptions: {
@@ -169,7 +169,7 @@ const FairValueChart: React.FC<Props> = ({ symbol }) => {
             enabled: true,
             inside: false,
             align: "left",
-            formatter(this: Highcharts.PointLabelObject) {
+            formatter(this: any) {
               return `<span style="font-size:13px;font-weight:700;color:var(--text-color)">$${(this.y as number).toFixed(2)}</span>`;
             },
             useHTML: true,

@@ -485,7 +485,7 @@ const StockFundamentalsTab: React.FC<StockFundamentalsTabProps> = ({
         backgroundColor: "var(--surface-overlay)",
         borderColor: "var(--sv-border)",
         style: { color: "var(--text-color)", fontSize: "12px" },
-        formatter(this: Highcharts.TooltipFormatterContextObject) {
+        formatter(this: any) {
           const date = new Date(this.x as number).toLocaleDateString("en-US", {
             year: "numeric",
             month: "short",
@@ -500,7 +500,7 @@ const StockFundamentalsTab: React.FC<StockFundamentalsTabProps> = ({
         labels: { style: { color: "var(--sv-text-muted)", fontSize: "11px" } },
       },
       yAxis: {
-        title: { text: null },
+        title: { text: undefined },
         gridLineColor: "var(--sv-border-light)",
         labels: {
           style: { color: "var(--sv-text-muted)", fontSize: "11px" },

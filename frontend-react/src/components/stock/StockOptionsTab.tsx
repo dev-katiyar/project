@@ -297,7 +297,7 @@ const StockOptionsTab: React.FC<StockOptionsTabProps> = ({ symbol }) => {
         backgroundColor: "var(--surface-overlay)",
         borderColor: "var(--sv-border)",
         style: { color: "var(--text-color)", fontSize: "12px" },
-        formatter(this: Highcharts.TooltipFormatterContextObject) {
+        formatter(this: any) {
           const pts = this.points ?? [];
           let s = `<b>Strike $${this.x}</b><br/>`;
           for (const p of pts) {
@@ -409,7 +409,7 @@ const StockOptionsTab: React.FC<StockOptionsTabProps> = ({ symbol }) => {
       scrollHeight="480px"
     >
       {/* CALLS side */}
-      <Column header="IV"      body={(r: StraddleRow) => <span style={itmCellStyle(r.inTheMoney)}>{fmtIV(r.impliedVolatility)}</span>}  style={{ minWidth: 72,  textAlign: "right", background: r => itmCellStyle(r.inTheMoney).background }} bodyStyle={{ textAlign: "right" }} />
+      <Column header="IV"      body={(r: StraddleRow) => <span style={itmCellStyle(r.inTheMoney)}>{fmtIV(r.impliedVolatility)}</span>}  style={{ minWidth: 72,  textAlign: "right" }} bodyStyle={{ textAlign: "right" }} />
       <Column header="OI"      body={(r: StraddleRow) => <span style={itmCellStyle(r.inTheMoney)}>{fmtNum(r.openInterest)}</span>}       bodyStyle={{ textAlign: "right" }} style={{ minWidth: 72 }} />
       <Column header="Vol"     body={(r: StraddleRow) => <span style={itmCellStyle(r.inTheMoney)}>{fmtNum(r.volume)}</span>}              bodyStyle={{ textAlign: "right" }} style={{ minWidth: 72 }} />
       <Column header="Last"    body={(r: StraddleRow) => <span style={itmCellStyle(r.inTheMoney, true)}>{fmtPrice(r.lastPrice)}</span>}  bodyStyle={{ textAlign: "right" }} style={{ minWidth: 72 }} />
