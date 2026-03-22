@@ -745,7 +745,7 @@ const MarketMoversPage: React.FC = () => {
         borderColor: ct.tooltipBorder,
         style: { color: ct.tooltipText },
         formatter() {
-          const pt = this.point as Highcharts.Point & {
+          const pt = (this as any).point as Highcharts.Point & {
             name: string;
             ticker: string;
           };
@@ -866,7 +866,6 @@ const MarketMoversPage: React.FC = () => {
                   gap: "0.3rem",
                   padding: "0.35rem 0.875rem",
                   borderRadius: 6,
-                  border: "none",
                   cursor: loading ? "not-allowed" : "pointer",
                   fontSize: "0.78rem",
                   fontWeight: isSelected ? 700 : 500,

@@ -488,7 +488,7 @@ const MajorMarketsPage: React.FC = () => {
         borderColor: ct.tooltipBorder,
         style: { color: ct.tooltipText },
         formatter() {
-          const pt = this.point as any;
+          const pt = (this as any).point;
           return `<b>${pt.name}</b><br/>${pt.y >= 0 ? "+" : ""}${pt.y?.toFixed(2)}%`;
         },
       },

@@ -423,7 +423,7 @@ const AlertsPage: React.FC = () => {
           placeholder="TICKER"
           style={{ width: "100%" }}
           inputStyle={{ textTransform: "uppercase", width: "100%" }}
-          pt={{ input: { className: "p-inputtext-sm" } }}
+          pt={{ input: { className: "p-inputtext-sm" } as any }}
         />
       );
     }

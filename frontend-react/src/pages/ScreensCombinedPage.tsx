@@ -402,7 +402,7 @@ const FilterEditor: React.FC<{
           </div>
           <div className="px-2" style={{ paddingBottom: "1.25rem" }}>
             <Slider
-              value={sliderVals as number[]}
+              value={sliderVals as [number, number]}
               onChange={(e) =>
                 setLocal((p) => ({
                   ...p,

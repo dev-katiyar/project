@@ -502,7 +502,7 @@ const SuperInvestorPage: React.FC = () => {
           colorByPoint: true,
           colors: PIE_COLORS,
           data: data.map((h) => ({ name: h.rep_symbol, y: h.rep_pcnt })),
-        },
+        } as any,
       ],
       credits: { enabled: false },
     };
@@ -557,7 +557,7 @@ const SuperInvestorPage: React.FC = () => {
           colorByPoint: true,
           colors: sectorDist.map((s) => SECTOR_COLORS[s.sector] ?? "#94a3b8"),
           data: sectorDist.map((s) => ({ name: s.sector, y: s.percent })),
-        },
+        } as any,
       ],
       credits: { enabled: false },
     };

@@ -664,7 +664,7 @@ const AiToolsPage: React.FC = () => {
                   size="small"
                   selectionMode="single"
                   selection={selectedAgent}
-                  onSelectionChange={(e) => setSelectedAgent(e.value)}
+                  onSelectionChange={(e) => setSelectedAgent(e.value as AgentDecision)}
                   dataKey="agentKey"
                   style={{ fontSize: "0.875rem" }}
                 >

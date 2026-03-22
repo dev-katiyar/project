@@ -292,7 +292,7 @@ function buildChartOptions(
       borderRadius: 8,
       style: { color: theme.tooltipText, fontSize: "13px" },
       useHTML: true,
-      formatter(this: Highcharts.TooltipFormatterContextObject) {
+      formatter(this: any) {
         const pt = this.point as Highcharts.Point & {
           custom?: { changePct: number; rawSize: number; sector?: string };
           parent?: string;
