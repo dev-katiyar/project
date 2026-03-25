@@ -33,7 +33,7 @@ interface ITvWidget {
 }
 
 const DATAFEED_URL = "/api/tv";
-const LIBRARY_PATH = "/charting_library/";
+const LIBRARY_PATH = `${import.meta.env.BASE_URL}charting_library/`;
 const CLIENT_ID = "simplevisor.com";
 
 const TIME_FRAMES = [
