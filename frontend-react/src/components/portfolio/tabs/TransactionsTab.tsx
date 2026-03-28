@@ -3,16 +3,23 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Tag } from "primereact/tag";
 import { InputText } from "primereact/inputtext";
+import { Button } from "primereact/button";
 import {
   type Transaction,
+  type Position,
   fmtUSDFull,
 } from "@/components/portfolio/PortfolioDetailPanel";
+import AddTransactionDialog from "@/components/portfolio/AddTransactionDialog";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Props {
   transactions: Transaction[];
   portfolioId: number | string;
+  portfolioName: string;
+  currentCash: number;
+  startingCash: number;
+  openPositions: Position[];
   onRefresh: () => void;
 }
 
@@ -102,8 +109,17 @@ const TransactionStats: React.FC<{ transactions: Transaction[] }> = ({
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
-const TransactionsTab: React.FC<Props> = ({ transactions }) => {
+const TransactionsTab: React.FC<Props> = ({
+  transactions,
+  portfolioId,
+  portfolioName,
+  currentCash,
+  startingCash,
+  openPositions,
+  onRefresh,
+}) => {
   const [globalFilter, setGlobalFilter] = useState("");
+  const [dialogVisible, setDialogVisible] = useState(false);
 
   const sorted = useMemo(
     () =>
@@ -117,16 +133,75 @@ const TransactionsTab: React.FC<Props> = ({ transactions }) => {
 
   if (!sorted || sorted.length === 0) {
     return (
-      <div className="flex flex-column align-items-center justify-content-center gap-3 py-8 sv-text-muted">
-        <i className="pi pi-list" style={{ fontSize: "2.5rem" }} />
-        <div className="text-sm">No transactions found</div>
-      </div>
+      <>
+        <div className="flex flex-column align-items-center justify-content-center gap-3 py-8 sv-text-muted">
+          <i className="pi pi-list" style={{ fontSize: "2.5rem" }} />
+          <div className="text-sm">No transactions yet</div>
+          <Button
+            label="Add Transaction"
+            icon="pi pi-plus"
+            size="small"
+            onClick={() => setDialogVisible(true)}
+            style={{ background: "var(--sv-accent-gradient)", border: "none" }}
+          />
+        </div>
+        <AddTransactionDialog
+          visible={dialogVisible}
+          onHide={() => setDialogVisible(false)}
+          portfolioId={portfolioId}
+          portfolioName={portfolioName}
+          currentCash={currentCash}
+          startingCash={startingCash}
+          openPositions={openPositions}
+          onSaved={() => { setDialogVisible(false); onRefresh(); }}
+        />
+      </>
     );
   }
 
   return (
     <div>
-      <TransactionStats transactions={sorted} />
+      <AddTransactionDialog
+        visible={dialogVisible}
+        onHide={() => setDialogVisible(false)}
+        portfolioId={portfolioId}
+        portfolioName={portfolioName}
+        currentCash={currentCash}
+        startingCash={startingCash}
+        openPositions={openPositions}
+        onSaved={() => { setDialogVisible(false); onRefresh(); }}
+      />
+
+      {/* Toolbar: stats + add button */}
+      <div
+        className="flex align-items-center justify-content-between gap-3 px-3 py-2 flex-wrap"
+        style={{ borderBottom: "1px solid var(--sv-border)" }}
+      >
+        <div className="flex gap-4 flex-wrap text-sm">
+          <span className="sv-text-muted">
+            Total: <strong className="text-color">{sorted.length}</strong>
+          </span>
+          <span className="sv-text-muted">
+            Buys:{" "}
+            <strong className="sv-text-gain">
+              {sorted.filter((t) => t.side?.toLowerCase() === "buy").length}
+            </strong>
+          </span>
+          <span className="sv-text-muted">
+            Sells:{" "}
+            <strong className="sv-text-loss">
+              {sorted.filter((t) => t.side?.toLowerCase() === "sell").length}
+            </strong>
+          </span>
+        </div>
+        <Button
+          label="Add Transaction"
+          icon="pi pi-plus"
+          size="small"
+          onClick={() => setDialogVisible(true)}
+          style={{ background: "var(--sv-accent-gradient)", border: "none", flexShrink: 0 }}
+        />
+      </div>
 
       {/* Search */}
       <div

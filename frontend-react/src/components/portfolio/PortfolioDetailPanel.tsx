@@ -482,6 +482,10 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
             <TransactionsTab
               transactions={data.transactions}
               portfolioId={portfolio.portfolioid}
+              portfolioName={portfolio.name}
+              currentCash={data.portfolioDetails.currentCash}
+              startingCash={data.portfolioDetails.startingCash}
+              openPositions={data.openPositions}
               onRefresh={loadDetail}
             />
           </TabPanel>
