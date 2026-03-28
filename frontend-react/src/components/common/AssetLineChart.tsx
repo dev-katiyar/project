@@ -192,6 +192,8 @@ const AssetLineChart: React.FC<AssetLineChartProps> = ({
         title: { text: undefined },
         gridLineColor: ct.grid,
         labels: { style: { color: ct.label, fontSize: "9px" } },
+        startOnTick: false,
+        endOnTick: false,
       },
       series: validSymbols.map((sym, i): Highcharts.SeriesAreaOptions => {
         const color = SERIES_COLORS[i % SERIES_COLORS.length];
@@ -211,6 +213,7 @@ const AssetLineChart: React.FC<AssetLineChartProps> = ({
             : "transparent",
           lineWidth: 2,
           marker: { enabled: false },
+          threshold: null,
         };
       }),
       tooltip: {
