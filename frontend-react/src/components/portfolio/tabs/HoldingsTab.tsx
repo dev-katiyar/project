@@ -39,9 +39,6 @@ const SymbolCell: React.FC<{ row: Position }> = ({ row }) => (
         {row.name}
       </div>
     )}
-    {row.sector && (
-      <div className="text-xs sv-text-muted mt-1">{row.sector}</div>
-    )}
   </div>
 );
 
@@ -189,6 +186,15 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
           body={(r: Position) => <SymbolCell row={r} />}
           sortable
           style={{ minWidth: "180px", paddingLeft: "0.75rem" }}
+        />
+        <Column
+          field="sector"
+          header="Sector"
+          body={(r: Position) => (
+            <div className="text-sm sv-text-muted">{r.sector ?? "—"}</div>
+          )}
+          sortable
+          style={{ minWidth: "140px" }}
         />
         <Column
           field="type"
