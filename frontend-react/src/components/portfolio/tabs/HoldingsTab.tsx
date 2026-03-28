@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Tag } from "primereact/tag";
-import { ProgressBar } from "primereact/progressbar";
 import { InputText } from "primereact/inputtext";
 import {
   type Position,
@@ -67,19 +66,6 @@ const PriceCell: React.FC<{ row: Position }> = ({ row }) => (
 const ValueCell: React.FC<{ row: Position }> = ({ row }) => (
   <div className="text-right">
     <div className="font-semibold text-sm">{fmtUSD(row.currentValue)}</div>
-    {(row.percentageShare ?? 0) > 0 && (
-      <div className="mt-1">
-        <ProgressBar
-          value={Math.min(100, row.percentageShare ?? 0)}
-          showValue={false}
-          style={{ height: "4px", borderRadius: "2px" }}
-          color="var(--sv-accent)"
-        />
-        <div className="text-xs sv-text-muted text-right">
-          {(row.percentageShare ?? 0).toFixed(1)}%
-        </div>
-      </div>
-    )}
   </div>
 );
 
@@ -246,6 +232,20 @@ const HoldingsTab: React.FC<Props> = ({ positions, currentCash }) => {
           pt={{ headerContent: { className: "justify-content-end" } }}
           sortable
           style={{ minWidth: "150px" }}
+        />
+        <Column
+          field="percentageShare"
+          header="% of Portfolio"
+          body={(r: Position) => (
+            <div className="text-right text-sm sv-text-muted">
+              {(r.percentageShare ?? 0) > 0
+                ? `${(r.percentageShare ?? 0).toFixed(1)}%`
+                : "—"}
+            </div>
+          )}
+          pt={{ headerContent: { className: "justify-content-end" } }}
+          sortable
+          style={{ minWidth: "90px" }}
         />
         <Column
           field="pnl"
