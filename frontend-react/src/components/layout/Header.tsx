@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback, useEffect } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme, ThemeName } from "@/contexts/ThemeContext";
+import { useStockSymbol } from "@/contexts/StockSymbolContext";
 import { Avatar } from "primereact/avatar";
 import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
@@ -167,7 +168,7 @@ interface MobileMenuProps {
 
 const MobileMenu: React.FC<MobileMenuProps> = ({ onClose }) => {
   const location = useLocation();
-  const navigate = useNavigate();
+  const { openStockDialog } = useStockSymbol();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [searchSymbol, setSearchSymbol] = useState("");
 
@@ -184,7 +185,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ onClose }) => {
           value={searchSymbol}
           onChange={setSearchSymbol}
           onSelect={(symbol) => {
-            navigate(`/overview-stock?symbol=${encodeURIComponent(symbol)}`);
+            openStockDialog(symbol);
             onClose();
           }}
           placeholder="Search ticker…"
@@ -267,6 +268,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
   const { user, isAuthenticated, logout } = useAuth();
   const { theme } = useTheme();
+  const { openStockDialog } = useStockSymbol();
   const navigate = useNavigate();
   const location = useLocation();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -387,9 +389,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
                   <SymbolSearch
                     value={searchSymbol}
                     onChange={setSearchSymbol}
-                    onSelect={(symbol) =>
-                      navigate(`/overview-stock?symbol=${encodeURIComponent(symbol)}`)
-                    }
+                    onSelect={(symbol) => openStockDialog(symbol)}
                     placeholder="Search ticker…"
                     inputClassName="sv-search-input"
                   />

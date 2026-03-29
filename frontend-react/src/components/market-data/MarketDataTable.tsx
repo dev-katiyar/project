@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { useStockSymbol } from "@/contexts/StockSymbolContext";
 import { DataTable, DataTableSortEvent } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Skeleton } from "primereact/skeleton";
@@ -168,6 +169,11 @@ const MarketDataTable: React.FC<MarketDataTableProps> = ({
   showName = false,
   scrollHeight,
 }) => {
+  const { openStockDialog } = useStockSymbol();
+  const handleSymbolClick = (symbol: string) => {
+    if (onSymbolClick) onSymbolClick(symbol);
+    else openStockDialog(symbol);
+  };
   const [rows, setRows] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
@@ -220,7 +226,7 @@ const MarketDataTable: React.FC<MarketDataTableProps> = ({
         return (
           <span
             className="sv-text-accent cursor-pointer"
-            onClick={() => onSymbolClick?.(symbol)}
+            onClick={() => handleSymbolClick(symbol)}
           >
             {symbol}
             {name && <span className="text-color-secondary">{name}</span>}

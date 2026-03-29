@@ -5,6 +5,7 @@ import { Skeleton } from "primereact/skeleton";
 import { Slider } from "primereact/slider";
 import api from "@/services/api";
 import { ColumnConfig } from "./MarketDataTable";
+import { useStockSymbol } from "@/contexts/StockSymbolContext";
 
 /* ── Types ───────────────────────────────────────────────── */
 
@@ -68,6 +69,11 @@ const LivePricesTable: React.FC<LivePricesTableProps> = ({
   onChartClick,
   scrollHeight,
 }) => {
+  const { openStockDialog } = useStockSymbol();
+  const handleSymbolClick = (symbol: string) => {
+    if (onSymbolClick) onSymbolClick(symbol);
+    else openStockDialog(symbol);
+  };
   const [rows, setRows] = useState<Record<string, unknown>[]>([]);
   const [symbolNameDict, setSymbolNameDict] = useState<Record<string, string>>(
     {},
@@ -162,7 +168,7 @@ const LivePricesTable: React.FC<LivePricesTableProps> = ({
         return (
           <span
             className="sv-text-accent cursor-pointer"
-            onClick={() => onSymbolClick?.(symbol)}
+            onClick={() => handleSymbolClick(symbol)}
           >
             {displayName}
           </span>

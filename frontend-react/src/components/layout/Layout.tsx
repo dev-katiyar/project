@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 import SettingsPanel from "./SettingsPanel";
+import StockDetailDialog from "@/components/stock/StockDetailDialog";
 
 /**
  * Shell layout: Header + Content (via <Outlet />) + Footer
@@ -27,6 +28,8 @@ const Layout: React.FC = () => {
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
       />
+
+      <StockDetailDialog />
     </div>
   );
 };
