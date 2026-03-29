@@ -451,6 +451,8 @@ const AiToolsPage: React.FC = () => {
       const sym = routeSymbol.toUpperCase();
       setInputSymbol(sym);
       loadData(sym);
+    } else {
+      navigate("/ai-tools/AAPL", { replace: true });
     }
   }, [routeSymbol, loadData]);
 
