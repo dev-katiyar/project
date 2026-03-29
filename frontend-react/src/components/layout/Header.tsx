@@ -4,8 +4,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTheme, ThemeName } from "@/contexts/ThemeContext";
 import { Avatar } from "primereact/avatar";
 import { Button } from "primereact/button";
-import { InputText } from "primereact/inputtext";
 import { Divider } from "primereact/divider";
+import SymbolSearch from "@/components/common/SymbolSearch";
 
 import logoOnDark from "@/assets/brand/simplevisor-horizontal-light-lg.svg";
 import logoOnLight from "@/assets/brand/simplevisor-horizontal-color@3x.png";
@@ -169,34 +169,29 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ onClose }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-  const [searchText, setSearchText] = useState("");
+  const [searchSymbol, setSearchSymbol] = useState("");
 
   const toggle = (label: string) =>
     setExpanded((prev) => ({ ...prev, [label]: !prev[label] }));
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchText.trim()) {
-      navigate(`/symbol-search/${encodeURIComponent(searchText.trim())}`);
-      setSearchText("");
-      onClose();
-    }
-  };
 
   return (
     /* sv-mobile-menu handles: fixed position, z-index, max-height, overflow, animation */
     /* PrimeFlex handles: background, border, shadow, padding */
     <div className="sv-mobile-menu surface-overlay border-bottom-1 shadow-3 px-3 py-2">
       {/* Search */}
-      <form onSubmit={handleSearch} className="relative mb-3">
-        <i className="pi pi-search sv-input-icon-left" />
-        <InputText
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+      <div className="mb-3">
+        <SymbolSearch
+          value={searchSymbol}
+          onChange={setSearchSymbol}
+          onSelect={(symbol) => {
+            navigate(`/overview-stock?symbol=${encodeURIComponent(symbol)}`);
+            onClose();
+          }}
           placeholder="Search ticker…"
-          className="w-full sv-input-pl-icon"
+          className="w-full"
+          inputClassName="w-full"
         />
-      </form>
+      </div>
 
       {/* Nav items */}
       {NAV_ITEMS.map((item) => {
@@ -274,9 +269,9 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
   const { theme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchText, setSearchText] = useState("");
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchSymbol, setSearchSymbol] = useState("");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -315,14 +310,6 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
   const handleMouseLeave = useCallback(() => {
     closeTimer.current = setTimeout(() => setOpenDropdown(null), 150);
   }, []);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchText.trim()) {
-      navigate(`/symbol-search/${encodeURIComponent(searchText.trim())}`);
-      setSearchText("");
-    }
-  };
 
   const handleLogout = () => {
     logout();
@@ -396,18 +383,17 @@ const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
             {isAuthenticated && (
               <>
                 {/* Search — hidden on mobile, flex on md+ */}
-                <form
-                  onSubmit={handleSearch}
-                  className="relative hidden md:flex align-items-center"
-                >
-                  <i className="pi pi-search sv-input-icon-left" />
-                  <InputText
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
+                <div className="hidden md:flex align-items-center">
+                  <SymbolSearch
+                    value={searchSymbol}
+                    onChange={setSearchSymbol}
+                    onSelect={(symbol) =>
+                      navigate(`/overview-stock?symbol=${encodeURIComponent(symbol)}`)
+                    }
                     placeholder="Search ticker…"
-                    className="sv-search-input"
+                    inputClassName="sv-search-input"
                   />
-                </form>
+                </div>
 
                 {/* Hamburger — md:hidden hides on desktop, visible on mobile */}
                 <Button
