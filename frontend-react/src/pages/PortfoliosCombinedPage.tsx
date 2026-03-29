@@ -225,6 +225,7 @@ const PortfoliosCombinedPage: React.FC = () => {
     useState<SectionState>(defaultSection());
 
   const [selected, setSelected] = useState<Portfolio | null>(null);
+  const [canEdit, setCanEdit] = useState(false);
 
   useEffect(() => {
     if (selected) {
@@ -236,6 +237,26 @@ const PortfoliosCombinedPage: React.FC = () => {
           }),
         50,
       );
+    }
+  }, [selected]);
+
+  // Resolve edit permission when a portfolio is selected, mirroring Angular's setIsAdminUserAndReload logic:
+  // - user portfolios: always editable by owner
+  // - riapro / riapro_robo / model_* : editable only if /user/isAdmin returns a truthy userType
+  useEffect(() => {
+    if (!selected) {
+      setCanEdit(false);
+      return;
+    }
+    const portType = selected.portfolio_type;
+    if (portType === "user") {
+      setCanEdit(true);
+    } else if (portType === "riapro" || portType === "riapro_robo" || portType?.startsWith("model_")) {
+      api.get("/user/isAdmin").then((res) => {
+        setCanEdit(!!res.data?.userType);
+      }).catch(() => setCanEdit(false));
+    } else {
+      setCanEdit(false);
     }
   }, [selected]);
 
@@ -349,6 +370,7 @@ const PortfoliosCombinedPage: React.FC = () => {
         <div ref={detailRef}>
           <PortfolioDetailPanel
             portfolio={selected}
+            canEdit={canEdit}
             onClose={() => setSelected(null)}
             onUpdate={() => {
               loadSection("/modelportfolio/read/summary/riapro", setSvSection);

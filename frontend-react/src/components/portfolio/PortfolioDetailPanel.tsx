@@ -216,11 +216,12 @@ const DetailSkeleton: React.FC = () => (
 
 interface Props {
   portfolio: Portfolio;
+  canEdit?: boolean;
   onClose: () => void;
   onUpdate?: () => void;
 }
 
-const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose, onUpdate }) => {
+const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, canEdit = false, onClose, onUpdate }) => {
   const toast = useRef<Toast>(null);
   const [data, setData] = useState<PortfolioDetailData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -451,16 +452,18 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose, onUpdate })
           </div>
 
           <div className="flex align-items-center gap-1">
-            <Button
-              icon="pi pi-pencil"
-              text
-              rounded
-              size="small"
-              onClick={openEditDialog}
-              tooltip="Edit portfolio"
-              tooltipOptions={{ position: "left" }}
-              className="sv-text-muted"
-            />
+            {canEdit && (
+              <Button
+                icon="pi pi-pencil"
+                text
+                rounded
+                size="small"
+                onClick={openEditDialog}
+                tooltip="Edit portfolio"
+                tooltipOptions={{ position: "left" }}
+                className="sv-text-muted"
+              />
+            )}
             <Button
               icon="pi pi-times"
               text
@@ -575,6 +578,7 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose, onUpdate })
               startingCash={data.portfolioDetails.startingCash}
               openPositions={data.openPositions}
               onRefresh={loadDetail}
+              canEdit={canEdit}
             />
           </TabPanel>
 

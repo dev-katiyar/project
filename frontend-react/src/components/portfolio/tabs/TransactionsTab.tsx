@@ -21,6 +21,7 @@ interface Props {
   startingCash: number;
   openPositions: Position[];
   onRefresh: () => void;
+  canEdit?: boolean;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -117,6 +118,7 @@ const TransactionsTab: React.FC<Props> = ({
   startingCash,
   openPositions,
   onRefresh,
+  canEdit = false,
 }) => {
   const [globalFilter, setGlobalFilter] = useState("");
   const [dialogVisible, setDialogVisible] = useState(false);
@@ -137,13 +139,15 @@ const TransactionsTab: React.FC<Props> = ({
         <div className="flex flex-column align-items-center justify-content-center gap-3 py-8 sv-text-muted">
           <i className="pi pi-list" style={{ fontSize: "2.5rem" }} />
           <div className="text-sm">No transactions yet</div>
-          <Button
-            label="Add Transaction"
-            icon="pi pi-plus"
-            size="small"
-            onClick={() => setDialogVisible(true)}
-            style={{ background: "var(--sv-accent-gradient)", border: "none" }}
-          />
+          {canEdit && (
+            <Button
+              label="Add Transaction"
+              icon="pi pi-plus"
+              size="small"
+              onClick={() => setDialogVisible(true)}
+              style={{ background: "var(--sv-accent-gradient)", border: "none" }}
+            />
+          )}
         </div>
         <AddTransactionDialog
           visible={dialogVisible}
@@ -194,13 +198,15 @@ const TransactionsTab: React.FC<Props> = ({
             </strong>
           </span>
         </div>
-        <Button
-          label="Add Transaction"
-          icon="pi pi-plus"
-          size="small"
-          onClick={() => setDialogVisible(true)}
-          style={{ background: "var(--sv-accent-gradient)", border: "none", flexShrink: 0 }}
-        />
+        {canEdit && (
+          <Button
+            label="Add Transaction"
+            icon="pi pi-plus"
+            size="small"
+            onClick={() => setDialogVisible(true)}
+            style={{ background: "var(--sv-accent-gradient)", border: "none", flexShrink: 0 }}
+          />
+        )}
       </div>
 
       {/* Search */}
