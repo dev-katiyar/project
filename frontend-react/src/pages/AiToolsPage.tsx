@@ -285,16 +285,15 @@ const AgentCard: React.FC<{ agent: AgentDecision }> = ({ agent }) => {
 
       {/* Description */}
       {agent.description && (
-        <p
+        <div
           style={{
             color: "var(--sv-text-secondary)",
             fontSize: "0.8rem",
             margin: "0 0 12px",
             lineHeight: 1.55,
           }}
-        >
-          {agent.description}
-        </p>
+          dangerouslySetInnerHTML={{ __html: agent.description }}
+        />
       )}
 
       {/* Reasoning */}
@@ -792,16 +791,15 @@ const AiToolsPage: React.FC = () => {
                       >
                         Principles &amp; Methodology
                       </div>
-                      <p
+                      <div
                         style={{
                           color: "var(--sv-text-secondary)",
                           fontSize: "0.85rem",
                           margin: "0 0 1rem",
                           lineHeight: 1.6,
                         }}
-                      >
-                        {selectedAgent.description}
-                      </p>
+                        dangerouslySetInnerHTML={{ __html: selectedAgent.description }}
+                      />
                     </>
                   )}
 
