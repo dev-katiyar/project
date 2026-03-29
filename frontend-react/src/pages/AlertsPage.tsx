@@ -234,7 +234,7 @@ const AlertsPage: React.FC = () => {
   const searchSymbols = async (query: string) => {
     if (!query) return;
     try {
-      const { data } = await api.get(`/symbol/search/${query.toUpperCase()}`);
+      const { data } = await api.get(`/search/${query.toUpperCase()}`);
       const arr = Array.isArray(data) ? data : [];
       setSymSuggestions(
         arr.map((d: unknown) =>

@@ -17,7 +17,7 @@ export interface SymbolSearchProps {
   /** Called when a symbol is confirmed (Enter or click) */
   onSelect: (symbol: string, name?: string) => void;
   placeholder?: string;
-  /** Extra path segment appended to /symbol/search — e.g. "/etf" */
+  /** Extra path segment appended to /search — e.g. "/etf" */
   urlModifier?: string;
   className?: string;
   inputClassName?: string;
@@ -53,7 +53,10 @@ const SymbolSearch: React.FC<SymbolSearchProps> = ({
   // Close dropdown when clicking outside
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
       }
     };
@@ -61,23 +64,34 @@ const SymbolSearch: React.FC<SymbolSearchProps> = ({
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const fetchResults = useCallback(async (query: string) => {
-    if (!query) { setResults([]); setOpen(false); return; }
-    try {
-      const { data } = await api.get(`/symbol/search${urlModifier}/${query.toUpperCase()}`);
-      const arr: SymbolResult[] = Array.isArray(data)
-        ? data.slice(0, MAX_RESULTS).map((d: unknown) =>
-            typeof d === "string" ? { symbol: d } : (d as SymbolResult)
-          )
-        : [];
-      setResults(arr);
-      setOpen(arr.length > 0);
-      setActiveIndex(-1);
-    } catch {
-      setResults([]);
-      setOpen(false);
-    }
-  }, [urlModifier]);
+  const fetchResults = useCallback(
+    async (query: string) => {
+      if (!query) {
+        setResults([]);
+        setOpen(false);
+        return;
+      }
+      try {
+        const { data } = await api.get(
+          `/search${urlModifier}/${query.toUpperCase()}`,
+        );
+        const arr: SymbolResult[] = Array.isArray(data)
+          ? data
+              .slice(0, MAX_RESULTS)
+              .map((d: unknown) =>
+                typeof d === "string" ? { symbol: d } : (d as SymbolResult),
+              )
+          : [];
+        setResults(arr);
+        setOpen(arr.length > 0);
+        setActiveIndex(-1);
+      } catch {
+        setResults([]);
+        setOpen(false);
+      }
+    },
+    [urlModifier],
+  );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.toUpperCase();
@@ -86,12 +100,15 @@ const SymbolSearch: React.FC<SymbolSearchProps> = ({
     timerRef.current = setTimeout(() => fetchResults(val), DEBOUNCE_MS);
   };
 
-  const confirmSelection = useCallback((item: SymbolResult) => {
-    onSelect(item.symbol, item.name);
-    onChange?.(item.symbol);
-    setOpen(false);
-    setResults([]);
-  }, [onSelect, onChange]);
+  const confirmSelection = useCallback(
+    (item: SymbolResult) => {
+      onSelect(item.symbol, item.name);
+      onChange?.(item.symbol);
+      setOpen(false);
+      setResults([]);
+    },
+    [onSelect, onChange],
+  );
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!open) {
@@ -160,7 +177,10 @@ const SymbolSearch: React.FC<SymbolSearchProps> = ({
           {results.map((item, i) => (
             <div
               key={item.symbol}
-              onMouseDown={(e) => { e.preventDefault(); confirmSelection(item); }}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                confirmSelection(item);
+              }}
               onMouseEnter={() => setActiveIndex(i)}
               style={{
                 display: "flex",
@@ -168,9 +188,12 @@ const SymbolSearch: React.FC<SymbolSearchProps> = ({
                 gap: "0.6rem",
                 padding: "0.45rem 0.75rem",
                 cursor: "pointer",
-                background: i === activeIndex ? "var(--sv-accent-bg)" : "transparent",
+                background:
+                  i === activeIndex ? "var(--sv-accent-bg)" : "transparent",
                 borderBottom:
-                  i < results.length - 1 ? "1px solid var(--sv-border)" : "none",
+                  i < results.length - 1
+                    ? "1px solid var(--sv-border)"
+                    : "none",
                 transition: "background 0.1s",
               }}
             >
