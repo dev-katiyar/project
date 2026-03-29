@@ -11,6 +11,7 @@ import { Tag } from "primereact/tag";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import api from "@/services/api";
+import SymbolSearch from "@/components/common/SymbolSearch";
 
 const NON_HUMAN_AGENTS = [
   "fundamentals_agent",
@@ -514,24 +515,16 @@ const AiToolsPage: React.FC = () => {
         </div>
 
         {/* Symbol search */}
-        <div className="p-inputgroup" style={{ maxWidth: "280px" }}>
-          <InputText
-            value={inputSymbol}
-            onChange={(e) => setInputSymbol(e.target.value.toUpperCase())}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            placeholder="Ticker (e.g. AAPL)"
-            style={{ fontWeight: 700, letterSpacing: "0.05em" }}
-          />
-          <Button
-            icon="pi pi-search"
-            onClick={handleSearch}
-            style={{
-              background: "var(--sv-accent)",
-              borderColor: "var(--sv-accent)",
-              color: "var(--sv-text-inverse)",
-            }}
-          />
-        </div>
+        <SymbolSearch
+          value={inputSymbol}
+          onChange={setInputSymbol}
+          onSelect={(symbol) => {
+            setInputSymbol(symbol);
+            navigate(`/ai-tools/${symbol}`);
+          }}
+          placeholder="Search..."
+          urlModifier="-spy"
+        />
       </div>
 
       {/* ── Empty state ── */}
