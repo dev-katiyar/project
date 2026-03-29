@@ -30,6 +30,15 @@ const StockSummaryPage: React.FC = () => {
   const initialSymbol = searchParams.get("symbol") ?? "AAPL";
   const [symbol,       setSymbol]       = useState(initialSymbol);
   const [searchText,   setSearchText]   = useState(initialSymbol);
+
+  // Sync when navigating to a new symbol via the header search (URL changes while already on this page)
+  useEffect(() => {
+    const s = searchParams.get("symbol");
+    if (s && s !== symbol) {
+      setSymbol(s);
+      setSearchText(s);
+    }
+  }, [searchParams]);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [liveSymbol,   setLiveSymbol]   = useState<LiveSymbol | null>(null);
