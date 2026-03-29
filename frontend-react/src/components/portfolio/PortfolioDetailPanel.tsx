@@ -217,9 +217,10 @@ const DetailSkeleton: React.FC = () => (
 interface Props {
   portfolio: Portfolio;
   onClose: () => void;
+  onUpdate?: () => void;
 }
 
-const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
+const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose, onUpdate }) => {
   const toast = useRef<Toast>(null);
   const [data, setData] = useState<PortfolioDetailData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -339,6 +340,7 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
       setEditDialogVisible(false);
       toast.current?.show({ severity: "success", summary: "Saved", detail: "Portfolio updated.", life: 2000 });
       loadDetail();
+      onUpdate?.();
     } catch {
       toast.current?.show({ severity: "error", summary: "Error", detail: "Failed to update portfolio.", life: 3000 });
     } finally {

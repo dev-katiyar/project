@@ -350,6 +350,11 @@ const PortfoliosCombinedPage: React.FC = () => {
           <PortfolioDetailPanel
             portfolio={selected}
             onClose={() => setSelected(null)}
+            onUpdate={() => {
+              loadSection("/modelportfolio/read/summary/riapro", setSvSection);
+              loadSection("/modelportfolio/read/summary/riapro_robo", setSvRoboSection);
+              loadSection("/modelportfolio/read/summary/user", setUserSection);
+            }}
           />
         </div>
       )}
