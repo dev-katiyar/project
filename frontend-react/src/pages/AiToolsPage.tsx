@@ -63,21 +63,24 @@ const toStr = (val: any): string => {
 const getSignalColor = (signal: string) => {
   const s = signal?.toLowerCase() ?? "";
   if (s === "bullish" || s === "buy") return "var(--sv-success)";
-  if (s === "bearish" || s === "sell" || s === "short") return "var(--sv-danger)";
+  if (s === "bearish" || s === "sell" || s === "short")
+    return "var(--sv-danger)";
   return "var(--sv-warning)";
 };
 
 const getSignalBg = (signal: string) => {
   const s = signal?.toLowerCase() ?? "";
   if (s === "bullish" || s === "buy") return "var(--sv-success-bg)";
-  if (s === "bearish" || s === "sell" || s === "short") return "var(--sv-danger-bg)";
+  if (s === "bearish" || s === "sell" || s === "short")
+    return "var(--sv-danger-bg)";
   return "var(--sv-warning-bg)";
 };
 
 const getSignalIcon = (signal: string) => {
   const s = signal?.toLowerCase() ?? "";
   if (s === "bullish" || s === "buy") return "pi-arrow-up-right";
-  if (s === "bearish" || s === "sell" || s === "short") return "pi-arrow-down-right";
+  if (s === "bearish" || s === "sell" || s === "short")
+    return "pi-arrow-down-right";
   return "pi-minus";
 };
 
@@ -157,10 +160,19 @@ const ReasoningDisplay: React.FC<{ reasoning: any }> = ({ reasoning }) => {
     const rows = Object.entries(reasoning);
     return (
       <div style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.78rem" }}>
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            fontSize: "0.78rem",
+          }}
+        >
           <tbody>
             {rows.map(([key, val]) => (
-              <tr key={key} style={{ borderBottom: "1px solid var(--sv-border)" }}>
+              <tr
+                key={key}
+                style={{ borderBottom: "1px solid var(--sv-border)" }}
+              >
                 <td
                   style={{
                     padding: "5px 8px",
@@ -171,7 +183,9 @@ const ReasoningDisplay: React.FC<{ reasoning: any }> = ({ reasoning }) => {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                  {key
+                    .replace(/_/g, " ")
+                    .replace(/\b\w/g, (c) => c.toUpperCase())}
                 </td>
                 <td
                   style={{
@@ -180,8 +194,17 @@ const ReasoningDisplay: React.FC<{ reasoning: any }> = ({ reasoning }) => {
                     wordBreak: "break-word",
                   }}
                 >
-                  {typeof val === "object" && val !== null && "signal" in val ? (
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                  {typeof val === "object" &&
+                  val !== null &&
+                  "signal" in val ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        flexWrap: "wrap",
+                      }}
+                    >
                       {"details" in val && (
                         <span style={{ color: "var(--sv-text-primary)" }}>
                           {String((val as any).details)}
@@ -203,8 +226,15 @@ const ReasoningDisplay: React.FC<{ reasoning: any }> = ({ reasoning }) => {
                       </span>
                     </div>
                   ) : typeof val === "object" && val !== null ? (
-                    <span style={{ color: "var(--sv-text-secondary)", fontStyle: "italic" }}>
-                      {Object.entries(val as object).map(([k, v]) => `${k}: ${v}`).join(" · ")}
+                    <span
+                      style={{
+                        color: "var(--sv-text-secondary)",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      {Object.entries(val as object)
+                        .map(([k, v]) => `${k}: ${v}`)
+                        .join(" · ")}
                     </span>
                   ) : (
                     String(val ?? "—")
@@ -342,10 +372,10 @@ const AiToolsPage: React.FC = () => {
   const { symbol: routeSymbol } = useParams<{ symbol: string }>();
   const navigate = useNavigate();
   const [inputSymbol, setInputSymbol] = useState(
-    routeSymbol?.toUpperCase() ?? ""
+    routeSymbol?.toUpperCase() ?? "",
   );
   const [activeSymbol, setActiveSymbol] = useState(
-    routeSymbol?.toUpperCase() ?? ""
+    routeSymbol?.toUpperCase() ?? "",
   );
   const [loading, setLoading] = useState(false);
   const [combinedDecision, setCombinedDecision] =
@@ -353,7 +383,7 @@ const AiToolsPage: React.FC = () => {
   const [humanAgents, setHumanAgents] = useState<AgentDecision[]>([]);
   const [aiAgents, setAiAgents] = useState<AgentDecision[]>([]);
   const [selectedAgent, setSelectedAgent] = useState<AgentDecision | null>(
-    null
+    null,
   );
   const [descriptions, setDescriptions] = useState<Record<string, string>>({});
 
@@ -400,7 +430,7 @@ const AiToolsPage: React.FC = () => {
           };
           if (isHuman) human.push(decision);
           else ai.push(decision);
-        }
+        },
       );
 
       setHumanAgents(human);
@@ -689,7 +719,9 @@ const AiToolsPage: React.FC = () => {
                   size="small"
                   selectionMode="single"
                   selection={selectedAgent}
-                  onSelectionChange={(e) => setSelectedAgent(e.value as AgentDecision)}
+                  onSelectionChange={(e) =>
+                    setSelectedAgent(e.value as AgentDecision)
+                  }
                   dataKey="agentKey"
                   style={{ fontSize: "0.875rem" }}
                 >
@@ -697,7 +729,12 @@ const AiToolsPage: React.FC = () => {
                     field="agentName"
                     header="Agent"
                     body={(row) => (
-                      <span style={{ color: "var(--sv-text-primary)", fontWeight: 600 }}>
+                      <span
+                        style={{
+                          color: "var(--sv-text-primary)",
+                          fontWeight: 600,
+                        }}
+                      >
                         {row.agentName}
                       </span>
                     )}
@@ -710,7 +747,11 @@ const AiToolsPage: React.FC = () => {
                       const lbl = normalizeLabel(row.signal);
                       return (
                         <span
-                          style={{ color: c, fontWeight: 700, fontSize: "0.8rem" }}
+                          style={{
+                            color: c,
+                            fontWeight: 700,
+                            fontSize: "0.8rem",
+                          }}
                         >
                           {lbl}
                         </span>
@@ -723,7 +764,13 @@ const AiToolsPage: React.FC = () => {
                     body={(row) => {
                       const c = getSignalColor(row.signal);
                       return (
-                        <span style={{ color: c, fontWeight: 700, fontSize: "0.8rem" }}>
+                        <span
+                          style={{
+                            color: c,
+                            fontWeight: 700,
+                            fontSize: "0.8rem",
+                          }}
+                        >
                           {Math.round(row.confidence)}%
                         </span>
                       );
@@ -748,7 +795,9 @@ const AiToolsPage: React.FC = () => {
                   <div className="flex align-items-start justify-content-between mb-4">
                     <div>
                       <Tag
-                        value={selectedAgent.isHuman ? "Human Analyst" : "AI Agent"}
+                        value={
+                          selectedAgent.isHuman ? "Human Analyst" : "AI Agent"
+                        }
                         style={{
                           background: selectedAgent.isHuman
                             ? "var(--sv-info-bg)"
@@ -824,7 +873,9 @@ const AiToolsPage: React.FC = () => {
                           margin: "0 0 1rem",
                           lineHeight: 1.6,
                         }}
-                        dangerouslySetInnerHTML={{ __html: selectedAgent.description }}
+                        dangerouslySetInnerHTML={{
+                          __html: selectedAgent.description,
+                        }}
                       />
                     </>
                   )}
