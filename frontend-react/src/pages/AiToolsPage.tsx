@@ -180,9 +180,35 @@ const ReasoningDisplay: React.FC<{ reasoning: any }> = ({ reasoning }) => {
                     wordBreak: "break-word",
                   }}
                 >
-                  {typeof val === "object"
-                    ? JSON.stringify(val)
-                    : String(val ?? "—")}
+                  {typeof val === "object" && val !== null && "signal" in val ? (
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                      {"details" in val && (
+                        <span style={{ color: "var(--sv-text-primary)" }}>
+                          {String((val as any).details)}
+                        </span>
+                      )}
+                      <span
+                        style={{
+                          padding: "1px 8px",
+                          borderRadius: "999px",
+                          backgroundColor: getSignalBg((val as any).signal),
+                          border: `1px solid ${getSignalColor((val as any).signal)}`,
+                          color: getSignalColor((val as any).signal),
+                          fontWeight: 700,
+                          fontSize: "0.7rem",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {normalizeLabel((val as any).signal)}
+                      </span>
+                    </div>
+                  ) : typeof val === "object" && val !== null ? (
+                    <span style={{ color: "var(--sv-text-secondary)", fontStyle: "italic" }}>
+                      {Object.entries(val as object).map(([k, v]) => `${k}: ${v}`).join(" · ")}
+                    </span>
+                  ) : (
+                    String(val ?? "—")
+                  )}
                 </td>
               </tr>
             ))}
