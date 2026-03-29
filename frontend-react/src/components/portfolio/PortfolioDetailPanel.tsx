@@ -4,6 +4,9 @@ import { TabView, TabPanel } from "primereact/tabview";
 import { Button } from "primereact/button";
 import { Skeleton } from "primereact/skeleton";
 import { Toast } from "primereact/toast";
+import { Dialog } from "primereact/dialog";
+import { InputText } from "primereact/inputtext";
+import { InputNumber } from "primereact/inputnumber";
 import { type Portfolio } from "@/components/portfolio/PortfolioSummaryTable";
 import SummaryTab from "@/components/portfolio/tabs/SummaryTab";
 import HoldingsTab from "@/components/portfolio/tabs/HoldingsTab";
@@ -223,6 +226,10 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
   const [error, setError] = useState("");
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [perfLoaded, setPerfLoaded] = useState(false);
+  const [editDialogVisible, setEditDialogVisible] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editStartingCash, setEditStartingCash] = useState<number>(0);
+  const [editSaving, setEditSaving] = useState(false);
 
   const loadDetail = useCallback(async () => {
     setLoading(true);
@@ -311,6 +318,34 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
     if (e.index === 4 && !perfLoaded) setPerfLoaded(true);
   };
 
+  const openEditDialog = () => {
+    setEditName(details?.name ?? portfolio.name);
+    setEditStartingCash(details?.startingCash ?? 0);
+    setEditDialogVisible(true);
+  };
+
+  const handleEditSave = async () => {
+    if (!editName.trim()) {
+      toast.current?.show({ severity: "warn", summary: "Validation", detail: "Portfolio name cannot be empty.", life: 3000 });
+      return;
+    }
+    if (!editStartingCash || editStartingCash <= 0) {
+      toast.current?.show({ severity: "warn", summary: "Validation", detail: "Starting cash must be greater than zero.", life: 3000 });
+      return;
+    }
+    setEditSaving(true);
+    try {
+      await api.put(`/modelportfolio/update/${portfolio.portfolioid}`, { name: editName.trim(), startingCash: editStartingCash });
+      setEditDialogVisible(false);
+      toast.current?.show({ severity: "success", summary: "Saved", detail: "Portfolio updated.", life: 2000 });
+      loadDetail();
+    } catch {
+      toast.current?.show({ severity: "error", summary: "Error", detail: "Failed to update portfolio.", life: 3000 });
+    } finally {
+      setEditSaving(false);
+    }
+  };
+
   const details = data?.portfolioDetails;
 
   return (
@@ -324,6 +359,45 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
       }}
     >
       <Toast ref={toast} />
+
+      {/* ── Edit Portfolio Dialog ── */}
+      <Dialog
+        header="Edit Portfolio"
+        visible={editDialogVisible}
+        onHide={() => setEditDialogVisible(false)}
+        style={{ width: "360px" }}
+        modal
+        footer={
+          <div className="flex justify-content-end gap-2">
+            <Button label="Cancel" text size="small" onClick={() => setEditDialogVisible(false)} disabled={editSaving} />
+            <Button label="Save" icon="pi pi-check" size="small" onClick={handleEditSave} loading={editSaving} />
+          </div>
+        }
+      >
+        <div className="flex flex-column gap-3 pt-2">
+          <div className="flex flex-column gap-1">
+            <label className="sv-info-label" style={{ fontSize: "0.75rem" }}>Portfolio Name</label>
+            <InputText
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              placeholder="Portfolio name"
+              className="w-full"
+            />
+          </div>
+          <div className="flex flex-column gap-1">
+            <label className="sv-info-label" style={{ fontSize: "0.75rem" }}>Starting Cash</label>
+            <InputNumber
+              value={editStartingCash}
+              onValueChange={(e) => setEditStartingCash(e.value ?? 0)}
+              mode="currency"
+              currency="USD"
+              locale="en-US"
+              minFractionDigits={2}
+              className="w-full"
+            />
+          </div>
+        </div>
+      </Dialog>
 
       {/* ── Panel Header ── */}
       <div
@@ -374,16 +448,28 @@ const PortfolioDetailPanel: React.FC<Props> = ({ portfolio, onClose }) => {
             </span>
           </div>
 
-          <Button
-            icon="pi pi-times"
-            text
-            rounded
-            size="small"
-            onClick={onClose}
-            tooltip="Close detail view"
-            tooltipOptions={{ position: "left" }}
-            className="sv-text-muted"
-          />
+          <div className="flex align-items-center gap-1">
+            <Button
+              icon="pi pi-pencil"
+              text
+              rounded
+              size="small"
+              onClick={openEditDialog}
+              tooltip="Edit portfolio"
+              tooltipOptions={{ position: "left" }}
+              className="sv-text-muted"
+            />
+            <Button
+              icon="pi pi-times"
+              text
+              rounded
+              size="small"
+              onClick={onClose}
+              tooltip="Close detail view"
+              tooltipOptions={{ position: "left" }}
+              className="sv-text-muted"
+            />
+          </div>
         </div>
 
         {/* ── Metric cards ── */}
